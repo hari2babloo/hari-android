@@ -26,5 +26,9 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.auth.login.LoginActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
     </application>
 </manifest>

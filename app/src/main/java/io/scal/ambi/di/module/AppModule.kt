@@ -35,9 +35,9 @@ class AppModule(private val context: App) {
     @Provides
     fun provideApp(): App = context
 
-//    @Singleton
-//    @Provides
-//    fun provideContext(): Context = context
+    @Singleton
+    @Provides
+    fun provideContext(): Context = context
 
     @Singleton
     @Provides

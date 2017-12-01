@@ -1,16 +1,36 @@
 package io.scal.ambi.ui.launcher
 
-import android.content.Context
-import android.os.Bundle
+import android.app.Fragment
+import android.content.Intent
+import io.scal.ambi.R
+import io.scal.ambi.databinding.ActivityLauncherBinding
+import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.presentation.launcher.LauncherViewModel
+import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.global.BaseActivity
-import javax.inject.Inject
+import ru.terrakok.cicerone.Navigator
+import ru.terrakok.cicerone.android.AppNavigator
+import kotlin.reflect.KClass
 
-class LauncherActivity : BaseActivity() {
+class LauncherActivity : BaseActivity<LauncherViewModel, ActivityLauncherBinding>() {
 
-    @Inject
-    lateinit var cds: Context
+    override val layoutId: Int = R.layout.activity_launcher
+    override val viewModelClass: KClass<LauncherViewModel> = LauncherViewModel::class
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override val navigator: Navigator by lazy {
+
+        object : AppNavigator(this, R.id.container) {
+
+            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
+                    when (screenKey) {
+                        NavigateTo.LOGIN -> LoginActivity.createScreen(this@LauncherActivity)
+                        NavigateTo.HOME  -> null //todo make home screen
+                        else             -> null
+                    }
+
+            override fun createFragment(screenKey: String, data: Any): Fragment? {
+                return null
+            }
+        }
     }
 }
