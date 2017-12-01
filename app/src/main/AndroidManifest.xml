@@ -17,5 +17,14 @@
             android:value="45878762142f52485855402d0587d1d7a40ea094"
             />
 
+        <activity
+            android:name=".ui.launcher.LauncherActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>

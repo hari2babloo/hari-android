@@ -1,16 +1,20 @@
 package io.scal.ambi
 
+import android.app.Activity
 import android.app.Application
 import com.squareup.leakcanary.LeakCanary
-import io.scal.ambi.di.AppComponent
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import io.scal.ambi.di.DaggerAppComponent
 import io.scal.ambi.di.module.AppModule
 import timber.log.Timber
+import javax.inject.Inject
 
-class App : Application() {
 
-    lateinit var appComponent: AppComponent
-        private set
+class App : Application(), HasActivityInjector {
+
+    @Inject
+    lateinit var activityDispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
     override fun onCreate() {
         super.onCreate()
@@ -25,6 +29,9 @@ class App : Application() {
         initDi()
     }
 
+    override fun activityInjector(): DispatchingAndroidInjector<Activity> {
+        return activityDispatchingAndroidInjector
+    }
 
     private fun initLogger() {
         if (BuildConfig.DEBUG) {
@@ -33,9 +40,11 @@ class App : Application() {
     }
 
     private fun initDi() {
-        appComponent = DaggerAppComponent.builder()
+        DaggerAppComponent
+                .builder()
+                .application(this)
                 .appModule(AppModule(this))
                 .build()
-        appComponent.injectTo(this)
+                .injectTo(this)
     }
 }
