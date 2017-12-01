@@ -8,6 +8,6 @@ class LauncherInteractor @Inject constructor() : ILauncherInteractor {
 
     override fun getUserNavigation(): Single<LauncherState> {
         return Single.just<LauncherState>(LauncherState.NotLoggedIn)
-                .delay(5, TimeUnit.SECONDS)
+                .delay(1, TimeUnit.SECONDS)
     }
 }

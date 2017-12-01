@@ -23,7 +23,7 @@ class LauncherActivity : BaseActivity<LauncherViewModel, ActivityLauncherBinding
 
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                     when (screenKey) {
-                        NavigateTo.LOGIN -> null//LoginActivity.createScreen(this@LauncherActivity)
+                        NavigateTo.LOGIN -> LoginActivity.createScreen(this@LauncherActivity)
                         NavigateTo.HOME  -> null //todo make home screen
                         else             -> null
                     }

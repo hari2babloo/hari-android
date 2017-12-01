@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="auth_hint_name">user name</string>
+    <string name="auth_hint_password">password</string>
+
+</resources>
