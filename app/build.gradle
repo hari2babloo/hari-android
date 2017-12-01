@@ -1,0 +1,128 @@
+apply from: "resources.gradle"
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        applicationId "io.scal.ambi"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary true
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+            storeFile file('debug.keystore')
+
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            crunchPngs true
+
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            debuggable true
+
+            minifyEnabled false
+
+            signingConfig signingConfigs.debug
+
+            versionNameSuffix "-debug"
+        }
+    }
+
+    dataBinding {
+        enabled true
+    }
+
+    lintOptions {
+        abortOnError true
+    }
+}
+
+dependencies {
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation 'junit:junit:4.12'
+
+    implementation 'com.android.support:multidex:1.0.2'
+
+    // Core
+    implementation "com.azoft.injector:injector:0.9.3"
+    implementation "com.jakewharton.timber:timber:4.5.1"
+    implementation "com.facebook.fresco:fresco:1.5.0"
+
+    // data binding
+    kapt "com.android.databinding:compiler:$rootProject.androidPluginVersion"
+
+    // kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // Support
+    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:design:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    // Dagger 2
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:2.12"
+
+    // RxJava 2
+    implementation "io.reactivex.rxjava2:rxjava:2.1.0"
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
+    implementation 'com.akaita.java:rxjava2-debug:1.2.0'
+
+    // Retrofit 2
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
+
+    // LeakCanary
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakCanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakCanaryVersion"
+
+    // Permission Dispatcher
+    implementation "com.github.hotchemi:permissionsdispatcher:$rootProject.permissionVersion"
+    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:$rootProject.permissionVersion"
+
+    // time
+    implementation "joda-time:joda-time:+"
+    // rxPreferences
+    implementation 'com.github.pwittchen:prefser-rx2:2.1.0'
+
+    // google architecture components
+    implementation "android.arch.lifecycle:runtime:$rootProject.architectureComponentsVersion"
+    implementation "android.arch.lifecycle:extensions:$rootProject.architectureComponentsVersion"
+    kapt "android.arch.lifecycle:compiler:$rootProject.architectureComponentsVersion"
+
+    // analytics
+    implementation('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
+        transitive = true
+    }
+}

@@ -1,0 +1,11 @@
+apply plugin: "com.android.application"
+
+android {
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    "src/main/res/common",
+            ]
+        }
+    }
+}
