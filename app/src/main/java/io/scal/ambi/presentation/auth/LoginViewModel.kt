@@ -1,6 +1,5 @@
 package io.scal.ambi.presentation.auth
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.databinding.ObservableField
 import io.scal.ambi.R
@@ -12,7 +11,7 @@ import io.scal.ambi.ui.global.BaseViewModel
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(@SuppressLint("StaticFieldLeak") private val context: Context,
+class LoginViewModel @Inject constructor(private val context: Context,
                                          private val router: Router,
                                          private val interactor: ILoginInteractor,
                                          private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel() {
@@ -20,12 +19,12 @@ class LoginViewModel @Inject constructor(@SuppressLint("StaticFieldLeak") privat
     val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel(null, null))
 
     fun login() {
-        val currentState = stateModel.get()
-        if (currentState is LoginStateModel.DataInputStateModel) {
+        val currentStateModel = stateModel.get()
+        if (currentStateModel is LoginStateModel.DataInputStateModel) {
             stateModel.set(LoginStateModel.ProgressStateModel)
 
-            val userName = currentState.userName.get()
-            interactor.login(userName, currentState.password.get())
+            val userName = currentStateModel.userName.get()
+            interactor.login(userName, currentStateModel.password.get())
                     .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                     .subscribe({ router.newRootScreen(NavigateTo.HOME) },
                                {

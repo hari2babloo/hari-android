@@ -17,13 +17,13 @@ class LoginInteractor @Inject constructor(private val context: Context,
     private val minUserNameLength = context.resources.getInteger(R.integer.min_user_name_length)
     private val minPasswordLength = context.resources.getInteger(R.integer.min_password_length)
 
-    override fun login(userName: String, password: String): Completable {
-        if (userName.length < minUserNameLength || password.length < minPasswordLength) {
-            return Completable.error(GoodMessageException(context.resources.getString(R.string.error_auth_min_length, minUserNameLength, minPasswordLength)))
-        } else {
-            return authRepository.login(userName, password)
-                    .observeOn(rxSchedulersAbs.computationScheduler)
-                    .flatMapCompletable { localUserDataRepository.saveUserInfo(it) }
-        }
-    }
+    override fun login(userName: String, password: String): Completable =
+            if (userName.length < minUserNameLength || password.length < minPasswordLength) {
+                Completable.error(
+                        GoodMessageException(context.resources.getString(R.string.error_auth_min_length, minUserNameLength, minPasswordLength)))
+            } else {
+                authRepository.login(userName, password)
+                        .observeOn(rxSchedulersAbs.computationScheduler)
+                        .flatMapCompletable { localUserDataRepository.saveUserInfo(it) }
+            }
 }

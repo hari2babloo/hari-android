@@ -1,5 +1,6 @@
 package io.scal.ambi.ui.auth.login
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModel
 import dagger.Binds
 import dagger.Module
@@ -13,10 +14,13 @@ import io.scal.ambi.presentation.auth.LoginViewModel
 abstract class LoginModule {
 
     @Binds
-    @IntoMap
-    @ViewModelKey(LoginViewModel::class)
-    abstract fun bindUsersViewModel(loginViewModel: LoginViewModel): ViewModel
+    abstract fun bindActivity(activity: LoginActivity): Activity
 
     @Binds
-    abstract fun bindLauncherInteractor(loginInteractor: LoginInteractor): ILoginInteractor
+    @IntoMap
+    @ViewModelKey(LoginViewModel::class)
+    abstract fun bindViewModel(loginViewModel: LoginViewModel): ViewModel
+
+    @Binds
+    abstract fun bindInteractor(loginInteractor: LoginInteractor): ILoginInteractor
 }

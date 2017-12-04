@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.presentation.auth.LoginViewModel"/>
+            type="io.scal.ambi.presentation.auth.RecoveryViewModel"/>
 
     </data>
 
@@ -23,17 +23,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <io.scal.ambi.ui.global.view.AuthHeightImageView
-                android:id="@+id/iv_logo"
+            <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:layout_marginEnd="11dp"
                 android:layout_marginStart="11dp"
                 android:layout_marginTop="100dp"
+                android:gravity="center"
+                android:text="@string/auth_recovery_title"
+                android:textColor="@color/gray"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_75"
                 app:layout_constraintStart_toEndOf="@+id/guideline_25"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_ambi_logo"/>
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/auth_recovery_description"
+                android:textColor="@color/gray"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_75"
+                app:layout_constraintStart_toEndOf="@+id/guideline_25"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline_25"
@@ -50,32 +67,19 @@
                 app:layout_constraintGuide_percent="0.786"/>
 
             <include
-                android:id="@+id/et_name"
+                android:id="@+id/et_email"
                 layout="@layout/item_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
-                app:hint="@{@string/auth_hint_name}"
-                app:icon="@{@drawable/ic_user}"
-                app:inputType="@{InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME}"
+                app:hint="@{@string/auth_hint_email}"
+                app:icon="@{@drawable/ic_email}"
+                app:inputType="@{InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS}"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_75"
                 app:layout_constraintStart_toEndOf="@+id/guideline_25"
-                app:layout_constraintTop_toBottomOf="@+id/iv_logo"
-                app:textField="@{viewModel.stateModel.userName}"/>
-
-            <include
-                android:id="@+id/et_password"
-                layout="@layout/item_edit_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:hint="@{@string/auth_hint_password}"
-                app:icon="@{@drawable/ic_password}"
-                app:inputType="@{InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD}"
-                app:layout_constraintEnd_toStartOf="@+id/guideline_75"
-                app:layout_constraintStart_toEndOf="@+id/guideline_25"
-                app:layout_constraintTop_toBottomOf="@+id/et_name"
-                app:textField="@{viewModel.stateModel.password}"/>
+                app:layout_constraintTop_toBottomOf="@+id/tv_description"
+                app:layout_constraintVertical_bias="0.29000002"
+                app:textField="@{viewModel.stateModel.email}"/>
 
             <TextView
                 android:id="@+id/tv_error"
@@ -87,7 +91,7 @@
                 android:text="@{viewModel.stateModel.errorMessage}"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_75"
                 app:layout_constraintStart_toEndOf="@+id/guideline_25"
-                app:layout_constraintTop_toBottomOf="@+id/et_password"
+                app:layout_constraintTop_toBottomOf="@+id/et_email"
                 app:visibility="@{null != viewModel.stateModel.errorMessage}"/>
 
             <Space
@@ -107,26 +111,13 @@
                 style="@style/Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:onClick="@{view -> viewModel.login()}"
-                android:text="@string/auth_sign_in"
+                android:layout_marginTop="35dp"
+                android:onClick="@{view -> viewModel.recover()}"
+                android:text="@string/auth_recover"
                 app:layout_constraintBottom_toBottomOf="@+id/guideline_center_button"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_75"
                 app:layout_constraintStart_toEndOf="@+id/guideline_25"
                 app:layout_constraintTop_toTopOf="@+id/guideline_center_button"/>
-
-            <TextView
-                android:id="@+id/tv_sign_up"
-                style="@style/TextView.Link"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:onClick="@{view -> viewModel.goToRegister()}"
-                android:text="@string/auth_link_sign_up"
-                android:textColor="@color/blue"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/b_sign_in"/>
 
             <TextView
                 style="@style/TextView.Link"
@@ -134,13 +125,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="12dp"
-                android:onClick="@{view -> viewModel.goToForgotPassword()}"
-                android:text="@string/auth_link_forgot_password"
+                android:onClick="@{view -> viewModel.goBack()}"
+                android:text="@string/auth_link_cancel"
                 android:textColor="@color/gray"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sign_up"/>
+                app:layout_constraintTop_toBottomOf="@+id/b_sign_in"/>
 
             <ProgressBar
                 android:id="@+id/progress"

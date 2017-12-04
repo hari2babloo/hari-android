@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.auth.login
+package io.scal.ambi.ui.auth.recover
 
 import android.app.Fragment
 import android.content.Context
@@ -7,22 +7,29 @@ import android.os.Bundle
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityLoginBinding
+import io.scal.ambi.databinding.ActivityRecoveryBinding
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.navigation.NavigateTo
-import io.scal.ambi.presentation.auth.LoginStateModel
-import io.scal.ambi.presentation.auth.LoginViewModel
-import io.scal.ambi.ui.auth.recover.RecoveryActivity
+import io.scal.ambi.presentation.auth.RecoveryStateModel
+import io.scal.ambi.presentation.auth.RecoveryViewModel
+import io.scal.ambi.ui.global.AlertDialogShower
 import io.scal.ambi.ui.global.BaseActivity
 import ru.terrakok.cicerone.Navigator
+import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.AppNavigator
+import javax.inject.Inject
 import kotlin.reflect.KClass
 
-class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
+class RecoveryActivity : BaseActivity<RecoveryViewModel, ActivityRecoveryBinding>() {
 
-    override val layoutId: Int = R.layout.activity_login
-    override val viewModelClass: KClass<LoginViewModel> = LoginViewModel::class
+    override val layoutId: Int = R.layout.activity_recovery
+    override val viewModelClass: KClass<RecoveryViewModel> = RecoveryViewModel::class
+
+    @Inject
+    lateinit var alertDialogShower: AlertDialogShower
+    @Inject
+    lateinit var router: Router
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +37,21 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
         viewModel.stateModel
                 .toObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { it != LoginStateModel.ProgressStateModel }
+                .map { it != RecoveryStateModel.ProgressStateModel }
                 .subscribe { binding.rootContainer.enableCascade(it) }
+                .addTo(destroyDisposables)
+
+        viewModel.stateModel
+                .toObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter { it is RecoveryStateModel.Success }
+                .map { it as RecoveryStateModel.Success }
+                .subscribe {
+                    alertDialogShower.showMessage(getString(R.string.auth_dialog_check_email),
+                                                  getString(R.string.auth_dialog_email_sent, it.emailData),
+                                                  getString(R.string.dialog_ok),
+                                                  { router.exit() })
+                }
                 .addTo(destroyDisposables)
     }
 
@@ -42,7 +62,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                     when (screenKey) {
                         NavigateTo.REGISTER        -> null // todo go ro register
-                        NavigateTo.FORGOT_PASSWORD -> RecoveryActivity.createScreen(this@LoginActivity)
+                        NavigateTo.FORGOT_PASSWORD -> null // todo make forgot password screen
                         NavigateTo.HOME            -> null // todo go to home
                         else                       -> null
                     }
@@ -56,6 +76,6 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
     companion object {
 
         fun createScreen(context: Context) =
-                Intent(context, LoginActivity::class.java)
+                Intent(context, RecoveryActivity::class.java)
     }
 }
