@@ -33,9 +33,9 @@ class ApiModule {
     @Provides
     internal fun provideRetrofitBuilder(okHttpClient: OkHttpClient): Retrofit.Builder {
         return Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
     }
 
     @Singleton
@@ -43,12 +43,12 @@ class ApiModule {
     @Provides
     internal fun provideRetrofit(retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder
-                .baseUrl(BuildConfig.MAIN_SERVER_URL)
-                .build()
+            .baseUrl(BuildConfig.MAIN_SERVER_URL)
+            .build()
     }
 
     @Provides
     @Singleton
     internal fun provideAuthApi(@Named("mainServer") retrofit: Retrofit): AuthApi =
-            retrofit.create(AuthApi::class.java)
+        retrofit.create(AuthApi::class.java)
 }

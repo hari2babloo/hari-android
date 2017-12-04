@@ -15,18 +15,18 @@ object DrawablesUtils {
     private val STATE_SET = intArrayOf()
 
     fun getSelectableDrawableFor(color: Int): Drawable =
-            if (Build.VERSION_CODES.LOLLIPOP > Build.VERSION.SDK_INT) {
-                val stateListDrawable = StateListDrawable()
-                stateListDrawable.addState(intArrayOf(android.R.attr.state_pressed), ColorDrawable(lightenOrDarken(color, PRESSED_COLOR)))
-                stateListDrawable.addState(intArrayOf(android.R.attr.state_focused), ColorDrawable(lightenOrDarken(color, FOCUSED_COLOR)))
-                stateListDrawable.addState(STATE_SET, ColorDrawable(color))
-                stateListDrawable
-            } else {
-                val pressedColor = ColorStateList.valueOf(lightenOrDarken(color, 0.2))
-                val defaultColor = ColorDrawable(color)
-                val rippleColor = getRippleColor(color)
-                RippleDrawable(pressedColor, defaultColor, rippleColor)
-            }
+        if (Build.VERSION_CODES.LOLLIPOP > Build.VERSION.SDK_INT) {
+            val stateListDrawable = StateListDrawable()
+            stateListDrawable.addState(intArrayOf(android.R.attr.state_pressed), ColorDrawable(lightenOrDarken(color, PRESSED_COLOR)))
+            stateListDrawable.addState(intArrayOf(android.R.attr.state_focused), ColorDrawable(lightenOrDarken(color, FOCUSED_COLOR)))
+            stateListDrawable.addState(STATE_SET, ColorDrawable(color))
+            stateListDrawable
+        } else {
+            val pressedColor = ColorStateList.valueOf(lightenOrDarken(color, 0.2))
+            val defaultColor = ColorDrawable(color)
+            val rippleColor = getRippleColor(color)
+            RippleDrawable(pressedColor, defaultColor, rippleColor)
+        }
 
     private fun getRippleColor(color: Int): Drawable {
         val outerRadii = FloatArray(8)
@@ -73,7 +73,7 @@ object DrawablesUtils {
         val green = Color.green(color)
         val blue = Color.blue(color)
         return canLightenComponent(red, fraction) && canLightenComponent(green, fraction) &&
-                canLightenComponent(blue, fraction)
+            canLightenComponent(blue, fraction)
     }
 
     private fun canLightenComponent(colorComponent: Int, fraction: Double): Boolean {

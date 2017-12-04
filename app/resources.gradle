@@ -6,7 +6,8 @@ android {
             res.srcDirs = [
                     "src/main/res/common",
                     "src/main/res/launcher",
-                    "src/main/res/auth"
+                    "src/main/res/auth",
+                    "src/main/res/home/root"
             ]
         }
     }

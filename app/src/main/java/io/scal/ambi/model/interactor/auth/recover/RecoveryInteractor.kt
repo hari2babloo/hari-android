@@ -12,9 +12,9 @@ class RecoveryInteractor @Inject constructor(private val context: Context,
                                              private val authRepository: IAuthRepository) : IRecoveryInteractor {
 
     override fun recover(email: String): Completable =
-            if (PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()) {
-                authRepository.recover(email)
-            } else {
-                Completable.error(GoodMessageException(context.getString(R.string.error_auth_wrong_email_format)))
-            }
+        if (PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()) {
+            authRepository.recover(email)
+        } else {
+            Completable.error(GoodMessageException(context.getString(R.string.error_auth_wrong_email_format)))
+        }
 }

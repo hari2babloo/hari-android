@@ -31,29 +31,29 @@ class RecoveryActivity : BaseActivity<RecoveryViewModel, ActivityRecoveryBinding
         super.onCreate(savedInstanceState)
 
         viewModel.stateModel
-                .toObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { it != RecoveryStateModel.ProgressStateModel }
-                .subscribe { binding.rootContainer.enableCascade(it) }
-                .addTo(destroyDisposables)
+            .toObservable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .map { it != RecoveryStateModel.ProgressStateModel }
+            .subscribe { binding.rootContainer.enableCascade(it) }
+            .addTo(destroyDisposables)
 
         viewModel.stateModel
-                .toObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter { it is RecoveryStateModel.Success }
-                .map { it as RecoveryStateModel.Success }
-                .subscribe {
-                    alertDialogShower.showMessage(getString(R.string.auth_dialog_check_email),
-                                                  getString(R.string.auth_dialog_email_sent, it.emailData),
-                                                  getString(R.string.dialog_ok),
-                                                  { router.exit() })
-                }
-                .addTo(destroyDisposables)
+            .toObservable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { it is RecoveryStateModel.Success }
+            .map { it as RecoveryStateModel.Success }
+            .subscribe {
+                alertDialogShower.showMessage(getString(R.string.auth_dialog_check_email),
+                                              getString(R.string.auth_dialog_email_sent, it.emailData),
+                                              getString(R.string.dialog_ok),
+                                              { router.exit() })
+            }
+            .addTo(destroyDisposables)
     }
 
     companion object {
 
         fun createScreen(context: Context) =
-                Intent(context, RecoveryActivity::class.java)
+            Intent(context, RecoveryActivity::class.java)
     }
 }

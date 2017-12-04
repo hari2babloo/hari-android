@@ -8,9 +8,9 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor(private val authApi: AuthApi) : IAuthRepository {
 
     override fun login(userName: String, password: String): Single<AuthResult> =
-            authApi.login()
-                    .map { it.parse() }
+        authApi.login()
+            .map { it.parse() }
 
     override fun recover(email: String): Completable =
-            authApi.recover()
+        authApi.recover()
 }

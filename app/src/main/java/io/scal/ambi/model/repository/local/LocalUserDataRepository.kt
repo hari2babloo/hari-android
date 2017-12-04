@@ -13,17 +13,17 @@ class LocalUserDataRepository @Inject constructor(context: Context) : ILocalUser
     private val prefs = Prefser(context.getSharedPreferences("localUserData", Context.MODE_PRIVATE))
 
     override fun saveUserInfo(authResult: AuthResult): Completable =
-            Completable.fromAction { prefs.put(USER_INFO, authResult) }
+        Completable.fromAction { prefs.put(USER_INFO, authResult) }
 
     override fun removeUserInfo(): Completable =
-            Completable.fromAction { prefs.remove(USER_INFO) }
+        Completable.fromAction { prefs.remove(USER_INFO) }
 
     override fun observeUserInfo(): Observable<AuthResult> =
-            observePrefs(USER_INFO, AuthResult::class.java, DEFAULT_AUTH_RESULT, true)
+        observePrefs(USER_INFO, AuthResult::class.java, DEFAULT_AUTH_RESULT, true)
 
     private fun <T> observePrefs(key: String, dataClass: Class<T>, defaultValue: T, errorOnDefault: Boolean = false): Observable<T> {
         return prefs.getAndObserve(key, dataClass, defaultValue)
-                .compose(defaultToErrorComposer(dataClass, defaultValue, errorOnDefault))
+            .compose(defaultToErrorComposer(dataClass, defaultValue, errorOnDefault))
     }
 
     private fun <T> defaultToErrorComposer(dataClass: Class<T>, defaultValue: T, errorOnDefault: Boolean): ObservableTransformer<T, T> {

@@ -41,10 +41,10 @@ class App : Application(), HasActivityInjector {
 
     private fun initDi() {
         DaggerAppComponent
-                .builder()
-                .application(this)
-                .appModule(AppModule(this))
-                .build()
-                .injectTo(this)
+            .builder()
+            .application(this)
+            .appModule(AppModule(this))
+            .build()
+            .injectTo(this)
     }
 }

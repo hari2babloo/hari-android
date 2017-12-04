@@ -25,16 +25,16 @@ class LoginViewModel @Inject constructor(private val context: Context,
 
             val userName = currentStateModel.userName.get()
             interactor.login(userName, currentStateModel.password.get())
-                    .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
-                    .subscribe({ router.newRootScreen(NavigateTo.HOME) },
-                               {
-                                   val message =
-                                           when (it) {
-                                               is GoodMessageException -> it.goodMessage
-                                               else                    -> context.getString(R.string.error_auth_wrong_user_name)
-                                           }
-                                   stateModel.set(LoginStateModel.DataInputErrorStateModel(message, userName, null))
-                               })
+                .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
+                .subscribe({ router.newRootScreen(NavigateTo.HOME) },
+                           {
+                               val message =
+                                   when (it) {
+                                       is GoodMessageException -> it.goodMessage
+                                       else                    -> context.getString(R.string.error_auth_wrong_user_name)
+                                   }
+                               stateModel.set(LoginStateModel.DataInputErrorStateModel(message, userName, null))
+                           })
         }
     }
 

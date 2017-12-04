@@ -12,13 +12,13 @@ class LauncherViewModel @Inject constructor(private val router: Router,
                                             launcherInteractor: ILauncherInteractor) : BaseViewModel() {
     init {
         launcherInteractor
-                .getUserNavigation()
-                .subscribe { launcherState ->
-                    when (launcherState) {
-                        LauncherState.NotLoggedIn -> router.replaceScreen(NavigateTo.LOGIN)
-                        is LauncherState.LoggedIn -> router.newRootScreen(NavigateTo.HOME, launcherState.user)
-                    }
+            .getUserNavigation()
+            .subscribe { launcherState ->
+                when (launcherState) {
+                    LauncherState.NotLoggedIn -> router.replaceScreen(NavigateTo.LOGIN)
+                    is LauncherState.LoggedIn -> router.newRootScreen(NavigateTo.HOME, launcherState.user)
                 }
-                .addTo(disposables)
+            }
+            .addTo(disposables)
     }
 }

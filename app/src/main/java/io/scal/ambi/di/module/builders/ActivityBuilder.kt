@@ -6,6 +6,8 @@ import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.auth.login.LoginModule
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
 import io.scal.ambi.ui.auth.recover.RecoveryModule
+import io.scal.ambi.ui.home.HomeActivity
+import io.scal.ambi.ui.home.HomeModule
 import io.scal.ambi.ui.launcher.LauncherActivity
 import io.scal.ambi.ui.launcher.LauncherModule
 
@@ -20,4 +22,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [RecoveryModule::class])
     abstract fun bindRecoveryActivity(): RecoveryActivity
+
+    @ContributesAndroidInjector(modules = [HomeModule::class])
+    abstract fun bindHomeActivity(): HomeActivity
 }

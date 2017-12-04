@@ -25,16 +25,16 @@ class RecoveryViewModel @Inject constructor(private val context: Context,
             val email = currentStateModel.email.get()
 
             interactor.recover(email)
-                    .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
-                    .subscribe({ stateModel.set(RecoveryStateModel.Success(email)) },
-                               {
-                                   val message =
-                                           when (it) {
-                                               is GoodMessageException -> it.goodMessage
-                                               else                    -> context.getString(R.string.error_auth_wrong_email)
-                                           }
-                                   stateModel.set(RecoveryStateModel.DataInputErrorStateModel(message, email))
-                               })
+                .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
+                .subscribe({ stateModel.set(RecoveryStateModel.Success(email)) },
+                           {
+                               val message =
+                                   when (it) {
+                                       is GoodMessageException -> it.goodMessage
+                                       else                    -> context.getString(R.string.error_auth_wrong_email)
+                                   }
+                               stateModel.set(RecoveryStateModel.DataInputErrorStateModel(message, email))
+                           })
         }
     }
 

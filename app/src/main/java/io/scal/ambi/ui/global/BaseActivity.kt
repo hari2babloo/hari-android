@@ -30,7 +30,7 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
     @Inject
     internal lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
-    private lateinit var mLifecycleRegistry: LifecycleRegistry
+    private lateinit var lifecycleRegistry: LifecycleRegistry
 
     protected val destroyDisposables: CompositeDisposable = CompositeDisposable()
 
@@ -47,7 +47,7 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
-        mLifecycleRegistry = LifecycleRegistry(this)
+        lifecycleRegistry = LifecycleRegistry(this)
 
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.setVariable(BR.viewModel, viewModel)

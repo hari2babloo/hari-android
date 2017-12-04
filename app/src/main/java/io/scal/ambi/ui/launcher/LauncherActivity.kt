@@ -22,11 +22,11 @@ class LauncherActivity : BaseActivity<LauncherViewModel, ActivityLauncherBinding
         object : AppNavigator(this, R.id.container) {
 
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
-                    when (screenKey) {
-                        NavigateTo.LOGIN -> LoginActivity.createScreen(this@LauncherActivity)
-                        NavigateTo.HOME  -> null //todo make home screen
-                        else             -> null
-                    }
+                when (screenKey) {
+                    NavigateTo.LOGIN -> LoginActivity.createScreen(this@LauncherActivity)
+                    NavigateTo.HOME  -> null //todo make home screen
+                    else             -> null
+                }
 
             override fun createFragment(screenKey: String, data: Any?): Fragment? {
                 return null
