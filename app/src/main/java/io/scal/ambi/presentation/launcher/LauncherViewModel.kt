@@ -10,7 +10,6 @@ import javax.inject.Inject
 
 class LauncherViewModel @Inject constructor(private val router: Router,
                                             launcherInteractor: ILauncherInteractor) : BaseViewModel() {
-
     init {
         launcherInteractor
                 .getUserNavigation()

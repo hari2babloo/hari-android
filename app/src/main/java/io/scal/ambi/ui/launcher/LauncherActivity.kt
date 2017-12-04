@@ -28,7 +28,7 @@ class LauncherActivity : BaseActivity<LauncherViewModel, ActivityLauncherBinding
                         else             -> null
                     }
 
-            override fun createFragment(screenKey: String, data: Any): Fragment? {
+            override fun createFragment(screenKey: String, data: Any?): Fragment? {
                 return null
             }
         }

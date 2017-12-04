@@ -10,6 +10,8 @@ import dagger.Module
 import dagger.Provides
 import io.fabric.sdk.android.Fabric
 import io.scal.ambi.App
+import io.scal.ambi.extensions.rx.general.RxSchedulers
+import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import javax.inject.Singleton
 
 @Module
@@ -42,4 +44,8 @@ class AppModule(private val context: App) {
     @Singleton
     @Provides
     fun provideRefWatcher(): RefWatcher = refWatcher
+
+    @Singleton
+    @Provides
+    fun provideAbsScheduler(): RxSchedulersAbs = RxSchedulers()
 }

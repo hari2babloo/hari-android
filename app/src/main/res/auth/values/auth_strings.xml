@@ -4,4 +4,10 @@
     <string name="auth_hint_name">user name</string>
     <string name="auth_hint_password">password</string>
 
+    <string name="auth_sign_in">sign in</string>
+    <string name="auth_link_sign_up"><u>sign up for ambi</u></string>
+    <string name="auth_link_forgot_password"><u>forgot your password?</u></string>
+
+    <string name="error_auth_wrong_user_name">wrong username &amp; password</string>
+
 </resources>
