@@ -1,5 +1,6 @@
-package io.scal.ambi.presentation.launcher
+package io.scal.ambi.ui.launcher
 
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.model.interactor.launcher.ILauncherInteractor
 import io.scal.ambi.model.interactor.launcher.LauncherState
@@ -13,6 +14,7 @@ class LauncherViewModel @Inject constructor(private val router: Router,
     init {
         launcherInteractor
             .getUserNavigation()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { launcherState ->
                 when (launcherState) {
                     LauncherState.NotLoggedIn -> router.replaceScreen(NavigateTo.LOGIN)

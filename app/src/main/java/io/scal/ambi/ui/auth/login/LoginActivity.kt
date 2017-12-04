@@ -11,8 +11,6 @@ import io.scal.ambi.databinding.ActivityLoginBinding
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.navigation.NavigateTo
-import io.scal.ambi.presentation.auth.LoginStateModel
-import io.scal.ambi.presentation.auth.LoginViewModel
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
 import io.scal.ambi.ui.global.BaseActivity
 import io.scal.ambi.ui.home.HomeActivity

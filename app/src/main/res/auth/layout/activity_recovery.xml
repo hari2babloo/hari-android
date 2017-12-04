@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.presentation.auth.RecoveryViewModel"/>
+            type="io.scal.ambi.ui.auth.recover.RecoveryViewModel"/>
 
     </data>
 

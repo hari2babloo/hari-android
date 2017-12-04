@@ -5,9 +5,9 @@ import android.content.Intent
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityLauncherBinding
 import io.scal.ambi.navigation.NavigateTo
-import io.scal.ambi.presentation.launcher.LauncherViewModel
 import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.global.BaseActivity
+import io.scal.ambi.ui.home.HomeActivity
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.android.AppNavigator
 import kotlin.reflect.KClass
@@ -24,7 +24,7 @@ class LauncherActivity : BaseActivity<LauncherViewModel, ActivityLauncherBinding
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
                     NavigateTo.LOGIN -> LoginActivity.createScreen(this@LauncherActivity)
-                    NavigateTo.HOME  -> null //todo make home screen
+                    NavigateTo.HOME  -> HomeActivity.createScreen(this@LauncherActivity)
                     else             -> null
                 }
 

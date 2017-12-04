@@ -8,7 +8,6 @@ import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.model.interactor.auth.recover.IRecoveryInteractor
 import io.scal.ambi.model.interactor.auth.recover.RecoveryInteractor
-import io.scal.ambi.presentation.auth.RecoveryViewModel
 
 @Module
 abstract class RecoveryModule {

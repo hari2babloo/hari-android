@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.presentation.launcher.LauncherViewModel"/>
+            type="io.scal.ambi.ui.launcher.LauncherViewModel"/>
 
     </data>
 

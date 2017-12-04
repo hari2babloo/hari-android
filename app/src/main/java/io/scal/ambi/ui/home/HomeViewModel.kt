@@ -1,4 +1,4 @@
-package io.scal.ambi.presentation.home.root
+package io.scal.ambi.ui.home
 
 import io.scal.ambi.ui.global.BaseViewModel
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package io.scal.ambi.presentation.auth
+package io.scal.ambi.ui.auth.recover
 
 import io.scal.ambi.extensions.binding.ObservableString
 

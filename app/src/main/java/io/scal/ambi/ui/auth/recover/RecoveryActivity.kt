@@ -9,8 +9,6 @@ import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityRecoveryBinding
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
-import io.scal.ambi.presentation.auth.RecoveryStateModel
-import io.scal.ambi.presentation.auth.RecoveryViewModel
 import io.scal.ambi.ui.global.AlertDialogShower
 import io.scal.ambi.ui.global.BaseActivity
 import ru.terrakok.cicerone.Router

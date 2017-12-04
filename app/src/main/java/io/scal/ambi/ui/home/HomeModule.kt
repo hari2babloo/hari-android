@@ -6,7 +6,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
-import io.scal.ambi.presentation.home.root.HomeViewModel
 
 @Module
 abstract class HomeModule {

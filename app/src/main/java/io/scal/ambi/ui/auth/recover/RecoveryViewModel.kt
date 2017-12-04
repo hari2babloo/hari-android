@@ -1,4 +1,4 @@
-package io.scal.ambi.presentation.auth
+package io.scal.ambi.ui.auth.recover
 
 import android.content.Context
 import android.databinding.ObservableField
@@ -15,7 +15,8 @@ class RecoveryViewModel @Inject constructor(private val context: Context,
                                             private val interactor: IRecoveryInteractor,
                                             private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel() {
 
-    val stateModel = ObservableField<RecoveryStateModel>(RecoveryStateModel.DataInputStateModel(null))
+    val stateModel = ObservableField<RecoveryStateModel>(RecoveryStateModel.DataInputStateModel(
+        null))
 
     fun recover() {
         val currentStateModel = stateModel.get()

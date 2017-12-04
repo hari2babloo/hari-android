@@ -1,0 +1,62 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.text.TextUtils"/>
+
+        <variable
+            name="toolbarType"
+            type="io.scal.ambi.ui.global.view.ToolbarType"/>
+
+    </data>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorAccent"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/Toolbar"
+        bind:visibility="@{null != toolbarType}">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                bind:srcVector="@{toolbarType.leftIcon}"
+                bind:visibility="@{null != toolbarType.leftIcon}"
+                tools:ignore="ContentDescription"/>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="21dp"
+                android:layout_marginStart="21dp"
+                android:layout_weight="1"
+                app:toolbarContent="@{toolbarType.content}"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                bind:srcVector="@{toolbarType.rightIcon}"
+                bind:visibility="@{null != toolbarType.rightIcon}"
+                tools:ignore="ContentDescription"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+</layout>

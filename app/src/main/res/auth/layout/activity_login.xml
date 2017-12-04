@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.presentation.auth.LoginViewModel"/>
+            type="io.scal.ambi.ui.auth.login.LoginViewModel"/>
 
     </data>
 

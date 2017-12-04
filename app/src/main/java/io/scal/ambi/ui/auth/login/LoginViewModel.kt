@@ -1,4 +1,4 @@
-package io.scal.ambi.presentation.auth
+package io.scal.ambi.ui.auth.login
 
 import android.content.Context
 import android.databinding.ObservableField
@@ -16,7 +16,8 @@ class LoginViewModel @Inject constructor(private val context: Context,
                                          private val interactor: ILoginInteractor,
                                          private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel() {
 
-    val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel(null, null))
+    val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel(null,
+                                                                                                                                                null))
 
     fun login() {
         val currentStateModel = stateModel.get()

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityHomeBinding
-import io.scal.ambi.presentation.home.root.HomeViewModel
 import io.scal.ambi.ui.global.BaseActivity
 import kotlin.reflect.KClass
 
