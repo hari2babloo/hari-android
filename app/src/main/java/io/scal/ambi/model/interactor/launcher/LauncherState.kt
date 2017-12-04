@@ -1,4 +1,4 @@
-package io.scal.ambi.model.launcher
+package io.scal.ambi.model.interactor.launcher
 
 import io.scal.ambi.entity.User
 

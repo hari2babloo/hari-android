@@ -5,8 +5,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
-import io.scal.ambi.model.auth.login.ILoginInteractor
-import io.scal.ambi.model.auth.login.LoginInteractor
+import io.scal.ambi.model.interactor.auth.login.ILoginInteractor
+import io.scal.ambi.model.interactor.auth.login.LoginInteractor
 import io.scal.ambi.presentation.auth.LoginViewModel
 
 @Module

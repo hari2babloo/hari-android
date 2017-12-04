@@ -79,9 +79,10 @@
 
             <TextView
                 style="@style/TextView.Error"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
+                android:gravity="center"
                 android:text="@{viewModel.stateModel.errorMessage}"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_75"
                 app:layout_constraintStart_toEndOf="@+id/guideline_25"
@@ -93,6 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginBottom="50dp"
+                android:layout_marginTop="24dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

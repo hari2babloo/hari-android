@@ -5,8 +5,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
-import io.scal.ambi.model.launcher.ILauncherInteractor
-import io.scal.ambi.model.launcher.LauncherInteractor
+import io.scal.ambi.model.interactor.launcher.ILauncherInteractor
+import io.scal.ambi.model.interactor.launcher.LauncherInteractor
 import io.scal.ambi.presentation.launcher.LauncherViewModel
 
 @Module

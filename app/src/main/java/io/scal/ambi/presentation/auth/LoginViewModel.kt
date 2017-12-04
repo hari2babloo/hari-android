@@ -6,7 +6,7 @@ import android.databinding.ObservableField
 import io.scal.ambi.R
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
-import io.scal.ambi.model.auth.login.ILoginInteractor
+import io.scal.ambi.model.interactor.auth.login.ILoginInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.BaseViewModel
 import ru.terrakok.cicerone.Router

@@ -1,4 +1,4 @@
-package io.scal.ambi.model.auth.login
+package io.scal.ambi.model.interactor.auth.login
 
 import io.reactivex.Completable
 
