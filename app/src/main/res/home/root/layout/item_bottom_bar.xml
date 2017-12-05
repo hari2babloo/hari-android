@@ -16,6 +16,7 @@
         app:bb_inActiveTabColor="@color/grayLight"
         app:bb_showShadow="true"
         app:bb_tabXmlResource="@xml/bottombar_home_tabs"
-        app:bb_tabletMode="false"/>
+        app:bb_tabletMode="false"
+        app:bb_titleTextAppearance="@style/TextView.BottomBarItem"/>
 
 </layout>

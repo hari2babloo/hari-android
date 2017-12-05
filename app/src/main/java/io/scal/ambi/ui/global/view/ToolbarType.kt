@@ -4,9 +4,9 @@ import android.support.annotation.DrawableRes
 import android.support.annotation.LayoutRes
 import io.scal.ambi.R
 
-class ToolbarType private constructor(@DrawableRes val leftIcon: Int?,
-                                      val content: Content?,
-                                      @DrawableRes val rightIcon: Int?) {
+class ToolbarType constructor(@DrawableRes val leftIcon: Int?,
+                              val content: Content?,
+                              @DrawableRes val rightIcon: Int?) {
 
     constructor(@DrawableRes leftIcon: Int) : this(leftIcon, null, null)
 

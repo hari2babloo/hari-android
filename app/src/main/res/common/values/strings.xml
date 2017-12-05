@@ -2,4 +2,6 @@
     <string name="app_name">Ambi</string>
 
     <string name="dialog_ok">OK</string>
+    <string name="hint_search">search</string>
+
 </resources>

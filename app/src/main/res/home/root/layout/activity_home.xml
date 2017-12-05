@@ -10,7 +10,7 @@
 
         <variable
             name="toolbarType"
-            type="io.scal.ambi.ui.global.view.ToolbarType"/>
+            type="android.databinding.ObservableField&lt;io.scal.ambi.ui.global.view.ToolbarType&gt;"/>
 
         <variable
             name="viewModel"
@@ -28,7 +28,6 @@
             app:theme="@style/AppBarLayout">
 
             <include
-                android:id="@+id/toolbar"
                 layout="@layout/toolbar"
                 bind:toolbarType="@{toolbarType}"/>
 

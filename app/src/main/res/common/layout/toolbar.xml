@@ -17,7 +17,7 @@
         android:id="@+id/tb"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorAccent"
+        android:background="@color/white"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/Toolbar"
@@ -33,8 +33,9 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:gravity="center_vertical"
+                android:scaleType="centerInside"
                 bind:srcVector="@{toolbarType.leftIcon}"
                 bind:visibility="@{null != toolbarType.leftIcon}"
                 tools:ignore="ContentDescription"/>
@@ -49,8 +50,9 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:gravity="center_vertical"
+                android:scaleType="centerInside"
                 bind:srcVector="@{toolbarType.rightIcon}"
                 bind:visibility="@{null != toolbarType.rightIcon}"
                 tools:ignore="ContentDescription"/>
