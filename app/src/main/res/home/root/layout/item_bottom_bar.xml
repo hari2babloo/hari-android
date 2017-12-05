@@ -12,7 +12,7 @@
         app:bb_activeTabAlpha="1"
         app:bb_activeTabColor="@color/blue"
         app:bb_badgesHideWhenActive="true"
-        app:bb_inActiveTabAlpha="0.3"
+        app:bb_inActiveTabAlpha="1"
         app:bb_inActiveTabColor="@color/grayLight"
         app:bb_showShadow="true"
         app:bb_tabXmlResource="@xml/bottombar_home_tabs"
