@@ -4,7 +4,7 @@ import android.content.Context
 import android.databinding.ObservableBoolean
 import io.scal.ambi.R
 import io.scal.ambi.extensions.binding.ObservableString
-import io.scal.ambi.ui.global.BaseViewModel
+import io.scal.ambi.ui.global.base.BaseViewModel
 
 abstract class SearchViewModel(val hint: String) : BaseViewModel() {
 

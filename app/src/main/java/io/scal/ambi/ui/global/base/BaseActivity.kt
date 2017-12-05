@@ -1,17 +1,17 @@
-package io.scal.ambi.ui.global
+package io.scal.ambi.ui.global.base
 
-import android.app.Fragment
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasFragmentInjector
+import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
 import io.scal.ambi.BR
 import ru.terrakok.cicerone.Navigator
@@ -19,8 +19,7 @@ import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
-
-abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBinding> : AppCompatActivity(), HasFragmentInjector {
+abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBinding> : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -65,5 +64,5 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
         super.onPause()
     }
 
-    override fun fragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
 }

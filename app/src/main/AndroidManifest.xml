@@ -35,7 +35,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.home.root.HomeActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
 
     </application>

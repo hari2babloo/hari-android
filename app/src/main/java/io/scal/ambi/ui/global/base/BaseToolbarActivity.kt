@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.global
+package io.scal.ambi.ui.global.base
 
 import android.databinding.ObservableField
 import android.databinding.ViewDataBinding

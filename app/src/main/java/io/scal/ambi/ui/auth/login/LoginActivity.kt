@@ -1,9 +1,9 @@
 package io.scal.ambi.ui.auth.login
 
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
@@ -12,10 +12,10 @@ import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
-import io.scal.ambi.ui.global.BaseActivity
-import io.scal.ambi.ui.home.HomeActivity
+import io.scal.ambi.ui.global.base.BaseActivity
+import io.scal.ambi.ui.home.root.HomeActivity
 import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.android.AppNavigator
+import ru.terrakok.cicerone.android.SupportAppNavigator
 import kotlin.reflect.KClass
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
@@ -36,7 +36,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     override val navigator: Navigator by lazy {
 
-        object : AppNavigator(this, R.id.container) {
+        object : SupportAppNavigator(this, R.id.container) {
 
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {

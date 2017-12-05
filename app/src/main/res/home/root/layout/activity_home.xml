@@ -14,7 +14,7 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.ui.home.HomeViewModel"/>
+            type="io.scal.ambi.ui.home.root.HomeViewModel"/>
 
     </data>
 
@@ -34,9 +34,10 @@
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
-            android:id="@+id/content"
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <include
             android:id="@+id/bottomBar"

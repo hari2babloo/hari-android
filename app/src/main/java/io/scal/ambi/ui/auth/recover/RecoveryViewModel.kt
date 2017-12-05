@@ -6,7 +6,7 @@ import io.scal.ambi.R
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.auth.recover.IRecoveryInteractor
-import io.scal.ambi.ui.global.BaseViewModel
+import io.scal.ambi.ui.global.base.BaseViewModel
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
