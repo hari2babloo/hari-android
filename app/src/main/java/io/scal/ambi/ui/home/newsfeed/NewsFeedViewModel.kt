@@ -4,4 +4,8 @@ import io.scal.ambi.ui.global.base.BaseViewModel
 import javax.inject.Inject
 
 class NewsFeedViewModel @Inject constructor() : BaseViewModel() {
+
+    fun changeAudience() {
+
+    }
 }
