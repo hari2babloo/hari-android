@@ -53,7 +53,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>(), 
         authProfileCheckerViewModel
             .userProfile
             .subscribe {
-                val newToolbarType = defaultToolbarType?.copy(rightIcon = it.avatarIconImage)
+                val newToolbarType = defaultToolbarType?.copy(rightIcon = it.avatar)
                 compareAndSetToolbarType(defaultToolbarType, newToolbarType)
                 defaultToolbarType = newToolbarType
             }

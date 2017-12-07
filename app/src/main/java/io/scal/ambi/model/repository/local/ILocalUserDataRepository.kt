@@ -11,4 +11,6 @@ interface ILocalUserDataRepository {
     fun removeUserInfo(): Completable
 
     fun observeUserInfo(): Observable<AuthResult>
+
+    fun getUserInfo(): AuthResult?
 }

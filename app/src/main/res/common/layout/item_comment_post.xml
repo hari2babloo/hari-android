@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <import type="android.view.inputmethod.EditorInfo"/>
+
+        <import type="android.text.InputType"/>
+
+        <variable
+            name="currentUser"
+            type="io.scal.ambi.entity.User"/>
+
+        <variable
+            name="commentText"
+            type="io.scal.ambi.extensions.binding.observable.ObservableString"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_icon"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            app:actualImageScaleType="centerInside"
+            app:iconImage="@{currentUser.avatar}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundAsCircle="true"/>
+
+        <include
+            android:id="@+id/et_name"
+            layout="@layout/item_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            app:hint="@{@string/comment_hint_post}"
+            app:imeOption="@{EditorInfo.IME_ACTION_DONE}"
+            app:inputType="@{InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_NORMAL}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textField="@{commentText}"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

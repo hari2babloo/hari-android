@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/ic_write"
             android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_height="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_action_pen"
@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/ic_image"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_write"
@@ -34,8 +34,8 @@
 
         <ImageView
             android:id="@+id/ic_attachment"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_image"
@@ -45,8 +45,8 @@
 
         <ImageView
             android:id="@+id/ic_smile"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_attachment"

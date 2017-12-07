@@ -4,8 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.model.repository.auth.AuthResult
 
-// todo check response object
-class AuthResponse : Parceble<AuthResult> {
+class AuthResponse : BaseResponse<AuthResult>() {
 
     @SerializedName("token")
     @Expose

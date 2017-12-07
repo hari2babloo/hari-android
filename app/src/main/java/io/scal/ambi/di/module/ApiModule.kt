@@ -4,29 +4,39 @@ import dagger.Module
 import dagger.Provides
 import io.scal.ambi.BuildConfig
 import io.scal.ambi.model.data.server.AuthApi
+import io.scal.ambi.model.data.server.intercepters.AuthInterceptor
+import io.scal.ambi.model.data.server.intercepters.Http2FixInterceptor
+import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Named
 import javax.inject.Singleton
 
+@Singleton
 @Module
 class ApiModule {
 
     @Singleton
     @Provides
-    internal fun provideOkHttpClient(): OkHttpClient {
+    internal fun provideOkHttpClient(localUserDataRepository: ILocalUserDataRepository): OkHttpClient {
+        val okHttpReference = AtomicReference<OkHttpClient>()
         val okHttpClientBuilder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
+            okHttpClientBuilder.addInterceptor(AuthInterceptor(localUserDataRepository))
             okHttpClientBuilder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            okHttpClientBuilder.addInterceptor(Http2FixInterceptor(okHttpReference))
         }
         okHttpClientBuilder.connectTimeout(10, TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(60, TimeUnit.SECONDS)
         okHttpClientBuilder.writeTimeout(60, TimeUnit.SECONDS)
-        return okHttpClientBuilder.build()
+        val okHttp = okHttpClientBuilder.build()
+        okHttpReference.set(okHttp)
+        return okHttp
     }
 
     @Singleton

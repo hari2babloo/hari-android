@@ -1,4 +1,4 @@
-package io.scal.ambi.extensions.binding
+package io.scal.ambi.extensions.binding.binders
 
 import android.databinding.BindingAdapter
 import android.os.Build
@@ -10,7 +10,7 @@ import io.scal.ambi.extensions.DrawablesUtils
 /**
  * Binder for databinding
  */
-object DataBinder {
+object ViewDataBinder {
 
     @JvmStatic
     @BindingAdapter("rippleDrawable")

@@ -49,14 +49,24 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_college_updates"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/srl"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/c_audience_selector"/>
+            app:layout_constraintTop_toBottomOf="@+id/c_audience_selector"
+            app:onSwipeToRefresh="@{() -> viewModel.refresh()}">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_college_updates"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </android.support.constraint.ConstraintLayout>
 

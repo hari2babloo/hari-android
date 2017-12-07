@@ -41,7 +41,7 @@ android {
 
             signingConfig signingConfigs.debug
 
-            buildConfigField "String", "MAIN_SERVER_URL", '"https://api.ambi.com/v1/changeMe/"'
+            buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/v1/"'
         }
         debug {
             debuggable true
@@ -52,7 +52,7 @@ android {
 
             versionNameSuffix "-debug"
 
-            buildConfigField "String", "MAIN_SERVER_URL", '"https://api.ambi.com/v1/changeMe/"'
+            buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/v1/"'
         }
     }
 

@@ -21,6 +21,9 @@ class LocalUserDataRepository @Inject constructor(context: Context) : ILocalUser
     override fun observeUserInfo(): Observable<AuthResult> =
         observePrefs(USER_INFO, AuthResult::class.java, DEFAULT_AUTH_RESULT, true)
 
+    override fun getUserInfo(): AuthResult? =
+        prefs.get(USER_INFO, AuthResult::class.java, null)
+
     private fun <T> observePrefs(key: String, dataClass: Class<T>, defaultValue: T, errorOnDefault: Boolean = false): Observable<T> {
         return prefs.getAndObserve(key, dataClass, defaultValue)
             .compose(defaultToErrorComposer(dataClass, defaultValue, errorOnDefault))

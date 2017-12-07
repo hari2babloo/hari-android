@@ -1,4 +1,4 @@
-package io.scal.ambi.extensions.binding
+package io.scal.ambi.extensions.binding.binders
 
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil

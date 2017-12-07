@@ -5,6 +5,14 @@
 
     <data>
 
+        <import type="android.view.inputmethod.EditorInfo"/>
+
+        <import type="android.text.InputType"/>
+
+        <variable
+            name="imeOption"
+            type="Integer"/>
+
         <variable
             name="icon"
             type="android.graphics.drawable.Drawable"/>
@@ -49,7 +57,8 @@
             android:layout_toEndOf="@id/iv_icon"
             android:background="@null"
             android:hint="@{hint}"
-            android:inputType="@{safeUnbox(inputType)}"
+            android:imeOptions="@{imeOption ?? EditorInfo.IME_ACTION_NEXT}"
+            android:inputType="@{inputType ?? InputType.TYPE_TEXT_VARIATION_NORMAL}"
             android:singleLine="true"
             android:text="@={textField.data}"
             android:textSize="14sp"

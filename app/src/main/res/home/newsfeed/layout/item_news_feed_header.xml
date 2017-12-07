@@ -15,6 +15,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3.5dp"
         android:background="@color/white">
 
         <android.support.constraint.Guideline
@@ -99,7 +100,7 @@
             android:layout_height="38dp"
             android:layout_marginTop="11dp"
             app:actualImageScaleType="centerInside"
-            app:iconImage="@{viewModel.currentUser.avatarIconImage}"
+            app:iconImage="@{viewModel.currentUser.avatar}"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding"
             app:layout_constraintTop_toTopOf="@+id/guideline_tab_height"
             />
@@ -111,7 +112,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/news_feed_status_update_description"
             android:textColor="#9B9B9B"
-            android:textSize="11sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_icon"

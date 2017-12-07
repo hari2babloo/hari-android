@@ -4,6 +4,8 @@ import android.databinding.ObservableList
 
 internal sealed class NewsFeedProgressState {
 
+    object NoProgress : NewsFeedProgressState()
+
     object EmptyProgress : NewsFeedProgressState()
 
     object RefreshProgress : NewsFeedProgressState()

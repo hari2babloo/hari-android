@@ -1,4 +1,4 @@
-package io.scal.ambi.extensions.binding
+package io.scal.ambi.extensions.binding.binders
 
 import android.content.Context
 import android.databinding.BindingAdapter
@@ -22,7 +22,7 @@ object ImageViewDataBinder {
 
     @JvmStatic
     @BindingAdapter("android:src")
-    fun setImageDrawable(view: ImageView, drawable: Drawable) {
+    fun setImageDrawable(view: ImageView, drawable: Drawable?) {
         view.setImageDrawable(drawable)
     }
 
@@ -39,10 +39,14 @@ object ImageViewDataBinder {
             simpleDraweeView.setImageDrawable(null)
             return
         }
-        val iconDrawable = getResourceDrawable(simpleDraweeView.context, iconImage.iconPath)
+        val iconDrawable = getResourceDrawable(simpleDraweeView.context,
+                                                                                                           iconImage.iconPath)
         if (null == iconDrawable) {
             val hierarchy = simpleDraweeView.hierarchy
-            hierarchy.setPlaceholderImage(iconImage.placeHolderIconPath?.let { getResourceDrawable(simpleDraweeView.context, it) })
+            hierarchy.setPlaceholderImage(iconImage.placeHolderIconPath?.let {
+                getResourceDrawable(simpleDraweeView.context,
+                                                                                                it)
+            })
             simpleDraweeView.hierarchy = hierarchy
             simpleDraweeView.setImageURI(iconImage.iconPath)
         } else {

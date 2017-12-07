@@ -2,6 +2,7 @@ package io.scal.ambi.ui.global.model
 
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
+import timber.log.Timber
 
 @Suppress("ClassName")
 class Paginator<in T>(
@@ -51,7 +52,10 @@ class Paginator<in T>(
         open fun refresh() {}
         open fun loadNewPage() {}
         open fun newData(data: List<T>) {}
-        open fun fail(error: Throwable) {}
+        open fun fail(error: Throwable) {
+            Timber.e(error, "paginator error on state: $currentState")
+        }
+
         fun release() {
             currentState = RELEASED()
             disposable?.dispose()
@@ -61,6 +65,8 @@ class Paginator<in T>(
     private inner class EMPTY : State<T>() {
 
         override fun refresh() {
+            super.refresh()
+
             currentState = EMPTY_PROGRESS()
             viewController.showEmptyProgress(true)
             loadPage(firstPage)
@@ -70,6 +76,8 @@ class Paginator<in T>(
     private inner class EMPTY_PROGRESS : State<T>() {
 
         override fun newData(data: List<T>) {
+            super.newData(data)
+
             if (data.isNotEmpty()) {
                 currentState = DATA()
                 currentData.clear()
@@ -85,6 +93,8 @@ class Paginator<in T>(
         }
 
         override fun fail(error: Throwable) {
+            super.fail(error)
+
             currentState = EMPTY_ERROR()
             viewController.showEmptyProgress(false)
             viewController.showEmptyError(true, error)
@@ -94,6 +104,8 @@ class Paginator<in T>(
     private inner class EMPTY_ERROR : State<T>() {
 
         override fun refresh() {
+            super.refresh()
+
             currentState = EMPTY_PROGRESS()
             viewController.showEmptyError(false)
             viewController.showEmptyProgress(true)
@@ -104,6 +116,8 @@ class Paginator<in T>(
     private inner class EMPTY_DATA : State<T>() {
 
         override fun refresh() {
+            super.refresh()
+
             currentState = EMPTY_PROGRESS()
             viewController.showEmptyView(false)
             viewController.showEmptyProgress(true)
@@ -114,12 +128,16 @@ class Paginator<in T>(
     private inner class DATA : State<T>() {
 
         override fun refresh() {
+            super.refresh()
+
             currentState = REFRESH()
             viewController.showRefreshProgress(true)
             loadPage(firstPage)
         }
 
         override fun loadNewPage() {
+            super.loadNewPage()
+
             currentState = PAGE_PROGRESS()
             viewController.showPageProgress(true)
             loadPage(currentPage + 1)
@@ -129,6 +147,8 @@ class Paginator<in T>(
     private inner class REFRESH : State<T>() {
 
         override fun newData(data: List<T>) {
+            super.newData(data)
+
             if (data.isNotEmpty()) {
                 currentState = DATA()
                 currentData.clear()
@@ -146,6 +166,8 @@ class Paginator<in T>(
         }
 
         override fun fail(error: Throwable) {
+            super.fail(error)
+
             currentState = DATA()
             viewController.showRefreshProgress(false)
             viewController.showErrorMessage(error)
@@ -155,6 +177,8 @@ class Paginator<in T>(
     private inner class PAGE_PROGRESS : State<T>() {
 
         override fun newData(data: List<T>) {
+            super.newData(data)
+
             if (data.isNotEmpty()) {
                 currentState = DATA()
                 currentData.addAll(data)
@@ -168,6 +192,8 @@ class Paginator<in T>(
         }
 
         override fun refresh() {
+            super.refresh()
+
             currentState = REFRESH()
             viewController.showPageProgress(false)
             viewController.showRefreshProgress(true)
@@ -175,6 +201,8 @@ class Paginator<in T>(
         }
 
         override fun fail(error: Throwable) {
+            super.fail(error)
+
             currentState = DATA()
             viewController.showPageProgress(false)
             viewController.showErrorMessage(error)
@@ -184,6 +212,8 @@ class Paginator<in T>(
     private inner class ALL_DATA : State<T>() {
 
         override fun refresh() {
+            super.refresh()
+
             currentState = REFRESH()
             viewController.showRefreshProgress(true)
             loadPage(firstPage)

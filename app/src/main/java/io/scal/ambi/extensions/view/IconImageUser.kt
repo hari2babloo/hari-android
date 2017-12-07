@@ -1,7 +1,7 @@
 package io.scal.ambi.extensions.view
 
 import io.scal.ambi.R
-import io.scal.ambi.extensions.binding.toFrescoImagePath
+import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 
 class IconImageUser(iconPath: String) : IconImage(iconPath, R.drawable.ic_profile) {
 

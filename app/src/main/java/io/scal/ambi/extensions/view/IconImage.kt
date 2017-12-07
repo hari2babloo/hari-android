@@ -1,6 +1,6 @@
 package io.scal.ambi.extensions.view
 
-import io.scal.ambi.extensions.binding.toFrescoImagePath
+import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 
 open class IconImage(val iconPath: String, val placeHolderIconPath: String? = null) {
 
