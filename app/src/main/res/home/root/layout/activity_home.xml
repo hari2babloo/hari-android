@@ -10,7 +10,7 @@
 
         <variable
             name="toolbarType"
-            type="android.databinding.ObservableField&lt;io.scal.ambi.ui.global.view.ToolbarType&gt;"/>
+            type="android.databinding.ObservableField&lt;io.scal.ambi.extensions.view.ToolbarType&gt;"/>
 
         <variable
             name="viewModel"
@@ -27,9 +27,25 @@
             android:layout_height="wrap_content"
             app:theme="@style/AppBarLayout">
 
-            <include
-                layout="@layout/toolbar"
-                bind:toolbarType="@{toolbarType}"/>
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/base_toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:contentScrim="@color/white"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+                <include
+                    layout="@layout/toolbar"
+                    bind:toolbarType="@{toolbarType}"/>
+
+                <include
+                    android:id="@+id/bottomBar"
+                    layout="@layout/item_bottom_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/bottom_bar_height"
+                    android:layout_marginTop="?attr/actionBarSize"/>
+
+            </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -38,10 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <include
-            android:id="@+id/bottomBar"
-            layout="@layout/item_bottom_bar"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

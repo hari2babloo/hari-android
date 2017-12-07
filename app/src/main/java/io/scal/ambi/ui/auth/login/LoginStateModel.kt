@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.auth.login
 
-import io.scal.ambi.extensions.binding.ObservableString
+import io.scal.ambi.extensions.binding.observable.ObservableString
 
 sealed class LoginStateModel {
 
@@ -11,16 +11,16 @@ sealed class LoginStateModel {
 
     open val progress = false
 
-    open class DataInputStateModel(userName: String?, password: String?) : LoginStateModel() {
+    internal open class DataInputStateModel(userName: String?, password: String?) : LoginStateModel() {
         override val userName = ObservableString(userName)
         override val password = ObservableString(password)
     }
 
-    class DataInputErrorStateModel(override val errorMessage: String,
-                                   userName: String?,
-                                   password: String?) : DataInputStateModel(userName, password)
+    internal class DataInputErrorStateModel(override val errorMessage: String,
+                                            userName: String?,
+                                            password: String?) : DataInputStateModel(userName, password)
 
-    object ProgressStateModel : LoginStateModel() {
+    internal object ProgressStateModel : LoginStateModel() {
         override val progress = true
     }
 }

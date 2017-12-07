@@ -11,7 +11,7 @@ import io.scal.ambi.model.interactor.launcher.LauncherInteractor
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
 
 @Module
-abstract class LauncherModule {
+internal abstract class LauncherModule {
 
     @Binds
     abstract fun bindActivity(activity: RecoveryActivity): Activity

@@ -3,4 +3,10 @@
 
     <string name="news_feed_college_update">college updates</string>
 
+    <string name="news_feed_status_update">status update</string>
+    <string name="news_feed_status_update_description">share something interesting…</string>
+
+    <string name="news_feed_announcements">announcements</string>
+    <string name="news_feed_polls">polls</string>
+
 </resources>

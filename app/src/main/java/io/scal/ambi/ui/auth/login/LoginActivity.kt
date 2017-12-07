@@ -12,7 +12,7 @@ import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
-import io.scal.ambi.ui.global.base.BaseActivity
+import io.scal.ambi.ui.global.base.activity.BaseActivity
 import io.scal.ambi.ui.home.root.HomeActivity
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.android.SupportAppNavigator

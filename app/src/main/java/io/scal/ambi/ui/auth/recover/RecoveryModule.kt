@@ -10,7 +10,7 @@ import io.scal.ambi.model.interactor.auth.recover.IRecoveryInteractor
 import io.scal.ambi.model.interactor.auth.recover.RecoveryInteractor
 
 @Module
-abstract class RecoveryModule {
+internal abstract class RecoveryModule {
 
     @Binds
     abstract fun bindActivity(activity: RecoveryActivity): Activity

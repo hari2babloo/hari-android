@@ -1,16 +1,16 @@
-package io.scal.ambi.ui.global.base
+package io.scal.ambi.ui.global.base.activity
 
 import android.databinding.ObservableField
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import com.android.databinding.library.baseAdapters.BR
 import io.scal.ambi.R
-import io.scal.ambi.ui.global.view.ToolbarType
+import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
+import io.scal.ambi.extensions.view.ToolbarType
 
 abstract class BaseToolbarActivity<IViewModel : BaseViewModel, Binding : ViewDataBinding> : BaseActivity<IViewModel, Binding>() {
 
-    open val toolbarTypeInitial: ToolbarType? = null
-    private val toolbarType: ObservableField<ToolbarType> by lazy { ObservableField<ToolbarType>(toolbarTypeInitial) }
+    private val toolbarType: ObservableField<ToolbarType> by lazy { ObservableField<ToolbarType>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +19,13 @@ abstract class BaseToolbarActivity<IViewModel : BaseViewModel, Binding : ViewDat
         setSupportActionBar(binding.root.findViewById(R.id.tb))
     }
 
-    fun updateToolbarType(newToolbarType: ToolbarType?) {
+    fun compareAndSetToolbarType(oldToolbarType: ToolbarType?, newToolbarType: ToolbarType?) {
+        if (oldToolbarType == toolbarType.get()) {
+            toolbarType.set(newToolbarType)
+        }
+    }
+
+    fun setToolbarType(newToolbarType: ToolbarType?) {
         toolbarType.set(newToolbarType)
     }
 }

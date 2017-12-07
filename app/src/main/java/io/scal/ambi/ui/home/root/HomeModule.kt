@@ -9,7 +9,7 @@ import io.scal.ambi.di.ViewModelKey
 
 
 @Module
-abstract class HomeModule {
+internal abstract class HomeModule {
 
     @Binds
     abstract fun bindActivity(activity: HomeActivity): Activity

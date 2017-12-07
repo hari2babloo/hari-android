@@ -9,7 +9,7 @@
 
         <variable
             name="toolbarType"
-            type="io.scal.ambi.ui.global.view.ToolbarType"/>
+            type="io.scal.ambi.extensions.view.ToolbarType"/>
 
     </data>
 
@@ -31,12 +31,13 @@
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:gravity="center_vertical"
-                android:scaleType="centerInside"
-                bind:srcVector="@{toolbarType.leftIcon}"
+                android:minWidth="24dp"
+                app:actualImageScaleType="centerInside"
+                bind:iconImage="@{toolbarType.leftIcon}"
                 bind:visibility="@{null != toolbarType.leftIcon}"
                 tools:ignore="ContentDescription"/>
 
@@ -48,12 +49,13 @@
                 android:layout_weight="1"
                 app:toolbarContent="@{toolbarType.content}"/>
 
-            <ImageView
+            <io.scal.ambi.ui.global.view.WrapContentDraweeView
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:gravity="center_vertical"
-                android:scaleType="centerInside"
-                bind:srcVector="@{toolbarType.rightIcon}"
+                android:minWidth="24dp"
+                app:actualImageScaleType="centerInside"
+                bind:iconImage="@{toolbarType.rightIcon}"
                 bind:visibility="@{null != toolbarType.rightIcon}"
                 tools:ignore="ContentDescription"/>
 

@@ -1,6 +1,7 @@
-package io.scal.ambi.ui.global.base
+package io.scal.ambi.ui.global.base.fragment
 
 import android.databinding.ViewDataBinding
+import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Inject
 import javax.inject.Named

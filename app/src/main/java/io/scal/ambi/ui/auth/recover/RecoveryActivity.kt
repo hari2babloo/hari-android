@@ -10,7 +10,7 @@ import io.scal.ambi.databinding.ActivityRecoveryBinding
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.ui.global.AlertDialogShower
-import io.scal.ambi.ui.global.base.BaseActivity
+import io.scal.ambi.ui.global.base.activity.BaseActivity
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 import kotlin.reflect.KClass

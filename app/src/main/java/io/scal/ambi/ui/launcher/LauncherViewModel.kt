@@ -5,12 +5,12 @@ import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.model.interactor.launcher.ILauncherInteractor
 import io.scal.ambi.model.interactor.launcher.LauncherState
 import io.scal.ambi.navigation.NavigateTo
-import io.scal.ambi.ui.global.base.BaseViewModel
+import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class LauncherViewModel @Inject constructor(private val router: Router,
-                                            launcherInteractor: ILauncherInteractor) : BaseViewModel() {
+class LauncherViewModel @Inject constructor(router: Router,
+                                            launcherInteractor: ILauncherInteractor) : BaseViewModel(router) {
     init {
         launcherInteractor
             .getUserNavigation()

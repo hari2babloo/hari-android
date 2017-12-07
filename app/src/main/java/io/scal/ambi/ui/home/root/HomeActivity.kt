@@ -1,15 +1,23 @@
 package io.scal.ambi.ui.home.root
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityHomeBinding
-import io.scal.ambi.ui.global.base.BaseToolbarActivity
+import io.scal.ambi.extensions.view.IconImage
+import io.scal.ambi.extensions.view.IconImageUser
+import io.scal.ambi.extensions.view.ToolbarType
+import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.auth.login.LoginActivity
+import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
+import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
 import io.scal.ambi.ui.global.base.LocalNavigationHolder
+import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
-import io.scal.ambi.ui.global.view.ToolbarType
 import io.scal.ambi.ui.home.newsfeed.NewsFeedFragment
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
@@ -24,55 +32,65 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>(), 
 
     @Inject
     internal lateinit var searchViewModel: HomeSearchViewModel
-    override val toolbarTypeInitial
-        by lazy { ToolbarType(R.drawable.ic_ambi_logo_small, SearchToolbarContent(searchViewModel), R.drawable.ic_profile) }
+    private val authProfileCheckerViewModel: AuthProfileCheckerViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory).get(AuthProfileCheckerViewModel::class.java)
+    }
 
-    private val bottomTabs: Map<Int, KClass<out Fragment>> =
-        hashMapOf(
-            Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
-            Pair(R.id.tab_calendar, Fragment::class),
-            Pair(R.id.tab_chat, Fragment::class),
-            Pair(R.id.tab_notifications, Fragment::class),
-            Pair(R.id.tab_more, Fragment::class)
-        )
+    private var defaultToolbarType: ToolbarType? = null
+    private lateinit var bottomBarFragmentSwitcher: BottomBarFragmentSwitcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.bottomBar.bottomBar.setOnTabSelectListener { tabId -> showTab(tabId) }
+        initToolbar()
+        initNavigation()
+    }
+
+    private fun initToolbar() {
+        defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_ambi_logo_small), SearchToolbarContent(searchViewModel), IconImageUser())
+        setToolbarType(defaultToolbarType)
+
+        authProfileCheckerViewModel
+            .userProfile
+            .subscribe {
+                val newToolbarType = defaultToolbarType?.copy(rightIcon = it.avatarIconImage)
+                compareAndSetToolbarType(defaultToolbarType, newToolbarType)
+                defaultToolbarType = newToolbarType
+            }
+            .addTo(destroyDisposables)
+    }
+
+    private fun initNavigation() {
+        bottomBarFragmentSwitcher = BottomBarFragmentSwitcher(
+            supportFragmentManager,
+            binding.bottomBar.bottomBar,
+            hashMapOf(
+                Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
+                Pair(R.id.tab_calendar, Fragment::class),
+                Pair(R.id.tab_chat, Fragment::class),
+                Pair(R.id.tab_notifications, Fragment::class),
+                Pair(R.id.tab_more, Fragment::class)
+            ))
     }
 
     override fun getNavigationHolder(tag: String): NavigatorHolder =
-        searchViewModel.getNavigationHolder(tag)
+        viewModel.getNavigationHolder(tag)
 
-    private fun showTab(tabId: Int) {
-        val transaction = supportFragmentManager.beginTransaction()
-        bottomTabs.keys
-            .filter { it != tabId }
-            .forEach { getTabFragment(it)?.run { transaction.detach(this) } }
-        var activeTab = getTabFragment(tabId)
-        if (null == activeTab) {
-            activeTab = bottomTabs[tabId]!!.java.newInstance()!!
-            transaction.add(R.id.container, activeTab, getTabFragmentTag(tabId))
-        } else {
-            transaction.attach(activeTab)
+    override fun onBackPressed() {
+        if (!bottomBarFragmentSwitcher.onBackPressed()) {
+            super.onBackPressed()
         }
-        transaction.commitAllowingStateLoss()
     }
-
-    private fun getTabFragmentTag(tabId: Int): String =
-        "tab_$tabId"
-
-    private fun getTabFragment(tabId: Int): Fragment? =
-        supportFragmentManager.findFragmentByTag(getTabFragmentTag(tabId))
 
     override val navigator: Navigator by lazy {
 
         object : SupportAppNavigator(this, R.id.container) {
 
-            override fun createActivityIntent(screenKey: String, data: Any?): Intent? {
-                return null
-            }
+            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
+                when (screenKey) {
+                    NavigateTo.LOGIN -> LoginActivity.createScreen(this@HomeActivity)
+                    else             -> null
+                }
 
             override fun createFragment(screenKey: String, data: Any?): Fragment? {
                 return null

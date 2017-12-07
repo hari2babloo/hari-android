@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.auth.login.LoginModule
+import io.scal.ambi.ui.auth.profile.AuthProfileModule
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
 import io.scal.ambi.ui.auth.recover.RecoveryModule
 import io.scal.ambi.ui.home.root.HomeActivity
@@ -23,6 +24,6 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [RecoveryModule::class])
     abstract fun bindRecoveryActivity(): RecoveryActivity
 
-    @ContributesAndroidInjector(modules = [HomeModule::class])
+    @ContributesAndroidInjector(modules = [HomeModule::class, AuthProfileModule::class])
     abstract fun bindHomeActivity(): HomeActivity
 }

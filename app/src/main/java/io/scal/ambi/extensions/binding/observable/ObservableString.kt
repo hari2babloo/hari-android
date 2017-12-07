@@ -1,4 +1,4 @@
-package io.scal.ambi.extensions.binding
+package io.scal.ambi.extensions.binding.observable
 
 import android.databinding.ObservableField
 

@@ -10,7 +10,7 @@ import io.scal.ambi.model.interactor.auth.login.ILoginInteractor
 import io.scal.ambi.model.interactor.auth.login.LoginInteractor
 
 @Module
-abstract class LoginModule {
+internal abstract class LoginModule {
 
     @Binds
     abstract fun bindActivity(activity: LoginActivity): Activity

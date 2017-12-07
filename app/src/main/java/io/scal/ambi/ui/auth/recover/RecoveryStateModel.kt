@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.auth.recover
 
-import io.scal.ambi.extensions.binding.ObservableString
+import io.scal.ambi.extensions.binding.observable.ObservableString
 
 sealed class RecoveryStateModel {
 
@@ -10,17 +10,17 @@ sealed class RecoveryStateModel {
 
     open val progress = false
 
-    open class DataInputStateModel(email: String?) : RecoveryStateModel() {
+    internal open class DataInputStateModel(email: String?) : RecoveryStateModel() {
         override val email = ObservableString(email)
     }
 
-    class DataInputErrorStateModel(override val errorMessage: String,
-                                   email: String?) : DataInputStateModel(email)
+    internal class DataInputErrorStateModel(override val errorMessage: String,
+                                            email: String?) : DataInputStateModel(email)
 
-    object ProgressStateModel : RecoveryStateModel() {
+    internal object ProgressStateModel : RecoveryStateModel() {
 
         override val progress = true
     }
 
-    class Success(val emailData: String) : RecoveryStateModel()
+    internal class Success(val emailData: String) : RecoveryStateModel()
 }

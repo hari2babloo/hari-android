@@ -8,18 +8,23 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
+import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
+import io.scal.ambi.model.interactor.home.newsfeed.NewsFeedInteractor
 import io.scal.ambi.ui.global.base.LocalNavigationHolder
 import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Named
 
 
 @Module
-abstract class NewsFeedModule {
+internal abstract class NewsFeedModule {
 
     @Binds
     @IntoMap
     @ViewModelKey(NewsFeedViewModel::class)
     abstract fun bindViewModel(viewModel: NewsFeedViewModel): ViewModel
+
+    @Binds
+    abstract fun bindInteractor(interactor: NewsFeedInteractor): INewsFeedInteractor
 
     @Module
     companion object {

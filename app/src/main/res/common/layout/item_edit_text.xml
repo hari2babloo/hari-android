@@ -19,7 +19,7 @@
 
         <variable
             name="textField"
-            type="io.scal.ambi.extensions.binding.ObservableString"/>
+            type="io.scal.ambi.extensions.binding.observable.ObservableString"/>
 
     </data>
 
