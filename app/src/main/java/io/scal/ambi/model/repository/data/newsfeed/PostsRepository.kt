@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPostsRepository {
 
-    override fun loadPostsGeneral(lastPostTime: Long): Single<List<NewsFeedItem>> {
+    override fun loadPostsGeneral(lastPostTime: Long?): Single<List<NewsFeedItem>> {
         return postsApi.getPostsGeneral(lastPostTime)
             .map { it.parse() }
     }

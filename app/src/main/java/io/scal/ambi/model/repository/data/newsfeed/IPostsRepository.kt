@@ -5,5 +5,5 @@ import io.scal.ambi.entity.feed.NewsFeedItem
 
 interface IPostsRepository {
 
-    fun loadPostsGeneral(lastPostTime: Long): Single<List<NewsFeedItem>>
+    fun loadPostsGeneral(lastPostTime: Long?): Single<List<NewsFeedItem>>
 }

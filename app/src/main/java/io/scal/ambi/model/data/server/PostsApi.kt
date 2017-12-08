@@ -8,5 +8,5 @@ import retrofit2.http.Query
 interface PostsApi {
 
     @GET("posts/general")
-    fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long): Single<PostsResponse>
+    fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 }

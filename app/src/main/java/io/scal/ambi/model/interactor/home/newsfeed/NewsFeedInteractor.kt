@@ -13,7 +13,7 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
                                              private val localUserDataRepository: ILocalUserDataRepository) : INewsFeedInteractor {
 
     override fun loadNewsFeedPage(page: Int, dateTime: LocalDateTime?): Single<List<NewsFeedItem>> {
-        return postsRepository.loadPostsGeneral(Long.MAX_VALUE)
+        return postsRepository.loadPostsGeneral(null)
     }
 
     override fun loadCurrentUser(): Observable<User> =
