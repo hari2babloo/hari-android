@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="iconClickListener"
+            type="android.view.View.OnClickListener"/>
+
+        <variable
+            name="iconImage"
+            type="io.scal.ambi.extensions.view.IconImage"/>
+
+        <variable
+            name="actor"
+            type="String"/>
+
+        <variable
+            name="dateTime"
+            type="org.joda.time.LocalDateTime"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_icon"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:onClick="@{iconClickListener}"
+            app:actualImageScaleType="centerInside"
+            app:iconImage="@{iconImage}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundAsCircle="true"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <TextView
+                android:id="@+id/tv_actor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="0sp"
+                android:singleLine="true"
+                android:text="@{actor}"
+                android:textColor="@color/dark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="4sp"
+                android:singleLine="true"
+                android:textColor="@color/news_feed_data"
+                android:textSize="12sp"
+                app:datePassed="@{dateTime}"
+                />
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

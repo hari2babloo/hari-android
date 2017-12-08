@@ -14,10 +14,10 @@ object TextViewDataBinder {
 
     private val fontNameTypefaceCache: MutableMap<String, Typeface> = HashMap()
     private val fontNameWithResource = mapOf(
-        Pair("nicolasRegular", R.font.nicolas_desle_pantra_regular),
-        Pair("nicolasBold", R.font.nicolas_desle_pantra_bold),
-        Pair("nicolasLight", R.font.nicolas_desle_pantra_light),
-        Pair("nicolasMedium", R.font.nicolas_desle_pantra_medium)
+        Pair("pantraRegular", R.font.nicolas_desle_pantra_regular),
+        Pair("pantraBold", R.font.nicolas_desle_pantra_bold),
+        Pair("pantraLight", R.font.nicolas_desle_pantra_light),
+        Pair("pantraMedium", R.font.nicolas_desle_pantra_medium)
     )
 
     @JvmStatic

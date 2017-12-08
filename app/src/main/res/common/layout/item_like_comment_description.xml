@@ -25,14 +25,14 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="6dp"
-        android:paddingTop="6dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
         app:visibility="@{comments.comments.size != 0 || likes.allUsersLiked.size != 0}">
 
         <ImageView
             android:id="@+id/iv_current_user"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
             android:layout_marginBottom="1dp"
             android:text="@{String.valueOf(comments.comments.size)}"
             android:textColor="@color/blue"
-            android:textSize="12sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,8 +56,8 @@
 
         <ImageView
             android:id="@+id/iv_comments"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_marginEnd="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_comments"

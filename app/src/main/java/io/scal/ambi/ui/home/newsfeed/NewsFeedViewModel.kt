@@ -160,6 +160,10 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         router.navigateTo(NavigateTo.CREATE_POLL)
     }
 
+    fun openAuthorOf(element: Any) {
+        val modelElement = element as ModelFeedElement
+    }
+
     fun refresh() {
         paginator.refresh()
     }

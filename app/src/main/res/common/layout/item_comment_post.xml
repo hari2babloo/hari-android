@@ -26,8 +26,8 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_icon"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
             app:actualImageScaleType="centerInside"
             app:iconImage="@{currentUser.avatar}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +40,7 @@
             layout="@layout/item_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="10dp"
             app:hint="@{@string/comment_hint_post}"
             app:imeOption="@{EditorInfo.IME_ACTION_DONE}"
             app:inputType="@{InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_NORMAL}"

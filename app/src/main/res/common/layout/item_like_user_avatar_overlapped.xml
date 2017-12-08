@@ -13,8 +13,8 @@
     </data>
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_marginStart="-4dp"
         app:actualImageScaleType="centerInside"
         app:iconImage="@{user.avatar}"

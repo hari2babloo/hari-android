@@ -18,8 +18,8 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_icon"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             app:actualImageScaleType="centerInside"
             app:iconImage="@{comment.user.avatar}"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,29 +31,16 @@
             android:id="@+id/tv_actor"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="7dp"
             android:ellipsize="end"
+            android:lineSpacingExtra="4sp"
             android:singleLine="true"
             android:text="@{comment.user.name}"
             android:textColor="@color/dark"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/tv_date"
-            app:layout_constraintStart_toEndOf="@+id/iv_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="@color/news_feed_data"
-            android:textSize="12sp"
-            app:datePassed="@{comment.dateTime}"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
             app:layout_constraintTop_toTopOf="parent"
             />
 
@@ -61,14 +48,30 @@
             android:id="@+id/tv_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="1dp"
+            android:lineSpacingExtra="4sp"
             android:text="@{comment.message}"
             android:textColor="@color/dark"
-            android:textSize="14sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_icon"
-            app:layout_constraintTop_toBottomOf="@+id/tv_date"
+            app:layout_constraintTop_toBottomOf="@+id/tv_actor"
+            />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="6sp"
+            android:singleLine="true"
+            android:textColor="#bbbbbb"
+            android:textSize="12sp"
+            app:datePassed="@{comment.dateTime}"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toBottomOf="@+id/tv_message"
             />
 
     </android.support.constraint.ConstraintLayout>

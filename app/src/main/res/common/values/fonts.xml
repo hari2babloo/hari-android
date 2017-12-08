@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="font_pantra_regular">pantraRegular</string>
+    <string name="font_pantra_bold">pantraBold</string>
+    <string name="font_pantra_light">pantraLight</string>
+    <string name="font_pantra_medium">pantraMedium</string>
+
+</resources>

@@ -33,7 +33,7 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_height="26dp"
                 android:gravity="center_vertical"
                 android:minWidth="24dp"
                 app:actualImageScaleType="centerInside"
@@ -51,7 +51,7 @@
 
             <io.scal.ambi.ui.global.view.WrapContentDraweeView
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_height="26dp"
                 android:gravity="center_vertical"
                 android:minWidth="24dp"
                 app:actualImageScaleType="centerInside"

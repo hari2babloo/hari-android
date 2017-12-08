@@ -37,63 +37,32 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="@dimen/news_need_padding"/>
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/iv_icon"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_marginTop="11dp"
-            app:actualImageScaleType="centerInside"
-            app:iconImage="@{element.icon}"
-            app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
-            app:layout_constraintTop_toTopOf="parent"
-            app:roundAsCircle="true"
-            />
-
-        <LinearLayout
+        <include
+            android:id="@+id/c_header"
+            layout="@layout/item_news_feed_message_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
-            app:layout_constraintStart_toEndOf="@+id/iv_icon"
-            app:layout_constraintTop_toTopOf="@+id/iv_icon">
-
-            <TextView
-                android:id="@+id/tv_actor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@{element.actor}"
-                android:textColor="@color/dark"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="@color/news_feed_data"
-                android:textSize="12sp"
-                app:datePassed="@{element.dateTime}"
-                />
-
-        </LinearLayout>
+            android:layout_marginTop="11dp"
+            app:actor="@{element.actor}"
+            app:dateTime="@{element.dateTime}"
+            app:iconClickListener="@{(view) -> viewModel.openAuthorOf(element)}"
+            app:iconImage="@{element.icon}"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:text="@{element.message}"
             android:textColor="@color/dark"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
-            app:layout_constraintTop_toBottomOf="@+id/iv_icon"
+            app:layout_constraintTop_toBottomOf="@+id/c_header"
             app:visibility="@{!element.message.isEmpty()}"
             />
 
@@ -101,7 +70,7 @@
             android:id="@+id/v_space"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="14dp"
             android:background="#E9E9E9"
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
@@ -169,7 +138,7 @@
                 layout="@layout/item_comment_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 app:comment="@{element.comments.comments.size > 2 ? element.comments.comments.get(2) : null}"
                 />
 
@@ -178,7 +147,7 @@
                 layout="@layout/item_comment_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 app:comment="@{element.comments.comments.size > 1 ? element.comments.comments.get(1) : null}"
                 />
 
@@ -187,7 +156,7 @@
                 layout="@layout/item_comment_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 app:comment="@{element.comments.comments.size > 0 ? element.comments.comments.get(0) : null}"
                 />
 
@@ -195,8 +164,8 @@
                 layout="@layout/item_comment_post"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="12dp"
                 app:currentUser="@{viewModel.currentUser}"
                 />
 

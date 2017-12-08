@@ -49,6 +49,7 @@ object LikesCommentsBinder {
                 itemView.id = prevViewId
                 relativeLayout.addView(itemView)
             }
+        (0 until relativeLayout.childCount).map { relativeLayout.getChildAt(it) }.reversed().forEach { it.bringToFront() }
 
         val namesBinding = DataBindingUtil.inflate<ItemLikeUserNamesBinding>(inflater, R.layout.item_like_user_names, relativeLayout, false)
         namesBinding.text = generateNamesText(context, drawingUsers, currentUser)

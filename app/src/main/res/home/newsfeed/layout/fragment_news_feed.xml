@@ -37,7 +37,8 @@
                 android:paddingTop="6dp"
                 android:text="@string/news_feed_college_update"
                 android:textColor="#2C2D30"
-                android:textSize="17sp"/>
+                android:textSize="20sp"
+                app:customFontName="@{@string/font_pantra_bold}"/>
 
             <ImageView
                 android:layout_width="wrap_content"
