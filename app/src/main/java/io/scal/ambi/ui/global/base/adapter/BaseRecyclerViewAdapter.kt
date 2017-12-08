@@ -14,7 +14,7 @@ abstract class BaseRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewH
         return BindingViewHolder(binding)
     }
 
-    protected abstract fun onCreateBindingLayoutId(parent: ViewGroup?, viewType: Int): Int
+    protected abstract fun onCreateBindingLayoutId(parent: ViewGroup, viewType: Int): Int
 
     override open fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is BindingViewHolder<*>) {

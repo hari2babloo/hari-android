@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -47,7 +47,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:src="@{icon}"
-            bind:visibility="@{null != icon}"/>
+            app:visibility="@{null != icon}"/>
 
         <EditText
             android:id="@+id/et_data"
@@ -58,10 +58,10 @@
             android:background="@null"
             android:hint="@{hint}"
             android:imeOptions="@{imeOption ?? EditorInfo.IME_ACTION_NEXT}"
-            android:inputType="@{inputType ?? InputType.TYPE_TEXT_VARIATION_NORMAL}"
             android:singleLine="true"
             android:text="@={textField.data}"
             android:textSize="14sp"
+            app:inputType="@{inputType ?? -1}"
             tools:text="asfsdf"/>
 
     </RelativeLayout>

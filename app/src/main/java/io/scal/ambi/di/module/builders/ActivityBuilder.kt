@@ -7,6 +7,8 @@ import io.scal.ambi.ui.auth.login.LoginModule
 import io.scal.ambi.ui.auth.profile.AuthProfileModule
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
 import io.scal.ambi.ui.auth.recover.RecoveryModule
+import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
+import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionModule
 import io.scal.ambi.ui.home.root.HomeActivity
 import io.scal.ambi.ui.home.root.HomeModule
 import io.scal.ambi.ui.launcher.LauncherActivity
@@ -26,4 +28,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [HomeModule::class, AuthProfileModule::class])
     abstract fun bindHomeActivity(): HomeActivity
+
+    @ContributesAndroidInjector(modules = [AudienceSelectionModule::class])
+    abstract fun bindAudienceSelectionActivity(): AudienceSelectionActivity
 }

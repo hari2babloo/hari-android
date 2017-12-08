@@ -9,14 +9,17 @@ import io.scal.ambi.entity.User
 import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.actions.ElementComments
 import io.scal.ambi.entity.actions.ElementLikes
+import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElements
+import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.ui.global.model.Paginator
 import org.joda.time.LocalDateTime
@@ -32,6 +35,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     internal val dataState = ObservableField<NewsFeedDataState>()
 
     val currentUser = ObservableField<User>()
+    val selectedAudience = ObservableField<Audience>(Audience.COLLEGE_UPDATE)
 
     private val paginator = Paginator(
         { page -> loadNextPage(page) },
@@ -82,8 +86,8 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     )
 
     init {
-        refresh()
         loadCurrentUser()
+        observeAudienceChange()
     }
 
     private fun loadNextPage(page: Int): Single<List<ModelFeedElement>> =
@@ -98,7 +102,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
             .onErrorReturnItem(
                 listOf(
                     ModelFeedElement.Message("${page * 5 + 0}",
-                                             "mig35",
+                                             User("mig35"),
                                              IconImage(R.drawable.ic_profile),
                                              LocalDateTime.now(),
                                              "test message $page",
@@ -106,7 +110,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                              ElementComments(emptyList())
                     ),
                     ModelFeedElement.Message("${page * 5 + 1}",
-                                             "mig35",
+                                             User("mig35"),
                                              IconImage("https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-9/12140762_1159067420823544_4471328164031495581_n.jpg?oh=e9255c0340cca64e7f51bb114bc25f9c&oe=5AC9097D"),
                                              LocalDateTime(2017, 12, 7, 15, 20),
                                              "just an other message $page",
@@ -114,7 +118,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                              ElementComments(emptyList())
                     ),
                     ModelFeedElement.Message("${page * 5 + 2}",
-                                             "mig35",
+                                             currentUser.get() ?: User(),
                                              IconImage("https://cdn.pixabay.com/photo/2013/04/06/11/50/image-editing-101040_960_720.jpg"),
                                              LocalDateTime(2017, 12, 25, 15, 0),
                                              "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
@@ -122,7 +126,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                              ElementComments(emptyList())
                     ),
                     ModelFeedElement.Message("${page * 5 + 3}",
-                                             "mig35 2",
+                                             User("mig35 2"),
                                              IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
                                              LocalDateTime(2017, 10, 7, 15, 0),
                                              "",
@@ -130,7 +134,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                              ElementComments(listOf(Comment(User(), "just comment!!!", LocalDateTime.now())))
                     ),
                     ModelFeedElement.Message("${page * 5 + 4}",
-                                             "New Your Times",
+                                             User("New Your Times"),
                                              IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
                                              LocalDateTime(2017, 10, 1, 15, 0),
                                              "test message",
@@ -149,22 +153,30 @@ class NewsFeedViewModel @Inject constructor(router: Router,
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
 
     fun changeAudience() {
-
+        router.navigateTo(NavigateTo.CHANGE_AUDIENCE, selectedAudience.get())
     }
 
     fun createAnnouncement() {
-        router.navigateTo(NavigateTo.CREATE_ANNOUNCEMENT)
+//        router.navigateTo(NavigateTo.CREATE_ANNOUNCEMENT)
     }
 
     fun createPoll() {
-        router.navigateTo(NavigateTo.CREATE_POLL)
+//        router.navigateTo(NavigateTo.CREATE_POLL)
     }
 
-    fun openAuthorOf(element: ModelFeedElement) {}
+    fun openAuthorOf(element: ModelFeedElement) {
+        if (element is ModelFeedElement.Message) {
+//            router.navigateTo(NavigateTo.PROFILE_DETAILS, element.author)
+        }
+    }
 
-    fun changeUserLikeOf(element: ModelFeedElement) {}
+    fun changeUserLikeOf(element: ModelFeedElement) {
+        // todo
+    }
 
-    fun openCommentsOf(element: ModelFeedElement) {}
+    fun openCommentsOf(element: ModelFeedElement) {
+//        router.navigateTo(NavigateTo.ALL_COMMENTS_OF, element)
+    }
 
     fun refresh() {
         paginator.refresh()
@@ -177,8 +189,23 @@ class NewsFeedViewModel @Inject constructor(router: Router,
             .addTo(disposables)
     }
 
+    private fun observeAudienceChange() {
+        router.setResultListener(ResultCodes.AUDIENCE_SELECTION, {
+            if (it is Audience) {
+                selectedAudience.set(it)
+            }
+        })
+
+        selectedAudience
+            .toObservable()
+            .distinctUntilChanged()
+            .subscribe { refresh() }
+            .addTo(disposables)
+    }
+
     override fun onCleared() {
         paginator.release()
+        router.removeResultListener(ResultCodes.AUDIENCE_SELECTION)
 
         super.onCleared()
     }

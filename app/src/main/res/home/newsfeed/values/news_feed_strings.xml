@@ -2,11 +2,20 @@
 <resources>
 
     <string name="news_feed_college_update">college updates</string>
+    <string name="news_feed_students">students</string>
+    <string name="news_feed_faculty">faculty</string>
+    <string name="news_feed_staff">staff</string>
+    <string name="news_feed_groups">groups</string>
+    <string name="news_feed_classes">classes</string>
+    <string name="news_feed_communities">communities</string>
+    <string name="news_feed_news">news</string>
 
     <string name="news_feed_status_update">status update</string>
     <string name="news_feed_status_update_description">share something interesting…</string>
 
     <string name="news_feed_announcements">announcements</string>
     <string name="news_feed_polls">polls</string>
+
+    <string name="title_audience_selection">audience</string>
 
 </resources>

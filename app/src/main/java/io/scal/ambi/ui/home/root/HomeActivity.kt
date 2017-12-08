@@ -15,17 +15,15 @@ import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
-import io.scal.ambi.ui.global.base.LocalNavigationHolder
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
 import io.scal.ambi.ui.home.newsfeed.NewsFeedFragment
 import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.SupportAppNavigator
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
-class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>(), LocalNavigationHolder {
+class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
 
     override val layoutId: Int = R.layout.activity_home
     override val viewModelClass: KClass<HomeViewModel> = HomeViewModel::class
@@ -72,9 +70,6 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>(), 
                 Pair(R.id.tab_more, Fragment::class)
             ))
     }
-
-    override fun getNavigationHolder(tag: String): NavigatorHolder =
-        viewModel.getNavigationHolder(tag)
 
     override fun onBackPressed() {
         if (!bottomBarFragmentSwitcher.onBackPressed()) {

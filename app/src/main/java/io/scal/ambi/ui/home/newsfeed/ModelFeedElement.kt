@@ -1,5 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed
 
+import io.scal.ambi.entity.User
 import io.scal.ambi.entity.actions.ElementComments
 import io.scal.ambi.entity.actions.ElementLikes
 import io.scal.ambi.extensions.view.IconImage
@@ -11,12 +12,12 @@ sealed class ModelFeedElement(val uid: String,
                               val dateTime: LocalDateTime) {
 
     class Message(uid: String,
-                  actor: String,
+                  val author: User,
                   icon: IconImage,
                   dateTime: LocalDateTime,
                   val message: String,
                   val likes: ElementLikes,
-                  val comments: ElementComments) : ModelFeedElement(uid, actor, icon, dateTime)
+                  val comments: ElementComments) : ModelFeedElement(uid, author.name, icon, dateTime)
 
     class Link(uid: String,
                actor: String,

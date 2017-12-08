@@ -3,6 +3,7 @@ package io.scal.ambi.extensions.binding.models
 import android.databinding.BindingAdapter
 import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
+import android.widget.EditText
 import android.widget.TextView
 import io.scal.ambi.R
 import org.joda.time.LocalDateTime
@@ -61,6 +62,22 @@ object TextViewDataBinder {
                 else                                -> FULL_DATE_TIME_FORMATTER.print(dateTime)
             }
             textView.text = resultText
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("inputType")
+    fun bindInputType(editText: EditText, inputType: Int?) {
+        if (null == inputType || -1 == inputType) {
+            editText.isFocusable = false
+            editText.isFocusableInTouchMode = false
+            editText.isCursorVisible = false
+        } else {
+            editText.inputType = inputType
+
+            editText.isFocusable = true
+            editText.isFocusableInTouchMode = true
+            editText.isCursorVisible = true
         }
     }
 }

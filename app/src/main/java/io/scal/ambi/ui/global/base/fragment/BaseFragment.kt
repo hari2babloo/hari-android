@@ -21,14 +21,16 @@ import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Inject
+import javax.inject.Named
 import kotlin.reflect.KClass
 
 abstract class BaseFragment<IViewModel : BaseViewModel, Binding : ViewDataBinding> : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    @field:Named("localNavigationHolder")
     @Inject
-    internal open lateinit var navigationHolder: NavigatorHolder
+    internal lateinit var navigationHolder: NavigatorHolder
 
     @Inject
     internal lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
@@ -68,11 +70,15 @@ abstract class BaseFragment<IViewModel : BaseViewModel, Binding : ViewDataBindin
     override fun onResume() {
         super.onResume()
 
-        navigationHolder.setNavigator(navigator)
+        if (null != navigator) {
+            navigationHolder.setNavigator(navigator)
+        }
     }
 
     override fun onPause() {
-        navigationHolder.removeNavigator()
+        if (null != navigator) {
+            navigationHolder.removeNavigator()
+        }
 
         super.onPause()
     }

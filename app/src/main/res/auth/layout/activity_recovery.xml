@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 app:hint="@{@string/auth_hint_email}"
                 app:icon="@{@drawable/ic_email}"
-                app:inputType="@{InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS}"
+                app:inputType="@{InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_75"
                 app:layout_constraintStart_toEndOf="@+id/guideline_25"

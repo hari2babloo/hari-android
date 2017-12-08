@@ -11,7 +11,6 @@ import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.ui.global.AlertDialogShower
 import io.scal.ambi.ui.global.base.activity.BaseActivity
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
@@ -22,8 +21,6 @@ class RecoveryActivity : BaseActivity<RecoveryViewModel, ActivityRecoveryBinding
 
     @Inject
     lateinit var alertDialogShower: AlertDialogShower
-    @Inject
-    lateinit var router: Router
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +41,7 @@ class RecoveryActivity : BaseActivity<RecoveryViewModel, ActivityRecoveryBinding
                 alertDialogShower.showMessage(getString(R.string.auth_dialog_check_email),
                                               getString(R.string.auth_dialog_email_sent, it.emailData),
                                               getString(R.string.dialog_ok),
-                                              { router.exit() })
+                                              { onBackPressed() })
             }
             .addTo(destroyDisposables)
     }

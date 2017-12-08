@@ -1,6 +1,8 @@
 package io.scal.ambi.ui.home.newsfeed
 
+import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -8,8 +10,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.FragmentNewsFeedBinding
+import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.binding.toObservable
+import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
+import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
+import ru.terrakok.cicerone.Navigator
+import ru.terrakok.cicerone.android.SupportAppNavigator
 import kotlin.reflect.KClass
 
 class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsFeedBinding>() {
@@ -73,4 +80,17 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
             }
             .addTo(destroyFragmentDisposables)
     }
+
+    override val navigator: Navigator?
+        get() = object : SupportAppNavigator(activity, R.id.container) {
+            override fun createActivityIntent(screenKey: String?, data: Any?): Intent? =
+                when (screenKey) {
+                    NavigateTo.CHANGE_AUDIENCE -> AudienceSelectionActivity.createScreen(activity!!, data as? Audience)
+                    else                       -> null
+                }
+
+            override fun createFragment(screenKey: String?, data: Any?): Fragment? {
+                return null
+            }
+        }
 }

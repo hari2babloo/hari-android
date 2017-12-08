@@ -8,7 +8,9 @@ object NavigateTo {
 
     const val HOME = "HOME_MAIN"
 
+    const val CHANGE_AUDIENCE = "CHANGE_AUDIENCE"
     const val CREATE_ANNOUNCEMENT = "CREATE_ANNOUNCEMENT"
     const val CREATE_POLL = "CREATE_POLL"
 
+    const val PROFILE_DETAILS = "PROFILE_DETAILS"
 }

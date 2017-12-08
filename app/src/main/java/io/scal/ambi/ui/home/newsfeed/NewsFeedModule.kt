@@ -12,8 +12,8 @@ import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.model.interactor.home.newsfeed.NewsFeedInteractor
 import io.scal.ambi.ui.global.base.LocalNavigationHolder
 import ru.terrakok.cicerone.NavigatorHolder
+import ru.terrakok.cicerone.Router
 import javax.inject.Named
-
 
 @Module
 internal abstract class NewsFeedModule {
@@ -32,7 +32,7 @@ internal abstract class NewsFeedModule {
         @JvmStatic
         @Provides
         fun provideActivity(newsFeedFragment: NewsFeedFragment): Activity {
-            return newsFeedFragment.getActivity()!!
+            return newsFeedFragment.activity!!
         }
 
         @JvmStatic
@@ -62,6 +62,34 @@ internal abstract class NewsFeedModule {
                 throw IllegalArgumentException("No injector was found for ${fragment.javaClass.canonicalName}")
             }
             return localNavigationHolder.getNavigationHolder(fragment.tag!!)
+        }
+
+        @JvmStatic
+        @Provides
+        fun provideRouter(fragment: NewsFeedFragment): Router {
+            var localNavigationHolder: LocalNavigationHolder? = null
+
+            var parentFragment: Fragment? = fragment.parentFragment
+            while (null != parentFragment) {
+                if (parentFragment is LocalNavigationHolder) {
+                    localNavigationHolder = parentFragment
+                    break
+                }
+                parentFragment = parentFragment.parentFragment
+            }
+
+            if (null == localNavigationHolder && fragment.activity is LocalNavigationHolder) {
+                localNavigationHolder = fragment.activity as LocalNavigationHolder
+            }
+
+            if (null == localNavigationHolder && fragment.activity?.application is LocalNavigationHolder) {
+                localNavigationHolder = fragment.activity!!.application as LocalNavigationHolder
+            }
+
+            if (null == localNavigationHolder) {
+                throw IllegalArgumentException("No injector was found for ${fragment.javaClass.canonicalName}")
+            }
+            return localNavigationHolder.getRouter(fragment.tag!!)
         }
     }
 }

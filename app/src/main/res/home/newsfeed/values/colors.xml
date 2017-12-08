@@ -3,4 +3,6 @@
 
     <color name="news_feed_data">#61000000</color>
 
+    <color name="news_feed_audience_selected">#2C2D30</color>
+
 </resources>
