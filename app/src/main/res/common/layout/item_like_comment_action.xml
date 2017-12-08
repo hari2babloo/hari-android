@@ -19,6 +19,14 @@
             name="commentGravity"
             type="Integer"/>
 
+        <variable
+            name="likeClickListener"
+            type="android.view.View.OnClickListener"/>
+
+        <variable
+            name="commentClickListener"
+            type="android.view.View.OnClickListener"/>
+
     </data>
 
     <LinearLayout
@@ -33,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="@{likeGravity ?? Gravity.CENTER}"
+            android:onClick="@{likeClickListener}"
             android:orientation="horizontal">
 
             <ImageView
@@ -59,6 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="@{commentGravity ?? Gravity.CENTER}"
+            android:onClick="@{commentClickListener}"
             android:orientation="horizontal">
 
             <ImageView

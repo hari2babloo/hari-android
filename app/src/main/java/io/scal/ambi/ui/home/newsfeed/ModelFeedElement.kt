@@ -5,10 +5,10 @@ import io.scal.ambi.entity.actions.ElementLikes
 import io.scal.ambi.extensions.view.IconImage
 import org.joda.time.LocalDateTime
 
-internal sealed class ModelFeedElement(val uid: String,
-                                       val actor: String,
-                                       val icon: IconImage,
-                                       val dateTime: LocalDateTime) {
+sealed class ModelFeedElement(val uid: String,
+                              val actor: String,
+                              val icon: IconImage,
+                              val dateTime: LocalDateTime) {
 
     class Message(uid: String,
                   actor: String,
