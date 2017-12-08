@@ -9,7 +9,7 @@ class AuthInterceptor(private val localUserDataRepository: ILocalUserDataReposit
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder = chain.request()?.newBuilder()
         localUserDataRepository.getUserInfo()?.let {
-            builder?.addHeader("Authorization", "Bearer $it")
+            builder?.addHeader("Authorization", "Bearer ${it.token}")
         }
         return chain.proceed(builder!!.build())
     }

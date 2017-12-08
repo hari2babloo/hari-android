@@ -32,6 +32,7 @@ object LikesCommentsBinder {
         val inflater = LayoutInflater.from(context)
         var prevViewId = 0
         drawingUsers
+            .filter { it != currentUser }
             .forEach {
                 val binding: ViewDataBinding = DataBindingUtil.inflate(inflater, R.layout.item_like_user_avatar_overlapped, relativeLayout, false)
                 binding.setVariable(BR.user, it)

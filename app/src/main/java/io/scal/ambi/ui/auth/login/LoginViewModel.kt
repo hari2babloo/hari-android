@@ -16,15 +16,15 @@ class LoginViewModel @Inject constructor(private val context: Context,
                                          private val interactor: ILoginInteractor,
                                          private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 
-    val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel(null, null))
+    val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel("abhatnagar2@babson.edu", "password"))
 
     fun login() {
         val currentStateModel = stateModel.get()
         if (currentStateModel is LoginStateModel.DataInputStateModel) {
             stateModel.set(LoginStateModel.ProgressStateModel)
 
-            val userName = currentStateModel.userName.get()
-            interactor.login(userName, currentStateModel.password.get())
+            val email = currentStateModel.email.get()
+            interactor.login(email, currentStateModel.password.get())
                 .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                 .subscribe({ router.newRootScreen(NavigateTo.HOME) },
                            {
@@ -33,7 +33,7 @@ class LoginViewModel @Inject constructor(private val context: Context,
                                        is GoodMessageException -> it.goodMessage
                                        else                    -> context.getString(R.string.error_auth_wrong_user_name)
                                    }
-                               stateModel.set(LoginStateModel.DataInputErrorStateModel(message, userName, null))
+                               stateModel.set(LoginStateModel.DataInputErrorStateModel(message, email, null))
                            })
         }
     }

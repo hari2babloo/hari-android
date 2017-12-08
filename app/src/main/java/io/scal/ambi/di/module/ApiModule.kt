@@ -4,6 +4,8 @@ import dagger.Module
 import dagger.Provides
 import io.scal.ambi.BuildConfig
 import io.scal.ambi.model.data.server.AuthApi
+import io.scal.ambi.model.data.server.PostsApi
+import io.scal.ambi.model.data.server.StudentApi
 import io.scal.ambi.model.data.server.intercepters.AuthInterceptor
 import io.scal.ambi.model.data.server.intercepters.Http2FixInterceptor
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
@@ -61,4 +63,14 @@ class ApiModule {
     @Singleton
     internal fun provideAuthApi(@Named("mainServer") retrofit: Retrofit): AuthApi =
         retrofit.create(AuthApi::class.java)
+
+    @Provides
+    @Singleton
+    internal fun provideStudentApi(@Named("mainServer") retrofit: Retrofit): StudentApi =
+        retrofit.create(StudentApi::class.java)
+
+    @Provides
+    @Singleton
+    internal fun providePostsApi(@Named("mainServer") retrofit: Retrofit): PostsApi =
+        retrofit.create(PostsApi::class.java)
 }

@@ -2,16 +2,41 @@ package io.scal.ambi.model.interactor.auth.profile
 
 import io.reactivex.Observable
 import io.scal.ambi.entity.User
-import io.scal.ambi.extensions.view.IconImageUser
-import java.util.concurrent.TimeUnit
+import io.scal.ambi.model.data.server.ServerResponseException
+import io.scal.ambi.model.repository.auth.AuthResult
+import io.scal.ambi.model.repository.local.ILocalUserDataRepository
+import io.scal.ambi.model.repository.data.student.IStudentRepository
 import javax.inject.Inject
 
-class AuthProfileCheckerInteractor @Inject constructor() : IAuthProfileCheckerInteractor {
+class AuthProfileCheckerInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository,
+                                                       private val studentRepository: IStudentRepository) : IAuthProfileCheckerInteractor {
 
     override fun getUserProfile(): Observable<User> {
-        val first = Observable.just(User())
-        val second = Observable.just(User("0", IconImageUser("https://cdn.pixabay.com/photo/2015/03/01/14/39/thing-654750_960_720.png"))).delay(10,
-                                                                                                                                                TimeUnit.SECONDS)
-        return Observable.concat(first, second)
+        val cachedUserInfo = Observable
+            .fromCallable {
+                localUserDataRepository.getUserInfo()
+                    ?.user
+                    ?: throw IllegalStateException("no user found")
+            }
+
+        return Observable
+            .concat(cachedUserInfo,
+                    localUserDataRepository.observeUserInfo()
+                        .map { it.user }
+            )
+            .doOnSubscribe { localUserDataRepository.getUserInfo()?.run { doUserProfileUpdate(token) } }
+    }
+
+    private fun doUserProfileUpdate(token: String) {
+        studentRepository.getCurrentStudentProfile(token)
+            .flatMapCompletable { localUserDataRepository.saveUserInfo(AuthResult(token, it)) }
+            .subscribe(
+                { },
+                {
+                    if (it is ServerResponseException && it.requiresLogin) {
+                        localUserDataRepository.removeUserInfo()
+                    }
+                }
+            )
     }
 }

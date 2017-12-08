@@ -4,5 +4,5 @@ import io.reactivex.Completable
 
 interface ILoginInteractor {
 
-    fun login(userName: String, password: String): Completable
+    fun login(email: String, password: String): Completable
 }

@@ -8,7 +8,7 @@
     <string name="auth_link_sign_up"><u>sign up for ambi</u></string>
     <string name="auth_link_forgot_password"><u>forgot your password?</u></string>
 
-    <string name="error_auth_min_length">username should be more then %1$d and password then %2$d</string>
+    <string name="error_auth_min_length">password should be more then %1$d</string>
     <string name="error_auth_wrong_user_name">wrong username &amp; password</string>
 
     <string name="auth_recovery_title">forgot password</string>

@@ -57,11 +57,11 @@
                 android:layout_marginTop="70dp"
                 app:hint="@{@string/auth_hint_name}"
                 app:icon="@{@drawable/ic_user}"
-                app:inputType="@{InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_VARIATION_PERSON_NAME}"
+                app:inputType="@{InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS}"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_75"
                 app:layout_constraintStart_toEndOf="@+id/guideline_25"
                 app:layout_constraintTop_toBottomOf="@+id/iv_logo"
-                app:textField="@{viewModel.stateModel.userName}"/>
+                app:textField="@{viewModel.stateModel.email}"/>
 
             <include
                 android:id="@+id/et_password"

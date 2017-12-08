@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="min_user_name_length">6</integer>
     <integer name="min_password_length">6</integer>
 
 </resources>

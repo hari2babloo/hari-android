@@ -87,7 +87,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     }
 
     private fun loadNextPage(page: Int): Single<List<ModelFeedElement>> =
-        interactor.loadNewsFeedPage(page)
+        interactor.loadNewsFeedPage(page, (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.dateTime)
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {

@@ -1,14 +1,18 @@
 package io.scal.ambi.model.interactor.launcher
 
 import io.reactivex.Single
-import io.scal.ambi.entity.User
-import java.util.concurrent.TimeUnit
+import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import javax.inject.Inject
 
-class LauncherInteractor @Inject constructor() : ILauncherInteractor {
+class LauncherInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository) : ILauncherInteractor {
 
     override fun getUserNavigation(): Single<LauncherState> {
-        return Single.just<LauncherState>(LauncherState.LoggedIn(User()))
-            .delay(1, TimeUnit.SECONDS)
+        return Single.fromCallable {
+            localUserDataRepository.getUserInfo()
+                ?.let {
+                    LauncherState.LoggedIn(it.user)
+                }
+                ?: LauncherState.NotLoggedIn
+        }
     }
 }

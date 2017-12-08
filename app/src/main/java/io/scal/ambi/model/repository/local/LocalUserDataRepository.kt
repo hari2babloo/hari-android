@@ -1,16 +1,18 @@
 package io.scal.ambi.model.repository.local
 
 import android.content.Context
-import com.github.pwittchen.prefser.library.rx2.Prefser
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
+import io.scal.ambi.entity.User
+import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.repository.auth.AuthResult
 import javax.inject.Inject
 
-class LocalUserDataRepository @Inject constructor(context: Context) : ILocalUserDataRepository {
+class LocalUserDataRepository @Inject constructor(context: Context,
+                                                  private val rxSchedulersAbs: RxSchedulersAbs) : ILocalUserDataRepository {
 
-    private val prefs = Prefser(context.getSharedPreferences("localUserData", Context.MODE_PRIVATE))
+    private val prefs = StrongRefPrefser(context.getSharedPreferences("localUserData", Context.MODE_PRIVATE))
 
     override fun saveUserInfo(authResult: AuthResult): Completable =
         Completable.fromAction { prefs.put(USER_INFO, authResult) }
@@ -48,6 +50,6 @@ class LocalUserDataRepository @Inject constructor(context: Context) : ILocalUser
     companion object {
 
         private const val USER_INFO = "UserInfo"
-        private val DEFAULT_AUTH_RESULT = AuthResult("")
+        private val DEFAULT_AUTH_RESULT = AuthResult("", User())
     }
 }
