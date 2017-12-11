@@ -4,6 +4,8 @@
     <string name="dialog_ok">OK</string>
     <string name="hint_search">search</string>
 
+    <string name="text_retry">Retry</string>
+
     <string name="day_ago_just_now">Just now</string>
     <string name="day_ago_minutes_ago">%d minutes ago</string>
     <string name="day_ago_hours_ago">%d hours ago</string>

@@ -2,7 +2,6 @@ package io.scal.ambi.ui.home.newsfeed.list
 
 import android.databinding.ObservableField
 import android.os.SystemClock
-import android.support.v4.content.ContextCompat
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -27,6 +26,7 @@ import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.ui.global.model.Paginator
 import org.joda.time.LocalDateTime
 import ru.terrakok.cicerone.Router
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class NewsFeedViewModel @Inject constructor(router: Router,
@@ -91,7 +91,6 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     init {
         loadCurrentUser()
         observeAudienceChange()
-
     }
 
     private fun loadNextPage(page: Int): Single<List<ModelFeedElement>> {
@@ -202,6 +201,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                         )
                     }
                     .observeOn(rxSchedulersAbs.mainThreadScheduler))
+            .delay(15, TimeUnit.SECONDS)
     }
 
     fun changeAudience() {
@@ -232,6 +232,10 @@ class NewsFeedViewModel @Inject constructor(router: Router,
 
     fun refresh() {
         paginator.refresh()
+    }
+
+    fun loadNextPage() {
+        paginator.loadNewPage()
     }
 
     private fun loadCurrentUser() {

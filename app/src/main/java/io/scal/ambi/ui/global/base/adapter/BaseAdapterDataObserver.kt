@@ -4,10 +4,12 @@ import android.databinding.ObservableList
 import android.support.v7.widget.RecyclerView
 import java.lang.ref.WeakReference
 
-class BaseAdapterDataObserver<Item>(private val items: ObservableList<Item>,
-                                    adapter: RecyclerView.Adapter<*>) {
+open class BaseAdapterDataObserver<Item>(private val items: ObservableList<Item>,
+                                         adapter: RecyclerView.Adapter<*>) {
 
-    private val listener = BaseOnListChangedCallback(items, adapter)
+    private val listener = BaseOnListChangedCallback(items,
+                                                     adapter,
+                                                     this)
 
     init {
         items.addOnListChangedCallback(listener)
@@ -19,38 +21,63 @@ class BaseAdapterDataObserver<Item>(private val items: ObservableList<Item>,
         items.removeOnListChangedCallback(listener)
     }
 
+    open fun notifyDataSetChanged(adapter: RecyclerView.Adapter<*>) {
+        adapter.notifyDataSetChanged()
+    }
+
+    open fun notifyItemRangeChanged(adapter: RecyclerView.Adapter<*>, positionStart: Int, itemCount: Int) {
+        adapter.notifyItemRangeChanged(positionStart, itemCount)
+    }
+
+    open fun notifyItemRangeInserted(adapter: RecyclerView.Adapter<*>, toPosition: Int, itemCount: Int) {
+        adapter.notifyItemRangeInserted(toPosition, itemCount)
+    }
+
+    open fun notifyItemRangeRemoved(adapter: RecyclerView.Adapter<*>, fromPosition: Int, itemCount: Int) {
+        adapter.notifyItemRangeRemoved(fromPosition, itemCount)
+    }
+
     private class BaseOnListChangedCallback<Item> internal constructor(private val items: ObservableList<Item>,
-                                                                       adapter: RecyclerView.Adapter<*>) :
+                                                                       adapter: RecyclerView.Adapter<*>,
+                                                                       private val baseAdapterDataObserver: BaseAdapterDataObserver<Item>) :
         ObservableList.OnListChangedCallback<ObservableList<Item>>() {
 
         private val adapterWeakReference: WeakReference<RecyclerView.Adapter<*>> = WeakReference(adapter)
 
         override fun onChanged(sender: ObservableList<Item>) {
             val adapter = adapter
-            adapter?.notifyDataSetChanged()
+            adapter?.run {
+                baseAdapterDataObserver.notifyDataSetChanged(this)
+            }
         }
 
         override fun onItemRangeChanged(sender: ObservableList<Item>, positionStart: Int, itemCount: Int) {
             val adapter = adapter
-            adapter?.notifyItemRangeChanged(positionStart, itemCount)
+            adapter?.run {
+                baseAdapterDataObserver.notifyItemRangeChanged(this, positionStart, itemCount)
+            }
         }
 
         override fun onItemRangeInserted(sender: ObservableList<Item>, positionStart: Int, itemCount: Int) {
             val adapter = adapter
-            adapter?.notifyItemRangeInserted(positionStart, itemCount)
+            adapter?.run {
+                baseAdapterDataObserver.notifyItemRangeInserted(this, positionStart, itemCount)
+            }
         }
 
         override fun onItemRangeMoved(sender: ObservableList<Item>, fromPosition: Int, toPosition: Int, itemCount: Int) {
             val adapter = adapter
-            if (null != adapter) {
-                adapter.notifyItemRangeRemoved(fromPosition, itemCount)
-                adapter.notifyItemRangeInserted(toPosition, itemCount)
+            adapter?.run {
+                baseAdapterDataObserver.notifyItemRangeRemoved(this, fromPosition, itemCount)
+                baseAdapterDataObserver.notifyItemRangeInserted(this, toPosition, itemCount)
             }
         }
 
         override fun onItemRangeRemoved(sender: ObservableList<Item>, positionStart: Int, itemCount: Int) {
             val adapter = adapter
-            adapter?.notifyItemRangeRemoved(positionStart, itemCount)
+            adapter?.run {
+                baseAdapterDataObserver.notifyItemRangeRemoved(this, positionStart, itemCount)
+            }
         }
 
         private val adapter: RecyclerView.Adapter<*>?

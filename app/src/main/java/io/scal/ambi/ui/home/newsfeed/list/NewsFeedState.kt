@@ -15,19 +15,11 @@ internal sealed class NewsFeedProgressState {
 
 internal sealed class NewsFeedErrorState {
 
-    open val fatal: Boolean? = null
-
     object NoErrorState : NewsFeedErrorState()
 
-    class FatalErrorState(val error: Throwable) : NewsFeedErrorState() {
+    class FatalErrorState(val error: Throwable) : NewsFeedErrorState()
 
-        override val fatal: Boolean = true
-    }
-
-    class NonFatalErrorState(val error: Throwable) : NewsFeedErrorState() {
-
-        override val fatal: Boolean = false
-    }
+    class NonFatalErrorState(val error: Throwable) : NewsFeedErrorState()
 }
 
 internal sealed class NewsFeedDataState {
