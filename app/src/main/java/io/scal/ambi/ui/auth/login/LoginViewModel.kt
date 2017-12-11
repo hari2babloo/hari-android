@@ -21,13 +21,17 @@ class LoginViewModel @Inject constructor(private val context: Context,
     fun login() {
         val currentStateModel = stateModel.get()
         if (currentStateModel is LoginStateModel.DataInputStateModel) {
-            stateModel.set(LoginStateModel.ProgressStateModel)
-
             val email = currentStateModel.email.get()
-            interactor.login(email, currentStateModel.password.get())
+            val password = currentStateModel.password.get()
+
+            stateModel.set(LoginStateModel.ProgressStateModel(email, password))
+
+            interactor.login(email, password)
                 .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                 .subscribe({ router.newRootScreen(NavigateTo.HOME) },
                            {
+                               handleError(it)
+
                                val message =
                                    when (it) {
                                        is GoodMessageException -> it.goodMessage

@@ -28,6 +28,8 @@ class RecoveryViewModel @Inject constructor(private val context: Context,
                 .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                 .subscribe({ stateModel.set(RecoveryStateModel.Success(email)) },
                            {
+                               handleError(it)
+
                                val message =
                                    when (it) {
                                        is GoodMessageException -> it.goodMessage

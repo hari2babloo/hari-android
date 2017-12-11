@@ -11,7 +11,8 @@ sealed class LoginStateModel {
 
     open val progress = false
 
-    internal open class DataInputStateModel(email: String?, password: String?) : LoginStateModel() {
+    internal open class DataInputStateModel(email: String?,
+                                            password: String?) : LoginStateModel() {
         override val email = ObservableString(email)
         override val password = ObservableString(password)
     }
@@ -20,7 +21,12 @@ sealed class LoginStateModel {
                                             userName: String?,
                                             password: String?) : DataInputStateModel(userName, password)
 
-    internal object ProgressStateModel : LoginStateModel() {
+    internal class ProgressStateModel(email: String?,
+                                      password: String?) : LoginStateModel() {
+
+        override val email = ObservableString(email)
+        override val password = ObservableString(password)
+
         override val progress = true
     }
 }

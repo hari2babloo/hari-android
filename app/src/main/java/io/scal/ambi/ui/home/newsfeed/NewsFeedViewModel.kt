@@ -1,22 +1,23 @@
 package io.scal.ambi.ui.home.newsfeed
 
 import android.databinding.ObservableField
+import android.os.SystemClock
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import io.scal.ambi.R
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.actions.ElementComments
 import io.scal.ambi.entity.actions.ElementLikes
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
-import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.navigation.ResultCodes
@@ -90,67 +91,90 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         observeAudienceChange()
     }
 
-    private fun loadNextPage(page: Int): Single<List<ModelFeedElement>> =
-        interactor.loadNewsFeedPage(page, (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.dateTime)
-            .subscribeOn(rxSchedulersAbs.ioScheduler)
-            .observeOn(rxSchedulersAbs.computationScheduler)
-            .flatMap {
-                Observable.fromIterable(it)
-                    .map<ModelFeedElement>({ throw NotImplementedError("implement model change") })
-                    .toList()
+    private fun loadNextPage(page: Int): Single<List<ModelFeedElement>> {
+        return Completable.fromAction {
+            while (null == currentUser.get()) {
+                SystemClock.sleep(100)
             }
-            .onErrorReturnItem(
-                listOf(
-                    ModelFeedElement.Message("${page * 5 + 0}",
-                                             User("mig35"),
-                                             IconImage(R.drawable.ic_profile),
-                                             LocalDateTime.now(),
-                                             "test message $page",
-                                             ElementLikes(false, emptyList()),
-                                             ElementComments(emptyList())
-                    ),
-                    ModelFeedElement.Message("${page * 5 + 1}",
-                                             User("mig35"),
-                                             IconImage("https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-9/12140762_1159067420823544_4471328164031495581_n.jpg?oh=e9255c0340cca64e7f51bb114bc25f9c&oe=5AC9097D"),
-                                             LocalDateTime(2017, 12, 7, 15, 20),
-                                             "just an other message $page",
-                                             ElementLikes(true, listOf(User("0", IconImageUser(R.drawable.ic_profile.toFrescoImagePath())))),
-                                             ElementComments(emptyList())
-                    ),
-                    ModelFeedElement.Message("${page * 5 + 2}",
-                                             currentUser.get() ?: User(),
-                                             IconImage("https://cdn.pixabay.com/photo/2013/04/06/11/50/image-editing-101040_960_720.jpg"),
-                                             LocalDateTime(2017, 12, 25, 15, 0),
-                                             "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
-                                             ElementLikes(false, listOf(User(), User(), User(), User(), User(), User())),
-                                             ElementComments(emptyList())
-                    ),
-                    ModelFeedElement.Message("${page * 5 + 3}",
-                                             User("mig35 2"),
-                                             IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
-                                             LocalDateTime(2017, 10, 7, 15, 0),
-                                             "",
-                                             ElementLikes(false, emptyList()),
-                                             ElementComments(listOf(Comment(User(), "just comment!!!", LocalDateTime.now())))
-                    ),
-                    ModelFeedElement.Message("${page * 5 + 4}",
-                                             User("New Your Times"),
-                                             IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
-                                             LocalDateTime(2017, 10, 1, 15, 0),
-                                             "test message",
-                        /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
-                        , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
-                        "Does President Trump Want to Negotiate Middle East Peace?",
-                        */
-                                             ElementLikes(false, emptyList()),
-                                             ElementComments(listOf(Comment(User(), "comment 1!!!", LocalDateTime.now()),
-                                                                    Comment(User(), "comment 2!!!", LocalDateTime(2017, 12, 7, 20, 40)),
-                                                                    Comment(User(), "comment 3!!!", LocalDateTime(2017, 12, 7, 19, 40)),
-                                                                    Comment(User(), "comment 4!!!", LocalDateTime(2017, 12, 6, 23, 40)),
-                                                                    Comment(User(), "comment 5!!!", LocalDateTime(2017, 12, 3, 20, 40))))
-                    )
-                ))
-            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+        }
+            .subscribeOn(Schedulers.computation())
+            .andThen(
+                interactor.loadNewsFeedPage(page, (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.dateTime)
+                    .subscribeOn(rxSchedulersAbs.ioScheduler)
+                    .observeOn(rxSchedulersAbs.computationScheduler)
+                    .flatMap {
+                        Observable.fromIterable(it)
+                            .map<ModelFeedElement>({ throw NotImplementedError("implement model change") })
+                            .toList()
+                    }
+                    .onErrorReturn {
+                        listOf(
+                            ModelFeedElement.Message("${page * 5 + 0}",
+                                                     currentUser.get(),
+                                                     IconImage(R.drawable.ic_profile),
+                                                     LocalDateTime.now(),
+                                                     "test message $page",
+                                                     ElementLikes(false, emptyList()),
+                                                     ElementComments(emptyList())
+                            ),
+                            ModelFeedElement.Message("${page * 5 + 1}",
+                                                     currentUser.get(),
+                                                     IconImage("https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-9/12140762_1159067420823544_4471328164031495581_n.jpg?oh=e9255c0340cca64e7f51bb114bc25f9c&oe=5AC9097D"),
+                                                     LocalDateTime(2017, 12, 7, 15, 20),
+                                                     "just an other message $page",
+                                                     ElementLikes(true, listOf(currentUser.get())),
+                                                     ElementComments(emptyList())
+                            ),
+                            ModelFeedElement.Message("${page * 5 + 2}",
+                                                     currentUser.get(),
+                                                     IconImage("https://cdn.pixabay.com/photo/2013/04/06/11/50/image-editing-101040_960_720.jpg"),
+                                                     LocalDateTime(2017, 12, 25, 15, 0),
+                                                     "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
+                                                     ElementLikes(false,
+                                                                  listOf(currentUser.get(),
+                                                                         currentUser.get(),
+                                                                         currentUser.get(),
+                                                                         currentUser.get(),
+                                                                         currentUser.get(),
+                                                                         currentUser.get())),
+                                                     ElementComments(emptyList())
+                            ),
+                            ModelFeedElement.Message("${page * 5 + 3}",
+                                                     currentUser.get(),
+                                                     IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
+                                                     LocalDateTime(2017, 10, 7, 15, 0),
+                                                     "",
+                                                     ElementLikes(false, emptyList()),
+                                                     ElementComments(listOf(Comment(currentUser.get(), "just comment!!!", LocalDateTime.now())))
+                            ),
+                            ModelFeedElement.Message("${page * 5 + 4}",
+                                                     currentUser.get(),
+                                                     IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
+                                                     LocalDateTime(2017, 10, 1, 15, 0),
+                                                     "test message",
+                                /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
+                                , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
+                                "Does President Trump Want to Negotiate Middle East Peace?",
+                                */
+                                                     ElementLikes(false, emptyList()),
+                                                     ElementComments(listOf(Comment(currentUser.get(), "comment 1!!!", LocalDateTime.now()),
+                                                                            Comment(currentUser.get(),
+                                                                                    "comment 2!!!",
+                                                                                    LocalDateTime(2017, 12, 7, 20, 40)),
+                                                                            Comment(currentUser.get(),
+                                                                                    "comment 3!!!",
+                                                                                    LocalDateTime(2017, 12, 7, 19, 40)),
+                                                                            Comment(currentUser.get(),
+                                                                                    "comment 4!!!",
+                                                                                    LocalDateTime(2017, 12, 6, 23, 40)),
+                                                                            Comment(currentUser.get(),
+                                                                                    "comment 5!!!",
+                                                                                    LocalDateTime(2017, 12, 3, 20, 40))))
+                            )
+                        )
+                    }
+                    .observeOn(rxSchedulersAbs.mainThreadScheduler))
+    }
 
     fun changeAudience() {
         router.navigateTo(NavigateTo.CHANGE_AUDIENCE, selectedAudience.get())

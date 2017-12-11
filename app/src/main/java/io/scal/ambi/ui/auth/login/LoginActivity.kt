@@ -29,7 +29,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
         viewModel.stateModel
             .toObservable()
             .observeOn(AndroidSchedulers.mainThread())
-            .map { it != LoginStateModel.ProgressStateModel }
+            .map { it !is LoginStateModel.ProgressStateModel }
             .subscribe { binding.rootContainer.enableCascade(it) }
             .addTo(destroyDisposables)
     }

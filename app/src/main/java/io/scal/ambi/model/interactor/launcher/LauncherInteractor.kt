@@ -8,10 +8,8 @@ class LauncherInteractor @Inject constructor(private val localUserDataRepository
 
     override fun getUserNavigation(): Single<LauncherState> {
         return Single.fromCallable {
-            localUserDataRepository.getUserInfo()
-                ?.let {
-                    LauncherState.LoggedIn(it.user)
-                }
+            localUserDataRepository.getCurrentUser()
+                ?.let { LauncherState.LoggedIn(it) }
                 ?: LauncherState.NotLoggedIn
         }
     }

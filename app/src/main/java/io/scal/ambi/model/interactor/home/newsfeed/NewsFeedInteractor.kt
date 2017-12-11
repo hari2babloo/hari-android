@@ -17,7 +17,6 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
     }
 
     override fun loadCurrentUser(): Observable<User> =
-        localUserDataRepository.observeUserInfo()
-            .map { it.user }
+        localUserDataRepository.observeCurrentUser()
             .onErrorResumeNext(Observable.never<User>())
 }

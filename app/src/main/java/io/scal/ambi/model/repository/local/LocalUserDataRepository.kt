@@ -6,7 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.scal.ambi.entity.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
-import io.scal.ambi.model.repository.auth.AuthResult
 import javax.inject.Inject
 
 class LocalUserDataRepository @Inject constructor(context: Context,
@@ -14,24 +13,30 @@ class LocalUserDataRepository @Inject constructor(context: Context,
 
     private val prefs = StrongRefPrefser(context.getSharedPreferences("localUserData", Context.MODE_PRIVATE))
 
-    override fun saveUserInfo(authResult: AuthResult): Completable =
-        Completable.fromAction { prefs.put(USER_INFO, authResult) }
+    override fun saveCurrentUser(user: User): Completable =
+        Completable.fromAction { prefs.put(USER_INFO, user) }
 
-    override fun removeUserInfo(): Completable =
+    override fun removeAllUserInfo(): Completable =
         Completable.fromAction { prefs.remove(USER_INFO) }
 
-    override fun observeUserInfo(): Observable<AuthResult> =
-        observePrefs(USER_INFO, AuthResult::class.java, DEFAULT_AUTH_RESULT, true)
+    override fun observeCurrentUser(): Observable<User> =
+        observePrefs(USER_INFO, User::class.java, DEFAULT_AUTH_RESULT, true)
 
-    override fun getUserInfo(): AuthResult? =
-        prefs.get(USER_INFO, AuthResult::class.java, null)
+    override fun getCurrentUser(): User? =
+        prefs.get(USER_INFO, User::class.java, null)
 
-    private fun <T> observePrefs(key: String, dataClass: Class<T>, defaultValue: T, errorOnDefault: Boolean = false): Observable<T> {
+    override fun saveCurrentToken(token: String): Completable =
+        Completable.fromAction { prefs.put(USER_TOKEN, token) }
+
+    override fun getCurrentToken(): String? =
+        prefs.get(USER_TOKEN, String::class.java, null)
+
+    private fun <T> observePrefs(key: String, dataClass: Class<T>, defaultValue: T?, errorOnDefault: Boolean = false): Observable<T> {
         return prefs.getAndObserve(key, dataClass, defaultValue)
             .compose(defaultToErrorComposer(dataClass, defaultValue, errorOnDefault))
     }
 
-    private fun <T> defaultToErrorComposer(dataClass: Class<T>, defaultValue: T, errorOnDefault: Boolean): ObservableTransformer<T, T> {
+    private fun <T> defaultToErrorComposer(dataClass: Class<T>, defaultValue: T?, errorOnDefault: Boolean): ObservableTransformer<T, T> {
         return ObservableTransformer { upstream ->
             upstream.flatMap {
                 if (it == defaultValue) {
@@ -50,6 +55,8 @@ class LocalUserDataRepository @Inject constructor(context: Context,
     companion object {
 
         private const val USER_INFO = "UserInfo"
-        private val DEFAULT_AUTH_RESULT = AuthResult("", User())
+        private const val USER_TOKEN = "UserToken"
+
+        private val DEFAULT_AUTH_RESULT: User? = null
     }
 }

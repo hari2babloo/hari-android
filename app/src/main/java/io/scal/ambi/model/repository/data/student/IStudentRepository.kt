@@ -5,5 +5,5 @@ import io.scal.ambi.entity.User
 
 interface IStudentRepository {
 
-    fun getCurrentStudentProfile(token: String): Single<User>
+    fun getStudentProfile(userId: String): Single<User>
 }

@@ -5,7 +5,7 @@ import io.reactivex.Single
 
 interface IAuthRepository {
 
-    fun login(email: String, password: String): Single<String>
+    fun login(email: String, password: String): Single<AuthResult>
 
     fun recover(email: String): Completable
 }

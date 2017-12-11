@@ -3,38 +3,32 @@ package io.scal.ambi.model.interactor.auth.profile
 import io.reactivex.Observable
 import io.scal.ambi.entity.User
 import io.scal.ambi.model.data.server.ServerResponseException
-import io.scal.ambi.model.repository.auth.AuthResult
-import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.data.student.IStudentRepository
+import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import javax.inject.Inject
 
 class AuthProfileCheckerInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository,
                                                        private val studentRepository: IStudentRepository) : IAuthProfileCheckerInteractor {
 
     override fun getUserProfile(): Observable<User> {
-        val cachedUserInfo = Observable
-            .fromCallable {
-                localUserDataRepository.getUserInfo()
-                    ?.user
-                    ?: throw IllegalStateException("no user found")
-            }
+        val currentUser = localUserDataRepository.getCurrentUser()
 
-        return Observable
-            .concat(cachedUserInfo,
-                    localUserDataRepository.observeUserInfo()
-                        .map { it.user }
-            )
-            .doOnSubscribe { localUserDataRepository.getUserInfo()?.run { doUserProfileUpdate(token) } }
+        return if (null == currentUser) {
+            Observable.error(IllegalArgumentException("no user found"))
+        } else {
+            localUserDataRepository.observeCurrentUser()
+                .doOnSubscribe { doUserProfileUpdate(currentUser) }
+        }
     }
 
-    private fun doUserProfileUpdate(token: String) {
-        studentRepository.getCurrentStudentProfile(token)
-            .flatMapCompletable { localUserDataRepository.saveUserInfo(AuthResult(token, it)) }
+    private fun doUserProfileUpdate(user: User) {
+        studentRepository.getStudentProfile(user.uid)
+            .flatMapCompletable { localUserDataRepository.saveCurrentUser(it) }
             .subscribe(
                 { },
                 {
-                    if (it is ServerResponseException && it.requiresLogin) {
-                        localUserDataRepository.removeUserInfo()
+                    if (it is ServerResponseException && (it.requiresLogin || it.notFound)) {
+                        localUserDataRepository.removeAllUserInfo().subscribe()
                     }
                 }
             )

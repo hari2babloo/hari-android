@@ -2,15 +2,19 @@ package io.scal.ambi.model.repository.local
 
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.scal.ambi.model.repository.auth.AuthResult
+import io.scal.ambi.entity.User
 
 interface ILocalUserDataRepository {
 
-    fun saveUserInfo(authResult: AuthResult): Completable
+    fun saveCurrentUser(user: User): Completable
 
-    fun removeUserInfo(): Completable
+    fun observeCurrentUser(): Observable<User>
 
-    fun observeUserInfo(): Observable<AuthResult>
+    fun getCurrentUser(): User?
 
-    fun getUserInfo(): AuthResult?
+    fun saveCurrentToken(token: String): Completable
+
+    fun getCurrentToken(): String?
+
+    fun removeAllUserInfo(): Completable
 }

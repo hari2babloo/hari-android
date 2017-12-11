@@ -2,13 +2,13 @@ package io.scal.ambi.model.interactor.auth.login
 
 import android.content.Context
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.scal.ambi.R
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
-import io.scal.ambi.model.repository.auth.AuthResult
 import io.scal.ambi.model.repository.auth.IAuthRepository
-import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.data.student.IStudentRepository
+import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import javax.inject.Inject
 
 class LoginInteractor @Inject constructor(private val context: Context,
@@ -26,10 +26,14 @@ class LoginInteractor @Inject constructor(private val context: Context,
         } else {
             authRepository.login(email, password)
                 .observeOn(rxSchedulersAbs.computationScheduler)
-                .flatMap { token ->
-                    studentRepository.getCurrentStudentProfile(token)
-                        .map { AuthResult(token, it) }
+                .flatMap { authResult ->
+                    localUserDataRepository.saveCurrentToken(authResult.token)
+                        .andThen(Single.just(authResult))
                 }
-                .flatMapCompletable { localUserDataRepository.saveUserInfo(it) }
+                .flatMapCompletable { authResult ->
+                    studentRepository.getStudentProfile(authResult.userId)
+                        .flatMapCompletable { localUserDataRepository.saveCurrentUser(it) }
+                        .doOnError { localUserDataRepository.removeAllUserInfo().subscribe() }
+                }
         }
 }
