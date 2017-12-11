@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="news_feed_college_update">college updates</string>
-    <string name="news_feed_students">students</string>
-    <string name="news_feed_faculty">faculty</string>
-    <string name="news_feed_staff">staff</string>
-    <string name="news_feed_groups">groups</string>
-    <string name="news_feed_classes">classes</string>
-    <string name="news_feed_communities">communities</string>
-    <string name="news_feed_news">news</string>
+    <string name="news_feed_audience_college_update">college updates</string>
+    <string name="news_feed_audience_students">students</string>
+    <string name="news_feed_audience_faculty">faculty</string>
+    <string name="news_feed_audience_staff">staff</string>
+    <string name="news_feed_audience_groups">groups</string>
+    <string name="news_feed_audience_classes">classes</string>
+    <string name="news_feed_audience_communities">communities</string>
+    <string name="news_feed_audience_news">news</string>
+
+    <string name="news_feed_announcement_safety">Safety announcement</string>
+    <string name="news_feed_announcement_good_news">Good news announcement</string>
+    <string name="news_feed_announcement_general">General announcement</string>
+    <string name="news_feed_announcement_tragedy">Tragedy announcement</string>
+    <string name="news_feed_announcement_event">Event announcement</string>
 
     <string name="news_feed_status_update">status update</string>
     <string name="news_feed_status_update_description">share something interesting…</string>

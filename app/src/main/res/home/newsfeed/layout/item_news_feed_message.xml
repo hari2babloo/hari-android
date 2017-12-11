@@ -2,17 +2,18 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <data>
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.ui.home.newsfeed.NewsFeedViewModel"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel"/>
 
         <variable
             name="element"
-            type="io.scal.ambi.ui.home.newsfeed.ModelFeedElement.Message"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.ModelFeedElement.Message"/>
 
     </data>
 
@@ -38,18 +39,24 @@
             app:layout_constraintGuide_end="@dimen/news_need_padding"/>
 
         <include
+            android:id="@+id/v_announcement_header"
+            layout="@layout/item_news_feed_announcement"
+            app:announcement="@{element.announcement}"
+            app:visibility="@{null != element.announcement}"/>
+
+        <include
             android:id="@+id/c_header"
             layout="@layout/item_news_feed_message_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
+            android:layout_marginTop="15dp"
             app:actor="@{element.actor}"
             app:dateTime="@{element.dateTime}"
             app:iconClickListener="@{(view) -> viewModel.openAuthorOf(element)}"
             app:iconImage="@{element.icon}"
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/v_announcement_header"
             />
 
         <TextView
@@ -64,6 +71,7 @@
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
             app:layout_constraintTop_toBottomOf="@+id/c_header"
             app:visibility="@{!element.message.isEmpty()}"
+            tools:text="Post message text"
             />
 
         <View

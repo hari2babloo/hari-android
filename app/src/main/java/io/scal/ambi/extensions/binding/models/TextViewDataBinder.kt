@@ -80,4 +80,14 @@ object TextViewDataBinder {
             editText.isCursorVisible = true
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("textResId")
+    fun bindTextRes(textView: TextView, textRes: Int?) {
+        if (textRes == null || textRes == 0) {
+            textView.text = null
+        } else {
+            textView.setText(textRes)
+        }
+    }
 }

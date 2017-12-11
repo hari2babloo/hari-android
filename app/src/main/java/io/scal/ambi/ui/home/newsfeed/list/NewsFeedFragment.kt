@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.home.newsfeed
+package io.scal.ambi.ui.home.newsfeed.list
 
 import android.content.Intent
 import android.os.Bundle

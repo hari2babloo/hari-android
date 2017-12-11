@@ -1,7 +1,8 @@
-package io.scal.ambi.ui.home.newsfeed
+package io.scal.ambi.ui.home.newsfeed.list
 
 import android.databinding.ObservableField
 import android.os.SystemClock
+import android.support.v4.content.ContextCompat
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -12,6 +13,7 @@ import io.scal.ambi.entity.User
 import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.actions.ElementComments
 import io.scal.ambi.entity.actions.ElementLikes
+import io.scal.ambi.entity.feed.Announcement
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElements
@@ -89,6 +91,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     init {
         loadCurrentUser()
         observeAudienceChange()
+
     }
 
     private fun loadNextPage(page: Int): Single<List<ModelFeedElement>> {
@@ -113,6 +116,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                      currentUser.get(),
                                                      IconImage(R.drawable.ic_profile),
                                                      LocalDateTime.now(),
+                                                     null,
                                                      "test message $page",
                                                      ElementLikes(false, emptyList()),
                                                      ElementComments(emptyList())
@@ -121,6 +125,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                      currentUser.get(),
                                                      IconImage("https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-9/12140762_1159067420823544_4471328164031495581_n.jpg?oh=e9255c0340cca64e7f51bb114bc25f9c&oe=5AC9097D"),
                                                      LocalDateTime(2017, 12, 7, 15, 20),
+                                                     Announcement.SAFETY,
                                                      "just an other message $page",
                                                      ElementLikes(true, listOf(currentUser.get())),
                                                      ElementComments(emptyList())
@@ -129,6 +134,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                      currentUser.get(),
                                                      IconImage("https://cdn.pixabay.com/photo/2013/04/06/11/50/image-editing-101040_960_720.jpg"),
                                                      LocalDateTime(2017, 12, 25, 15, 0),
+                                                     Announcement.GENERAL,
                                                      "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
                                                      ElementLikes(false,
                                                                   listOf(currentUser.get(),
@@ -143,33 +149,55 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                      currentUser.get(),
                                                      IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
                                                      LocalDateTime(2017, 10, 7, 15, 0),
+                                                     Announcement.GOOD_NEWS,
                                                      "",
                                                      ElementLikes(false, emptyList()),
-                                                     ElementComments(listOf(Comment(currentUser.get(), "just comment!!!", LocalDateTime.now())))
+                                                     ElementComments(listOf(Comment(currentUser.get(),
+                                                                                    "just comment!!!",
+                                                                                    LocalDateTime.now())))
                             ),
                             ModelFeedElement.Message("${page * 5 + 4}",
                                                      currentUser.get(),
                                                      IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
                                                      LocalDateTime(2017, 10, 1, 15, 0),
+                                                     Announcement.TRAGEDY,
                                                      "test message",
                                 /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
                                 , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
                                 "Does President Trump Want to Negotiate Middle East Peace?",
                                 */
                                                      ElementLikes(false, emptyList()),
-                                                     ElementComments(listOf(Comment(currentUser.get(), "comment 1!!!", LocalDateTime.now()),
+                                                     ElementComments(listOf(Comment(currentUser.get(),
+                                                                                    "comment 1!!!",
+                                                                                    LocalDateTime.now()),
                                                                             Comment(currentUser.get(),
                                                                                     "comment 2!!!",
-                                                                                    LocalDateTime(2017, 12, 7, 20, 40)),
+                                                                                    LocalDateTime(2017,
+                                                                                                  12,
+                                                                                                  7,
+                                                                                                  20,
+                                                                                                  40)),
                                                                             Comment(currentUser.get(),
                                                                                     "comment 3!!!",
-                                                                                    LocalDateTime(2017, 12, 7, 19, 40)),
+                                                                                    LocalDateTime(2017,
+                                                                                                  12,
+                                                                                                  7,
+                                                                                                  19,
+                                                                                                  40)),
                                                                             Comment(currentUser.get(),
                                                                                     "comment 4!!!",
-                                                                                    LocalDateTime(2017, 12, 6, 23, 40)),
+                                                                                    LocalDateTime(2017,
+                                                                                                  12,
+                                                                                                  6,
+                                                                                                  23,
+                                                                                                  40)),
                                                                             Comment(currentUser.get(),
                                                                                     "comment 5!!!",
-                                                                                    LocalDateTime(2017, 12, 3, 20, 40))))
+                                                                                    LocalDateTime(2017,
+                                                                                                  12,
+                                                                                                  3,
+                                                                                                  20,
+                                                                                                  40))))
                             )
                         )
                     }

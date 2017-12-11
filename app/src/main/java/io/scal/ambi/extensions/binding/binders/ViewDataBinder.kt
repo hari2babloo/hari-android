@@ -1,6 +1,7 @@
 package io.scal.ambi.extensions.binding.binders
 
 import android.databinding.BindingAdapter
+import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -68,6 +69,16 @@ object ViewDataBinder {
             view.visibility = View.VISIBLE
         } else {
             view.visibility = View.GONE
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("colorResId")
+    fun setColorResId(view: View, colorId: Int?) {
+        if (null == colorId) {
+            view.setBackgroundColor(Color.TRANSPARENT)
+        } else {
+            view.setBackgroundResource(colorId)
         }
     }
 }
