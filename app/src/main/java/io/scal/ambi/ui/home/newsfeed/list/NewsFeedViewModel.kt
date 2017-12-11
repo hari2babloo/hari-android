@@ -200,20 +200,24 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                             )
                         )
                     }
+                    .delay(5, TimeUnit.SECONDS)
                     .observeOn(rxSchedulersAbs.mainThreadScheduler))
-            .delay(15, TimeUnit.SECONDS)
     }
 
     fun changeAudience() {
         router.navigateTo(NavigateTo.CHANGE_AUDIENCE, selectedAudience.get())
     }
 
+    fun createStatus() {
+        router.navigateTo(NavigateTo.CREATE_STATUS)
+    }
+
     fun createAnnouncement() {
-//        router.navigateTo(NavigateTo.CREATE_ANNOUNCEMENT)
+        router.navigateTo(NavigateTo.CREATE_ANNOUNCEMENT)
     }
 
     fun createPoll() {
-//        router.navigateTo(NavigateTo.CREATE_POLL)
+        router.navigateTo(NavigateTo.CREATE_POLL)
     }
 
     fun openAuthorOf(element: ModelFeedElement) {

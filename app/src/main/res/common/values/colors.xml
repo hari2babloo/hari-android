@@ -16,5 +16,7 @@
 
     <color name="graySearch">#BEBFBF</color>
     <color name="grayActions">#828890</color>
+    <color name="whiteDark">#F2F2F5</color>
+    <color name="grayUnselectedWhite">#9B9B9B</color>
 
 </resources>

@@ -36,11 +36,15 @@
 
         <activity
             android:name=".ui.home.root.HomeActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
 
         <activity
             android:name=".ui.home.newsfeed.audience.AudienceSelectionActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+
+        <activity
+            android:name=".ui.home.newsfeed.creation.FeedItemCreationActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
 
     </application>
 </manifest>

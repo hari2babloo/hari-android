@@ -37,13 +37,13 @@ class LoginViewModel @Inject constructor(private val context: Context,
                                        is GoodMessageException -> it.goodMessage
                                        else                    -> context.getString(R.string.error_auth_wrong_user_name)
                                    }
-                               stateModel.set(LoginStateModel.DataInputErrorStateModel(message, email, null))
+                               stateModel.set(LoginStateModel.DataInputErrorStateModel(message, email, password))
                            })
         }
     }
 
     fun goToRegister() {
-        router.navigateTo(NavigateTo.REGISTER)
+//        router.navigateTo(NavigateTo.REGISTER)
     }
 
     fun goToForgotPassword() {

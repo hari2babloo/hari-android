@@ -57,7 +57,7 @@
             android:layout_toEndOf="@id/iv_icon"
             android:background="@null"
             android:hint="@{hint}"
-            android:imeOptions="@{imeOption ?? EditorInfo.IME_ACTION_NEXT}"
+            android:imeOptions="@{imeOption ?? EditorInfo.IME_NULL}"
             android:singleLine="true"
             android:text="@={textField.data}"
             android:textSize="14sp"

@@ -1,7 +1,11 @@
 package io.scal.ambi.extensions.view
 
+import android.support.v4.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import io.scal.ambi.ui.global.base.LocalNavigationHolder
+import ru.terrakok.cicerone.NavigatorHolder
+import ru.terrakok.cicerone.Router
 
 fun View.enableCascade(enable: Boolean) {
     if (this is ViewGroup) {
@@ -10,4 +14,38 @@ fun View.enableCascade(enable: Boolean) {
             .forEach { it.enableCascade(enable) }
     }
     this.isEnabled = enable
+}
+
+fun Fragment.getNavigationHolder(): NavigatorHolder {
+    return getLocalNavigationHolder().getNavigationHolder(tag!!)
+}
+
+fun Fragment.getRouter(): Router {
+    return getLocalNavigationHolder().getRouter(tag!!)
+}
+
+private fun Fragment.getLocalNavigationHolder(): LocalNavigationHolder {
+    var localNavigationHolder: LocalNavigationHolder? = null
+
+    var parentFragment: Fragment? = parentFragment
+    while (null != parentFragment) {
+        if (parentFragment is LocalNavigationHolder) {
+            localNavigationHolder = parentFragment
+            break
+        }
+        parentFragment = parentFragment.parentFragment
+    }
+
+    if (null == localNavigationHolder && activity is LocalNavigationHolder) {
+        localNavigationHolder = activity as LocalNavigationHolder
+    }
+
+    if (null == localNavigationHolder && activity?.application is LocalNavigationHolder) {
+        localNavigationHolder = activity!!.application as LocalNavigationHolder
+    }
+
+    if (null == localNavigationHolder) {
+        throw IllegalArgumentException("No injector was found for ${javaClass.canonicalName}")
+    }
+    return localNavigationHolder
 }

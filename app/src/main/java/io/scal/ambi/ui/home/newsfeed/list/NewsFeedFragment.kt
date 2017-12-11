@@ -17,6 +17,8 @@ import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
+import io.scal.ambi.ui.home.newsfeed.audience.FeedItemCreation
+import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.android.SupportAppNavigator
 import java.util.concurrent.TimeUnit
@@ -100,9 +102,15 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
         get() = object : SupportAppNavigator(activity, R.id.container) {
             override fun createActivityIntent(screenKey: String?, data: Any?): Intent? =
                 when (screenKey) {
-                    NavigateTo.CHANGE_AUDIENCE -> AudienceSelectionActivity.createScreen(activity!!, data as? Audience)
-                    else                       -> null
+                    NavigateTo.CHANGE_AUDIENCE     -> AudienceSelectionActivity.createScreen(activity!!, data as? Audience)
+                    NavigateTo.CREATE_STATUS       -> goToCreationScreen(FeedItemCreation.STATUS)
+                    NavigateTo.CREATE_ANNOUNCEMENT -> goToCreationScreen(FeedItemCreation.ANNOUNCEMENT)
+                    NavigateTo.CREATE_POLL         -> goToCreationScreen(FeedItemCreation.POLL)
+                    else                           -> null
                 }
+
+            private fun goToCreationScreen(feedItemCreation: FeedItemCreation): Intent =
+                FeedItemCreationActivity.createScreen(activity!!, feedItemCreation)
 
             override fun createFragment(screenKey: String?, data: Any?): Fragment? {
                 return null
