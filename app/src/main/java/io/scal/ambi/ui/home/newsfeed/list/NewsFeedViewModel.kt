@@ -255,11 +255,15 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                 selectedAudience.set(it)
             }
         })
+        router.setResultListener(ResultCodes.NEWS_FEED_ITEM_CREATED, {
+            paginator.refreshForce()
+        })
 
         selectedAudience
             .toObservable()
             .distinctUntilChanged()
-            .subscribe { refresh() }
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe { paginator.refreshForce() }
             .addTo(disposables)
     }
 

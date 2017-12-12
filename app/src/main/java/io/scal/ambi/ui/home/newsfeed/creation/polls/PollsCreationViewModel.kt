@@ -5,6 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.User
+import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItemPollCreation
 import io.scal.ambi.entity.feed.PollsEndsTime
 import io.scal.ambi.extensions.binding.observable.ObservableString
@@ -19,8 +20,8 @@ import javax.inject.Inject
 
 class PollsCreationViewModel @Inject constructor(router: Router,
                                                  val bottomViewModel: CreationBottomViewModel,
-                                                 val interactor: IPollsCreationInteractor,
-                                                 val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
+                                                 private val interactor: IPollsCreationInteractor,
+                                                 private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 
     val dataStateModel = ObservableField<PollsCreationDataState>()
     val progressStateModel = ObservableField<PollsCreationProgressState>(PollsCreationProgressState.Progress)
@@ -32,6 +33,10 @@ class PollsCreationViewModel @Inject constructor(router: Router,
         loadAsUsers()
         observePostAction()
         observePostActionValidation()
+
+        val audiences = interactor.availableAudiences.toMutableList()
+        audiences.add(0, Audience.EVERYONE)
+        bottomViewModel.updateAudiences(audiences)
     }
 
     fun reload() {
@@ -99,15 +104,15 @@ class PollsCreationViewModel @Inject constructor(router: Router,
                     val pollToCreate = NewsFeedItemPollCreation(currentState.pinned,
                                                                 currentState.locked,
                                                                 currentState.selectedAsUser,
-                                                                currentState.questionText,
-                                                                currentState.choices,
+                                                                currentState.questionText.get(),
+                                                                currentState.choices.map { it.choiceInput.get() },
                                                                 currentState.selectedPollDuration,
                                                                 bottomViewModel.selectedAudience.get())
 
                     interactor.postPoll(pollToCreate)
                         .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                         .subscribe({
-                                       router.exitWithResult(ResultCodes.AUDIENCE_SELECTION, Any())
+                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, Any())
                                    },
                                    { t ->
                                        handleError(t)

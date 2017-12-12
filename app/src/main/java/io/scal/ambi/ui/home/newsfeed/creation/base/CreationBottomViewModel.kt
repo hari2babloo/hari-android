@@ -1,5 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.creation.base
 
+import android.databinding.ObservableArrayList
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import io.reactivex.Observable
@@ -12,21 +13,24 @@ import javax.inject.Inject
 
 class CreationBottomViewModel @Inject constructor(router: Router) : BaseViewModel(router) {
 
-    val audienceList = listOf(Audience.EVERYONE,
-                              Audience.COLLEGE_UPDATE,
-                              Audience.STUDENTS,
-                              Audience.FACULTY,
-                              Audience.STAFF,
-                              Audience.GROUPS,
-                              Audience.CLASSES,
-                              Audience.COMMUNITIES,
-                              Audience.NEWS)
-    val selectedAudience = ObservableField<Audience>(Audience.EVERYONE)
+    val audienceList = ObservableArrayList<Audience>()
+    val selectedAudience = ObservableField<Audience>()
     val postEnable = ObservableBoolean(false)
 
     val postAction: Observable<Any> = PublishSubject.create()
 
     fun post() {
         (postAction as Subject).onNext(Any())
+    }
+
+    fun updateAudiences(availableAudiences: List<Audience>) {
+        selectedAudience.set(null)
+
+        audienceList.clear()
+        audienceList.addAll(availableAudiences)
+
+        if (availableAudiences.isNotEmpty()) {
+            selectedAudience.set(availableAudiences.first())
+        }
     }
 }

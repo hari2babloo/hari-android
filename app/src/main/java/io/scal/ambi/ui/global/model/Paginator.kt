@@ -31,6 +31,12 @@ class Paginator<in T>(
         currentState.refresh()
     }
 
+    fun refreshForce() {
+        currentState.release()
+        currentState = EMPTY()
+        currentState.refresh()
+    }
+
     fun loadNewPage() {
         currentState.loadNewPage()
     }

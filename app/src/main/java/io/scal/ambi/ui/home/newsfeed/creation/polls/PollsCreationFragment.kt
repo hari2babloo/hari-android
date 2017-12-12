@@ -31,7 +31,7 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
     }
 
     private fun initAsUserSpinner() {
-        val asUserSpinnerAdapter = SimpleSpinnerAdapter<User>(R.layout.item_as_user_spinner)
+        val asUserSpinnerAdapter = SimpleSpinnerAdapter<User>(R.layout.item_as_user_spinner, R.layout.item_as_user_spinner_dropdown)
 
         binding.sAsUser.adapter = asUserSpinnerAdapter
         binding.sAsUser.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

@@ -81,7 +81,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/c_as_user_selection"
                     app:layout_constraintEnd_toStartOf="@+id/c_as_user_selection"
                     app:layout_constraintTop_toTopOf="@+id/c_as_user_selection"
-                    app:srcCompat="@drawable/ic_ambi_logo"/>
+                    app:srcCompat="@drawable/ic_creation_pinned"/>
 
                 <ImageView
                     android:id="@+id/iv_locked"
@@ -94,7 +94,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/c_as_user_selection"
                     app:layout_constraintEnd_toStartOf="@+id/iv_pinned"
                     app:layout_constraintTop_toTopOf="@+id/c_as_user_selection"
-                    app:srcCompat="@drawable/ic_ambi_logo"/>
+                    app:srcCompat="@drawable/ic_creation_locked"/>
 
                 <EditText
                     android:id="@+id/et_question"
@@ -177,11 +177,7 @@
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_centerInParent="true"
             app:visibility="@{viewModel.progressStateModel.progress}"/>
 
     </RelativeLayout>
