@@ -1,38 +1,184 @@
 package io.scal.ambi.ui.home.newsfeed.creation.polls
 
 import android.databinding.ObservableField
+import io.reactivex.Observable
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
+import io.scal.ambi.entity.User
+import io.scal.ambi.entity.feed.NewsFeedItemPollCreation
+import io.scal.ambi.entity.feed.PollsEndsTime
 import io.scal.ambi.extensions.binding.observable.ObservableString
+import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.newsfeed.creation.IPollsCreationInteractor
+import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
-import org.joda.time.Duration
+import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomViewModel
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class PollsCreationViewModel @Inject constructor(router: Router,
-                                                 interactor: IPollsCreationInteractor,
-                                                 rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
+                                                 val bottomViewModel: CreationBottomViewModel,
+                                                 val interactor: IPollsCreationInteractor,
+                                                 val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 
-    val stateModel = ObservableField<PollsCreationStateModel>(PollsCreationStateModel.EmptyProgress())
+    val dataStateModel = ObservableField<PollsCreationDataState>()
+    val progressStateModel = ObservableField<PollsCreationProgressState>(PollsCreationProgressState.Progress)
+    val errorStateModel = ObservableField<PollsCreationErrorState>(PollsCreationErrorState.NoError)
+
+    private val allPollEnds = listOf(PollsEndsTime.OneDay(), PollsEndsTime.OneWeek(), PollsEndsTime.CustomDefault(), PollsEndsTime.Never)
 
     init {
+        loadAsUsers()
+        observePostAction()
+        observePostActionValidation()
+    }
+
+    fun reload() {
+        if (errorStateModel.get() is PollsCreationErrorState.ErrorFatal) {
+            errorStateModel.set(PollsCreationErrorState.NoError)
+            loadAsUsers()
+        }
+    }
+
+
+    fun changePinStatus() {
+        val currentState = dataStateModel.get()
+        if (currentState is PollsCreationDataState.Data) {
+            dataStateModel.set(currentState.copy(pinned = !currentState.pinned))
+        }
+    }
+
+    fun changeLockStatus() {
+        val currentState = dataStateModel.get()
+        if (currentState is PollsCreationDataState.Data) {
+            dataStateModel.set(currentState.copy(locked = !currentState.locked))
+        }
+    }
+
+    fun selectAsUser(user: User) {
+        val currentState = dataStateModel.get()
+        if (currentState is PollsCreationDataState.Data) {
+            dataStateModel.set(currentState.copy(selectedAsUser = user))
+        }
+    }
+
+    fun selectPollEnds(pollsEndsTime: PollsEndsTime) {
+        val currentState = dataStateModel.get()
+        if (currentState is PollsCreationDataState.Data) {
+            val newPollDurations =
+                if (pollsEndsTime is PollsEndsTime.Custom) {
+                    currentState.pollDurations
+                        .map { if (it is PollsEndsTime.Custom) pollsEndsTime else it }
+                } else {
+                    currentState.pollDurations
+                }
+
+            dataStateModel.set(currentState.copy(selectedPollDuration = pollsEndsTime, pollDurations = newPollDurations))
+        }
+    }
+
+    fun addNewChoice() {
+        val currentState = dataStateModel.get()
+        if (currentState is PollsCreationDataState.Data) {
+            val newChoice = currentState.choices.toMutableList()
+            newChoice.add(PollsCreationChoiceViewModel("", currentState.choices.size + 1))
+
+            dataStateModel.set(currentState.copy(choices = newChoice))
+        }
+    }
+
+    private fun observePostAction() {
+        bottomViewModel.postAction
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe {
+                val currentState = dataStateModel.get()
+                if (currentState is PollsCreationDataState.Data && progressStateModel.get() is PollsCreationProgressState.NoProgress) {
+                    progressStateModel.set(PollsCreationProgressState.Progress)
+
+                    val pollToCreate = NewsFeedItemPollCreation(currentState.pinned,
+                                                                currentState.locked,
+                                                                currentState.selectedAsUser,
+                                                                currentState.questionText,
+                                                                currentState.choices,
+                                                                currentState.selectedPollDuration,
+                                                                bottomViewModel.selectedAudience.get())
+
+                    interactor.postPoll(pollToCreate)
+                        .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
+                        .subscribe({
+                                       router.exitWithResult(ResultCodes.AUDIENCE_SELECTION, Any())
+                                   },
+                                   { t ->
+                                       handleError(t)
+                                       progressStateModel.set(PollsCreationProgressState.NoProgress)
+                                       errorStateModel.set(PollsCreationErrorState.Error(t.message!!))
+                                       errorStateModel.set(PollsCreationErrorState.NoError)
+                                   })
+                        .addTo(disposables)
+                }
+            }
+            .addTo(disposables)
+    }
+
+    private fun observePostActionValidation() {
+        bottomViewModel.postEnable.set(false)
+
+        val choiceFillObservable = dataStateModel.toObservable()
+            .switchMap {
+                if (it is PollsCreationDataState.Data) {
+                    val validations = it.choices.map { it.validate() }
+                    Observable.combineLatest(validations, { t ->
+                        t.fold(true, { acc, any -> acc && (any as Boolean) })
+                    })
+                } else {
+                    Observable.just(false)
+                }
+            }
+            .distinctUntilChanged()
+        val questionFillObservable = dataStateModel.toObservable()
+            .switchMap {
+                if (it is PollsCreationDataState.Data) {
+                    it.questionText.data
+                        .toObservable()
+                        .map { it.isNotBlank() }
+                } else {
+                    Observable.just(false)
+                }
+            }
+            .distinctUntilChanged()
+
+        Observable.combineLatest(choiceFillObservable,
+                                 questionFillObservable,
+                                 BiFunction<Boolean, Boolean, Boolean> { t1, t2 -> t1 && t2 })
+            .distinctUntilChanged()
+            .subscribe { bottomViewModel.postEnable.set(it) }
+            .addTo(disposables)
+    }
+
+    private fun loadAsUsers() {
         interactor
             .loadAsUsers()
             .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
-            .subscribe({
-                           stateModel.set(PollsCreationStateModel.Data(false,
-                                                                       false,
-                                                                       it[0],
-                                                                       ObservableString(""),
-                                                                       emptyList(),
-                                                                       Duration.standardDays(7)
-                           ))
-                       },
-                       { t ->
-                           handleError(t)
-                           stateModel.set(PollsCreationStateModel.ErrorFatal(t.message!!))
-                       })
+            .subscribe(
+                {
+                    progressStateModel.set(PollsCreationProgressState.NoProgress)
+                    dataStateModel.set(PollsCreationDataState.Data(false,
+                                                                   false,
+                                                                   it[0],
+                                                                   it,
+                                                                   ObservableString(""),
+                                                                   listOf(PollsCreationChoiceViewModel("", 1),
+                                                                          PollsCreationChoiceViewModel("", 2)
+                                                                   ),
+                                                                   PollsEndsTime.OneDay(),
+                                                                   allPollEnds
+                    ))
+                },
+                { t ->
+                    handleError(t)
+                    errorStateModel.set(PollsCreationErrorState.ErrorFatal(t.message!!))
+                })
             .addTo(disposables)
     }
 }

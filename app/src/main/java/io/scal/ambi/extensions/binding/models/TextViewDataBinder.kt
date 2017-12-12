@@ -6,10 +6,13 @@ import android.support.v4.content.res.ResourcesCompat
 import android.widget.EditText
 import android.widget.TextView
 import io.scal.ambi.R
+import io.scal.ambi.entity.feed.PollsEndsTime
 import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
 import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.PeriodFormatterBuilder
 import java.util.*
+
 
 object TextViewDataBinder {
 
@@ -62,6 +65,40 @@ object TextViewDataBinder {
                 else                                -> FULL_DATE_TIME_FORMATTER.print(dateTime)
             }
             textView.text = resultText
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("durationPollEnds")
+    fun bindDurationPollEnds(textView: TextView, pollsEndsTime: PollsEndsTime?) {
+        if (null == pollsEndsTime) {
+            textView.text = null
+        } else {
+            val context = textView.context
+            val formatter = PeriodFormatterBuilder()
+                .appendDays()
+                .appendSuffix("d")
+                .appendHours()
+                .appendSuffix("h")
+                .appendMinutes()
+                .appendSuffix("m")
+                .appendSeconds()
+                .appendSuffix("s")
+                .toFormatter()
+
+            val text =
+                when (pollsEndsTime) {
+                    is PollsEndsTime.OneDay        -> context.getString(R.string.creation_poll_ends_duration_1_day)
+                    is PollsEndsTime.OneWeek       -> context.getString(R.string.creation_poll_ends_duration_1_week)
+                    is PollsEndsTime.CustomDefault -> context.getString(R.string.creation_poll_ends_duration_custom_title)
+                    is PollsEndsTime.Custom        -> {
+                        val formatted = formatter.print(pollsEndsTime.duration.toPeriod())
+                        context.getString(R.string.creation_poll_ends_duration_custom, formatted)
+                    }
+                    PollsEndsTime.Never            -> context.getString(R.string.creation_poll_ends_duration_never)
+                    is PollsEndsTime.TimeDuration  -> throw IllegalStateException("todo implement custom text")
+                }
+            textView.text = text
         }
     }
 

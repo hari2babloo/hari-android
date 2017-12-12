@@ -11,6 +11,15 @@ class AudienceSelectionViewModel @Inject constructor(router: Router,
                                                      @Named("selectedAudience") val selectedAudience: Audience) :
     BaseViewModel(router) {
 
+    val audienceList = listOf(Audience.COLLEGE_UPDATE,
+                              Audience.STUDENTS,
+                              Audience.FACULTY,
+                              Audience.STAFF,
+                              Audience.GROUPS,
+                              Audience.CLASSES,
+                              Audience.COMMUNITIES,
+                              Audience.NEWS)
+
     fun selectAudience(audience: Audience) {
         if (selectedAudience == audience) {
             router.exit()

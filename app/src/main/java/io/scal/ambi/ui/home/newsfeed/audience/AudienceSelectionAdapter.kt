@@ -4,7 +4,6 @@ import android.databinding.ViewDataBinding
 import android.view.ViewGroup
 import io.scal.ambi.BR
 import io.scal.ambi.R
-import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.ui.global.base.adapter.BaseRecyclerViewAdapter
 
 internal class AudienceSelectionAdapter(private val viewModel: AudienceSelectionViewModel) : BaseRecyclerViewAdapter() {
@@ -13,10 +12,10 @@ internal class AudienceSelectionAdapter(private val viewModel: AudienceSelection
         R.layout.item_audience_selection
 
     override fun onBindBinding(binding: ViewDataBinding, holder: BindingViewHolder<*>, position: Int) {
-        binding.setVariable(BR.item, Audience.values()[position])
+        binding.setVariable(BR.item, viewModel.audienceList[position])
         binding.setVariable(BR.viewModel, viewModel)
     }
 
     override fun getItemCount(): Int =
-        Audience.values().size
+        viewModel.audienceList.size
 }

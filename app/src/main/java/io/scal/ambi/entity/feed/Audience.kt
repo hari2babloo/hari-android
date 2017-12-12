@@ -4,6 +4,7 @@ import io.scal.ambi.R
 
 enum class Audience(val titleId: Int, val iconId: Int) {
 
+    EVERYONE(R.string.news_feed_audience_everyone, R.drawable.ic_audience_everyone),
     COLLEGE_UPDATE(R.string.news_feed_audience_college_update, R.drawable.ic_audience_college_update),
     STUDENTS(R.string.news_feed_audience_students, R.drawable.ic_audience_students),
     FACULTY(R.string.news_feed_audience_faculty, R.drawable.ic_audience_faculty),

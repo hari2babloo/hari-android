@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="news_feed_audience_everyone">everyone</string>
     <string name="news_feed_audience_college_update">college updates</string>
     <string name="news_feed_audience_students">students</string>
     <string name="news_feed_audience_faculty">faculty</string>
