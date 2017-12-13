@@ -5,6 +5,7 @@ import io.reactivex.Single
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.model.data.server.ChoiceRequest
+import io.scal.ambi.model.data.server.Host
 import io.scal.ambi.model.data.server.PollCreationRequest
 import io.scal.ambi.model.data.server.PostsApi
 import org.joda.time.Duration
@@ -23,7 +24,8 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                              questionText: String,
                              choices: List<String>,
                              duration: Duration?,
-                             audience: List<Audience>): Completable {
+                             audience: List<Audience>,
+                             hosts: List<IPostsRepository.Host>): Completable {
         return postsApi
             .postNewPoll(PollCreationRequest(asUserUid,
                                              pinned,
@@ -31,7 +33,8 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                              questionText,
                                              audience.map { it.toServerName() },
                                              choices.map { ChoiceRequest(it) },
-                                             duration?.millis)
+                                             duration?.millis,
+                                             hosts.map { Host(it.kind.toServerName(), it.id) })
             )
             .toCompletable()
     }
@@ -43,4 +46,10 @@ private fun Audience.toServerName(): String =
         Audience.FACULTY  -> "Faculty"
         Audience.STAFF    -> "Staff"
         else              -> throw IllegalArgumentException("$this is not listed in server requests names")
+    }
+
+private fun PostHostKind.toServerName(): String =
+    when (this) {
+        PostHostKind.USER -> "User"
+        else              -> throw IllegalArgumentException("$this is not supported yet")
     }

@@ -23,6 +23,9 @@ class PollCreationRequest(val poster: String,
                           val textContent: String,
                           val audience: List<String>,
                           val answerChoices: List<ChoiceRequest>,
-                          val pollEnds: Long?)
+                          val pollEnds: Long?,
+                          val hosts: List<Host>)
+
+class Host(val kind: String, val host: String)
 
 class ChoiceRequest(val text: String)

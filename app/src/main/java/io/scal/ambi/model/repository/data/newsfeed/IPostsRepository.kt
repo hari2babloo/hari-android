@@ -16,5 +16,8 @@ interface IPostsRepository {
                     questionText: String,
                     choices: List<String>,
                     duration: Duration?,
-                    audience: List<Audience>): Completable
+                    audience: List<Audience>,
+                    hosts: List<Host>): Completable
+
+    data class Host(val id: String, val kind: PostHostKind)
 }

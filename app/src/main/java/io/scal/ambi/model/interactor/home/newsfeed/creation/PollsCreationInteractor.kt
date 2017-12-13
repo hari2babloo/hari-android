@@ -7,6 +7,7 @@ import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
+import io.scal.ambi.model.repository.data.newsfeed.PostHostKind
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.toServerResponseException
 import javax.inject.Inject
@@ -37,15 +38,20 @@ class PollsCreationInteractor @Inject constructor(private val localUserDataRepos
                 listOf(newsFeedItemPoll.selectedAudience)
             }
 
-        return postsRepository
-            .postNewPoll(newsFeedItemPoll.pinned,
-                         newsFeedItemPoll.locked,
-                         newsFeedItemPoll.selectedAsUser.uid,
-                         newsFeedItemPoll.questionText,
-                         newsFeedItemPoll.choices.map { it.text },
-                         duration,
-                         audiences
-            )
-            .onErrorResumeNext { t -> Completable.error(t.toServerResponseException()) }
+        return localUserDataRepository.observeCurrentUser()
+            .firstOrError()
+            .flatMapCompletable { user ->
+                postsRepository
+                    .postNewPoll(newsFeedItemPoll.pinned,
+                                 newsFeedItemPoll.locked,
+                                 newsFeedItemPoll.selectedAsUser.uid,
+                                 newsFeedItemPoll.questionText,
+                                 newsFeedItemPoll.choices.map { it.text },
+                                 duration,
+                                 audiences,
+                                 listOf(IPostsRepository.Host(user.uid, PostHostKind.USER))
+                    )
+                    .onErrorResumeNext { t -> Completable.error(t.toServerResponseException()) }
+            }
     }
 }
