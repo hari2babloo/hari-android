@@ -9,7 +9,7 @@ import io.scal.ambi.extensions.view.IconImageUser
 
 class StudentResponse : BaseResponse<User>() {
 
-    @SerializedName("Student")
+    @SerializedName("student")
     @Expose
     internal var student: Student? = null
 

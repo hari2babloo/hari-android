@@ -9,11 +9,16 @@
             name="viewModel"
             type="io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomViewModel"/>
 
+        <variable
+            name="visibility"
+            type="Boolean"/>
+
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:visibility="@{visibility ?? true}">
 
         <ImageView
             android:id="@+id/ic_write"
@@ -28,7 +33,7 @@
             android:id="@+id/ic_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="11dp"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_write"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +44,7 @@
             android:id="@+id/ic_attachment"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="11dp"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_image"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +55,7 @@
             android:id="@+id/ic_smile"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="11dp"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_attachment"
             app:layout_constraintTop_toTopOf="parent"

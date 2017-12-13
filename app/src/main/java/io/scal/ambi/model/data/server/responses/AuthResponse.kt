@@ -10,7 +10,7 @@ class AuthResponse : BaseResponse<AuthResult>() {
     @Expose
     var token: String? = null
 
-    @SerializedName("userId")
+    @SerializedName("id")
     @Expose
     var userId: String? = null
 
