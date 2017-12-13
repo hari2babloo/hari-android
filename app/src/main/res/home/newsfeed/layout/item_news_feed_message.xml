@@ -45,6 +45,18 @@
             app:visibility="@{null != element.announcement}"/>
 
         <include
+            android:id="@+id/c_pin_lock"
+            layout="@layout/item_news_pin_lock_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
+            app:layout_constraintTop_toBottomOf="@+id/v_announcement_header"
+            app:locked="@{element.locked}"
+            app:pinned="@{element.pinned}"
+            />
+
+        <include
             android:id="@+id/c_header"
             layout="@layout/item_news_feed_message_header"
             android:layout_width="0dp"
@@ -63,7 +75,8 @@
             android:id="@+id/tv_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp"
             android:text="@{element.message}"
             android:textColor="@color/dark"
             android:textSize="14sp"
@@ -83,6 +96,7 @@
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
             app:layout_constraintTop_toBottomOf="@+id/tv_message"
+            app:visibility="@{!element.locked}"
             />
 
         <include
@@ -97,6 +111,7 @@
             app:layout_constraintTop_toBottomOf="@+id/v_space"
             app:likeClickListener="@{(view) -> viewModel.openCommentsOf(element)}"
             app:liked="@{element.likes.currentUserLiked}"
+            app:visibility="@{!element.locked}"
             />
 
         <View
@@ -108,6 +123,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/c_like_comment_actions"
+            app:visibility="@{!element.locked}"
             />
 
         <LinearLayout
@@ -117,6 +133,7 @@
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
             app:layout_constraintTop_toBottomOf="@+id/v_space_2"
+            app:visibility="@{!element.locked}"
             >
 
             <include

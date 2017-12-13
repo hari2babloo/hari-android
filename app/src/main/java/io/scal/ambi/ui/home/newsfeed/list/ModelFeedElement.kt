@@ -11,28 +11,34 @@ sealed class ModelFeedElement(val uid: String,
                               val actor: String,
                               val icon: IconImage,
                               val dateTime: LocalDateTime,
+                              val locked: Boolean,
+                              val pinned: Boolean,
                               var announcement: Announcement?) {
 
     class Message(uid: String,
                   val author: User,
                   icon: IconImage,
                   dateTime: LocalDateTime,
+                  locked: Boolean,
+                  pinned: Boolean,
                   announcement: Announcement?,
                   val message: String,
                   val likes: ElementLikes,
-                  val comments: ElementComments) : ModelFeedElement(uid, author.name, icon, dateTime, announcement)
+                  val comments: ElementComments) : ModelFeedElement(uid, author.name, icon, dateTime, locked, pinned, announcement)
 
     class Link(uid: String,
                actor: String,
                icon: IconImage,
                dateTime: LocalDateTime,
+               locked: Boolean,
+               pinned: Boolean,
                announcement: Announcement?,
                val message: String,
                val linkUri: String,
                val linkPreviewImage: IconImage?,
                val linkTitle: String,
                val likes: ElementLikes,
-               val comments: ElementComments) : ModelFeedElement(uid, actor, icon, dateTime, announcement)
+               val comments: ElementComments) : ModelFeedElement(uid, actor, icon, dateTime, locked, pinned, announcement)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
