@@ -1,7 +1,7 @@
 package io.scal.ambi
 
 import android.app.Activity
-import android.app.Application
+import android.support.multidex.MultiDexApplication
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -11,7 +11,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class App : Application(), HasActivityInjector {
+class App : MultiDexApplication(), HasActivityInjector {
 
     @Inject
     lateinit var activityDispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
