@@ -8,7 +8,7 @@
 
         <variable
             name="item"
-            type="io.scal.ambi.entity.feed.PollsEndsTime"/>
+            type="io.scal.ambi.entity.feed.PollEndsTime"/>
 
     </data>
 

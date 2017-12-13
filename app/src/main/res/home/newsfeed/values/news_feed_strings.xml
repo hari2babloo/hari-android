@@ -25,4 +25,12 @@
 
     <string name="title_audience_selection">audience</string>
 
+    <!--todo may be move to plurals?-->
+    <string name="news_feed_poll_votes">%d votes</string>
+    <string name="news_feed_poll_vote">1 vote</string>
+
+    <string name="news_feed_poll_ends_in">this poll ends in %s</string>
+    <string name="news_feed_poll_result_percent">%d %%</string>
+    <string name="news_feed_poll_result_percent_zero"/>
+
 </resources>

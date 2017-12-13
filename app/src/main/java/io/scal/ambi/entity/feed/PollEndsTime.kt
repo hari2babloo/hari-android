@@ -2,9 +2,9 @@ package io.scal.ambi.entity.feed
 
 import org.joda.time.Duration
 
-sealed class PollsEndsTime {
+sealed class PollEndsTime {
 
-    abstract class TimeDuration(val duration: Duration) : PollsEndsTime() {
+    abstract class TimeDuration(val duration: Duration) : PollEndsTime() {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -30,5 +30,5 @@ sealed class PollsEndsTime {
 
     class CustomDefault : Custom(Duration.standardDays(30))
 
-    object Never : PollsEndsTime()
+    object Never : PollEndsTime()
 }

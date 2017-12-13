@@ -27,7 +27,7 @@ class AuthProfileCheckerInteractor @Inject constructor(private val localUserData
             .subscribe(
                 { },
                 {
-                    if (it is ServerResponseException && (it.requiresLogin || it.notFound)) {
+                    if (it is ServerResponseException && (it.requiresLogin || it.notFound || it.notAuthorized)) {
                         localUserDataRepository.removeAllUserInfo().subscribe()
                     }
                 }

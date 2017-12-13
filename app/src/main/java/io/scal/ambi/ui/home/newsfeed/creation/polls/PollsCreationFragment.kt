@@ -10,7 +10,7 @@ import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.FragmentPollsCreationBinding
 import io.scal.ambi.entity.User
-import io.scal.ambi.entity.feed.PollsEndsTime
+import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.ui.global.base.adapter.SimpleSpinnerAdapter
@@ -55,15 +55,15 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
     }
 
     private fun initPollEndsSpinner() {
-        val pollEndsAdapter = SimpleSpinnerAdapter<PollsEndsTime>(R.layout.item_poll_ends_spinner, R.layout.item_poll_ends_spinner_dropdown)
+        val pollEndsAdapter = SimpleSpinnerAdapter<PollEndsTime>(R.layout.item_poll_ends_spinner, R.layout.item_poll_ends_spinner_dropdown)
 
         binding.sPollEnds.adapter = pollEndsAdapter
         binding.sPollEnds.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val pollEndsTime = parent.getItemAtPosition(position) as PollsEndsTime
-                if (pollEndsTime is PollsEndsTime.Custom) {
+                val pollEndsTime = parent.getItemAtPosition(position) as PollEndsTime
+                if (pollEndsTime is PollEndsTime.Custom) {
                     // todo
                 } else {
                     viewModel.selectPollEnds(pollEndsTime)
@@ -77,8 +77,8 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
             .map { it as PollsCreationDataState.Data }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                pollEndsAdapter.updateData(it.pollDurations)
-                binding.sPollEnds.setSelection(it.pollDurations.indexOf(it.selectedPollDuration))
+                pollEndsAdapter.updateData(it.mPollDurations)
+                binding.sPollEnds.setSelection(it.mPollDurations.indexOf(it.selectedPollDuration))
             }
             .addTo(destroyViewDisposables)
     }

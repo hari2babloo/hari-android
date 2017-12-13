@@ -43,6 +43,18 @@ fun <T> MutableList<T>.replaceElements(newData: List<T>, diffCallback: DiffUtil.
     }
 }
 
+fun <T> MutableList<T>.replaceElement(oldItem: T, newItem: T) {
+    val oldItemIndex = indexOf(oldItem)
+    if (-1 != oldItemIndex) {
+        if (this is OptimizedObservableArrayList<*>) {
+            (this as OptimizedObservableArrayList<T>).updateElement(oldItemIndex, newItem)
+        } else {
+            removeAt(oldItemIndex)
+            add(oldItemIndex, newItem)
+        }
+    }
+}
+
 open class DefaultDiffCallback<T>(private val mOldList: List<T>, private val mNewData: List<T>) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int =

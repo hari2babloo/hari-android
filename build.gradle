@@ -36,7 +36,7 @@ ext {
     targetSdkVersion = 27
 
     //libs
-    androidPluginVersion = '2.3.3'
+    androidPluginVersion = '3.0.1'
     supportLibraryVersion = "27.0.2"
     daggerVersion = "2.13"
     leakCanaryVersion = "1.5.4"

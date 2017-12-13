@@ -1,7 +1,8 @@
-package io.scal.ambi.ui.home.newsfeed.list
+package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemNewsFeedHeaderBinding
+import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
 internal class NewsFeedAdapterHeaderDelegate(private val headerElement: Any, viewModel: NewsFeedViewModel) :
     NewsFeedAdapterBaseDelegate<ItemNewsFeedHeaderBinding>(viewModel) {

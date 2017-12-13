@@ -7,18 +7,19 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import io.scal.ambi.R
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.actions.ElementComments
 import io.scal.ambi.entity.actions.ElementLikes
 import io.scal.ambi.entity.feed.Announcement
 import io.scal.ambi.entity.feed.Audience
+import io.scal.ambi.entity.feed.NewsFeedItem
+import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
+import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
-import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.navigation.ResultCodes
@@ -106,14 +107,55 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                     .observeOn(rxSchedulersAbs.computationScheduler)
                     .flatMap {
                         Observable.fromIterable(it)
-                            .map<ModelFeedElement>({ throw NotImplementedError("implement model change") })
+                            .map<ModelFeedElement> { it.toNewsFeedElement() }
                             .toList()
                     }
                     .onErrorReturn {
                         listOf(
-                            ModelFeedElement.Message("${page * 5 + 0}",
+                            ModelFeedElement.Poll("${page * 20 + 0}",
+                                                  currentUser.get(),
+                                                  LocalDateTime.now(),
+                                                  true,
+                                                  true,
+                                                  null,
+                                                  "Is it true?",
+                                                  listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())).toPollVotedResult(),
+                                                  null,
+                                                  null,
+                                                  ElementLikes(false, emptyList()),
+                                                  ElementComments(emptyList())
+                            ),
+                            ModelFeedElement.Poll("${page * 20 + 1}",
+                                                  currentUser.get(),
+                                                  LocalDateTime.now(),
+                                                  false,
+                                                  true,
+                                                  null,
+                                                  "Is it true?",
+                                                  listOf(PollChoice("1", "Yes", emptyList()),
+                                                         PollChoice("2", "No", listOf(currentUser.get()))).toPollVotedResult(),
+                                                  null,
+                                                  LocalDateTime(2018, 1, 5, 10, 23, 0),
+                                                  ElementLikes(false, emptyList()),
+                                                  ElementComments(emptyList())
+                            ),
+                            ModelFeedElement.Poll("${page * 20 + 2}",
+                                                  currentUser.get(),
+                                                  LocalDateTime.now(),
+                                                  false,
+                                                  true,
+                                                  null,
+                                                  "Is it true?",
+                                                  listOf(PollChoice("1", "Yes", listOf(currentUser.get())),
+                                                         PollChoice("2", "No", listOf(currentUser.get(), currentUser.get())))
+                                                      .toPollVotedResult(),
+                                                  PollChoice("1", "Yes", emptyList()),
+                                                  LocalDateTime.now(),
+                                                  ElementLikes(false, emptyList()),
+                                                  ElementComments(emptyList())
+                            ),
+                            ModelFeedElement.Message("${page * 20 + 15}",
                                                      currentUser.get(),
-                                                     IconImage(R.drawable.ic_profile),
                                                      LocalDateTime.now(),
                                                      false,
                                                      true,
@@ -122,9 +164,8 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                      ElementLikes(false, emptyList()),
                                                      ElementComments(emptyList())
                             ),
-                            ModelFeedElement.Message("${page * 5 + 1}",
+                            ModelFeedElement.Message("${page * 20 + 16}",
                                                      currentUser.get(),
-                                                     IconImage("https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-9/12140762_1159067420823544_4471328164031495581_n.jpg?oh=e9255c0340cca64e7f51bb114bc25f9c&oe=5AC9097D"),
                                                      LocalDateTime(2017, 12, 7, 15, 20),
                                                      true,
                                                      true,
@@ -133,9 +174,8 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                      ElementLikes(true, listOf(currentUser.get())),
                                                      ElementComments(emptyList())
                             ),
-                            ModelFeedElement.Message("${page * 5 + 2}",
+                            ModelFeedElement.Message("${page * 20 + 17}",
                                                      currentUser.get(),
-                                                     IconImage("https://cdn.pixabay.com/photo/2013/04/06/11/50/image-editing-101040_960_720.jpg"),
                                                      LocalDateTime(2017, 12, 25, 15, 0),
                                                      true,
                                                      false,
@@ -150,9 +190,8 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                                          currentUser.get())),
                                                      ElementComments(emptyList())
                             ),
-                            ModelFeedElement.Message("${page * 5 + 3}",
+                            ModelFeedElement.Message("${page * 20 + 18}",
                                                      currentUser.get(),
-                                                     IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
                                                      LocalDateTime(2017, 10, 7, 15, 0),
                                                      false,
                                                      false,
@@ -163,9 +202,8 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                                                                                     "just comment!!!",
                                                                                     LocalDateTime.now())))
                             ),
-                            ModelFeedElement.Message("${page * 5 + 4}",
+                            ModelFeedElement.Message("${page * 20 + 19}",
                                                      currentUser.get(),
-                                                     IconImage("https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/68dd54ca-60cf-4ef7-898b-26d7cbe48ec7/10-dithering-opt.jpg"),
                                                      LocalDateTime(2017, 10, 1, 15, 0),
                                                      false,
                                                      false,
@@ -244,6 +282,50 @@ class NewsFeedViewModel @Inject constructor(router: Router,
 //        router.navigateTo(NavigateTo.ALL_COMMENTS_OF, element)
     }
 
+    fun selectPollChoice(element: ModelFeedElement.Poll, choice: ModelFeedElement.Poll.PollChoiceResult) {
+        val currentDataState = dataState.get()
+        if (currentDataState is NewsFeedDataState.Data) {
+            if (currentDataState.newsFeed.contains(element)) {
+                val choices = element.choices.map {
+                    if (it == choice) {
+                        val voters = it.pollChoice.voters.toMutableList()
+                        voters.add(currentUser.get())
+                        it.copy(pollChoice = it.pollChoice.copy(voters = voters),
+                                totalVotes = it.totalVotes + 1)
+                    } else
+                        it.copy(totalVotes = it.totalVotes + 1)
+                }
+                val newFeedElement = element.copy(choices = choices, userChoice = choice.pollChoice)
+
+                currentDataState.newsFeed.replaceElement(element, newFeedElement)
+
+                interactor.answerForPoll(choice.pollChoice, element.uid)
+                    .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                    .subscribe({ updatedElement ->
+                                   val upToDateDataState = dataState.get()
+                                   if (upToDateDataState is NewsFeedDataState.Data) {
+                                       if (upToDateDataState.newsFeed.contains(newFeedElement)) {
+                                           upToDateDataState.newsFeed.replaceElement(newFeedElement, updatedElement.toNewsFeedElement())
+                                       }
+                                   }
+                               },
+                               { t ->
+                                   handleError(t)
+
+                                   val upToDateDataState = dataState.get()
+                                   if (upToDateDataState is NewsFeedDataState.Data) {
+                                       if (upToDateDataState.newsFeed.contains(newFeedElement)) {
+                                           upToDateDataState.newsFeed.replaceElement(newFeedElement, element)
+                                           errorState.set(NewsFeedErrorState.NonFatalErrorState(t))
+                                           errorState.set(NewsFeedErrorState.NoErrorState)
+                                       }
+                                   }
+                               })
+                    .addTo(disposables)
+            }
+        }
+    }
+
     fun refresh() {
         paginator.refresh()
     }
@@ -283,4 +365,24 @@ class NewsFeedViewModel @Inject constructor(router: Router,
 
         super.onCleared()
     }
+}
+
+private fun NewsFeedItem.toNewsFeedElement(): ModelFeedElement? {
+    throw NotImplementedError("implement model change")
+}
+
+private fun List<PollChoice>.toPollVotedResult(): List<ModelFeedElement.Poll.PollChoiceResult> {
+    val totalVotes = fold(0, { acc, pollChoice -> acc + pollChoice.voters.size })
+    val mostVoted = fold(ArrayList(), { acc: MutableList<PollChoice>, pollChoice ->
+        when {
+            acc.isEmpty()                                -> acc.add(pollChoice)
+            acc[0].voters.size < pollChoice.voters.size  -> {
+                acc.clear()
+                acc.add(pollChoice)
+            }
+            acc[0].voters.size == pollChoice.voters.size -> acc.add(pollChoice)
+        }
+        acc
+    })
+    return map { ModelFeedElement.Poll.PollChoiceResult(it, totalVotes, mostVoted.contains(it)) }
 }

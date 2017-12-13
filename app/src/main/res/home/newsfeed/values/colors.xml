@@ -11,4 +11,7 @@
     <color name="news_feed_announcement_safety">#e60000</color>
     <color name="news_feed_announcement_tragedy">#e67a00</color>
 
+    <color name="news_feed_poll_most_voted">#00a6ef</color>
+    <color name="news_feed_poll_simple">#565656</color>
+
 </resources>

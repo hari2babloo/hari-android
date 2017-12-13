@@ -1,12 +1,14 @@
-package io.scal.ambi.ui.home.newsfeed.list
+package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import android.databinding.ObservableList
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegatesManager
 import io.scal.ambi.ui.global.base.adapter.BaseAdapterDataObserver
+import io.scal.ambi.ui.home.newsfeed.list.ModelFeedElement
+import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
-internal class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val headerElement = Any()
     private val footerElement = Any()
@@ -19,6 +21,7 @@ internal class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adap
     init {
         delegatesManager.addDelegate(NewsFeedAdapterHeaderDelegate(headerElement, viewModel))
         delegatesManager.addDelegate(NewsFeedAdapterMessageDelegate(viewModel))
+        delegatesManager.addDelegate(NewsFeedAdapterPollDelegate(viewModel))
         delegatesManager.addDelegate(NewsFeedAdapterLinkDelegate(viewModel))
         delegatesManager.addDelegate(NewsFeedAdapterFooterDelegate(footerElement, viewModel))
     }

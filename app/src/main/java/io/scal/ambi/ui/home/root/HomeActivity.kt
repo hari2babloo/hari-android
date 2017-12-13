@@ -61,7 +61,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
     private fun initNavigation() {
         bottomBarFragmentSwitcher = BottomBarFragmentSwitcher(
             supportFragmentManager,
-            binding.bottomBar.bottomBar,
+            binding.bottomBar!!.bottomBar,
             hashMapOf(
                 Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
                 Pair(R.id.tab_calendar, Fragment::class),

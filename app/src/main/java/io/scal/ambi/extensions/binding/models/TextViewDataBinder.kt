@@ -6,9 +6,8 @@ import android.support.v4.content.res.ResourcesCompat
 import android.widget.EditText
 import android.widget.TextView
 import io.scal.ambi.R
-import io.scal.ambi.entity.feed.PollsEndsTime
-import org.joda.time.LocalDateTime
-import org.joda.time.Seconds
+import io.scal.ambi.entity.feed.PollEndsTime
+import org.joda.time.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.PeriodFormatterBuilder
 import java.util.*
@@ -70,8 +69,8 @@ object TextViewDataBinder {
 
     @JvmStatic
     @BindingAdapter("durationPollEnds")
-    fun bindDurationPollEnds(textView: TextView, pollsEndsTime: PollsEndsTime?) {
-        if (null == pollsEndsTime) {
+    fun bindDurationPollEnds(textView: TextView, pollEndsTime: PollEndsTime?) {
+        if (null == pollEndsTime) {
             textView.text = null
         } else {
             val context = textView.context
@@ -82,23 +81,47 @@ object TextViewDataBinder {
                 .appendSuffix("h")
                 .appendMinutes()
                 .appendSuffix("m")
-                .appendSeconds()
-                .appendSuffix("s")
                 .toFormatter()
 
             val text =
-                when (pollsEndsTime) {
-                    is PollsEndsTime.OneDay        -> context.getString(R.string.creation_poll_ends_duration_1_day)
-                    is PollsEndsTime.OneWeek       -> context.getString(R.string.creation_poll_ends_duration_1_week)
-                    is PollsEndsTime.CustomDefault -> context.getString(R.string.creation_poll_ends_duration_custom_title)
-                    is PollsEndsTime.Custom        -> {
-                        val formatted = formatter.print(pollsEndsTime.duration.toPeriod())
+                when (pollEndsTime) {
+                    is PollEndsTime.OneDay        -> context.getString(R.string.creation_poll_ends_duration_1_day)
+                    is PollEndsTime.OneWeek       -> context.getString(R.string.creation_poll_ends_duration_1_week)
+                    is PollEndsTime.CustomDefault -> context.getString(R.string.creation_poll_ends_duration_custom_title)
+                    is PollEndsTime.Custom        -> {
+                        val formatted = formatter.print(pollEndsTime.duration.toPeriodFrom(DateTime.now()))
                         context.getString(R.string.creation_poll_ends_duration_custom, formatted)
                     }
-                    PollsEndsTime.Never            -> context.getString(R.string.creation_poll_ends_duration_never)
-                    is PollsEndsTime.TimeDuration  -> throw IllegalStateException("todo implement custom text")
+                    PollEndsTime.Never            -> context.getString(R.string.creation_poll_ends_duration_never)
+                    is PollEndsTime.TimeDuration  -> throw IllegalStateException("todo implement custom text")
                 }
             textView.text = text
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("durationPollEndsIn")
+    fun bindDurationPollEndsIn(textView: TextView, pollEndsTime: LocalDateTime?) {
+        if (null == pollEndsTime) {
+            textView.text = null
+        } else {
+            val context = textView.context
+            val formatter = PeriodFormatterBuilder()
+                .appendDays()
+                .appendSuffix("d ")
+                .appendHours()
+                .appendSuffix("h ")
+                .appendMinutes()
+                .appendSuffix("m")
+                .toFormatter()
+
+            val pollDurationLeft = Duration(LocalDateTime.now().toDateTime(DateTimeZone.UTC), pollEndsTime.toDateTime(DateTimeZone.UTC))
+            if (pollDurationLeft.millis < 0) {
+                // poll was ended
+                textView.text = null
+            } else {
+                textView.text = context.getString(R.string.news_feed_poll_ends_in, formatter.print(pollDurationLeft.toPeriodFrom(DateTime.now())))
+            }
         }
     }
 

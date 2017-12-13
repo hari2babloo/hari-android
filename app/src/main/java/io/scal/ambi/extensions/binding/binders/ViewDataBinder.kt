@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import android.widget.LinearLayout
 import android.widget.Spinner
 import io.scal.ambi.extensions.DrawablesUtils
 
@@ -60,6 +61,18 @@ object ViewDataBinder {
         val layoutParams = view.layoutParams as MarginLayoutParams
         layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, bottomMargin.toInt())
         view.layoutParams = layoutParams
+    }
+
+    @JvmStatic
+    @BindingAdapter("android:layout_weight")
+    fun setLayoutWeight(view: View, weight: Float?) {
+        if (weight == null) {
+            return
+        }
+        (view.layoutParams as? LinearLayout.LayoutParams)?.run {
+            this.weight = weight
+            view.layoutParams = this
+        }
     }
 
     @JvmStatic

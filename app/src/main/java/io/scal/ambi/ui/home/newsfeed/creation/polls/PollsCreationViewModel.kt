@@ -6,8 +6,9 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItemPollCreation
-import io.scal.ambi.entity.feed.PollsEndsTime
+import io.scal.ambi.entity.feed.NewsFeedItemPoll
+import io.scal.ambi.entity.feed.PollChoice
+import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -27,7 +28,7 @@ class PollsCreationViewModel @Inject constructor(router: Router,
     val progressStateModel = ObservableField<PollsCreationProgressState>(PollsCreationProgressState.Progress)
     val errorStateModel = ObservableField<PollsCreationErrorState>(PollsCreationErrorState.NoError)
 
-    private val allPollEnds = listOf(PollsEndsTime.OneDay(), PollsEndsTime.OneWeek(), PollsEndsTime.CustomDefault(), PollsEndsTime.Never)
+    private val allPollEnds = listOf(PollEndsTime.OneDay(), PollEndsTime.OneWeek(), PollEndsTime.CustomDefault(), PollEndsTime.Never)
 
     init {
         loadAsUsers()
@@ -68,18 +69,18 @@ class PollsCreationViewModel @Inject constructor(router: Router,
         }
     }
 
-    fun selectPollEnds(pollsEndsTime: PollsEndsTime) {
+    fun selectPollEnds(pollEndsTime: PollEndsTime) {
         val currentState = dataStateModel.get()
         if (currentState is PollsCreationDataState.Data) {
             val newPollDurations =
-                if (pollsEndsTime is PollsEndsTime.Custom) {
-                    currentState.pollDurations
-                        .map { if (it is PollsEndsTime.Custom) pollsEndsTime else it }
+                if (pollEndsTime is PollEndsTime.Custom) {
+                    currentState.mPollDurations
+                        .map { if (it is PollEndsTime.Custom) pollEndsTime else it }
                 } else {
-                    currentState.pollDurations
+                    currentState.mPollDurations
                 }
 
-            dataStateModel.set(currentState.copy(selectedPollDuration = pollsEndsTime, pollDurations = newPollDurations))
+            dataStateModel.set(currentState.copy(selectedPollDuration = pollEndsTime, mPollDurations = newPollDurations))
         }
     }
 
@@ -101,13 +102,13 @@ class PollsCreationViewModel @Inject constructor(router: Router,
                 if (currentState is PollsCreationDataState.Data && progressStateModel.get() is PollsCreationProgressState.NoProgress) {
                     progressStateModel.set(PollsCreationProgressState.Progress)
 
-                    val pollToCreate = NewsFeedItemPollCreation(currentState.pinned,
-                                                                currentState.locked,
-                                                                currentState.selectedAsUser,
-                                                                currentState.questionText.get(),
-                                                                currentState.choices.map { it.choiceInput.get() },
-                                                                currentState.selectedPollDuration,
-                                                                bottomViewModel.selectedAudience.get())
+                    val pollToCreate = NewsFeedItemPoll(currentState.pinned,
+                                                        currentState.locked,
+                                                        currentState.selectedAsUser,
+                                                        currentState.questionText.get(),
+                                                        currentState.choices.map { it.choiceInput.get() }.map { PollChoice.createNew(it) },
+                                                        currentState.selectedPollDuration,
+                                                        bottomViewModel.selectedAudience.get())
 
                     interactor.postPoll(pollToCreate)
                         .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
@@ -176,7 +177,7 @@ class PollsCreationViewModel @Inject constructor(router: Router,
                                                                    listOf(PollsCreationChoiceViewModel("", 1),
                                                                           PollsCreationChoiceViewModel("", 2)
                                                                    ),
-                                                                   PollsEndsTime.OneDay(),
+                                                                   PollEndsTime.OneDay(),
                                                                    allPollEnds
                     ))
                 },

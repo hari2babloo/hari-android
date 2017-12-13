@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.newsfeed.creation.polls
 
 import io.scal.ambi.entity.User
-import io.scal.ambi.entity.feed.PollsEndsTime
+import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.extensions.binding.observable.ObservableString
 
 sealed class PollsCreationDataState(open val pinned: Boolean = false,
@@ -9,10 +9,10 @@ sealed class PollsCreationDataState(open val pinned: Boolean = false,
                                     open val selectedAsUser: User? = null,
                                     open val questionText: ObservableString? = null,
                                     open val choices: List<PollsCreationChoiceViewModel>? = null,
-                                    open val selectedPollDuration: PollsEndsTime? = null) {
+                                    open val selectedPollDuration: PollEndsTime? = null) {
 
     open val asUsers: List<User>? = null
-    open val pollDurations: List<PollsEndsTime>? = null
+    open val mPollDurations: List<PollEndsTime>? = null
 
     internal data class Data(override val pinned: Boolean,
                              override val locked: Boolean,
@@ -20,14 +20,14 @@ sealed class PollsCreationDataState(open val pinned: Boolean = false,
                              override val asUsers: List<User>,
                              override val questionText: ObservableString,
                              override val choices: List<PollsCreationChoiceViewModel>,
-                             override val selectedPollDuration: PollsEndsTime,
-                             override val pollDurations: List<PollsEndsTime>) : PollsCreationDataState() {
+                             override val selectedPollDuration: PollEndsTime,
+                             override val mPollDurations: List<PollEndsTime>) : PollsCreationDataState() {
 
         init {
             if (!asUsers.contains(selectedAsUser)) {
                 throw IllegalStateException("selected user should be in all as users")
             }
-            if (!pollDurations.contains(selectedPollDuration)) {
+            if (!mPollDurations.contains(selectedPollDuration)) {
                 throw IllegalStateException("selected poll duration should be in all as poll durations")
             }
         }

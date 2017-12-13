@@ -1,6 +1,5 @@
 package io.scal.ambi.extensions.binding.binders
 
-import android.arch.lifecycle.ViewModel
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
@@ -13,8 +12,8 @@ import io.scal.ambi.R
 object ViewGroupBinder {
 
     @JvmStatic
-    @BindingAdapter("viewGroupModels", "viewModelLayoutId")
-    fun setDetailViews(viewGroup: ViewGroup, viewModels: List<ViewModel>?, layoutId: Int?) {
+    @BindingAdapter(value = ["viewGroupModels", "viewModelLayoutId", "viewModelClickListener"], requireAll = false)
+    fun <T> setDetailViews(viewGroup: ViewGroup, viewModels: List<T>?, layoutId: Int?, modelClickListener: ViewModelClickListener?) {
         if (null == viewModels || null == layoutId) {
             viewGroup.removeAllViews()
         } else {
@@ -30,6 +29,7 @@ object ViewGroupBinder {
                     val child = viewDataBinding.root
                     child.setTag(R.id.id_screen_model, viewModel)
                     viewGroup.addView(child, i)
+                    modelClickListener?.run { child.setOnClickListener { onModelClicked(i) } }
                     viewDataBinding.setVariable(BR.viewModel, viewModel)
                     viewDataBinding.executePendingBindings()
                 } else {
@@ -37,6 +37,7 @@ object ViewGroupBinder {
                         val hasFocus = view.hasFocus()
                         viewGroup.removeView(view)
                         viewGroup.addView(view, i)
+                        modelClickListener?.run { view.setOnClickListener { onModelClicked(i) } }
                         if (hasFocus) {
                             view.requestFocus()
                         }
@@ -46,11 +47,11 @@ object ViewGroupBinder {
         }
     }
 
-    private fun removeOldViews(viewGroup: ViewGroup, detailScreenModels: List<ViewModel>) {
+    private fun <T> removeOldViews(viewGroup: ViewGroup, detailScreenModels: List<T>) {
         var i = 0
         while (i < viewGroup.childCount) {
             val child = viewGroup.getChildAt(i)
-            val screenModel = getCurrentModelOfView(child)
+            val screenModel = getCurrentModelOfView<T>(child)
             if (detailScreenModels.contains(screenModel)) {
                 i++
             } else {
@@ -73,5 +74,10 @@ object ViewGroupBinder {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun getCurrentModelOfView(child: View): ViewModel = child.getTag(R.id.id_screen_model) as ViewModel
+    private fun <T> getCurrentModelOfView(child: View): T? = child.getTag(R.id.id_screen_model) as? T
+
+    interface ViewModelClickListener {
+
+        fun onModelClicked(position: Int)
+    }
 }

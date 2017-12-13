@@ -60,6 +60,14 @@ class OptimizedObservableArrayList<T> : ObservableArrayList<T> {
         })
     }
 
+    fun updateElement(oldItemIndex: Int, newItem: T) {
+        executeChange(false, {
+            removeAt(oldItemIndex)
+            add(oldItemIndex, newItem)
+        })
+        listChangeRegistry?.notifyChanged(this, oldItemIndex, 1)
+    }
+
     fun swapElements(firstPosition: Int, secondPosition: Int, notifyObservers: Boolean = true) {
         executeChange(notifyObservers, { swapElementsInList(this, firstPosition, secondPosition) })
     }

@@ -4,8 +4,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItemPollCreation
-import io.scal.ambi.entity.feed.PollsEndsTime
+import io.scal.ambi.entity.feed.NewsFeedItemPoll
+import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.toServerResponseException
@@ -23,26 +23,26 @@ class PollsCreationInteractor @Inject constructor(private val localUserDataRepos
             .firstOrError()
     }
 
-    override fun postPoll(newsFeedItemPollCreation: NewsFeedItemPollCreation): Completable {
+    override fun postPoll(newsFeedItemPoll: NewsFeedItemPoll): Completable {
         val duration =
-            if (newsFeedItemPollCreation.selectedPollDuration is PollsEndsTime.Never) {
+            if (newsFeedItemPoll.selectedPollDuration is PollEndsTime.Never) {
                 null
             } else {
-                (newsFeedItemPollCreation.selectedPollDuration as PollsEndsTime.TimeDuration).duration
+                (newsFeedItemPoll.selectedPollDuration as PollEndsTime.TimeDuration).duration
             }
         val audiences =
-            if (newsFeedItemPollCreation.selectedAudience == Audience.EVERYONE) {
+            if (newsFeedItemPoll.selectedAudience == Audience.EVERYONE) {
                 availableAudiences
             } else {
-                listOf(newsFeedItemPollCreation.selectedAudience)
+                listOf(newsFeedItemPoll.selectedAudience)
             }
 
         return postsRepository
-            .postNewPoll(newsFeedItemPollCreation.pinned,
-                         newsFeedItemPollCreation.locked,
-                         newsFeedItemPollCreation.selectedAsUser.uid,
-                         newsFeedItemPollCreation.questionText,
-                         newsFeedItemPollCreation.choices,
+            .postNewPoll(newsFeedItemPoll.pinned,
+                         newsFeedItemPoll.locked,
+                         newsFeedItemPoll.selectedAsUser.uid,
+                         newsFeedItemPoll.questionText,
+                         newsFeedItemPoll.choices.map { it.text },
                          duration,
                          audiences
             )

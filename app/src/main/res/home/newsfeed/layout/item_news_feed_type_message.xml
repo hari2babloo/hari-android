@@ -46,7 +46,7 @@
 
         <include
             android:id="@+id/c_pin_lock"
-            layout="@layout/item_news_pin_lock_header"
+            layout="@layout/item_news_feed_item_pin_lock_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -58,7 +58,7 @@
 
         <include
             android:id="@+id/c_header"
-            layout="@layout/item_news_feed_message_header"
+            layout="@layout/item_news_feed_item_user_name_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
@@ -91,7 +91,7 @@
             android:id="@+id/v_space"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="7dp"
             android:background="#E9E9E9"
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
