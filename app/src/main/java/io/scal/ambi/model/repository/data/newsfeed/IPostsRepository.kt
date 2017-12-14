@@ -1,6 +1,5 @@
 package io.scal.ambi.model.repository.data.newsfeed
 
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
@@ -17,7 +16,7 @@ interface IPostsRepository {
                     choices: List<String>,
                     duration: Duration?,
                     audience: List<Audience>,
-                    hosts: List<Host>): Completable
+                    hosts: List<Host>): Single<NewsFeedItem>
 
     data class Host(val id: String, val kind: PostHostKind)
 }

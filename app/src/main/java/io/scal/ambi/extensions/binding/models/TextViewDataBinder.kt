@@ -7,7 +7,9 @@ import android.widget.EditText
 import android.widget.TextView
 import io.scal.ambi.R
 import io.scal.ambi.entity.feed.PollEndsTime
-import org.joda.time.*
+import org.joda.time.DateTime
+import org.joda.time.Duration
+import org.joda.time.Seconds
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.PeriodFormatterBuilder
 import java.util.*
@@ -47,13 +49,13 @@ object TextViewDataBinder {
 
     @JvmStatic
     @BindingAdapter("datePassed")
-    fun bindDateTimePassed(textView: TextView, dateTime: LocalDateTime?) {
+    fun bindDateTimePassed(textView: TextView, dateTime: DateTime?) {
         if (null == dateTime) {
             textView.text = null
         } else {
             // we can use build in solution or a library here, but I don't know restrictions now, so will create simple code for that
             val context = textView.context
-            val nowDateTime = LocalDateTime.now()
+            val nowDateTime = DateTime.now()
             val secondsBetween = Seconds.secondsBetween(dateTime, nowDateTime).toStandardDuration()
             val resultText = when {
                 secondsBetween.standardSeconds < 0  -> FULL_DATE_TIME_FORMATTER.print(dateTime)
@@ -101,7 +103,7 @@ object TextViewDataBinder {
 
     @JvmStatic
     @BindingAdapter("durationPollEndsIn")
-    fun bindDurationPollEndsIn(textView: TextView, pollEndsTime: LocalDateTime?) {
+    fun bindDurationPollEndsIn(textView: TextView, pollEndsTime: DateTime?) {
         if (null == pollEndsTime) {
             textView.text = null
         } else {
@@ -115,7 +117,7 @@ object TextViewDataBinder {
                 .appendSuffix("m")
                 .toFormatter()
 
-            val pollDurationLeft = Duration(LocalDateTime.now().toDateTime(DateTimeZone.UTC), pollEndsTime.toDateTime(DateTimeZone.UTC))
+            val pollDurationLeft = Duration(DateTime.now(), pollEndsTime)
             if (pollDurationLeft.millis < 0) {
                 // poll was ended
                 textView.text = null

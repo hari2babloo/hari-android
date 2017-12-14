@@ -1,10 +1,9 @@
 package io.scal.ambi.model.interactor.home.newsfeed.creation
 
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItemPoll
+import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.data.newsfeed.PostHostKind
@@ -24,34 +23,34 @@ class PollsCreationInteractor @Inject constructor(private val localUserDataRepos
             .firstOrError()
     }
 
-    override fun postPoll(newsFeedItemPoll: NewsFeedItemPoll): Completable {
+    override fun postPoll(pollCreation: PollCreation): Single<NewsFeedItem> {
         val duration =
-            if (newsFeedItemPoll.selectedPollDuration is PollEndsTime.Never) {
+            if (pollCreation.pollDuration is PollEndsTime.Never) {
                 null
             } else {
-                (newsFeedItemPoll.selectedPollDuration as PollEndsTime.TimeDuration).duration
+                (pollCreation.pollDuration as PollEndsTime.TimeDuration).duration
             }
         val audiences =
-            if (newsFeedItemPoll.selectedAudience == Audience.EVERYONE) {
+            if (pollCreation.audiences == Audience.EVERYONE) {
                 availableAudiences
             } else {
-                listOf(newsFeedItemPoll.selectedAudience)
+                listOf(pollCreation.audiences)
             }
 
         return localUserDataRepository.observeCurrentUser()
             .firstOrError()
-            .flatMapCompletable { user ->
+            .flatMap { user ->
                 postsRepository
-                    .postNewPoll(newsFeedItemPoll.pinned,
-                                 newsFeedItemPoll.locked,
-                                 newsFeedItemPoll.selectedAsUser.uid,
-                                 newsFeedItemPoll.questionText,
-                                 newsFeedItemPoll.choices.map { it.text },
+                    .postNewPoll(pollCreation.pinned,
+                                 pollCreation.locked,
+                                 pollCreation.selectedAsUser.uid,
+                                 pollCreation.questionText,
+                                 pollCreation.choices.map { it.text },
                                  duration,
                                  audiences,
                                  listOf(IPostsRepository.Host(user.uid, PostHostKind.USER))
                     )
-                    .onErrorResumeNext { t -> Completable.error(t.toServerResponseException()) }
+                    .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
             }
     }
 }

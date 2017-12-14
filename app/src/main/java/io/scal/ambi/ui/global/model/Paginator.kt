@@ -7,7 +7,8 @@ import timber.log.Timber
 @Suppress("ClassName")
 class Paginator<in T>(
     private val requestFactory: (Int) -> Single<List<T>>,
-    private val viewController: ViewController<T>
+    private val viewController: ViewController<T>,
+    inactive: Boolean = false
 ) {
 
     interface ViewController<in T> {
@@ -22,19 +23,21 @@ class Paginator<in T>(
 
     private val firstPage = 1
 
-    private var currentState: State<T> = EMPTY()
+    private var currentState: State<T> = if (inactive) INACTIVE() else EMPTY()
     private var currentPage = 0
     private val currentData = mutableListOf<T>()
     private var disposable: Disposable? = null
+
+    fun activate() {
+        currentState.activate()
+    }
 
     fun refresh() {
         currentState.refresh()
     }
 
-    fun refreshForce() {
-        currentState.release()
-        currentState = EMPTY()
-        currentState.refresh()
+    fun forceRefresh() {
+        currentState.forceRefresh()
     }
 
     fun loadNewPage() {
@@ -55,7 +58,20 @@ class Paginator<in T>(
     }
 
     private inner open class State<in T> {
+        open fun activate() {}
         open fun refresh() {}
+        open fun forceRefresh() {
+            viewController.showData(false)
+            viewController.showEmptyView(false)
+            viewController.showEmptyError(false)
+            viewController.showPageProgress(false)
+            viewController.showRefreshProgress(false)
+            viewController.showEmptyProgress(false)
+
+            currentState = EMPTY()
+            currentState.refresh()
+        }
+
         open fun loadNewPage() {}
         open fun newData(data: List<T>) {}
         open fun fail(error: Throwable) {
@@ -65,6 +81,15 @@ class Paginator<in T>(
         fun release() {
             currentState = RELEASED()
             disposable?.dispose()
+        }
+    }
+
+    private inner class INACTIVE : State<T>() {
+
+        override fun activate() {
+            super.activate()
+
+            currentState = EMPTY()
         }
     }
 

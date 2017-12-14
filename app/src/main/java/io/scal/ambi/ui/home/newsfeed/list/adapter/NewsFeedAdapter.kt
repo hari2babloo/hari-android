@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegatesManager
 import io.scal.ambi.ui.global.base.adapter.BaseAdapterDataObserver
-import io.scal.ambi.ui.home.newsfeed.list.ModelFeedElement
+import io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
 class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -39,7 +39,7 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<Recyc
     override fun getItemViewType(position: Int): Int =
         delegatesManager.getItemViewType(headerFeedList, position)
 
-    fun updateData(data: ObservableList<ModelFeedElement>) {
+    fun updateData(data: ObservableList<ElementModelFeed>) {
         releaseData()
         headerFeedList = headerFeedList.copy(feedData = data)
         dataObserver = NewsFeedAdapterDataObserver(data, this)
@@ -59,7 +59,7 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<Recyc
 
     private data class HeaderFooterFeedList(private val headerElement: Any,
                                             private val footerElement: Any,
-                                            private val feedData: List<ModelFeedElement>) : AbstractList<Any>() {
+                                            private val feedData: List<ElementModelFeed>) : AbstractList<Any>() {
 
         private var showPageProgress: Boolean = false
 
@@ -87,8 +87,8 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<Recyc
         }
     }
 
-    private class NewsFeedAdapterDataObserver(data: ObservableList<ModelFeedElement>, adapter: RecyclerView.Adapter<*>) :
-        BaseAdapterDataObserver<ModelFeedElement>(data, adapter) {
+    private class NewsFeedAdapterDataObserver(data: ObservableList<ElementModelFeed>, adapter: RecyclerView.Adapter<*>) :
+        BaseAdapterDataObserver<ElementModelFeed>(data, adapter) {
 
         override fun notifyItemRangeChanged(adapter: RecyclerView.Adapter<*>, positionStart: Int, itemCount: Int) {
             super.notifyItemRangeChanged(adapter, positionStart + 1, itemCount)

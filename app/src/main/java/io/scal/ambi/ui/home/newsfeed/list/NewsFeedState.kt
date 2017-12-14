@@ -26,5 +26,5 @@ internal sealed class NewsFeedDataState {
 
     object Empty : NewsFeedDataState()
 
-    class Data(val newsFeed: ObservableList<ModelFeedElement>) : NewsFeedDataState()
+    class Data(val newsFeed: ObservableList<ElementModelFeed>) : NewsFeedDataState()
 }

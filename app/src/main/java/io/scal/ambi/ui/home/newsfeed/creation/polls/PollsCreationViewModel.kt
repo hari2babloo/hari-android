@@ -6,13 +6,13 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.newsfeed.creation.IPollsCreationInteractor
+import io.scal.ambi.model.interactor.home.newsfeed.creation.PollCreation
 import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomViewModel
@@ -28,7 +28,7 @@ class PollsCreationViewModel @Inject constructor(router: Router,
     val progressStateModel = ObservableField<PollsCreationProgressState>(PollsCreationProgressState.Progress)
     val errorStateModel = ObservableField<PollsCreationErrorState>(PollsCreationErrorState.NoError)
 
-    private val allPollEnds = listOf(PollEndsTime.OneDay(), PollEndsTime.OneWeek(), PollEndsTime.CustomDefault(), PollEndsTime.Never)
+    private val allPollEnds = listOf(PollEndsTime.OneDay, PollEndsTime.OneWeek, PollEndsTime.CustomDefault(), PollEndsTime.Never)
 
     init {
         loadAsUsers()
@@ -102,18 +102,18 @@ class PollsCreationViewModel @Inject constructor(router: Router,
                 if (currentState is PollsCreationDataState.Data && progressStateModel.get() is PollsCreationProgressState.NoProgress) {
                     progressStateModel.set(PollsCreationProgressState.Progress)
 
-                    val pollToCreate = NewsFeedItemPoll(currentState.pinned,
-                                                        currentState.locked,
-                                                        currentState.selectedAsUser,
-                                                        currentState.questionText.get(),
-                                                        currentState.choices.map { it.choiceInput.get() }.map { PollChoice.createNew(it) },
-                                                        currentState.selectedPollDuration,
-                                                        bottomViewModel.selectedAudience.get())
+                    val pollToCreate = PollCreation(currentState.pinned,
+                                                    currentState.locked,
+                                                    currentState.selectedAsUser,
+                                                    currentState.questionText.get(),
+                                                    currentState.choices.map { it.choiceInput.get() }.map { PollChoice.createNew(it) },
+                                                    currentState.selectedPollDuration,
+                                                    bottomViewModel.selectedAudience.get())
 
                     interactor.postPoll(pollToCreate)
-                        .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
+                        .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
                         .subscribe({
-                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, Any())
+                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, it)
                                    },
                                    { t ->
                                        handleError(t)
@@ -177,7 +177,7 @@ class PollsCreationViewModel @Inject constructor(router: Router,
                                                                    listOf(PollsCreationChoiceViewModel("", 1),
                                                                           PollsCreationChoiceViewModel("", 2)
                                                                    ),
-                                                                   PollEndsTime.OneDay(),
+                                                                   PollEndsTime.OneDay,
                                                                    allPollEnds
                     ))
                 },

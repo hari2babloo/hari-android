@@ -17,7 +17,7 @@ import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
-import io.scal.ambi.ui.home.newsfeed.audience.FeedItemCreation
+import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreation
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
 import io.scal.ambi.ui.home.newsfeed.list.adapter.NewsFeedAdapter
 import ru.terrakok.cicerone.Navigator

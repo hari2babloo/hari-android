@@ -6,7 +6,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
-import io.scal.ambi.ui.home.newsfeed.audience.FeedItemCreation
 import ru.terrakok.cicerone.Router
 import javax.inject.Named
 

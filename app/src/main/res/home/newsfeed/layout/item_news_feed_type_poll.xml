@@ -13,7 +13,7 @@
 
         <variable
             name="element"
-            type="io.scal.ambi.ui.home.newsfeed.list.ModelFeedElement.Poll"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed.Poll"/>
 
     </data>
 
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             app:actor="@{element.actor}"
-            app:dateTime="@{element.dateTime}"
+            app:dateTime="@{element.createdAtDateTime}"
             app:iconClickListener="@{(view) -> viewModel.openAuthorOf(element)}"
             app:iconImage="@{element.icon}"
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"

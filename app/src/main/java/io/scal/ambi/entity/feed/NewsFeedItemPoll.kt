@@ -1,11 +1,24 @@
 package io.scal.ambi.entity.feed
 
 import io.scal.ambi.entity.User
+import io.scal.ambi.entity.actions.Comment
+import org.joda.time.DateTime
 
-data class NewsFeedItemPoll(val pinned: Boolean,
+data class NewsFeedItemPoll(val uid: String,
+                            val pinned: Boolean,
                             val locked: Boolean,
-                            val selectedAsUser: User,
+                            val user: User,
                             val questionText: String,
                             val choices: List<PollChoice>,
-                            val selectedPollDuration: PollEndsTime,
-                            val selectedAudience: Audience)
+                            var pollCreatedAt: DateTime,
+                            val pollEndsTime: PollEndsTime,
+                            val audiences: List<Audience>,
+                            val announcement: Announcement?,
+                            val comments: List<Comment>,
+                            val likes: List<User>) : NewsFeedItem {
+    init {
+        if (audiences.isEmpty()) {
+            throw IllegalArgumentException("audience can not be null")
+        }
+    }
+}

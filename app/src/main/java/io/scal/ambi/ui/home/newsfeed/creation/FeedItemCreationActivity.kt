@@ -17,7 +17,6 @@ import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.FragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
-import io.scal.ambi.ui.home.newsfeed.audience.FeedItemCreation
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationFragment
 import kotlin.reflect.KClass
 
@@ -96,7 +95,7 @@ class FeedItemCreationActivity : BaseToolbarActivity<FeedItemCreationViewModel, 
 
         const val EXTRA_SELECTED_CREATION = "FeedItemCreation"
 
-        fun createScreen(context: Context, feedItemCreation: FeedItemCreation): Intent {
+        internal fun createScreen(context: Context, feedItemCreation: FeedItemCreation): Intent {
             val intent = Intent(context, FeedItemCreationActivity::class.java)
             intent.putExtra(EXTRA_SELECTED_CREATION, feedItemCreation)
             return intent

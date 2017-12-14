@@ -2,7 +2,6 @@ package io.scal.ambi.ui.home.newsfeed.creation
 
 import android.databinding.ObservableField
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
-import io.scal.ambi.ui.home.newsfeed.audience.FeedItemCreation
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 import javax.inject.Named

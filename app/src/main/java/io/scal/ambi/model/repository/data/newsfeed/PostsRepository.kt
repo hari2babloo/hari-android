@@ -1,6 +1,5 @@
 package io.scal.ambi.model.repository.data.newsfeed
 
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
@@ -25,7 +24,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                              choices: List<String>,
                              duration: Duration?,
                              audience: List<Audience>,
-                             hosts: List<IPostsRepository.Host>): Completable {
+                             hosts: List<IPostsRepository.Host>): Single<NewsFeedItem> {
         return postsApi
             .postNewPoll(PollCreationRequest(asUserUid,
                                              pinned,
@@ -36,7 +35,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                              duration?.millis,
                                              hosts.map { Host(it.kind.toServerName(), it.id) })
             )
-            .toCompletable()
+            .map { it.parse() }
     }
 }
 

@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.home.newsfeed.audience
+package io.scal.ambi.ui.home.newsfeed.creation
 
 enum class FeedItemCreation {
 

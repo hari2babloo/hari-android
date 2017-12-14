@@ -5,13 +5,13 @@ import io.reactivex.Single
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.PollChoice
-import org.joda.time.LocalDateTime
+import org.joda.time.DateTime
 
 interface INewsFeedInteractor {
 
-    fun loadNewsFeedPage(page: Int, dateTime: LocalDateTime?): Single<List<NewsFeedItem>>
-
     fun loadCurrentUser(): Observable<User>
+
+    fun loadNewsFeedPage(page: Int, dateTime: DateTime?): Single<List<NewsFeedItem>>
 
     fun answerForPoll(pollChoice: PollChoice, pollUid: String): Single<NewsFeedItem>
 }

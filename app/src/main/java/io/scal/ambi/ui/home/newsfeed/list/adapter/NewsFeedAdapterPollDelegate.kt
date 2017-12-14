@@ -2,7 +2,7 @@ package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemNewsFeedTypePollBinding
-import io.scal.ambi.ui.home.newsfeed.list.ModelFeedElement
+import io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
 internal class NewsFeedAdapterPollDelegate(viewModel: NewsFeedViewModel) :
@@ -11,10 +11,10 @@ internal class NewsFeedAdapterPollDelegate(viewModel: NewsFeedViewModel) :
     override val layoutId: Int = R.layout.item_news_feed_type_poll
 
     override fun isForViewType(items: List<Any>, position: Int): Boolean {
-        return items[position] is ModelFeedElement.Poll
+        return items[position] is ElementModelFeed.Poll
     }
 
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemNewsFeedTypePollBinding, payloads: MutableList<Any>) {
-        binding.element = items[position] as? ModelFeedElement.Poll
+        binding.element = items[position] as? ElementModelFeed.Poll
     }
 }

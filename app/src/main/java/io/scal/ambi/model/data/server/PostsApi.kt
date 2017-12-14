@@ -1,8 +1,8 @@
 package io.scal.ambi.model.data.server
 
 import io.reactivex.Single
-import io.scal.ambi.model.data.server.responses.EmptyResponse
-import io.scal.ambi.model.data.server.responses.PostsResponse
+import io.scal.ambi.model.data.server.responses.newsfeed.PostPollCreationResponse
+import io.scal.ambi.model.data.server.responses.newsfeed.PostsResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -14,7 +14,7 @@ interface PostsApi {
     fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 
     @POST("poll-posts")
-    fun postNewPoll(@Body body: PollCreationRequest): Single<EmptyResponse>
+    fun postNewPoll(@Body body: PollCreationRequest): Single<PostPollCreationResponse>
 }
 
 class PollCreationRequest(val poster: String,

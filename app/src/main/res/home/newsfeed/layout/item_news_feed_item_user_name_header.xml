@@ -22,7 +22,7 @@
 
         <variable
             name="dateTime"
-            type="org.joda.time.LocalDateTime"/>
+            type="org.joda.time.DateTime"/>
 
     </data>
 

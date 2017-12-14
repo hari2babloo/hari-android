@@ -10,7 +10,7 @@
 
         <variable
             name="element"
-            type="io.scal.ambi.ui.home.newsfeed.list.ModelFeedElement.Link"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed.Link"/>
 
     </data>
 

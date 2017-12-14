@@ -2,7 +2,7 @@ package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemNewsFeedTypeLinkBinding
-import io.scal.ambi.ui.home.newsfeed.list.ModelFeedElement
+import io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
 internal class NewsFeedAdapterLinkDelegate(viewModel: NewsFeedViewModel) :
@@ -11,10 +11,10 @@ internal class NewsFeedAdapterLinkDelegate(viewModel: NewsFeedViewModel) :
     override val layoutId: Int = R.layout.item_news_feed_type_link
 
     override fun isForViewType(items: List<Any>, position: Int): Boolean {
-        return items[position] is ModelFeedElement.Link
+        return items[position] is ElementModelFeed.Link
     }
 
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemNewsFeedTypeLinkBinding, payloads: MutableList<Any>) {
-        binding.element = items[position] as? ModelFeedElement.Link
+        binding.element = items[position] as? ElementModelFeed.Link
     }
 }

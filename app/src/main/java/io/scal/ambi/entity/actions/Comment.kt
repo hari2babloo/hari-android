@@ -1,8 +1,8 @@
 package io.scal.ambi.entity.actions
 
 import io.scal.ambi.entity.User
-import org.joda.time.LocalDateTime
+import org.joda.time.DateTime
 
 data class Comment(val user: User,
                    val message: String,
-                   val dateTime: LocalDateTime)
+                   val dateTime: DateTime)

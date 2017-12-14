@@ -11,7 +11,7 @@ import io.scal.ambi.BR
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemLikeUserNamesBinding
 import io.scal.ambi.entity.User
-import io.scal.ambi.entity.actions.ElementLikes
+import io.scal.ambi.ui.home.newsfeed.list.data.ElementLikes
 
 object LikesCommentsBinder {
 

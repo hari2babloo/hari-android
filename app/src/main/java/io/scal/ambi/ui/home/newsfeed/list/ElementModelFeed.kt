@@ -1,43 +1,45 @@
 package io.scal.ambi.ui.home.newsfeed.list
 
 import io.scal.ambi.entity.User
-import io.scal.ambi.entity.actions.ElementComments
-import io.scal.ambi.entity.actions.ElementLikes
 import io.scal.ambi.entity.feed.Announcement
 import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.extensions.view.IconImage
-import org.joda.time.LocalDateTime
+import io.scal.ambi.ui.home.newsfeed.list.data.ElementComments
+import io.scal.ambi.ui.home.newsfeed.list.data.ElementLikes
+import org.joda.time.DateTime
 
-sealed class ModelFeedElement(open val uid: String,
+sealed class ElementModelFeed(open val uid: String,
                               open val actor: String,
                               open val icon: IconImage,
-                              open val dateTime: LocalDateTime,
+                              open val createdAtDateTime: DateTime,
                               open val locked: Boolean,
                               open val pinned: Boolean,
                               open val announcement: Announcement?) {
 
     data class Message(override val uid: String,
                        val author: User,
-                       override val dateTime: LocalDateTime,
+                       override val createdAtDateTime: DateTime,
                        override val locked: Boolean,
                        override val pinned: Boolean,
                        override val announcement: Announcement?,
                        val message: String,
                        val likes: ElementLikes,
-                       val comments: ElementComments) : ModelFeedElement(uid, author.name, author.avatar, dateTime, locked, pinned, announcement)
+                       val comments: ElementComments) :
+        ElementModelFeed(uid, author.name, author.avatar, createdAtDateTime, locked, pinned, announcement)
 
     data class Poll(override val uid: String,
                     val author: User,
-                    override val dateTime: LocalDateTime,
+                    override val createdAtDateTime: DateTime,
                     override val locked: Boolean,
                     override val pinned: Boolean,
                     override val announcement: Announcement?,
                     val question: String,
                     val choices: List<PollChoiceResult>,
                     val userChoice: PollChoice?,
-                    val pollEndsDateTime: LocalDateTime?,
+                    val pollEndsDateTime: DateTime?,
                     val likes: ElementLikes,
-                    val comments: ElementComments) : ModelFeedElement(uid, author.name, author.avatar, dateTime, locked, pinned, announcement) {
+                    val comments: ElementComments) :
+        ElementModelFeed(uid, author.name, author.avatar, createdAtDateTime, locked, pinned, announcement) {
 
         init {
             if (choices.isEmpty()) {
@@ -51,7 +53,7 @@ sealed class ModelFeedElement(open val uid: String,
     data class Link(override val uid: String,
                     override val actor: String,
                     override val icon: IconImage,
-                    override val dateTime: LocalDateTime,
+                    override val createdAtDateTime: DateTime,
                     override val locked: Boolean,
                     override val pinned: Boolean,
                     override val announcement: Announcement?,
@@ -60,5 +62,6 @@ sealed class ModelFeedElement(open val uid: String,
                     val linkPreviewImage: IconImage?,
                     val linkTitle: String,
                     val likes: ElementLikes,
-                    val comments: ElementComments) : ModelFeedElement(uid, actor, icon, dateTime, locked, pinned, announcement)
+                    val comments: ElementComments) :
+        ElementModelFeed(uid, actor, icon, createdAtDateTime, locked, pinned, announcement)
 }
