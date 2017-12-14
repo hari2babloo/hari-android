@@ -18,5 +18,11 @@ interface IPostsRepository {
                     audience: List<Audience>,
                     hosts: List<Host>): Single<NewsFeedItem>
 
+    fun postNewStatus(pinned: Boolean,
+                      locked: Boolean,
+                      asUserUid: String,
+                      statusText: String,
+                      audiences: List<Audience>): Single<NewsFeedItem>
+
     data class Host(val id: String, val kind: PostHostKind)
 }

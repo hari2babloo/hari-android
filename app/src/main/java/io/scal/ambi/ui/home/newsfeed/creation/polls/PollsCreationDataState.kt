@@ -12,7 +12,7 @@ sealed class PollsCreationDataState(open val pinned: Boolean = false,
                                     open val selectedPollDuration: PollEndsTime? = null) {
 
     open val asUsers: List<User>? = null
-    open val mPollDurations: List<PollEndsTime>? = null
+    open val pollDurations: List<PollEndsTime>? = null
 
     internal data class Data(override val pinned: Boolean,
                              override val locked: Boolean,
@@ -21,13 +21,13 @@ sealed class PollsCreationDataState(open val pinned: Boolean = false,
                              override val questionText: ObservableString,
                              override val choices: List<PollsCreationChoiceViewModel>,
                              override val selectedPollDuration: PollEndsTime,
-                             override val mPollDurations: List<PollEndsTime>) : PollsCreationDataState() {
+                             override val pollDurations: List<PollEndsTime>) : PollsCreationDataState() {
 
         init {
             if (!asUsers.contains(selectedAsUser)) {
                 throw IllegalStateException("selected user should be in all as users")
             }
-            if (!mPollDurations.contains(selectedPollDuration)) {
+            if (!pollDurations.contains(selectedPollDuration)) {
                 throw IllegalStateException("selected poll duration should be in all as poll durations")
             }
         }

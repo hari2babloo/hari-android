@@ -37,6 +37,14 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
             )
             .map { it.parse() }
     }
+
+    override fun postNewStatus(pinned: Boolean,
+                               locked: Boolean,
+                               asUserUid: String,
+                               statusText: String,
+                               audiences: List<Audience>): Single<NewsFeedItem> {
+        return Single.error(NotImplementedError("method not implemented yet!"))
+    }
 }
 
 private fun Audience.toServerName(): String =

@@ -38,6 +38,7 @@ class PollsCreationViewModel @Inject constructor(router: Router,
         val audiences = interactor.availableAudiences.toMutableList()
         audiences.add(0, Audience.EVERYONE)
         bottomViewModel.updateAudiences(audiences)
+        bottomViewModel.attachmentActionsEnabled.set(false)
     }
 
     fun reload() {
@@ -74,13 +75,13 @@ class PollsCreationViewModel @Inject constructor(router: Router,
         if (currentState is PollsCreationDataState.Data) {
             val newPollDurations =
                 if (pollEndsTime is PollEndsTime.Custom) {
-                    currentState.mPollDurations
+                    currentState.pollDurations
                         .map { if (it is PollEndsTime.Custom) pollEndsTime else it }
                 } else {
-                    currentState.mPollDurations
+                    currentState.pollDurations
                 }
 
-            dataStateModel.set(currentState.copy(selectedPollDuration = pollEndsTime, mPollDurations = newPollDurations))
+            dataStateModel.set(currentState.copy(selectedPollDuration = pollEndsTime, pollDurations = newPollDurations))
         }
     }
 

@@ -16,4 +16,6 @@
 
     <string name="creation_post">post</string>
 
+    <string name="status_update_text_hint">share something interesting…</string>
+
 </resources>

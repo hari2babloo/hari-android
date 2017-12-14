@@ -13,6 +13,8 @@ import javax.inject.Inject
 
 class CreationBottomViewModel @Inject constructor(router: Router) : BaseViewModel(router) {
 
+    val attachmentActionsEnabled = ObservableBoolean(true)
+
     val audienceList = ObservableArrayList<Audience>()
     val selectedAudience = ObservableField<Audience>()
     val postEnable = ObservableBoolean(false)

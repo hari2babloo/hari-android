@@ -18,6 +18,7 @@ import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.FragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationFragment
+import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateFragment
 import kotlin.reflect.KClass
 
 class FeedItemCreationActivity : BaseToolbarActivity<FeedItemCreationViewModel, ActivityFeedItemCreationBinding>() {
@@ -58,7 +59,7 @@ class FeedItemCreationActivity : BaseToolbarActivity<FeedItemCreationViewModel, 
         val fragmentClasses = FeedItemCreation.values()
             .map {
                 when (it) {
-                    FeedItemCreation.STATUS       -> Fragment::class
+                    FeedItemCreation.STATUS       -> StatusUpdateFragment::class
                     FeedItemCreation.ANNOUNCEMENT -> Fragment::class
                     FeedItemCreation.POLL         -> PollsCreationFragment::class
                 }

@@ -37,20 +37,16 @@ class PollsCreationInteractor @Inject constructor(private val localUserDataRepos
                 listOf(pollCreation.audiences)
             }
 
-        return localUserDataRepository.observeCurrentUser()
-            .firstOrError()
-            .flatMap { user ->
-                postsRepository
-                    .postNewPoll(pollCreation.pinned,
-                                 pollCreation.locked,
-                                 pollCreation.selectedAsUser.uid,
-                                 pollCreation.questionText,
-                                 pollCreation.choices.map { it.text },
-                                 duration,
-                                 audiences,
-                                 listOf(IPostsRepository.Host(user.uid, PostHostKind.USER))
-                    )
-                    .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
-            }
+        return postsRepository
+            .postNewPoll(pollCreation.pinned,
+                         pollCreation.locked,
+                         pollCreation.selectedAsUser.uid,
+                         pollCreation.questionText,
+                         pollCreation.choices.map { it.text },
+                         duration,
+                         audiences,
+                         listOf(IPostsRepository.Host(pollCreation.selectedAsUser.uid, PostHostKind.USER))
+            )
+            .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
     }
 }

@@ -6,6 +6,8 @@ import io.scal.ambi.ui.auth.profile.AuthProfileModule
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomModule
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationFragment
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationModule
+import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateFragment
+import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateModule
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedModule
 
@@ -17,4 +19,7 @@ abstract class FragmentBuilder {
 
     @ContributesAndroidInjector(modules = [PollsCreationModule::class, CreationBottomModule::class])
     abstract fun bindPollsCreationFragment(): PollsCreationFragment
+
+    @ContributesAndroidInjector(modules = [StatusUpdateModule::class, CreationBottomModule::class])
+    abstract fun bindStatusUpdateFragment(): StatusUpdateFragment
 }
