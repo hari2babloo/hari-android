@@ -3,6 +3,7 @@ package io.scal.ambi.ui.global.base
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import io.scal.ambi.R
+import io.scal.ambi.ui.global.KeyboardUtils
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
 import kotlin.reflect.KClass
 
@@ -27,6 +28,8 @@ open class FragmentSwitcher(private val fragmentManager: FragmentManager,
             transaction.attach(activeTab)
         }
         transaction.commitAllowingStateLoss()
+
+        activeTab.activity?.run { KeyboardUtils.hideSoftKeyboard(this) }
     }
 
     private fun getTabFragmentTag(tabId: Int): String =

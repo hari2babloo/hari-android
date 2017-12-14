@@ -3,6 +3,8 @@ package io.scal.ambi.di.module.builders
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.scal.ambi.ui.auth.profile.AuthProfileModule
+import io.scal.ambi.ui.home.chat.list.ChatListFragment
+import io.scal.ambi.ui.home.chat.list.ChatListModule
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomModule
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationFragment
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationModule
@@ -22,4 +24,7 @@ abstract class FragmentBuilder {
 
     @ContributesAndroidInjector(modules = [StatusUpdateModule::class, CreationBottomModule::class])
     abstract fun bindStatusUpdateFragment(): StatusUpdateFragment
+
+    @ContributesAndroidInjector(modules = [ChatListModule::class, AuthProfileModule::class])
+    abstract fun bindChatListFragment(): ChatListFragment
 }

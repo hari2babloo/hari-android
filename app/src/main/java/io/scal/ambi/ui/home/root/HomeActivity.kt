@@ -17,6 +17,7 @@ import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
+import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.android.SupportAppNavigator
@@ -65,7 +66,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
             hashMapOf(
                 Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
                 Pair(R.id.tab_calendar, Fragment::class),
-                Pair(R.id.tab_chat, Fragment::class),
+                Pair(R.id.tab_chat, ChatListFragment::class),
                 Pair(R.id.tab_notifications, Fragment::class),
                 Pair(R.id.tab_more, Fragment::class)
             ))

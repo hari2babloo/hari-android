@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegatesManager
 import io.scal.ambi.ui.global.base.adapter.BaseAdapterDataObserver
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
+import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
 
 class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -24,6 +24,8 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<Recyc
         delegatesManager.addDelegate(NewsFeedAdapterPollDelegate(viewModel))
         delegatesManager.addDelegate(NewsFeedAdapterLinkDelegate(viewModel))
         delegatesManager.addDelegate(NewsFeedAdapterFooterDelegate(footerElement, viewModel))
+
+        setHasStableIds(true)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -35,6 +37,16 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<Recyc
 
     override fun getItemCount(): Int =
         headerFeedList.size
+
+    override fun getItemId(position: Int): Long {
+        val item = headerFeedList[position]
+        return when (item) {
+            headerElement       -> "header_0".hashCode().toLong()
+            is ElementModelFeed -> item.uid.hashCode().toLong()
+            footerElement       -> "footer_0".hashCode().toLong()
+            else                -> throw IllegalArgumentException("unknown item: $item")
+        }
+    }
 
     override fun getItemViewType(position: Int): Int =
         delegatesManager.getItemViewType(headerFeedList, position)

@@ -8,8 +8,9 @@ android {
                     "src/main/res/launcher",
                     "src/main/res/auth",
                     "src/main/res/home/root",
-                    "src/main/res/home/newsfeed",
-                    "src/main/res/home/creation"
+                    "src/main/res/home/newsfeed/list",
+                    "src/main/res/home/newsfeed/creation",
+                    "src/main/res/home/chat/list"
             ]
         }
     }

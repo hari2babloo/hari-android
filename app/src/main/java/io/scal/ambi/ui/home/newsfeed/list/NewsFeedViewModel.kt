@@ -15,7 +15,7 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.navigation.ResultCodes
-import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
+import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.model.Paginator
 import io.scal.ambi.ui.home.newsfeed.list.data.ElementComments
 import io.scal.ambi.ui.home.newsfeed.list.data.ElementLikes
@@ -27,13 +27,13 @@ import javax.inject.Inject
 
 class NewsFeedViewModel @Inject constructor(router: Router,
                                             private val interactor: INewsFeedInteractor,
-                                            private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
+                                            rxSchedulersAbs: RxSchedulersAbs) :
+    BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs) {
 
     internal val progressState = ObservableField<NewsFeedProgressState>()
     internal val errorState = ObservableField<NewsFeedErrorState>()
     internal val dataState = ObservableField<NewsFeedDataState>()
 
-    val currentUser = ObservableField<User>()
     val selectedAudience = ObservableField<Audience>(Audience.COLLEGE_UPDATE)
 
     private val paginator = Paginator(
@@ -85,171 +85,10 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         true
     )
 
-    init {
-        loadCurrentUser()
-    }
+    override fun onCurrentUserFetched(user: User) {
+        super.onCurrentUserFetched(user)
 
-    private fun loadNextPage(page: Int): Single<List<ElementModelFeed>> {
-        return interactor.loadNewsFeedPage(page,
-                                           if (1 == page) null else (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.createdAtDateTime)
-            .subscribeOn(rxSchedulersAbs.ioScheduler)
-            .observeOn(rxSchedulersAbs.computationScheduler)
-            .flatMap {
-                Observable.fromIterable(it)
-                    .map<ElementModelFeed> { it.toNewsFeedElement(currentUser.get()) }
-                    .toList()
-            }
-            .onErrorReturn {
-                Timber.d(it, "error during page $page load")
-                listOf(
-                    ElementModelFeed.Poll("${page * 20 + 0}",
-                                          currentUser.get(),
-                                          DateTime.now(),
-                                          true,
-                                          true,
-                                          null,
-                                          "Is it true?",
-                                          listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())).toPollVotedResult(),
-                                          null,
-                                          null,
-                                          ElementLikes(currentUser.get().uid,
-                                                                                                                                       emptyList()),
-                                          ElementComments(emptyList())
-                    ),
-                    ElementModelFeed.Poll("${page * 20 + 1}",
-                                          currentUser.get(),
-                                          DateTime.now(),
-                                          false,
-                                          true,
-                                          null,
-                                          "Is it true?",
-                                          listOf(PollChoice("1", "Yes", emptyList()),
-                                                 PollChoice("2", "No", listOf(currentUser.get()))).toPollVotedResult(),
-                                          null,
-                                          DateTime(2018, 1, 5, 10, 23, 0),
-                                          ElementLikes(currentUser.get().uid,
-                                                                                                                                       emptyList()),
-                                          ElementComments(emptyList())
-                    ),
-                    ElementModelFeed.Poll("${page * 20 + 2}",
-                                          currentUser.get(),
-                                          DateTime.now(),
-                                          false,
-                                          true,
-                                          null,
-                                          "Is it true?",
-                                          listOf(PollChoice("1", "Yes", listOf(currentUser.get())),
-                                                 PollChoice("2", "No", listOf(currentUser.get(), currentUser.get())))
-                                              .toPollVotedResult(),
-                                          PollChoice("1", "Yes", emptyList()),
-                                          DateTime.now(),
-                                          ElementLikes(currentUser.get().uid,
-                                                                                                                                       emptyList()),
-                                          ElementComments(emptyList())
-                    ),
-                    ElementModelFeed.Message("${page * 20 + 15}",
-                                             currentUser.get(),
-                                             DateTime.now(),
-                                             false,
-                                             true,
-                                             null,
-                                             "test message $page",
-                                             ElementLikes(currentUser.get().uid,
-                                                                                                                                          emptyList()),
-                                             ElementComments(emptyList())
-                    ),
-                    ElementModelFeed.Message("${page * 20 + 16}",
-                                             currentUser.get(),
-                                             DateTime(2017, 12, 7, 15, 20),
-                                             true,
-                                             true,
-                                             Announcement.SAFETY,
-                                             "just an other message $page",
-                                             ElementLikes(currentUser.get().uid,
-                                                                                                                                          listOf(
-                                                                                                                                              currentUser.get())),
-                                             ElementComments(emptyList())
-                    ),
-                    ElementModelFeed.Message("${page * 20 + 17}",
-                                             currentUser.get(),
-                                             DateTime(2017, 12, 25, 15, 0),
-                                             true,
-                                             false,
-                                             Announcement.GENERAL,
-                                             "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
-                                             ElementLikes(currentUser.get().uid,
-                                                                                                                                          listOf(
-                                                                                                                                              currentUser.get(),
-                                                                                                                                              currentUser.get(),
-                                                                                                                                              currentUser.get(),
-                                                                                                                                              currentUser.get(),
-                                                                                                                                              currentUser.get(),
-                                                                                                                                              currentUser.get())),
-                                             ElementComments(emptyList())
-                    ),
-                    ElementModelFeed.Message("${page * 20 + 18}",
-                                             currentUser.get(),
-                                             DateTime(2017, 10, 7, 15, 0),
-                                             false,
-                                             false,
-                                             Announcement.GOOD_NEWS,
-                                             "",
-                                             ElementLikes(currentUser.get().uid,
-                                                                                                                                          emptyList()),
-                                             ElementComments(listOf(
-                                                                                         Comment(currentUser.get(),
-                                                                                                 "just comment!!!",
-                                                                                                 DateTime.now())))
-                    ),
-                    ElementModelFeed.Message("${page * 20 + 19}",
-                                             currentUser.get(),
-                                             DateTime(2017, 10, 1, 15, 0),
-                                             false,
-                                             false,
-                                             Announcement.TRAGEDY,
-                                             "test message",
-                        /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
-                        , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
-                        "Does President Trump Want to Negotiate Middle East Peace?",
-                        */
-                                                                                     ElementLikes(currentUser.get().uid,
-                                                                                                                                          emptyList()),
-                                             ElementComments(listOf(
-                                                                                         Comment(currentUser.get(),
-                                                                                                 "comment 1!!!",
-                                                                                                 DateTime.now()),
-                                                                                         Comment(currentUser.get(),
-                                                                                                 "comment 2!!!",
-                                                                                                 DateTime(2017,
-                                                                                                          12,
-                                                                                                          7,
-                                                                                                          20,
-                                                                                                          40)),
-                                                                                         Comment(currentUser.get(),
-                                                                                                 "comment 3!!!",
-                                                                                                 DateTime(2017,
-                                                                                                          12,
-                                                                                                          7,
-                                                                                                          19,
-                                                                                                          40)),
-                                                                                         Comment(currentUser.get(),
-                                                                                                 "comment 4!!!",
-                                                                                                 DateTime(2017,
-                                                                                                          12,
-                                                                                                          6,
-                                                                                                          23,
-                                                                                                          40)),
-                                                                                         Comment(currentUser.get(),
-                                                                                                 "comment 5!!!",
-                                                                                                 DateTime(2017,
-                                                                                                          12,
-                                                                                                          3,
-                                                                                                          20,
-                                                                                                          40))))
-                    )
-                )
-            }
-            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+        observeAudienceChange()
     }
 
     fun changeAudience() {
@@ -335,17 +174,6 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         paginator.loadNewPage()
     }
 
-    private fun loadCurrentUser() {
-        interactor.loadCurrentUser()
-            .compose(rxSchedulersAbs.getIOToMainTransformer())
-            .subscribe {
-                currentUser.set(it)
-                paginator.activate()
-                observeAudienceChange()
-            }
-            .addTo(disposables)
-    }
-
     private fun observeAudienceChange() {
         router.setResultListener(ResultCodes.AUDIENCE_SELECTION, {
             if (it is Audience) {
@@ -365,6 +193,23 @@ class NewsFeedViewModel @Inject constructor(router: Router,
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
             .subscribe { paginator.forceRefresh() }
             .addTo(disposables)
+    }
+
+    private fun loadNextPage(page: Int): Single<List<ElementModelFeed>> {
+        return interactor
+            .loadNewsFeedPage(page, if (1 == page) null else (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.createdAtDateTime)
+            .subscribeOn(rxSchedulersAbs.ioScheduler)
+            .observeOn(rxSchedulersAbs.computationScheduler)
+            .flatMap {
+                Observable.fromIterable(it)
+                    .map<ElementModelFeed> { it.toNewsFeedElement(currentUser.get()) }
+                    .toList()
+            }
+            .onErrorReturn {
+                Timber.d(it, "error during page $page load")
+                generateTestData(currentUser.get()!!, page)
+            }
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
     }
 
     override fun onCleared() {
@@ -388,10 +233,10 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): ElementModelFeed 
                                                      choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
                                                      pollEndsTime.endsFrom(pollCreatedAt),
                                                      ElementLikes(
-                                                                                                 currentUser.uid,
-                                                                                                 likes),
+                                                         currentUser.uid,
+                                                         likes),
                                                      ElementComments(
-                                                                                                 comments))
+                                                         comments))
         else                -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
     }
 
@@ -409,4 +254,154 @@ private fun List<PollChoice>.toPollVotedResult(): List<ElementModelFeed.Poll.Pol
         acc
     })
     return map { ElementModelFeed.Poll.PollChoiceResult(it, totalVotes, mostVoted.contains(it)) }
+}
+
+private fun generateTestData(currentUser: User, page: Int): List<ElementModelFeed> {
+    return listOf(
+        ElementModelFeed.Poll("${page * 20 + 0}",
+                              currentUser,
+                              DateTime.now(),
+                              true,
+                              true,
+                              null,
+                              "Is it true?",
+                              listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())).toPollVotedResult(),
+                              null,
+                              null,
+                              ElementLikes(currentUser.uid,
+                                           emptyList()),
+                              ElementComments(emptyList())
+        ),
+        ElementModelFeed.Poll("${page * 20 + 1}",
+                              currentUser,
+                              DateTime.now(),
+                              false,
+                              true,
+                              null,
+                              "Is it true?",
+                              listOf(PollChoice("1", "Yes", emptyList()),
+                                     PollChoice("2", "No", listOf(currentUser))).toPollVotedResult(),
+                              null,
+                              DateTime(2018, 1, 5, 10, 23, 0),
+                              ElementLikes(currentUser.uid,
+                                           emptyList()),
+                              ElementComments(emptyList())
+        ),
+        ElementModelFeed.Poll("${page * 20 + 2}",
+                              currentUser,
+                              DateTime.now(),
+                              false,
+                              true,
+                              null,
+                              "Is it true?",
+                              listOf(PollChoice("1", "Yes", listOf(currentUser)),
+                                     PollChoice("2", "No", listOf(currentUser, currentUser)))
+                                  .toPollVotedResult(),
+                              PollChoice("1", "Yes", emptyList()),
+                              DateTime.now(),
+                              ElementLikes(currentUser.uid,
+                                           emptyList()),
+                              ElementComments(emptyList())
+        ),
+        ElementModelFeed.Message("${page * 20 + 15}",
+                                 currentUser,
+                                 DateTime.now(),
+                                 false,
+                                 true,
+                                 null,
+                                 "test message $page",
+                                 ElementLikes(currentUser.uid,
+                                              emptyList()),
+                                 ElementComments(emptyList())
+        ),
+        ElementModelFeed.Message("${page * 20 + 16}",
+                                 currentUser,
+                                 DateTime(2017, 12, 7, 15, 20),
+                                 true,
+                                 true,
+                                 Announcement.SAFETY,
+                                 "just an other message $page",
+                                 ElementLikes(currentUser.uid,
+                                              listOf(
+                                                  currentUser)),
+                                 ElementComments(emptyList())
+        ),
+        ElementModelFeed.Message("${page * 20 + 17}",
+                                 currentUser,
+                                 DateTime(2017, 12, 25, 15, 0),
+                                 true,
+                                 false,
+                                 Announcement.GENERAL,
+                                 "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
+                                 ElementLikes(currentUser.uid,
+                                              listOf(
+                                                  currentUser,
+                                                  currentUser,
+                                                  currentUser,
+                                                  currentUser,
+                                                  currentUser,
+                                                  currentUser)),
+                                 ElementComments(emptyList())
+        ),
+        ElementModelFeed.Message("${page * 20 + 18}",
+                                 currentUser,
+                                 DateTime(2017, 10, 7, 15, 0),
+                                 false,
+                                 false,
+                                 Announcement.GOOD_NEWS,
+                                 "",
+                                 ElementLikes(currentUser.uid,
+                                              emptyList()),
+                                 ElementComments(listOf(
+                                     Comment(currentUser,
+                                             "just comment!!!",
+                                             DateTime.now())))
+        ),
+        ElementModelFeed.Message("${page * 20 + 19}",
+                                 currentUser,
+                                 DateTime(2017, 10, 1, 15, 0),
+                                 false,
+                                 false,
+                                 Announcement.TRAGEDY,
+                                 "test message",
+            /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
+            , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
+            "Does President Trump Want to Negotiate Middle East Peace?",
+            */
+                                 ElementLikes(currentUser.uid,
+                                              emptyList()),
+                                 ElementComments(listOf(
+                                     Comment(currentUser,
+                                             "comment 1!!!",
+                                             DateTime.now()),
+                                     Comment(currentUser,
+                                             "comment 2!!!",
+                                             DateTime(2017,
+                                                      12,
+                                                      7,
+                                                      20,
+                                                      40)),
+                                     Comment(currentUser,
+                                             "comment 3!!!",
+                                             DateTime(2017,
+                                                      12,
+                                                      7,
+                                                      19,
+                                                      40)),
+                                     Comment(currentUser,
+                                             "comment 4!!!",
+                                             DateTime(2017,
+                                                      12,
+                                                      6,
+                                                      23,
+                                                      40)),
+                                     Comment(currentUser,
+                                             "comment 5!!!",
+                                             DateTime(2017,
+                                                      12,
+                                                      3,
+                                                      20,
+                                                      40))))
+        )
+    )
 }

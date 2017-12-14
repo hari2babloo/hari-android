@@ -17,6 +17,7 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
 import io.scal.ambi.BR
+import io.scal.ambi.extensions.ContextLeakHelper
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
@@ -87,6 +88,8 @@ abstract class BaseFragment<IViewModel : BaseViewModel, Binding : ViewDataBindin
         destroyViewDisposables.clear()
 
         super.onDestroyView()
+
+        ContextLeakHelper.cleanLeak(this)
     }
 
     override fun onDestroy() {

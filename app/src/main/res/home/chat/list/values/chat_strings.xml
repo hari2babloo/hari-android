@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="chat_list_filter_all">all chats</string>
+    <string name="chat_list_filter_group">group chats</string>
+    <string name="chat_list_filter_class">class chats</string>
+
+</resources>

@@ -16,6 +16,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
 import io.scal.ambi.BR
 import io.scal.ambi.R
+import io.scal.ambi.extensions.ContextLeakHelper
 import io.scal.ambi.ui.global.base.LocalCiceroneHolderViewModel
 import io.scal.ambi.ui.global.base.LocalNavigationHolder
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
@@ -93,6 +94,14 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
         if (!viewModel.onBackPressed()) {
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        destroyDisposables.dispose()
+
+        super.onDestroy()
+
+        ContextLeakHelper.cleanLeak(this)
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentDispatchingAndroidInjector
