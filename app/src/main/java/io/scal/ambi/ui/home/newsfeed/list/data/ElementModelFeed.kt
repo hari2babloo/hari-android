@@ -1,11 +1,9 @@
-package io.scal.ambi.ui.home.newsfeed.list
+package io.scal.ambi.ui.home.newsfeed.list.data
 
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.Announcement
 import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.extensions.view.IconImage
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementComments
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementLikes
 import org.joda.time.DateTime
 
 sealed class ElementModelFeed(open val uid: String,

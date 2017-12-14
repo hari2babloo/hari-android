@@ -2,7 +2,7 @@ package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemNewsFeedTypePollBinding
-import io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed
+import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
 internal class NewsFeedAdapterPollDelegate(viewModel: NewsFeedViewModel) :

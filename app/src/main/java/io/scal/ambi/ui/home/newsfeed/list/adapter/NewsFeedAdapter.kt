@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegatesManager
 import io.scal.ambi.ui.global.base.adapter.BaseAdapterDataObserver
-import io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed
+import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
 class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

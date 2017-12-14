@@ -1,6 +1,7 @@
 package io.scal.ambi.ui.home.newsfeed.list
 
 import android.databinding.ObservableList
+import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
 
 internal sealed class NewsFeedProgressState {
 

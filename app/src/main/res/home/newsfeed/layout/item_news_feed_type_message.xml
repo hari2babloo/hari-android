@@ -13,7 +13,7 @@
 
         <variable
             name="element"
-            type="io.scal.ambi.ui.home.newsfeed.list.ElementModelFeed.Message"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed.Message"/>
 
     </data>
 
