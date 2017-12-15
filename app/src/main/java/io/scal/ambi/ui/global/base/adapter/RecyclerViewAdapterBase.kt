@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 
-abstract class BaseRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class RecyclerViewAdapterBase : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override open fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutId = onCreateBindingLayoutId(parent, viewType)

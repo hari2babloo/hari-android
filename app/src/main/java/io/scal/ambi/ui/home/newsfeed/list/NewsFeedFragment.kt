@@ -22,7 +22,6 @@ import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
 import io.scal.ambi.ui.home.newsfeed.list.adapter.NewsFeedAdapter
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.android.SupportAppNavigator
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsFeedBinding>() {
@@ -45,7 +44,6 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
 
         binding.rvCollegeUpdates.listenForEndScroll(1)
             .subscribeOn(AndroidSchedulers.mainThread())
-            .skip(1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.loadNextPage() }
     }
@@ -66,7 +64,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
                     }
                 }
             }
-            .addTo(destroyFragmentDisposables)
+            .addTo(destroyViewDisposables)
 
         var snackBar: Snackbar? = null
         viewModel.errorState
@@ -85,7 +83,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
                         Toast.makeText(activity, it.error.message, Toast.LENGTH_SHORT).show()
                 }
             }
-            .addTo(destroyFragmentDisposables)
+            .addTo(destroyViewDisposables)
 
         viewModel.dataState
             .toObservable()
@@ -96,7 +94,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
                     is NewsFeedDataState.Data  -> adapter.updateData(it.newsFeed)
                 }
             }
-            .addTo(destroyFragmentDisposables)
+            .addTo(destroyViewDisposables)
     }
 
     override val navigator: Navigator?

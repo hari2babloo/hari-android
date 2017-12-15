@@ -11,11 +11,13 @@
 
     </data>
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/root_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="9dp"
@@ -67,6 +69,17 @@
 
         </android.support.constraint.ConstraintLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/c_filters"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="bottom"
+            android:background="#f00"
+            android:orientation="horizontal"
+            app:layout_behavior="io.scal.ambi.ui.global.view.behavior.StaticViewViewBehavior"
+            app:viewGroupModels="@{viewModel.filterState}"
+            />
+
+    </android.support.design.widget.CoordinatorLayout>
 
 </layout>

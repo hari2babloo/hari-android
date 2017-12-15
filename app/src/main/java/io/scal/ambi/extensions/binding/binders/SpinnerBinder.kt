@@ -6,7 +6,7 @@ import android.databinding.InverseBindingListener
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
-import io.scal.ambi.ui.global.base.adapter.SimpleSpinnerAdapter
+import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
 
 object SpinnerBinder {
 
@@ -23,9 +23,9 @@ object SpinnerBinder {
             spinner.adapter = null
         } else {
             @Suppress("UseExpressionBody", "UNCHECKED_CAST")
-            var adapter = spinner.adapter as? SimpleSpinnerAdapter<T>
+            var adapter = spinner.adapter as? SpinnerAdapterSimple<T>
             if (null == adapter) {
-                adapter = SimpleSpinnerAdapter(layoutId, dropdownLayoutId)
+                adapter = SpinnerAdapterSimple(layoutId, dropdownLayoutId)
                 spinner.adapter = adapter
             }
 

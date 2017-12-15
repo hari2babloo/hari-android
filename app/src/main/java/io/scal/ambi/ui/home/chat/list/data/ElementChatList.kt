@@ -8,4 +8,5 @@ data class ElementChatList(val uid: String,
                            val title: String,
                            val lastMessage: String,
                            val lastMessageDateTime: DateTime,
+                           val hasNewMessages: Boolean,
                            val filterType: ElementChatListFilter)

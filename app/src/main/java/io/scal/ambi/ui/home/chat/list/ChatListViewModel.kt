@@ -1,15 +1,19 @@
 package io.scal.ambi.ui.home.chat.list
 
+import android.content.Context
 import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
+import io.scal.ambi.R
 import io.scal.ambi.entity.User
+import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
+import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.model.Paginator
 import io.scal.ambi.ui.home.chat.list.data.ElementChatList
@@ -17,7 +21,8 @@ import io.scal.ambi.ui.home.chat.list.data.ElementChatListFilter
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class ChatListViewModel @Inject internal constructor(router: Router,
+class ChatListViewModel @Inject internal constructor(private val context: Context,
+                                                     router: Router,
                                                      val searchViewModel: ChatSearchViewModel,
                                                      val interactor: IChatListInteractor,
                                                      rxSchedulersAbs: RxSchedulersAbs) :
@@ -91,6 +96,14 @@ class ChatListViewModel @Inject internal constructor(router: Router,
         paginator.refresh()
     }
 
+    fun loadNextPage() {
+        paginator.loadNewPage()
+    }
+
+    fun openChatDetails(element: ElementChatList) {
+        router.navigateTo(NavigateTo.CHAT_DETAILS, element.uid)
+    }
+
     override fun onCleared() {
         paginator.release()
 
@@ -135,22 +148,56 @@ class ChatListViewModel @Inject internal constructor(router: Router,
         return interactor.loadChatListPage(page)
             .flatMap {
                 Observable.fromIterable(it)
-                    .map { it.toChatListElement() }
+                    .map { it.toChatListElement(context, currentUser.get()) }
                     .toList()
             }
             .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
     }
 }
 
-private fun SmallChatItem.toChatListElement(): ElementChatList {
+private fun SmallChatItem.toChatListElement(context: Context, currentUser: User): ElementChatList {
+    val lastMessageSenderName: String? =
+        when {
+            null == lastMessage          -> null
+            this is SmallChatItem.Direct -> {
+                when {
+                    lastMessage!!.sender.uid == currentUser.uid -> context.getString(R.string.chat_list_message_sender_you)
+                    else                                        -> ""
+                }
+            }
+            else                         -> {
+                when {
+                    lastMessage!!.sender.uid == currentUser.uid -> context.getString(R.string.chat_list_message_sender_you)
+                    else                                        -> lastMessage!!.sender.name
+                }
+            }
+        }?.let { if (it.isEmpty()) "" else "$it: " }
+
+
     return ElementChatList(uid,
                            icon,
                            title,
-                           lastMessage,
-                           lastMessageDateTime,
+                           when (lastMessage) {
+                               null                             ->
+                                   context.getString(R.string.chat_list_message_empty)
+                               is ChatMessage.TextMessage       ->
+                                   context.getString(R.string.chat_list_message_text, lastMessageSenderName, lastMessage!!.toMessageData(context))
+                               is ChatMessage.AttachmentMessage ->
+                                   context.getString(R.string.chat_list_message_text, lastMessageSenderName, lastMessage!!.toMessageData(context))
+                           }.trim(),
+                           lastMessage?.sendDate ?: creationDateTime,
+                           hasNewMessages,
                            ElementChatListFilter.AllChats
     )
 }
+
+private fun ChatMessage.toMessageData(context: Context): String =
+    when {
+        message.isNotBlank()                  -> message
+        this is ChatMessage.TextMessage       -> context.getString(R.string.chat_list_message_send_text)
+        this is ChatMessage.AttachmentMessage -> context.getString(R.string.chat_list_message_send_attachment)
+        else                                  -> throw IllegalArgumentException("unknown chat message type: $this")
+    }
 
 private fun ChatListFilterState.filterAllData(allChats: List<ElementChatList>): List<ElementChatList> {
     return allChats.filter { it.filterType == selectedFilter }

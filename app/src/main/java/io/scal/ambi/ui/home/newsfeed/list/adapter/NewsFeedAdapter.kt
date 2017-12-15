@@ -2,44 +2,43 @@ package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import android.databinding.ObservableList
 import android.support.v7.widget.RecyclerView
-import android.view.ViewGroup
-import com.hannesdorfmann.adapterdelegates3.AdapterDelegatesManager
-import io.scal.ambi.ui.global.base.adapter.BaseAdapterDataObserver
+import io.scal.ambi.R
+import io.scal.ambi.ui.global.base.adapter.AdapterDelegateStaticView
+import io.scal.ambi.ui.global.base.adapter.DataObserverForAdapter
+import io.scal.ambi.ui.global.base.adapter.HeaderFooterList
+import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterDelegated
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
 
-class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerViewAdapterDelegated<Any>() {
 
     private val headerElement = Any()
     private val footerElement = Any()
 
     private var dataObserver: NewsFeedAdapterDataObserver? = null
-    private var headerFeedList = HeaderFooterFeedList(headerElement, footerElement, emptyList())
 
-    private val delegatesManager = AdapterDelegatesManager<List<Any>>()
+    override var dataList: List<Any> = HeaderFooterList(headerElement, footerElement, emptyList())
+    private var newsFeedList: HeaderFooterList
+        get() = dataList as HeaderFooterList
+        set(value) {
+            dataList = value
+        }
 
     init {
-        delegatesManager.addDelegate(NewsFeedAdapterHeaderDelegate(headerElement, viewModel))
-        delegatesManager.addDelegate(NewsFeedAdapterMessageDelegate(viewModel))
-        delegatesManager.addDelegate(NewsFeedAdapterPollDelegate(viewModel))
-        delegatesManager.addDelegate(NewsFeedAdapterLinkDelegate(viewModel))
-        delegatesManager.addDelegate(NewsFeedAdapterFooterDelegate(footerElement, viewModel))
+        addDelegate(NewsFeedAdapterHeaderDelegateBase(headerElement, viewModel))
+        addDelegate(NewsFeedAdapterMessageDelegateBase(viewModel))
+        addDelegate(NewsFeedAdapterPollDelegateBase(viewModel))
+        addDelegate(NewsFeedAdapterLinkDelegateBase(viewModel))
+        addDelegate(AdapterDelegateStaticView(footerElement, R.layout.item_adapter_progress_footer))
 
         setHasStableIds(true)
+
+        newsFeedList.updateHeaderVisibility(true, this)
+        newsFeedList.updateFooterVisibility(false, this)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        delegatesManager.onCreateViewHolder(parent, viewType)
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        delegatesManager.onBindViewHolder(headerFeedList, position, holder)
-    }
-
-    override fun getItemCount(): Int =
-        headerFeedList.size
 
     override fun getItemId(position: Int): Long {
-        val item = headerFeedList[position]
+        val item = newsFeedList[position]
         return when (item) {
             headerElement       -> "header_0".hashCode().toLong()
             is ElementModelFeed -> item.uid.hashCode().toLong()
@@ -48,59 +47,26 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerView.Adapter<Recyc
         }
     }
 
-    override fun getItemViewType(position: Int): Int =
-        delegatesManager.getItemViewType(headerFeedList, position)
-
     fun updateData(data: ObservableList<ElementModelFeed>) {
         releaseData()
-        headerFeedList = headerFeedList.copy(feedData = data)
+        newsFeedList = newsFeedList.copy(data = data)
         dataObserver = NewsFeedAdapterDataObserver(data, this)
         notifyDataSetChanged()
     }
 
     fun releaseData() {
         dataObserver?.release()
-        headerFeedList = headerFeedList.copy(feedData = emptyList())
+        newsFeedList = newsFeedList.copy(data = emptyList())
         dataObserver = null
         notifyDataSetChanged()
     }
 
     fun showPageProgress(show: Boolean) {
-        headerFeedList.updatePageProgress(show, this)
-    }
-
-    private data class HeaderFooterFeedList(private val headerElement: Any,
-                                            private val footerElement: Any,
-                                            private val feedData: List<ElementModelFeed>) : AbstractList<Any>() {
-
-        private var showPageProgress: Boolean = false
-
-        override val size: Int
-            get() = feedData.size + 1 + (if (showPageProgress) 1 else 0)
-
-        override fun get(index: Int): Any =
-            if (0 == index) {
-                headerElement
-            } else if (showPageProgress && size - 1 == index) {
-                footerElement
-            } else {
-                feedData[index - 1]
-            }
-
-        fun updatePageProgress(show: Boolean, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-            if (showPageProgress != show) {
-                showPageProgress = show
-                if (show) {
-                    adapter.notifyItemInserted(size - 1)
-                } else {
-                    adapter.notifyItemRemoved(size + 1)
-                }
-            }
-        }
+        newsFeedList.updateFooterVisibility(show, this)
     }
 
     private class NewsFeedAdapterDataObserver(data: ObservableList<ElementModelFeed>, adapter: RecyclerView.Adapter<*>) :
-        BaseAdapterDataObserver<ElementModelFeed>(data, adapter) {
+        DataObserverForAdapter<ElementModelFeed>(data, adapter) {
 
         override fun notifyItemRangeChanged(adapter: RecyclerView.Adapter<*>, positionStart: Int, itemCount: Int) {
             super.notifyItemRangeChanged(adapter, positionStart + 1, itemCount)

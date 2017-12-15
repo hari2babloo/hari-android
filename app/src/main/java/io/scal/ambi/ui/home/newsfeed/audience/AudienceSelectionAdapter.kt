@@ -4,9 +4,9 @@ import android.databinding.ViewDataBinding
 import android.view.ViewGroup
 import io.scal.ambi.BR
 import io.scal.ambi.R
-import io.scal.ambi.ui.global.base.adapter.BaseRecyclerViewAdapter
+import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterBase
 
-internal class AudienceSelectionAdapter(private val viewModel: AudienceSelectionViewModel) : BaseRecyclerViewAdapter() {
+internal class AudienceSelectionAdapter(private val viewModel: AudienceSelectionViewModel) : RecyclerViewAdapterBase() {
 
     override fun onCreateBindingLayoutId(parent: ViewGroup, viewType: Int): Int =
         R.layout.item_audience_selection

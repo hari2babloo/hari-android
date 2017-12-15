@@ -46,5 +46,9 @@
             android:name=".ui.home.newsfeed.creation.FeedItemCreationActivity"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 
+        <activity
+            android:name=".ui.home.chat.details.ChatDetailsActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
+
     </application>
 </manifest>

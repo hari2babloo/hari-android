@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 
-abstract class BaseAdapterDelegate<in Binding : ViewDataBinding, T> : AdapterDelegate<T>() {
+abstract class AdapterDelegateBase<in Binding : ViewDataBinding, T> : AdapterDelegate<T>() {
 
     abstract protected val layoutId: Int
 

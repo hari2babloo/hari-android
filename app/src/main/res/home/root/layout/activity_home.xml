@@ -27,25 +27,16 @@
             android:layout_height="wrap_content"
             app:theme="@style/AppBarLayout">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/base_toolbar_layout"
+            <include
+                layout="@layout/toolbar"
+                bind:toolbarType="@{toolbarType}"/>
+
+            <include
+                android:id="@+id/bottomBar"
+                layout="@layout/item_bottom_bar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:contentScrim="@color/white"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-
-                <include
-                    layout="@layout/toolbar"
-                    bind:toolbarType="@{toolbarType}"/>
-
-                <include
-                    android:id="@+id/bottomBar"
-                    layout="@layout/item_bottom_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/bottom_bar_height"
-                    android:layout_marginTop="?attr/actionBarSize"/>
-
-            </android.support.design.widget.CollapsingToolbarLayout>
+                android:layout_height="@dimen/bottom_bar_height"
+                app:layout_scrollFlags="snap"/>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -54,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#E9EBEE"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="io.scal.ambi.ui.global.view.behavior.AppBarScrollingTransitionBehavior"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

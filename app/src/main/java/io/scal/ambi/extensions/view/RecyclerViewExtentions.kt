@@ -12,7 +12,7 @@ fun RecyclerView.listenForEndScroll(visibleThreshold: Int): Observable<Any> {
             super.onScrolled(recyclerView, dx, dy)
 
             val tmpLayoutManager = layoutManager
-            if (dy > 0 && tmpLayoutManager is LinearLayoutManager) {
+            if (dy >= 0 && tmpLayoutManager is LinearLayoutManager) {
                 val visibleItemCount = tmpLayoutManager.childCount
                 val totalItemCount = tmpLayoutManager.itemCount
                 val firstVisibleItem = tmpLayoutManager.findFirstVisibleItemPosition()

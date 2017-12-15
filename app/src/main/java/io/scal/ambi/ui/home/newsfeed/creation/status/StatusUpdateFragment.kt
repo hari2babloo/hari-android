@@ -12,7 +12,7 @@ import io.scal.ambi.databinding.FragmentStatusUpdateBinding
 import io.scal.ambi.entity.User
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
-import io.scal.ambi.ui.global.base.adapter.SimpleSpinnerAdapter
+import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
 import kotlin.reflect.KClass
 
@@ -29,7 +29,7 @@ class StatusUpdateFragment : BaseFragment<StatusUpdateViewModel, FragmentStatusU
     }
 
     private fun initAsUserSpinner() {
-        val asUserSpinnerAdapter = SimpleSpinnerAdapter<User>(R.layout.item_as_user_spinner, R.layout.item_as_user_spinner_dropdown)
+        val asUserSpinnerAdapter = SpinnerAdapterSimple<User>(R.layout.item_as_user_spinner, R.layout.item_as_user_spinner_dropdown)
 
         binding.sAsUser.adapter = asUserSpinnerAdapter
         binding.sAsUser.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

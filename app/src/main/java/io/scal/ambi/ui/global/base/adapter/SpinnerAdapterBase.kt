@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import io.scal.ambi.BR
 
-abstract class BaseSpinnerAdapter<T>(private var data: List<T> = emptyList()) : BaseAdapter() {
+abstract class SpinnerAdapterBase<T>(private var data: List<T> = emptyList()) : BaseAdapter() {
 
     abstract val itemLayoutId: Int
     open val itemLayoutDropdownId: Int? = null

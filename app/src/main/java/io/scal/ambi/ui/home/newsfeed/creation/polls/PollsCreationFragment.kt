@@ -13,7 +13,7 @@ import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
-import io.scal.ambi.ui.global.base.adapter.SimpleSpinnerAdapter
+import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
 import kotlin.reflect.KClass
 
@@ -31,7 +31,7 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
     }
 
     private fun initAsUserSpinner() {
-        val asUserSpinnerAdapter = SimpleSpinnerAdapter<User>(R.layout.item_as_user_spinner, R.layout.item_as_user_spinner_dropdown)
+        val asUserSpinnerAdapter = SpinnerAdapterSimple<User>(R.layout.item_as_user_spinner, R.layout.item_as_user_spinner_dropdown)
 
         binding.sAsUser.adapter = asUserSpinnerAdapter
         binding.sAsUser.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -55,7 +55,7 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
     }
 
     private fun initPollEndsSpinner() {
-        val pollEndsAdapter = SimpleSpinnerAdapter<PollEndsTime>(R.layout.item_poll_ends_spinner, R.layout.item_poll_ends_spinner_dropdown)
+        val pollEndsAdapter = SpinnerAdapterSimple<PollEndsTime>(R.layout.item_poll_ends_spinner, R.layout.item_poll_ends_spinner_dropdown)
 
         binding.sPollEnds.adapter = pollEndsAdapter
         binding.sPollEnds.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

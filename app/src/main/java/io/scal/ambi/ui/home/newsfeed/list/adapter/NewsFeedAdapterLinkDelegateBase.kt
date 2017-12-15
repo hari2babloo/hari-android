@@ -5,8 +5,8 @@ import io.scal.ambi.databinding.ItemNewsFeedTypeLinkBinding
 import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
-internal class NewsFeedAdapterLinkDelegate(viewModel: NewsFeedViewModel) :
-    NewsFeedAdapterBaseDelegate<ItemNewsFeedTypeLinkBinding>(viewModel) {
+internal class NewsFeedAdapterLinkDelegateBase(viewModel: NewsFeedViewModel) :
+    NewsFeedAdapterDelegateBase<ItemNewsFeedTypeLinkBinding>(viewModel) {
 
     override val layoutId: Int = R.layout.item_news_feed_type_link
 

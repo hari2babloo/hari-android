@@ -4,12 +4,9 @@ import android.databinding.ObservableList
 import android.support.v7.widget.RecyclerView
 import java.lang.ref.WeakReference
 
-open class BaseAdapterDataObserver<Item>(private val items: ObservableList<Item>,
-                                         adapter: RecyclerView.Adapter<*>) {
+open class DataObserverForAdapter<Item>(private val items: ObservableList<Item>, adapter: RecyclerView.Adapter<*>) {
 
-    private val listener = BaseOnListChangedCallback(items,
-                                                     adapter,
-                                                     this)
+    private val listener = BaseOnListChangedCallback(items, adapter, this)
 
     init {
         items.addOnListChangedCallback(listener)
@@ -39,7 +36,7 @@ open class BaseAdapterDataObserver<Item>(private val items: ObservableList<Item>
 
     private class BaseOnListChangedCallback<Item> internal constructor(private val items: ObservableList<Item>,
                                                                        adapter: RecyclerView.Adapter<*>,
-                                                                       private val baseAdapterDataObserver: BaseAdapterDataObserver<Item>) :
+                                                                       private val adapterDataObserver: DataObserverForAdapter<Item>) :
         ObservableList.OnListChangedCallback<ObservableList<Item>>() {
 
         private val adapterWeakReference: WeakReference<RecyclerView.Adapter<*>> = WeakReference(adapter)
@@ -47,36 +44,36 @@ open class BaseAdapterDataObserver<Item>(private val items: ObservableList<Item>
         override fun onChanged(sender: ObservableList<Item>) {
             val adapter = adapter
             adapter?.run {
-                baseAdapterDataObserver.notifyDataSetChanged(this)
+                adapterDataObserver.notifyDataSetChanged(this)
             }
         }
 
         override fun onItemRangeChanged(sender: ObservableList<Item>, positionStart: Int, itemCount: Int) {
             val adapter = adapter
             adapter?.run {
-                baseAdapterDataObserver.notifyItemRangeChanged(this, positionStart, itemCount)
+                adapterDataObserver.notifyItemRangeChanged(this, positionStart, itemCount)
             }
         }
 
         override fun onItemRangeInserted(sender: ObservableList<Item>, positionStart: Int, itemCount: Int) {
             val adapter = adapter
             adapter?.run {
-                baseAdapterDataObserver.notifyItemRangeInserted(this, positionStart, itemCount)
+                adapterDataObserver.notifyItemRangeInserted(this, positionStart, itemCount)
             }
         }
 
         override fun onItemRangeMoved(sender: ObservableList<Item>, fromPosition: Int, toPosition: Int, itemCount: Int) {
             val adapter = adapter
             adapter?.run {
-                baseAdapterDataObserver.notifyItemRangeRemoved(this, fromPosition, itemCount)
-                baseAdapterDataObserver.notifyItemRangeInserted(this, toPosition, itemCount)
+                adapterDataObserver.notifyItemRangeRemoved(this, fromPosition, itemCount)
+                adapterDataObserver.notifyItemRangeInserted(this, toPosition, itemCount)
             }
         }
 
         override fun onItemRangeRemoved(sender: ObservableList<Item>, positionStart: Int, itemCount: Int) {
             val adapter = adapter
             adapter?.run {
-                baseAdapterDataObserver.notifyItemRangeRemoved(this, positionStart, itemCount)
+                adapterDataObserver.notifyItemRangeRemoved(this, positionStart, itemCount)
             }
         }
 
@@ -88,6 +85,5 @@ open class BaseAdapterDataObserver<Item>(private val items: ObservableList<Item>
                 }
                 return adapter
             }
-
     }
 }
