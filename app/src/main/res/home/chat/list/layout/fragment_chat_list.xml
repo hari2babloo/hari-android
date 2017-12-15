@@ -77,7 +77,6 @@
             android:background="#f00"
             android:orientation="horizontal"
             app:layout_behavior="io.scal.ambi.ui.global.view.behavior.StaticViewViewBehavior"
-            app:viewGroupModels="@{viewModel.filterState}"
             />
 
     </android.support.design.widget.CoordinatorLayout>
