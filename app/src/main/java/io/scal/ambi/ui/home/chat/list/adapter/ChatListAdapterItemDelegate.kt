@@ -16,5 +16,6 @@ internal class ChatListAdapterItemDelegate(private val viewModel: ChatListViewMo
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemChatListItemBinding, payloads: MutableList<Any>) {
         binding.element = items[position] as ElementChatList
         binding.viewModel = viewModel
+        binding.executePendingBindings()
     }
 }

@@ -13,6 +13,7 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.DateTime
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ChatListInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository) : IChatListInteractor {
@@ -34,7 +35,7 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                  User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
                                  ChatMessage.TextMessage(User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
                                                          DateTime(2017, 12, 15, 15, 30),
-                                                         "Hey! How are you ?"),
+                                                         "Hey! How are you ? New"),
                                  true
             ),
             SmallChatItem.Direct("$page _ 2",
@@ -45,7 +46,7 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                     "Brad",
                                                                     "Jiss"),
                                                                DateTime(2017, 12, 11, 1, 24),
-                                                               "Hey! How are you ?",
+                                                               "Hey! How are you ? NO",
                                                                listOf(ChatAttachment("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg",
                                                                                      ChatAttachmentType.IMAGE))),
                                  false
@@ -58,7 +59,7 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                     "Brad",
                                                                     "Jiss"),
                                                                DateTime(2017, 11, 10, 6, 1),
-                                                               "Hey! How are you ?",
+                                                               "Hey! How are you ? NO",
                                                                listOf(ChatAttachment("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg",
                                                                                      ChatAttachmentType.IMAGE),
                                                                       ChatAttachment("https://i.imgur.com/eGJJvdd.gif",
@@ -70,7 +71,7 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
             SmallChatItem.Group("$page _ 4",
                                 DateTime(2017, 10, 15, 23, 59),
                                 IconImage(R.drawable.ic_tab_more_icon.toFrescoImagePath()),
-                                "This is a test group",
+                                "This is a test group YES",
                                 listOf(
                                     User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
                                     User("3", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Frank", "Poooo"),
@@ -90,6 +91,6 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                 ),
                                 true
             )
-        ))
+        )).delay(4000, TimeUnit.MILLISECONDS)
     }
 }

@@ -181,9 +181,9 @@ object TextViewDataBinder {
     @BindingAdapter("boldTextStyle")
     fun bindBoldTextStyle(textView: TextView, boldText: Boolean?) {
         if (null != boldText && boldText) {
-            textView.setTypeface(textView.typeface, Typeface.BOLD)
+            textView.setTypeface(null, Typeface.BOLD)
         } else {
-            textView.setTypeface(textView.typeface, Typeface.NORMAL)
+            textView.setTypeface(null, Typeface.NORMAL)
         }
     }
 }

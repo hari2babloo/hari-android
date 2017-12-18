@@ -34,7 +34,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
     private val allDataState = ObservableField<ChatListDataState>()
 
-    internal val filterState = ObservableField<ChatListFilterState>()
+    val filterModel = ChatFilterModel(listOf(ElementChatListFilter.AllChats, ElementChatListFilter.GroupChats, ElementChatListFilter.ClassChats))
 
     private val paginator = Paginator(
         { page -> loadNextPage(page) },
@@ -83,11 +83,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
         paginator.activate()
 
-        filterState.set(
-            ChatListFilterState(listOf(ElementChatListFilter.AllChats, ElementChatListFilter.GroupChats, ElementChatListFilter.ClassChats),
-                                ElementChatListFilter.AllChats))
-
-        observerFilterChanges()
+        initFilterChanges()
 
         paginator.refresh()
     }
@@ -110,8 +106,11 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         super.onCleared()
     }
 
-    private fun observerFilterChanges() {
-        filterState
+    private fun initFilterChanges() {
+        filterModel.onFilterClicked(0)
+
+        filterModel
+            .selectedFilter
             .toObservable()
             .observeOn(rxSchedulersAbs.computationScheduler)
             .map {
@@ -133,7 +132,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
             .observeOn(rxSchedulersAbs.computationScheduler)
             .map {
                 if (it is ChatListDataState.Data) {
-                    filterState.get().filterAllData(it.chats)
+                    filterModel.selectedFilter.get().filterAllData(it.chats)
                 } else {
                     emptyList()
                 }
@@ -199,6 +198,6 @@ private fun ChatMessage.toMessageData(context: Context): String =
         else                                  -> throw IllegalArgumentException("unknown chat message type: $this")
     }
 
-private fun ChatListFilterState.filterAllData(allChats: List<ElementChatList>): List<ElementChatList> {
-    return allChats.filter { it.filterType == selectedFilter }
+private fun ElementChatListFilter?.filterAllData(allChats: List<ElementChatList>): List<ElementChatList> {
+    return allChats.filter { it.filterType == this }
 }

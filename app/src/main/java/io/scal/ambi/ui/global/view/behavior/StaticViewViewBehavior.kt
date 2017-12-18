@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import io.scal.ambi.R
-import timber.log.Timber
 
 @Suppress("unused")
 class StaticViewViewBehavior : CoordinatorLayout.Behavior<ViewGroup>, ParentTransitionBehavior {
@@ -33,21 +32,16 @@ class StaticViewViewBehavior : CoordinatorLayout.Behavior<ViewGroup>, ParentTran
         }
 
         if (null != appBarLayout) {
-            resultTranslation += computeAppBarDependency(child, appBarLayout)
+            resultTranslation += computeAppBarDependency(appBarLayout)
         }
 
         child.translationY = resultTranslation
         return true
     }
 
-    private fun computeAppBarDependency(child: View, dependency: AppBarLayout): Float {
+    private fun computeAppBarDependency(dependency: AppBarLayout): Float {
         val dependencyView = findDependencyView(dependency)
-        val distanceToScroll = child.measuredHeight
-        val ratio = (dependencyView.measuredHeight + dependency.y) / dependencyView.measuredHeight
-        val result = -distanceToScroll * ratio
-        Timber.w("ratio = $ratio; distanceTOScroll = $distanceToScroll; result = $result")
-        Timber.w("dependency.y = ${dependency.y}")
-        return result
+        return -(dependencyView.measuredHeight + dependency.y)
     }
 
     private fun findDependencyView(appBarLayout: AppBarLayout): View {

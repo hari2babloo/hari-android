@@ -51,6 +51,7 @@
                 android:id="@+id/srl"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginBottom="60dp"
                 android:layout_marginTop="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -72,11 +73,13 @@
         <LinearLayout
             android:id="@+id/c_filters"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:background="#f00"
             android:orientation="horizontal"
             app:layout_behavior="io.scal.ambi.ui.global.view.behavior.StaticViewViewBehavior"
+            app:viewGroupModels="@{viewModel.filterModel.viewModels}"
+            app:viewModelClickListener="@{(element) -> viewModel.filterModel.onFilterClicked(element)}"
+            app:viewModelLayoutId="@{@layout/item_chat_filter}"
             />
 
     </android.support.design.widget.CoordinatorLayout>
