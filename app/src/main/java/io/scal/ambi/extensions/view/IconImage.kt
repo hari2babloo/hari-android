@@ -1,8 +1,9 @@
 package io.scal.ambi.extensions.view
 
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
+import java.io.Serializable
 
-open class IconImage(val iconPath: String, val placeHolderIconPath: String? = null) {
+open class IconImage(val iconPath: String, val placeHolderIconPath: String? = null) : Serializable {
 
     constructor(icon: Int) : this(icon.toFrescoImagePath())
 

@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.chat.list
 
-import io.scal.ambi.ui.home.chat.list.data.ElementChatList
+import io.scal.ambi.ui.home.chat.list.data.UIChatList
 
 internal sealed class ChatListProgressState {
 
@@ -26,5 +26,5 @@ internal sealed class ChatListDataState {
 
     object Empty : ChatListDataState()
 
-    data class Data(val chats: List<ElementChatList>) : ChatListDataState()
+    data class Data(val chats: List<UIChatList>) : ChatListDataState()
 }

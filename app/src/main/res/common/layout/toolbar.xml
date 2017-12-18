@@ -7,6 +7,8 @@
 
         <import type="android.text.TextUtils"/>
 
+        <import type="android.support.design.widget.CollapsingToolbarLayout.LayoutParams"/>
+
         <variable
             name="toolbarType"
             type="io.scal.ambi.extensions.view.ToolbarType"/>
@@ -18,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
-        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:layout_collapseMode="@{toolbarType.collapsingFlags}"
+        app:layout_scrollFlags="@{toolbarType.scrollFlags}"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/Toolbar"
         bind:visibility="@{null != toolbarType}">

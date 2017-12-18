@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.newsfeed.list
 
 import android.databinding.ObservableList
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
+import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 
 internal sealed class NewsFeedProgressState {
 
@@ -27,5 +27,5 @@ internal sealed class NewsFeedDataState {
 
     object Empty : NewsFeedDataState()
 
-    class Data(val newsFeed: ObservableList<ElementModelFeed>) : NewsFeedDataState()
+    class Data(val newsFeed: ObservableList<UIModelFeed>) : NewsFeedDataState()
 }

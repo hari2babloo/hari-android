@@ -22,6 +22,7 @@ abstract class BaseUserViewModel(router: Router,
     private fun loadCurrentUser() {
         userLoader.invoke()
             .compose(rxSchedulersAbs.getIOToMainTransformer())
+            .onErrorResumeNext(Observable.never())
             .subscribe {
                 currentUser.set(it)
 

@@ -2,11 +2,11 @@ package io.scal.ambi.ui.home.chat.list
 
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
-import io.scal.ambi.ui.home.chat.list.data.ElementChatListFilter
+import io.scal.ambi.ui.home.chat.list.data.UIChatListFilter
 
-class ChatFilterModel constructor(private val allFilters: List<ElementChatListFilter>) {
+class ChatFilterModel constructor(private val allFilters: List<UIChatListFilter>) {
 
-    internal val selectedFilter = ObservableField<ElementChatListFilter>()
+    internal val selectedFilter = ObservableField<UIChatListFilter>()
     var viewModels = ObservableField(generateViewModels())
 
     fun onFilterClicked(elementIndex: Int) {
@@ -24,5 +24,5 @@ class ChatFilterModel constructor(private val allFilters: List<ElementChatListFi
     }
 }
 
-class ChatFilterElementViewModel(val elementChatListFilter: ElementChatListFilter,
+class ChatFilterElementViewModel(val elementChatListFilter: UIChatListFilter,
                                  val selected: Boolean) : ViewModel()

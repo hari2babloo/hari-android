@@ -17,9 +17,9 @@ import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.model.Paginator
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementComments
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementLikes
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
+import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
+import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
+import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 import org.joda.time.DateTime
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
@@ -38,7 +38,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
 
     private val paginator = Paginator(
         { page -> loadNextPage(page) },
-        object : Paginator.ViewController<ElementModelFeed> {
+        object : Paginator.ViewController<UIModelFeed> {
             override fun showEmptyProgress(show: Boolean) {
                 if (show) progressState.set(NewsFeedProgressState.EmptyProgress)
                 else progressState.set(NewsFeedProgressState.NoProgress)
@@ -56,7 +56,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                 if (show) dataState.set(NewsFeedDataState.Empty)
             }
 
-            override fun showData(show: Boolean, data: List<ElementModelFeed>) {
+            override fun showData(show: Boolean, data: List<UIModelFeed>) {
                 if (show) {
                     val currentState = dataState.get()
                     if (currentState is NewsFeedDataState.Data) {
@@ -107,21 +107,21 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         router.navigateTo(NavigateTo.CREATE_POLL)
     }
 
-    fun openAuthorOf(element: ElementModelFeed) {
-        if (element is ElementModelFeed.Message) {
+    fun openAuthorOf(element: UIModelFeed) {
+        if (element is UIModelFeed.Message) {
 //            router.navigateTo(NavigateTo.PROFILE_DETAILS, element.author)
         }
     }
 
-    fun changeUserLikeOf(element: ElementModelFeed) {
+    fun changeUserLikeOf(element: UIModelFeed) {
         // todo
     }
 
-    fun openCommentsOf(element: ElementModelFeed) {
+    fun openCommentsOf(element: UIModelFeed) {
 //        router.navigateTo(NavigateTo.ALL_COMMENTS_OF, element)
     }
 
-    fun selectPollChoice(element: ElementModelFeed.Poll, choice: ElementModelFeed.Poll.PollChoiceResult) {
+    fun selectPollChoice(element: UIModelFeed.Poll, choice: UIModelFeed.Poll.PollChoiceResult) {
         val currentDataState = dataState.get()
         if (currentDataState is NewsFeedDataState.Data) {
             if (currentDataState.newsFeed.contains(element)) {
@@ -195,14 +195,14 @@ class NewsFeedViewModel @Inject constructor(router: Router,
             .addTo(disposables)
     }
 
-    private fun loadNextPage(page: Int): Single<List<ElementModelFeed>> {
+    private fun loadNextPage(page: Int): Single<List<UIModelFeed>> {
         return interactor
             .loadNewsFeedPage(page, if (1 == page) null else (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.createdAtDateTime)
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {
                 Observable.fromIterable(it)
-                    .map<ElementModelFeed> { it.toNewsFeedElement(currentUser.get()) }
+                    .map<UIModelFeed> { it.toNewsFeedElement(currentUser.get()) }
                     .toList()
             }
             .onErrorReturn {
@@ -220,27 +220,27 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     }
 }
 
-private fun NewsFeedItem.toNewsFeedElement(currentUser: User): ElementModelFeed =
+private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
     when (this) {
-        is NewsFeedItemPoll -> ElementModelFeed.Poll(uid,
-                                                     user,
-                                                     pollCreatedAt,
-                                                     locked,
-                                                     pinned,
-                                                     announcement,
-                                                     questionText,
-                                                     choices.toPollVotedResult(),
-                                                     choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
-                                                     pollEndsTime.endsFrom(pollCreatedAt),
-                                                     ElementLikes(
+        is NewsFeedItemPoll -> UIModelFeed.Poll(uid,
+                                                user,
+                                                pollCreatedAt,
+                                                locked,
+                                                pinned,
+                                                announcement,
+                                                questionText,
+                                                choices.toPollVotedResult(),
+                                                choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
+                                                pollEndsTime.endsFrom(pollCreatedAt),
+                                                UILikes(
                                                          currentUser.uid,
                                                          likes),
-                                                     ElementComments(
+                                                UIComments(
                                                          comments))
         else                -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
     }
 
-private fun List<PollChoice>.toPollVotedResult(): List<ElementModelFeed.Poll.PollChoiceResult> {
+private fun List<PollChoice>.toPollVotedResult(): List<UIModelFeed.Poll.PollChoiceResult> {
     val totalVotes = fold(0, { acc, pollChoice -> acc + pollChoice.voters.size })
     val mostVoted = fold(ArrayList(), { acc: MutableList<PollChoice>, pollChoice ->
         when {
@@ -253,124 +253,124 @@ private fun List<PollChoice>.toPollVotedResult(): List<ElementModelFeed.Poll.Pol
         }
         acc
     })
-    return map { ElementModelFeed.Poll.PollChoiceResult(it, totalVotes, mostVoted.contains(it)) }
+    return map { UIModelFeed.Poll.PollChoiceResult(it, totalVotes, mostVoted.contains(it)) }
 }
 
-private fun generateTestData(currentUser: User, page: Int): List<ElementModelFeed> {
+private fun generateTestData(currentUser: User, page: Int): List<UIModelFeed> {
     return listOf(
-        ElementModelFeed.Poll("${page * 20 + 0}",
-                              currentUser,
-                              DateTime.now(),
-                              true,
-                              true,
-                              null,
-                              "Is it true?",
-                              listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())).toPollVotedResult(),
-                              null,
-                              null,
-                              ElementLikes(currentUser.uid,
-                                           emptyList()),
-                              ElementComments(emptyList())
+        UIModelFeed.Poll("${page * 20 + 0}",
+                         currentUser,
+                         DateTime.now(),
+                         true,
+                         true,
+                         null,
+                         "Is it true?",
+                         listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())).toPollVotedResult(),
+                         null,
+                         null,
+                         UILikes(currentUser.uid,
+                                      emptyList()),
+                         UIComments(emptyList())
         ),
-        ElementModelFeed.Poll("${page * 20 + 1}",
-                              currentUser,
-                              DateTime.now(),
-                              false,
-                              true,
-                              null,
-                              "Is it true?",
-                              listOf(PollChoice("1", "Yes", emptyList()),
+        UIModelFeed.Poll("${page * 20 + 1}",
+                         currentUser,
+                         DateTime.now(),
+                         false,
+                         true,
+                         null,
+                         "Is it true?",
+                         listOf(PollChoice("1", "Yes", emptyList()),
                                      PollChoice("2", "No", listOf(currentUser))).toPollVotedResult(),
-                              null,
-                              DateTime(2018, 1, 5, 10, 23, 0),
-                              ElementLikes(currentUser.uid,
-                                           emptyList()),
-                              ElementComments(emptyList())
+                         null,
+                         DateTime(2018, 1, 5, 10, 23, 0),
+                         UILikes(currentUser.uid,
+                                      emptyList()),
+                         UIComments(emptyList())
         ),
-        ElementModelFeed.Poll("${page * 20 + 2}",
-                              currentUser,
-                              DateTime.now(),
-                              false,
-                              true,
-                              null,
-                              "Is it true?",
-                              listOf(PollChoice("1", "Yes", listOf(currentUser)),
+        UIModelFeed.Poll("${page * 20 + 2}",
+                         currentUser,
+                         DateTime.now(),
+                         false,
+                         true,
+                         null,
+                         "Is it true?",
+                         listOf(PollChoice("1", "Yes", listOf(currentUser)),
                                      PollChoice("2", "No", listOf(currentUser, currentUser)))
                                   .toPollVotedResult(),
-                              PollChoice("1", "Yes", emptyList()),
-                              DateTime.now(),
-                              ElementLikes(currentUser.uid,
-                                           emptyList()),
-                              ElementComments(emptyList())
+                         PollChoice("1", "Yes", emptyList()),
+                         DateTime.now(),
+                         UILikes(currentUser.uid,
+                                      emptyList()),
+                         UIComments(emptyList())
         ),
-        ElementModelFeed.Message("${page * 20 + 15}",
-                                 currentUser,
-                                 DateTime.now(),
-                                 false,
-                                 true,
-                                 null,
-                                 "test message $page",
-                                 ElementLikes(currentUser.uid,
-                                              emptyList()),
-                                 ElementComments(emptyList())
+        UIModelFeed.Message("${page * 20 + 15}",
+                            currentUser,
+                            DateTime.now(),
+                            false,
+                            true,
+                            null,
+                            "test message $page",
+                            UILikes(currentUser.uid,
+                                         emptyList()),
+                            UIComments(emptyList())
         ),
-        ElementModelFeed.Message("${page * 20 + 16}",
-                                 currentUser,
-                                 DateTime(2017, 12, 7, 15, 20),
-                                 true,
-                                 true,
-                                 Announcement.SAFETY,
-                                 "just an other message $page",
-                                 ElementLikes(currentUser.uid,
-                                              listOf(
+        UIModelFeed.Message("${page * 20 + 16}",
+                            currentUser,
+                            DateTime(2017, 12, 7, 15, 20),
+                            true,
+                            true,
+                            Announcement.SAFETY,
+                            "just an other message $page",
+                            UILikes(currentUser.uid,
+                                         listOf(
                                                   currentUser)),
-                                 ElementComments(emptyList())
+                            UIComments(emptyList())
         ),
-        ElementModelFeed.Message("${page * 20 + 17}",
-                                 currentUser,
-                                 DateTime(2017, 12, 25, 15, 0),
-                                 true,
-                                 false,
-                                 Announcement.GENERAL,
-                                 "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
-                                 ElementLikes(currentUser.uid,
-                                              listOf(
+        UIModelFeed.Message("${page * 20 + 17}",
+                            currentUser,
+                            DateTime(2017, 12, 25, 15, 0),
+                            true,
+                            false,
+                            Announcement.GENERAL,
+                            "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
+                            UILikes(currentUser.uid,
+                                         listOf(
                                                   currentUser,
                                                   currentUser,
                                                   currentUser,
                                                   currentUser,
                                                   currentUser,
                                                   currentUser)),
-                                 ElementComments(emptyList())
+                            UIComments(emptyList())
         ),
-        ElementModelFeed.Message("${page * 20 + 18}",
-                                 currentUser,
-                                 DateTime(2017, 10, 7, 15, 0),
-                                 false,
-                                 false,
-                                 Announcement.GOOD_NEWS,
-                                 "",
-                                 ElementLikes(currentUser.uid,
-                                              emptyList()),
-                                 ElementComments(listOf(
+        UIModelFeed.Message("${page * 20 + 18}",
+                            currentUser,
+                            DateTime(2017, 10, 7, 15, 0),
+                            false,
+                            false,
+                            Announcement.GOOD_NEWS,
+                            "",
+                            UILikes(currentUser.uid,
+                                         emptyList()),
+                            UIComments(listOf(
                                      Comment(currentUser,
                                              "just comment!!!",
                                              DateTime.now())))
         ),
-        ElementModelFeed.Message("${page * 20 + 19}",
-                                 currentUser,
-                                 DateTime(2017, 10, 1, 15, 0),
-                                 false,
-                                 false,
-                                 Announcement.TRAGEDY,
-                                 "test message",
+        UIModelFeed.Message("${page * 20 + 19}",
+                            currentUser,
+                            DateTime(2017, 10, 1, 15, 0),
+                            false,
+                            false,
+                            Announcement.TRAGEDY,
+                            "test message",
             /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
             , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
             "Does President Trump Want to Negotiate Middle East Peace?",
             */
-                                 ElementLikes(currentUser.uid,
-                                              emptyList()),
-                                 ElementComments(listOf(
+                                 UILikes(currentUser.uid,
+                                         emptyList()),
+                            UIComments(listOf(
                                      Comment(currentUser,
                                              "comment 1!!!",
                                              DateTime.now()),

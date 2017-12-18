@@ -13,7 +13,7 @@
 
         <variable
             name="element"
-            type="io.scal.ambi.ui.home.chat.list.data.ElementChatList"/>
+            type="io.scal.ambi.ui.home.chat.list.data.UIChatList"/>
 
     </data>
 

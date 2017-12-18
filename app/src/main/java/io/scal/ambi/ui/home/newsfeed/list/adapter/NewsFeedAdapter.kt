@@ -8,7 +8,7 @@ import io.scal.ambi.ui.global.base.adapter.DataObserverForAdapter
 import io.scal.ambi.ui.global.base.adapter.HeaderFooterList
 import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterDelegated
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed
+import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 
 class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerViewAdapterDelegated<Any>() {
 
@@ -40,14 +40,14 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerViewAdapterDelegat
     override fun getItemId(position: Int): Long {
         val item = newsFeedList[position]
         return when (item) {
-            headerElement       -> "header_0".hashCode().toLong()
-            is ElementModelFeed -> item.uid.hashCode().toLong()
-            footerElement       -> "footer_0".hashCode().toLong()
-            else                -> throw IllegalArgumentException("unknown item: $item")
+            headerElement  -> "header_0".hashCode().toLong()
+            is UIModelFeed -> item.uid.hashCode().toLong()
+            footerElement  -> "footer_0".hashCode().toLong()
+            else           -> throw IllegalArgumentException("unknown item: $item")
         }
     }
 
-    fun updateData(data: ObservableList<ElementModelFeed>) {
+    fun updateData(data: ObservableList<UIModelFeed>) {
         releaseData()
         newsFeedList = newsFeedList.copy(data = data)
         dataObserver = NewsFeedAdapterDataObserver(data, this)
@@ -65,8 +65,8 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerViewAdapterDelegat
         newsFeedList.updateFooterVisibility(show, this)
     }
 
-    private class NewsFeedAdapterDataObserver(data: ObservableList<ElementModelFeed>, adapter: RecyclerView.Adapter<*>) :
-        DataObserverForAdapter<ElementModelFeed>(data, adapter) {
+    private class NewsFeedAdapterDataObserver(data: ObservableList<UIModelFeed>, adapter: RecyclerView.Adapter<*>) :
+        DataObserverForAdapter<UIModelFeed>(data, adapter) {
 
         override fun notifyItemRangeChanged(adapter: RecyclerView.Adapter<*>, positionStart: Int, itemCount: Int) {
             super.notifyItemRangeChanged(adapter, positionStart + 1, itemCount)

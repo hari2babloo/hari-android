@@ -20,7 +20,6 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
 
     override fun loadCurrentUser(): Observable<User> =
         localUserDataRepository.observeCurrentUser()
-            .onErrorResumeNext(Observable.never<User>())
 
     override fun loadChatListPage(page: Int): Single<List<SmallChatItem>> {
         return Single.just(listOf(
@@ -35,7 +34,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                  User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
                                  ChatMessage.TextMessage(User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
                                                          DateTime(2017, 12, 15, 15, 30),
-                                                         "Hey! How are you ? New"),
+                                                         "Hey! How are you ? New",
+                                                         emptyList()),
                                  true
             ),
             SmallChatItem.Direct("$page _ 2",
@@ -48,7 +48,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                DateTime(2017, 12, 11, 1, 24),
                                                                "Hey! How are you ? NO",
                                                                listOf(ChatAttachment("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg",
-                                                                                     ChatAttachmentType.IMAGE))),
+                                                                                     ChatAttachmentType.IMAGE)),
+                                                               emptyList()),
                                  false
             ),
             SmallChatItem.Direct("$page _ 3",
@@ -64,7 +65,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                                      ChatAttachmentType.IMAGE),
                                                                       ChatAttachment("https://i.imgur.com/eGJJvdd.gif",
                                                                                      ChatAttachmentType.FILE)
-                                                               )
+                                                               ),
+                                                               emptyList()
                                  ),
                                  false
             ),
@@ -87,7 +89,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                                     ChatAttachmentType.IMAGE),
                                                                      ChatAttachment("https://i.imgur.com/eGJJvdd.gif",
                                                                                     ChatAttachmentType.FILE)
-                                                              )
+                                                              ),
+                                                              emptyList()
                                 ),
                                 true
             )

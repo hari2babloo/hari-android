@@ -14,6 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.FragmentChatListBinding
+import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.navigation.NavigateTo
@@ -131,7 +132,7 @@ class ChatListFragment : BaseNavigationFragment<ChatListViewModel, FragmentChatL
         get() = object : SupportAppNavigator(activity, R.id.container) {
             override fun createActivityIntent(screenKey: String?, data: Any?): Intent? =
                 when (screenKey) {
-                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(activity!!, data as String)
+                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(activity!!, data as SmallChatItem)
                     else                    -> null
                 }
 

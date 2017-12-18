@@ -13,7 +13,7 @@
 
         <variable
             name="element"
-            type="io.scal.ambi.ui.home.newsfeed.list.data.ElementModelFeed.Poll"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed.Poll"/>
 
     </data>
 

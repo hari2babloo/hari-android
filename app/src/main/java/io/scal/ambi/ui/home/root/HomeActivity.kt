@@ -47,6 +47,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
 
     private fun initToolbar() {
         defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_ambi_logo_small), SearchToolbarContent(searchViewModel), IconImageUser())
+        defaultToolbarType!!.makeScrolling()
         setToolbarType(defaultToolbarType)
 
         authProfileCheckerViewModel

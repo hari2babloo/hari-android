@@ -11,13 +11,13 @@ import io.scal.ambi.BR
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemLikeUserNamesBinding
 import io.scal.ambi.entity.User
-import io.scal.ambi.ui.home.newsfeed.list.data.ElementLikes
+import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
 
 object LikesCommentsBinder {
 
     @JvmStatic
     @BindingAdapter(value = ["likesDescription", "likesDescriptionCurrentUser"], requireAll = true)
-    fun bindLikesDescription(relativeLayout: RelativeLayout, likes: ElementLikes?, currentUser: User?) {
+    fun bindLikesDescription(relativeLayout: RelativeLayout, likes: UILikes?, currentUser: User?) {
         relativeLayout.removeAllViews()
         if (null == likes || null == currentUser || likes.allUsersLiked.isEmpty()) {
             return

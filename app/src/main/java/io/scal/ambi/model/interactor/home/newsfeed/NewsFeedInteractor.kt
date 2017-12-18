@@ -17,7 +17,6 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
 
     override fun loadCurrentUser(): Observable<User> =
         localUserDataRepository.observeCurrentUser()
-            .onErrorResumeNext(Observable.never<User>())
 
     override fun loadNewsFeedPage(page: Int, dateTime: DateTime?): Single<List<NewsFeedItem>> {
         return postsRepository.loadPostsGeneral(dateTime?.millis)

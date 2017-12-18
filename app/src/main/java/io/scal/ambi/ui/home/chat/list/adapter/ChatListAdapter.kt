@@ -5,7 +5,7 @@ import io.scal.ambi.ui.global.base.adapter.AdapterDelegateStaticView
 import io.scal.ambi.ui.global.base.adapter.HeaderFooterList
 import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterDelegated
 import io.scal.ambi.ui.home.chat.list.ChatListViewModel
-import io.scal.ambi.ui.home.chat.list.data.ElementChatList
+import io.scal.ambi.ui.home.chat.list.data.UIChatList
 
 class ChatListAdapter(viewModel: ChatListViewModel) : RecyclerViewAdapterDelegated<Any>() {
 
@@ -30,13 +30,13 @@ class ChatListAdapter(viewModel: ChatListViewModel) : RecyclerViewAdapterDelegat
     override fun getItemId(position: Int): Long {
         val item = dataList[position]
         return when (item) {
-            is ElementChatList -> item.uid.hashCode().toLong()
-            footerElement      -> "footer_0".hashCode().toLong()
-            else               -> throw IllegalArgumentException("unknown item: $item")
+            is UIChatList -> item.uid.hashCode().toLong()
+            footerElement -> "footer_0".hashCode().toLong()
+            else          -> throw IllegalArgumentException("unknown item: $item")
         }
     }
 
-    fun updateData(data: List<ElementChatList>) {
+    fun updateData(data: List<UIChatList>) {
         chatList = chatList.copy(data = data)
         notifyDataSetChanged()
     }

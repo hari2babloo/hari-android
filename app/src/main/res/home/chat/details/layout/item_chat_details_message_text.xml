@@ -6,17 +6,18 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel"/>
+            type="io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel"/>
 
         <variable
             name="element"
-            type="io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed.Link"/>
+            type="io.scal.ambi.ui.home.chat.details.data.UIChatMessage.TextMessage"/>
 
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="10dp"
+        android:background="#f00">
 
     </android.support.constraint.ConstraintLayout>
 

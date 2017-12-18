@@ -10,11 +10,11 @@
 
         <variable
             name="likes"
-            type="io.scal.ambi.ui.home.newsfeed.list.data.ElementLikes"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UILikes"/>
 
         <variable
             name="comments"
-            type="io.scal.ambi.ui.home.newsfeed.list.data.ElementComments"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UIComments"/>
 
         <variable
             name="currentUser"

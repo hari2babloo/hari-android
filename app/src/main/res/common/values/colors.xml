@@ -19,4 +19,6 @@
     <color name="whiteDark">#F2F2F5</color>
     <color name="grayUnselectedWhite">#9B9B9B</color>
 
+    <color name="blueHref">#00a6ef</color>
+
 </resources>

@@ -3,6 +3,9 @@ package io.scal.ambi.extensions.binding.binders
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CollapsingToolbarLayout
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,5 +41,19 @@ object ToolbarBinder {
                     view.layoutParams = this
                 }
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("layout_collapseMode")
+    fun setCollapseMode(toolbar: Toolbar, collapseMode: Int?) {
+        val lp = toolbar.layoutParams as? CollapsingToolbarLayout.LayoutParams
+        lp?.collapseMode = collapseMode ?: CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_OFF
+    }
+
+    @JvmStatic
+    @BindingAdapter("layout_scrollFlags")
+    fun setScrollFlags(toolbar: Toolbar, scrollFlags: Int?) {
+        val lp = toolbar.layoutParams as? AppBarLayout.LayoutParams
+        lp?.scrollFlags = scrollFlags ?: 0
     }
 }

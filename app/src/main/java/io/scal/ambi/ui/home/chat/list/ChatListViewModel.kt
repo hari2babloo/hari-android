@@ -16,8 +16,8 @@ import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.model.Paginator
-import io.scal.ambi.ui.home.chat.list.data.ElementChatList
-import io.scal.ambi.ui.home.chat.list.data.ElementChatListFilter
+import io.scal.ambi.ui.home.chat.list.data.UIChatList
+import io.scal.ambi.ui.home.chat.list.data.UIChatListFilter
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
@@ -34,11 +34,11 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
     private val allDataState = ObservableField<ChatListDataState>()
 
-    val filterModel = ChatFilterModel(listOf(ElementChatListFilter.AllChats, ElementChatListFilter.GroupChats, ElementChatListFilter.ClassChats))
+    val filterModel = ChatFilterModel(listOf(UIChatListFilter.AllChats, UIChatListFilter.GroupChats, UIChatListFilter.ClassChats))
 
     private val paginator = Paginator(
         { page -> loadNextPage(page) },
-        object : Paginator.ViewController<ElementChatList> {
+        object : Paginator.ViewController<UIChatList> {
             override fun showEmptyProgress(show: Boolean) {
                 if (show) progressState.set(ChatListProgressState.EmptyProgress)
                 else progressState.set(ChatListProgressState.NoProgress)
@@ -56,7 +56,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
                 if (show) allDataState.set(ChatListDataState.Empty)
             }
 
-            override fun showData(show: Boolean, data: List<ElementChatList>) {
+            override fun showData(show: Boolean, data: List<UIChatList>) {
                 if (show) allDataState.set(ChatListDataState.Data(OptimizedObservableArrayList(data)))
             }
 
@@ -83,7 +83,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
         paginator.activate()
 
-        initFilterChanges()
+        initChatTypeFilters()
 
         paginator.refresh()
     }
@@ -96,8 +96,8 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         paginator.loadNewPage()
     }
 
-    fun openChatDetails(element: ElementChatList) {
-        router.navigateTo(NavigateTo.CHAT_DETAILS, element.uid)
+    fun openChatDetails(element: UIChatList) {
+        router.navigateTo(NavigateTo.CHAT_DETAILS, element.chatInfo)
     }
 
     override fun onCleared() {
@@ -106,7 +106,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         super.onCleared()
     }
 
-    private fun initFilterChanges() {
+    private fun initChatTypeFilters() {
         filterModel.onFilterClicked(0)
 
         filterModel
@@ -143,18 +143,20 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
             .addTo(disposables)
     }
 
-    private fun loadNextPage(page: Int): Single<List<ElementChatList>> {
+    private fun loadNextPage(page: Int): Single<List<UIChatList>> {
         return interactor.loadChatListPage(page)
+            .subscribeOn(rxSchedulersAbs.ioScheduler)
+            .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {
                 Observable.fromIterable(it)
                     .map { it.toChatListElement(context, currentUser.get()) }
                     .toList()
             }
-            .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
     }
 }
 
-private fun SmallChatItem.toChatListElement(context: Context, currentUser: User): ElementChatList {
+private fun SmallChatItem.toChatListElement(context: Context, currentUser: User): UIChatList {
     val lastMessageSenderName: String? =
         when {
             null == lastMessage          -> null
@@ -173,20 +175,18 @@ private fun SmallChatItem.toChatListElement(context: Context, currentUser: User)
         }?.let { if (it.isEmpty()) "" else "$it: " }
 
 
-    return ElementChatList(uid,
-                           icon,
-                           title,
-                           when (lastMessage) {
-                               null                             ->
-                                   context.getString(R.string.chat_list_message_empty)
-                               is ChatMessage.TextMessage       ->
-                                   context.getString(R.string.chat_list_message_text, lastMessageSenderName, lastMessage!!.toMessageData(context))
-                               is ChatMessage.AttachmentMessage ->
-                                   context.getString(R.string.chat_list_message_text, lastMessageSenderName, lastMessage!!.toMessageData(context))
-                           }.trim(),
-                           lastMessage?.sendDate ?: creationDateTime,
-                           hasNewMessages,
-                           ElementChatListFilter.AllChats
+    return UIChatList(this,
+                      when (lastMessage) {
+                          null                             ->
+                              context.getString(R.string.chat_list_message_empty)
+                          is ChatMessage.TextMessage       ->
+                              context.getString(R.string.chat_list_message_text, lastMessageSenderName, lastMessage!!.toMessageData(context))
+                          is ChatMessage.AttachmentMessage ->
+                              context.getString(R.string.chat_list_message_text, lastMessageSenderName, lastMessage!!.toMessageData(context))
+                      }.trim(),
+                      lastMessage?.sendDate ?: creationDateTime,
+                      hasNewMessages,
+                      UIChatListFilter.AllChats
     )
 }
 
@@ -198,6 +198,6 @@ private fun ChatMessage.toMessageData(context: Context): String =
         else                                  -> throw IllegalArgumentException("unknown chat message type: $this")
     }
 
-private fun ElementChatListFilter?.filterAllData(allChats: List<ElementChatList>): List<ElementChatList> {
+private fun UIChatListFilter?.filterAllData(allChats: List<UIChatList>): List<UIChatList> {
     return allChats.filter { it.filterType == this }
 }

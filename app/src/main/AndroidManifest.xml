@@ -48,7 +48,7 @@
 
         <activity
             android:name=".ui.home.chat.details.ChatDetailsActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"/>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
     </application>
 </manifest>
