@@ -8,6 +8,6 @@ import io.scal.ambi.extensions.generateNamesText
 data class UIChatTyping(val users: List<User>) {
 
     fun getTypingUsers(context: Context): String {
-        return generateNamesText(context, users, R.string.text_is_typing_this, R.string.text_are_typing_this, null)
+        return generateNamesText(context, users, R.string.chat_details_text_is_typing_this, R.string.chat_details_text_are_typing_this, null)
     }
 }

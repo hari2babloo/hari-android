@@ -16,6 +16,7 @@ import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
+import io.scal.ambi.extensions.view.listenForEndScrollInverse
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.home.chat.details.adapter.ChatDetailsAdapter
@@ -42,12 +43,10 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
         binding.rvMessages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         binding.rvMessages.adapter = adapter
 
-/*
-        binding.rvMessages.listenForEndScroll(1)
+        binding.rvMessages.listenForEndScrollInverse(1)
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.loadNextPage() }
-*/
     }
 
     private fun initToolbar() {

@@ -7,7 +7,7 @@
     <data>
 
         <variable
-            name="viewModel"
+            name="element"
             type="io.scal.ambi.ui.home.chat.details.data.UIChatInfo"/>
 
     </data>
@@ -15,7 +15,6 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="?actionBarSize"
         android:background="@color/white">
 
         <com.facebook.drawee.view.SimpleDraweeView
@@ -25,7 +24,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
             app:actualImageScaleType="centerInside"
-            app:iconImage="@{viewModel.icon}"
+            app:iconImage="@{element.icon}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:roundAsCircle="true"/>
@@ -38,7 +37,7 @@
             android:layout_marginTop="9dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@{viewModel.title}"
+            android:text="@{element.title}"
             android:textColor="#333333"
             android:textSize="16sp"
             app:customFontName="@{@string/font_pantra_bold}"
@@ -57,7 +56,7 @@
             android:gravity="top|start"
             android:letterSpacing="-0.03"
             android:lineSpacingExtra="6sp"
-            android:text="@{viewModel.description}"
+            android:text="@{element.description}"
             android:textColor="#222222"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"

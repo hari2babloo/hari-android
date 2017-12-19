@@ -1,6 +1,8 @@
 package io.scal.ambi.ui.home.chat.list.adapter
 
+import android.support.v7.util.DiffUtil
 import io.scal.ambi.R
+import io.scal.ambi.extensions.binding.DefaultDiffCallback
 import io.scal.ambi.ui.global.base.adapter.AdapterDelegateStaticView
 import io.scal.ambi.ui.global.base.adapter.HeaderFooterList
 import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterDelegated
@@ -37,8 +39,11 @@ class ChatListAdapter(viewModel: ChatListViewModel) : RecyclerViewAdapterDelegat
     }
 
     fun updateData(data: List<UIChatList>) {
+        val oldMessageList = chatList
         chatList = chatList.copy(data = data)
-        notifyDataSetChanged()
+
+        val diffResult = DiffUtil.calculateDiff(DefaultDiffCallback(oldMessageList, chatList), true)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun releaseData() {

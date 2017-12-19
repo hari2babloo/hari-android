@@ -60,7 +60,7 @@
             app:onSwipeToRefresh="@{() -> viewModel.refresh()}">
 
 
-            <android.support.v7.widget.RecyclerView
+            <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
                 android:id="@+id/rv_college_updates"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

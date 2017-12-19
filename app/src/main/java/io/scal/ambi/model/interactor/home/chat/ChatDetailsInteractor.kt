@@ -55,6 +55,10 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
     }
 
     override fun loadChatPage(page: Int): Single<List<ChatMessage>> {
+        if (10 < page) {
+            return Single.just(emptyList())
+        }
+
         return Single.just(listOf(
             ChatMessage.TextMessage(
                 User("1",
@@ -70,7 +74,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                      IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                      "Josh",
                      "Lucas"),
-                DateTime(2017, 12, 18, 18, 49),
+                DateTime(2017, 12, 18, 18, 40),
                 "second message weeee $page",
                 emptyList()
             ),
@@ -79,8 +83,8 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                      IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                      "Josh",
                      "Lucas"),
-                DateTime(2017, 12, 18, 18, 49),
-                "third message weeee $page",
+                DateTime(2017, 12, 18, 17, 9),
+                "yes, but i dont have any options… i have my work with me… try hard..\uD83D\uDE02 $page",
                 emptyList()
             ),
             ChatMessage.TextMessage(
@@ -88,7 +92,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                      IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                      "Josh",
                      "Lucas"),
-                DateTime(2017, 12, 18, 18, 49),
+                DateTime(2017, 12, 17, 18, 49),
                 "one more time message weeee $page",
                 emptyList()
             ),
@@ -97,7 +101,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                      IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                      "Josh",
                      "Lucas"),
-                DateTime(2017, 12, 18, 18, 49),
+                DateTime(2017, 12, 16, 8, 49),
                 "are you here?",
                 emptyList()
             ),
@@ -106,7 +110,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                      IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                      "Josh",
                      "Lucas"),
-                DateTime(2017, 12, 18, 18, 49),
+                DateTime(2017, 11, 1, 0, 9),
                 "first attachment weeee $page",
                 listOf(ChatAttachment.Image("http://www.gandex.ru/upl/oboi/gandex.ru-12641_7122_26_1408.jpg")),
                 emptyList()
@@ -116,7 +120,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                      IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                      "Josh",
                      "Lucas"),
-                DateTime(2017, 12, 18, 18, 49),
+                DateTime(2017, 10, 14, 13, 3),
                 "",
                 listOf(ChatAttachment.Image("https://i1.i.ua/prikol/pic/7/9/454097.jpg"),
                        ChatAttachment.Image("http://klukva.org/uploads/posts/2013-02/1360925166_auto-001.jpg")),
@@ -127,7 +131,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                      IconImageUser("https://cs8.pikabu.ru/post_img/2017/01/05/5/1483598291183026970.jpg"),
                      "Sara",
                      "Ping"),
-                DateTime(2017, 12, 18, 18, 49),
+                DateTime(2017, 10, 14, 13, 2),
                 "sip protocol",
                 listOf(ChatAttachment.File("http://tasuka.idv.tw/SIP/SIP.pdf",
                                            "PDF",
@@ -136,6 +140,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             )
         ))
+            .delay(4, TimeUnit.SECONDS)
     }
 
     override fun loadTypingInformation(): Observable<ChatTypingInfo> {
@@ -148,8 +153,11 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                          "Sara",
                          "Ping")
         val random = SecureRandom()
+/*
         return Observable.interval(5, TimeUnit.SECONDS)
             .delay(random.nextInt(3000).toLong(), TimeUnit.MILLISECONDS)
             .map { ChatTypingInfo(if (random.nextBoolean()) user1 else user2, random.nextBoolean()) }
+*/
+        return Observable.never()
     }
 }

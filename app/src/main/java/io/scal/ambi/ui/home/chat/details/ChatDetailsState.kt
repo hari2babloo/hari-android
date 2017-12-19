@@ -42,6 +42,7 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
 
     data class Data(override val chatInfo: UIChatInfo,
                     private val messages: List<Any>,
+                    private val noMoreData: Boolean = false,
                     private val chatTyping: UIChatTyping = UIChatTyping(emptyList())) : ChatDetailsDataState(chatInfo) {
 
         val allMessages: List<Any>
@@ -51,12 +52,15 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
             if (chatTyping.users.isNotEmpty()) {
                 uiMessages.add(0, chatTyping)
             }
+            if (noMoreData) {
+                uiMessages.add(chatInfo)
+            }
             allMessages = uiMessages
         }
 
         override fun moveToInfo(chatInfo: UIChatInfo): ChatDetailsDataState = copy(chatInfo = chatInfo)
-        override fun moveToEmpty(): ChatDetailsDataState = Data(chatInfo, emptyList())
-        override fun moveToData(data: List<Any>): ChatDetailsDataState = Data(chatInfo, data)
+        override fun moveToEmpty(): ChatDetailsDataState = copy(messages = emptyList())
+        override fun moveToData(data: List<Any>): ChatDetailsDataState = copy(messages = data)
 
         override fun startTyping(user: User): ChatDetailsDataState =
             if (null == chatTyping.users.find { it.uid == user.uid }) {
@@ -77,6 +81,10 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
                 copy(chatTyping = UIChatTyping(newTypingUsers))
             }
         }
+
+        override fun moveToDataNoMore(): ChatDetailsDataState {
+            return copy(noMoreData = true)
+        }
     }
 
     open fun moveToInfo(chatInfo: UIChatInfo): ChatDetailsDataState = this
@@ -85,4 +93,5 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
 
     open fun startTyping(user: User): ChatDetailsDataState = this
     open fun stopTyping(user: User): ChatDetailsDataState = this
+    open fun moveToDataNoMore(): ChatDetailsDataState = this
 }

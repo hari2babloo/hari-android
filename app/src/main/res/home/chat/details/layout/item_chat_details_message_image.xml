@@ -26,7 +26,7 @@
 
         <include
             android:id="@+id/c_header"
-            layout="@layout/item_chat_details_message_header"
+            layout="@layout/item_chat_details_message_item_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:element="@{element}"

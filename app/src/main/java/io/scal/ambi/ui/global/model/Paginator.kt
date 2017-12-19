@@ -19,6 +19,7 @@ class Paginator<in T>(
         fun showErrorMessage(error: Throwable)
         fun showRefreshProgress(show: Boolean)
         fun showPageProgress(show: Boolean)
+        fun showNoMoreData(show: Boolean) {}
     }
 
     private val firstPage = 1
@@ -219,6 +220,7 @@ class Paginator<in T>(
             } else {
                 currentState = ALL_DATA()
                 viewController.showPageProgress(false)
+                viewController.showNoMoreData(true)
             }
         }
 

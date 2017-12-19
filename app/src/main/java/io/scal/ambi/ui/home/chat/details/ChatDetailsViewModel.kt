@@ -23,6 +23,7 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.model.Paginator
+import io.scal.ambi.ui.home.chat.details.data.UIChatDate
 import io.scal.ambi.ui.home.chat.details.data.UIChatInfo
 import io.scal.ambi.ui.home.chat.details.data.UIChatLikes
 import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
@@ -35,6 +36,7 @@ import java.text.DecimalFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.ArrayList
 
 class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                                router: Router,
@@ -68,7 +70,11 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             }
 
             override fun showData(show: Boolean, data: List<UIChatMessage>) {
-                if (show) dataState.set(dataState.get().moveToData(data))
+                if (show) dataState.set(dataState.get().moveToData(data.addDateObjects()))
+            }
+
+            override fun showNoMoreData(show: Boolean) {
+                if (show) dataState.set(dataState.get().moveToDataNoMore())
             }
 
             override fun showErrorMessage(error: Throwable) {
@@ -154,6 +160,32 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
     }
+}
+
+private fun List<UIChatMessage>.addDateObjects(): List<Any> {
+    // may be we should do it in BG thread.. for now lets do it here
+    val result = fold(ArrayList<Any>(),
+                      { acc, uiChatMessage ->
+                          val lastItem = acc.lastOrNull()
+                          if (lastItem is UIChatMessage) {
+                              val lastItemMessageLocalDate = lastItem.messageDateTime.toLocalDate()
+                              val currentMessageLocalDate = uiChatMessage.messageDateTime.toLocalDate()
+                              if (lastItemMessageLocalDate.dayOfYear != currentMessageLocalDate.dayOfYear) {
+                                  acc.add(UIChatDate(lastItemMessageLocalDate))
+                              }
+                          }
+                          acc.add(uiChatMessage)
+                          acc
+                      }
+    )
+    if (result.isNotEmpty()) {
+        val lastItem = result.last()
+        if (lastItem is UIChatMessage) {
+            result.add(UIChatDate(lastItem.messageDateTime.toLocalDate()))
+        }
+    }
+
+    return result
 }
 
 private fun SmallChatItem?.toChatInfo(): UIChatInfo? =

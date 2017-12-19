@@ -26,7 +26,7 @@
 
         <include
             android:id="@+id/c_header"
-            layout="@layout/item_chat_details_message_header"
+            layout="@layout/item_chat_details_message_item_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:element="@{element}"
@@ -43,8 +43,8 @@
             android:background="@drawable/bg_item_attachment"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="8dp"
             android:paddingEnd="8dp"
+            android:paddingStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

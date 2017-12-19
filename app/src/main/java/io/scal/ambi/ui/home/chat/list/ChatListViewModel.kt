@@ -9,7 +9,6 @@ import io.scal.ambi.R
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.SmallChatItem
-import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
@@ -57,7 +56,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
             }
 
             override fun showData(show: Boolean, data: List<UIChatList>) {
-                if (show) allDataState.set(ChatListDataState.Data(OptimizedObservableArrayList(data)))
+                if (show) allDataState.set(ChatListDataState.Data(data))
             }
 
             override fun showErrorMessage(error: Throwable) {

@@ -1,11 +1,12 @@
 package io.scal.ambi.ui.home.chat.details.adapter
 
+import android.support.v7.util.DiffUtil
 import io.scal.ambi.R
+import io.scal.ambi.extensions.binding.DefaultDiffCallback
 import io.scal.ambi.ui.global.base.adapter.AdapterDelegateStaticView
 import io.scal.ambi.ui.global.base.adapter.HeaderFooterList
 import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterDelegated
 import io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel
-import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
 
 class ChatDetailsAdapter(viewModel: ChatDetailsViewModel) : RecyclerViewAdapterDelegated<Any>() {
 
@@ -19,9 +20,11 @@ class ChatDetailsAdapter(viewModel: ChatDetailsViewModel) : RecyclerViewAdapterD
         }
 
     init {
+        addDelegate(ChatDetailCreation())
         addDelegate(ChatDetailsTextMessage(viewModel))
         addDelegate(ChatDetailsImageMessage(viewModel))
         addDelegate(ChatDetailsAttachmentMessage(viewModel))
+        addDelegate(ChatDetailDate())
         addDelegate(ChatDetailsTyping())
         addDelegate(AdapterDelegateStaticView(footerElement, R.layout.item_adapter_progress_footer))
 
@@ -29,8 +32,11 @@ class ChatDetailsAdapter(viewModel: ChatDetailsViewModel) : RecyclerViewAdapterD
     }
 
     fun updateData(data: List<Any>) {
+        val oldMessageList = messageList
         messageList = messageList.copy(data = data)
-        notifyDataSetChanged()
+
+        val diffResult = DiffUtil.calculateDiff(DefaultDiffCallback(oldMessageList, messageList), true)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun releaseData() {
