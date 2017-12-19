@@ -2,17 +2,18 @@ package io.scal.ambi.ui.home.chat.details
 
 import android.content.Context
 import android.databinding.ObservableField
+import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
-import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.entity.User
-import io.scal.ambi.entity.chat.ChatAttachmentType
+import io.scal.ambi.entity.chat.ChatAttachment
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.FullChatItem
 import io.scal.ambi.entity.chat.SmallChatItem
@@ -27,7 +28,10 @@ import io.scal.ambi.ui.home.chat.details.data.UIChatLikes
 import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
 import org.joda.time.format.DateTimeFormat
 import ru.terrakok.cicerone.Router
+import timber.log.Timber
 import java.io.File
+import java.net.URI
+import java.text.DecimalFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -112,6 +116,19 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                    errorState.set(ChatDetailsErrorState.FatalErrorState(t))
                                })
                     .addTo(disposables)
+
+                interactor.loadTypingInformation()
+                    .compose(rxSchedulersAbs.getIOToMainTransformer())
+                    .doOnError { Timber.e(it, "error during getting typing information. recovering...") }
+                    .retry()
+                    .subscribe {
+                        if (it.typing) {
+                            dataState.set(dataState.get().startTyping(it.user))
+                        } else {
+                            dataState.set(dataState.get().stopTyping(it.user))
+                        }
+                    }
+                    .addTo(disposables)
             } else {
                 refresh()
             }
@@ -150,7 +167,13 @@ private fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
     @Suppress("REDUNDANT_ELSE_IN_WHEN")
     val description =
         when (this) {
-            is FullChatItem.Direct -> Html.fromHtml(context.getString(R.string.chat_details_info_direct, otherUser.name))
+            is FullChatItem.Direct -> {
+                val description = SpannableStringBuilder()
+                description.append(context.getString(R.string.chat_details_info_direct))
+                description.append(" ")
+                description.appendCustom(otherUser.name, StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                description
+            }
             is FullChatItem.Group  -> {
                 val dateFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy' at 'HH:mm a").withLocale(Locale.ENGLISH)
                 val infoEndMessage = context.getString(R.string.chat_details_info_group_middle, dateFormatter.print(creationDateTime))
@@ -177,24 +200,38 @@ private fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMess
                                                                              UIChatLikes(currentUser.uid, likes)))
         is ChatMessage.AttachmentMessage ->
             attachments.map {
-                when (it.type) {
-                    ChatAttachmentType.IMAGE -> UIChatMessage.ImageMessage(sender,
-                                                                           sender.uid == currentUser.uid,
-                                                                           (message + "\n" +
-                                                                               try {
-                                                                                   File(it.path.path.toString()).name
-                                                                               } catch (t: Throwable) {
-                                                                                   ""
-                                                                               }
-                                                                               ).trim(),
-                                                                           IconImage(it.path.toString()),
-                                                                           sendDate,
-                                                                           UIChatLikes(currentUser.uid, likes))
-                    else                     -> UIChatMessage.AttachmentMessage(sender,
-                                                                                sender.uid == currentUser.uid,
-                                                                                it,
-                                                                                sendDate,
-                                                                                UIChatLikes(currentUser.uid, likes))
+                @Suppress("REDUNDANT_ELSE_IN_WHEN")
+                when (it) {
+                    is ChatAttachment.Image -> UIChatMessage.ImageMessage(sender,
+                                                                          sender.uid == currentUser.uid,
+                                                                          (message + "\n" + it.path.getFileName())
+                                                                              .trim(),
+                                                                          IconImage(it.path.toString()),
+                                                                          sendDate,
+                                                                          UIChatLikes(currentUser.uid, likes))
+                    is ChatAttachment.File  -> UIChatMessage.AttachmentMessage(sender,
+                                                                               sender.uid == currentUser.uid,
+                                                                               it,
+                                                                               (message + "\n" + it.path.getFileName()),
+                                                                               "${it.size.getFileSize()} ${it.typeName}",
+                                                                               sendDate,
+                                                                               UIChatLikes(currentUser.uid, likes))
+                    else                    -> throw IllegalArgumentException("unknown attachment type")
                 }
             }
+    }
+
+private fun Long.getFileSize(): String {
+    if (this <= 0)
+        return "0"
+    val units = arrayOf("B", "KB", "MB", "GB", "TB")
+    val digitGroups = (Math.log10(toDouble()) / Math.log10(1024.0)).toInt()
+    return DecimalFormat("#,##0.#").format(this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
+}
+
+private fun URI.getFileName(): String =
+    try {
+        File(path.toString()).name
+    } catch (t: Throwable) {
+        ""
     }

@@ -4,6 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.chat.ChatMessage
+import io.scal.ambi.entity.chat.ChatTypingInfo
 import io.scal.ambi.entity.chat.FullChatItem
 
 interface IChatDetailsInteractor {
@@ -13,4 +14,6 @@ interface IChatDetailsInteractor {
     fun loadChatInfo(): Observable<FullChatItem>
 
     fun loadChatPage(page: Int): Single<List<ChatMessage>>
+
+    fun loadTypingInformation(): Observable<ChatTypingInfo>
 }

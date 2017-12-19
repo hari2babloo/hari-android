@@ -41,6 +41,7 @@ abstract class SpinnerAdapterBase<T>(private var data: List<T> = emptyList()) : 
 
     protected open fun onBindItem(position: Int, binding: ViewDataBinding) {
         binding.setVariable(BR.item, getItem(position))
+        binding.executePendingBindings()
     }
 
     override fun getItem(position: Int): T =

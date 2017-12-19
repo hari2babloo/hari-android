@@ -22,12 +22,13 @@ class ChatDetailsAdapter(viewModel: ChatDetailsViewModel) : RecyclerViewAdapterD
         addDelegate(ChatDetailsTextMessage(viewModel))
         addDelegate(ChatDetailsImageMessage(viewModel))
         addDelegate(ChatDetailsAttachmentMessage(viewModel))
+        addDelegate(ChatDetailsTyping())
         addDelegate(AdapterDelegateStaticView(footerElement, R.layout.item_adapter_progress_footer))
 
         messageList.updateFooterVisibility(false, this)
     }
 
-    fun updateData(data: List<UIChatMessage>) {
+    fun updateData(data: List<Any>) {
         messageList = messageList.copy(data = data)
         notifyDataSetChanged()
     }

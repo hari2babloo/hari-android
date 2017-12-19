@@ -9,5 +9,4 @@ data class User(val uid: String,
                 private var lastName: String) : Serializable {
 
     val name: String = "$firstName $lastName"
-
 }

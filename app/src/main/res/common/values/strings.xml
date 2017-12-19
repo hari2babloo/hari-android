@@ -20,7 +20,7 @@
     <string name="text_you">You</string>
     <string name="text_and">and</string>
     <string name="text_likes_this">%s likes this</string>
-    <string name="text_like_this">like this</string>
+    <string name="text_like_this">%s like this</string>
 
     <string name="comment_hint_post">write a comment…</string>
 

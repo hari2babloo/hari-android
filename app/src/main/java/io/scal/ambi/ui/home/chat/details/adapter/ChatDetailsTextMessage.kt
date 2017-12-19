@@ -16,6 +16,5 @@ internal class ChatDetailsTextMessage(private val viewModel: ChatDetailsViewMode
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemChatDetailsMessageTextBinding, payloads: MutableList<Any>) {
         binding.element = items[position] as UIChatMessage.TextMessage
         binding.viewModel = viewModel
-        binding.executePendingBindings()
     }
 }

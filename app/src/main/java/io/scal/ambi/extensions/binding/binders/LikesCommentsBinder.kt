@@ -11,6 +11,7 @@ import io.scal.ambi.BR
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemLikeUserNamesBinding
 import io.scal.ambi.entity.User
+import io.scal.ambi.extensions.generateNamesText
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
 
 object LikesCommentsBinder {
@@ -64,23 +65,6 @@ object LikesCommentsBinder {
     }
 
     private fun generateNamesText(context: Context, drawingUsers: List<User>, currentUser: User): String {
-        val namesText = StringBuilder(40)
-        if (1 == drawingUsers.size) {
-            return context.getString(R.string.text_likes_this, drawingUsers[0].name)
-        } else {
-            drawingUsers
-                .map { if (it == currentUser) context.getString(R.string.text_you) else it.name }
-                .mapIndexed { index, name ->
-                    when (index) {
-                        drawingUsers.size - 1 -> " ${context.getString(R.string.text_and)} $name"
-                        0                     -> name
-                        else                  -> ", $name"
-                    }
-                }
-                .forEach { namesText.append(it) }
-            namesText.append(" ")
-            namesText.append(context.getString(R.string.text_like_this))
-            return namesText.toString()
-        }
+        return generateNamesText(context, drawingUsers, R.string.text_likes_this, R.string.text_like_this, currentUser)
     }
 }

@@ -5,7 +5,6 @@ import io.reactivex.Single
 import io.scal.ambi.R
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.chat.ChatAttachment
-import io.scal.ambi.entity.chat.ChatAttachmentType
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
@@ -47,8 +46,7 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                     "Jiss"),
                                                                DateTime(2017, 12, 11, 1, 24),
                                                                "Hey! How are you ? NO",
-                                                               listOf(ChatAttachment("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg",
-                                                                                     ChatAttachmentType.IMAGE)),
+                                                               listOf(ChatAttachment.Image("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg")),
                                                                emptyList()),
                                  false
             ),
@@ -61,10 +59,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                     "Jiss"),
                                                                DateTime(2017, 11, 10, 6, 1),
                                                                "Hey! How are you ? NO",
-                                                               listOf(ChatAttachment("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg",
-                                                                                     ChatAttachmentType.IMAGE),
-                                                                      ChatAttachment("https://i.imgur.com/eGJJvdd.gif",
-                                                                                     ChatAttachmentType.FILE)
+                                                               listOf(ChatAttachment.Image("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg"),
+                                                                      ChatAttachment.Image("https://i.imgur.com/eGJJvdd.gif")
                                                                ),
                                                                emptyList()
                                  ),
@@ -85,10 +81,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                                    "Jiss"),
                                                               DateTime(2017, 12, 15, 17, 31),
                                                               "Hey! How are you ?",
-                                                              listOf(ChatAttachment("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg",
-                                                                                    ChatAttachmentType.IMAGE),
-                                                                     ChatAttachment("https://i.imgur.com/eGJJvdd.gif",
-                                                                                    ChatAttachmentType.FILE)
+                                                              listOf(ChatAttachment.Image("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg"),
+                                                                     ChatAttachment.Image("https://i.imgur.com/eGJJvdd.gif")
                                                               ),
                                                               emptyList()
                                 ),

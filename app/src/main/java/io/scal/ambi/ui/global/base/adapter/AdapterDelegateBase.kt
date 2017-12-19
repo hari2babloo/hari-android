@@ -21,6 +21,7 @@ abstract class AdapterDelegateBase<in Binding : ViewDataBinding, T> : AdapterDel
     override fun onBindViewHolder(items: T, position: Int, holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
         val binding = (holder as BindingViewHolder<*>).binding as Binding
         onBindViewHolder(items, position, binding, payloads)
+        binding.executePendingBindings()
     }
 
     protected open fun initBinding(binding: Binding) {}

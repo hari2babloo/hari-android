@@ -16,6 +16,5 @@ internal class ChatDetailsImageMessage(private val viewModel: ChatDetailsViewMod
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemChatDetailsMessageImageBinding, payloads: MutableList<Any>) {
         binding.element = items[position] as UIChatMessage.ImageMessage
         binding.viewModel = viewModel
-        binding.executePendingBindings()
     }
 }

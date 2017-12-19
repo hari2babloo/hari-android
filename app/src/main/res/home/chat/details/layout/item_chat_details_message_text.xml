@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
     >
 
     <data>
@@ -16,8 +18,40 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#f00">
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingEnd="18dp"
+        android:paddingStart="18dp"
+        android:paddingTop="8dp">
+
+        <include
+            android:id="@+id/c_header"
+            layout="@layout/item_chat_details_message_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:element="@{element}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tv_image_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="30dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="6sp"
+            android:text="@{element.message}"
+            android:textColor="#222222"
+            android:textSize="14sp"
+            app:customFontName="@{@string/font_pantra_regular}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Of course, enjoy and best of luck studying. arevery helpful!"
+            />
 
     </android.support.constraint.ConstraintLayout>
 

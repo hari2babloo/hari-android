@@ -16,6 +16,5 @@ internal class ChatDetailsAttachmentMessage(private val viewModel: ChatDetailsVi
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemChatDetailsMessageAttachmentBinding, payloads: MutableList<Any>) {
         binding.element = items[position] as UIChatMessage.AttachmentMessage
         binding.viewModel = viewModel
-        binding.executePendingBindings()
     }
 }

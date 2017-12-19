@@ -25,7 +25,9 @@ sealed class UIChatMessage(open val sender: User,
 
     data class AttachmentMessage(override val sender: User,
                                  override val myMessage: Boolean,
-                                 val attachment: ChatAttachment,
+                                 val attachment: ChatAttachment.File,
+                                 val message: String,
+                                 val description: String,
                                  override val messageDateTime: DateTime,
                                  override val likes: UIChatLikes) : UIChatMessage(sender, myMessage, messageDateTime, likes)
 }

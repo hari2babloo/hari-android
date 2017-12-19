@@ -39,13 +39,11 @@ object ImageViewDataBinder {
             simpleDraweeView.setImageDrawable(null)
             return
         }
-        val iconDrawable = getResourceDrawable(simpleDraweeView.context,
-                                                                                                           iconImage.iconPath)
+        val iconDrawable = getResourceDrawable(simpleDraweeView.context, iconImage.iconPath)
         if (null == iconDrawable) {
             val hierarchy = simpleDraweeView.hierarchy
             hierarchy.setPlaceholderImage(iconImage.placeHolderIconPath?.let {
-                getResourceDrawable(simpleDraweeView.context,
-                                                                                                it)
+                getResourceDrawable(simpleDraweeView.context, it)
             })
             simpleDraweeView.hierarchy = hierarchy
             simpleDraweeView.setImageURI(iconImage.iconPath)
@@ -57,6 +55,12 @@ object ImageViewDataBinder {
     @JvmStatic
     @BindingAdapter("imageUri")
     fun setImageUri(simpleDraweeView: SimpleDraweeView, imageUri: Uri?) {
+        simpleDraweeView.setImageURI(imageUri)
+    }
+
+    @JvmStatic
+    @BindingAdapter("imageUrl")
+    fun setImageUri(simpleDraweeView: SimpleDraweeView, imageUri: String?) {
         simpleDraweeView.setImageURI(imageUri)
     }
 
