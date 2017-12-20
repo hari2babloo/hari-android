@@ -4,11 +4,14 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.entity.User
-import io.scal.ambi.entity.feed.NewsFeedItem
-import io.scal.ambi.entity.feed.PollChoice
+import io.scal.ambi.entity.actions.Comment
+import io.scal.ambi.entity.feed.*
+import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.DateTime
+import org.joda.time.Duration
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -18,12 +21,153 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
     override fun loadCurrentUser(): Observable<User> =
         localUserDataRepository.observeCurrentUser()
 
-    override fun loadNewsFeedPage(page: Int, dateTime: DateTime?): Single<List<NewsFeedItem>> {
-        return postsRepository.loadPostsGeneral(dateTime?.millis)
-    }
+    override fun loadNewsFeedPage(page: Int, dateTime: DateTime?): Single<List<NewsFeedItem>> =
+        postsRepository.loadPostsGeneral(dateTime?.millis)
+            .onErrorReturn {
+                Timber.d(it, "error during page $page load")
+                generateTestData(User("wef", IconImageUser("http://www.digitalistmag.com/files/2016/01/1926935_55L0dcb.jpg"), "John", "Mirror"), page)
+            }
+
+    override fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable =
+        Completable.complete()
+            .delay(3, TimeUnit.SECONDS)
+            .andThen(Completable.error(IllegalArgumentException("not implemented")))
 
     override fun answerForPoll(pollChoice: PollChoice, pollUid: String): Single<NewsFeedItem> =
         Completable.complete()
             .delay(3, TimeUnit.SECONDS)
-            .andThen(Single.error(IllegalArgumentException("sdfsdfsdf")))
+            .andThen(Single.error(IllegalArgumentException("not implemented")))
+}
+
+private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
+    return listOf(
+        NewsFeedItemPoll("${page * 20 + 0}",
+                         true,
+                         true,
+                         currentUser,
+                         "Is it true?",
+                         listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())),
+                         DateTime.now(),
+                         PollEndsTime.Never,
+                         listOf(Audience.FACULTY),
+                         null,
+                         emptyList(),
+                         emptyList()
+        ),
+        NewsFeedItemPoll("${page * 20 + 1}",
+                         false,
+                         true,
+                         currentUser,
+                         "Is it true?",
+                         listOf(PollChoice("1", "Yes", emptyList()),
+                                PollChoice("2", "No", listOf(currentUser))),
+                         DateTime.now(),
+                         PollEndsTime.OneWeek,
+                         listOf(Audience.STAFF),
+                         null,
+                         emptyList(),
+                         emptyList()
+        ),
+        NewsFeedItemPoll("${page * 20 + 2}",
+                         false,
+                         false,
+                         currentUser,
+                         "Is it true?",
+                         listOf(PollChoice("1", "Yes", listOf(currentUser)),
+                                PollChoice("2", "No", listOf(currentUser, currentUser))),
+                         DateTime.now(),
+                         PollEndsTime.Custom(Duration.standardDays(16)),
+                         listOf(Audience.NEWS),
+                         Announcement.TRAGEDY,
+                         emptyList(),
+                         emptyList()
+        ),
+        NewsFeedItemMessage("${page * 20 + 15}",
+                            false,
+                            true,
+                            currentUser,
+                            "test message $page",
+                            DateTime.now(),
+                            Announcement.EVENT,
+                            emptyList(),
+                            emptyList()
+        ),
+        NewsFeedItemMessage("${page * 20 + 16}",
+                            true,
+                            true,
+                            currentUser,
+                            "just an other message $page",
+                            DateTime(2017, 12, 7, 15, 20),
+                            Announcement.SAFETY,
+                            emptyList(),
+                            listOf(currentUser)
+        ),
+        NewsFeedItemMessage("${page * 20 + 17}",
+                            true,
+                            false,
+                            currentUser,
+                            "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
+                            DateTime(2017, 12, 25, 15, 0),
+                            Announcement.GENERAL,
+                            emptyList(),
+                            listOf(currentUser, currentUser, currentUser, currentUser, currentUser, currentUser)
+        ),
+        NewsFeedItemMessage("${page * 20 + 18}",
+                            false,
+                            false,
+                            currentUser,
+                            "",
+                            DateTime(2017, 10, 7, 15, 0),
+                            Announcement.GOOD_NEWS,
+                            listOf(Comment(currentUser,
+                                           "just comment!!!",
+                                           DateTime.now())),
+                            emptyList()
+        ),
+        NewsFeedItemMessage("${page * 20 + 19}",
+                            false,
+                            false,
+                            currentUser,
+                            "test message",
+                            DateTime(2017, 10, 1, 15, 0),
+                            Announcement.GOOD_NEWS,
+            /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
+           , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
+           "Does President Trump Want to Negotiate Middle East Peace?",
+           */
+                            listOf(
+                                Comment(currentUser,
+                                        "comment 1!!!",
+                                        DateTime.now()),
+                                Comment(currentUser,
+                                        "comment 2!!!",
+                                        DateTime(2017,
+                                                 12,
+                                                 7,
+                                                 20,
+                                                 40)),
+                                Comment(currentUser,
+                                        "comment 3!!!",
+                                        DateTime(2017,
+                                                 12,
+                                                 7,
+                                                 19,
+                                                 40)),
+                                Comment(currentUser,
+                                        "comment 4!!!",
+                                        DateTime(2017,
+                                                 12,
+                                                 6,
+                                                 23,
+                                                 40)),
+                                Comment(currentUser,
+                                        "comment 5!!!",
+                                        DateTime(2017,
+                                                 12,
+                                                 3,
+                                                 20,
+                                                 40))),
+                            emptyList()
+        )
+    )
 }

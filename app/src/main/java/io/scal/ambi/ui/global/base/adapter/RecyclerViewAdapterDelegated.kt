@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegatesManager
+import io.scal.ambi.BR
 
 abstract class RecyclerViewAdapterDelegated<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -26,4 +27,14 @@ abstract class RecyclerViewAdapterDelegated<T> : RecyclerView.Adapter<RecyclerVi
         delegatesManager.getItemViewType(dataList, position)
 
     override fun getItemCount(): Int = dataList.size
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder?) {
+        (holder as? AdapterDelegateBase.BindingViewHolder<*>)?.run {
+            holder.binding.setVariable(BR.viewModel, null)
+            holder.binding.setVariable(BR.element, null)
+            holder.binding.executePendingBindings()
+        }
+
+        super.onViewRecycled(holder)
+    }
 }

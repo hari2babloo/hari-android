@@ -105,11 +105,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            app:commentClickListener="@{(view) -> viewModel.changeUserLikeOf(element)}"
+            app:commentClickListener="@{(view) -> viewModel.openCommentsOf(element)}"
             app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
             app:layout_constraintTop_toBottomOf="@+id/v_space"
-            app:likeClickListener="@{(view) -> viewModel.openCommentsOf(element)}"
+            app:likeClickListener="@{(view) -> viewModel.changeUserLikeOf(element)}"
             app:liked="@{element.likes.currentUserLiked}"
             app:visibility="@{!element.locked}"
             />

@@ -94,6 +94,16 @@ object TextViewDataBinder {
     }
 
     @JvmStatic
+    @BindingAdapter("timeValue")
+    fun bindTimeValue(textView: TextView, dateTime: DateTime?) {
+        if (null == dateTime) {
+            textView.text = null
+        } else {
+            textView.text = TIME_DATE_TIME_FORMATTER.print(dateTime)
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("durationPollEnds")
     fun bindDurationPollEnds(textView: TextView, pollEndsTime: PollEndsTime?) {
         if (null == pollEndsTime) {

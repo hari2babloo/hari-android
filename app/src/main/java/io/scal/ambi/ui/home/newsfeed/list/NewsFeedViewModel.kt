@@ -1,11 +1,11 @@
 package io.scal.ambi.ui.home.newsfeed.list
 
 import android.databinding.ObservableField
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.User
-import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
@@ -16,13 +16,12 @@ import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
+import io.scal.ambi.ui.global.model.DynamicUserChoicer
 import io.scal.ambi.ui.global.model.Paginator
 import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
-import org.joda.time.DateTime
 import ru.terrakok.cicerone.Router
-import timber.log.Timber
 import javax.inject.Inject
 
 class NewsFeedViewModel @Inject constructor(router: Router,
@@ -37,7 +36,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     val selectedAudience = ObservableField<Audience>(Audience.COLLEGE_UPDATE)
 
     private val paginator = Paginator(
-        { page -> loadNextPage(page) },
+        { page -> executeLoadNextPage(page) },
         object : Paginator.ViewController<UIModelFeed> {
             override fun showEmptyProgress(show: Boolean) {
                 if (show) progressState.set(NewsFeedProgressState.EmptyProgress)
@@ -85,10 +84,14 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         true
     )
 
+    private val userLikeChoicer = DynamicUserChoicer<UIModelFeed>(rxSchedulersAbs,
+                                                                  { uiModelFeed, action -> executeLikeAction(uiModelFeed, action) },
+                                                                  { uiModelFeed -> uiModelFeed.uid })
+
     override fun onCurrentUserFetched(user: User) {
         super.onCurrentUserFetched(user)
 
-        observeAudienceChange()
+        onInit()
     }
 
     fun changeAudience() {
@@ -114,7 +117,21 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     }
 
     fun changeUserLikeOf(element: UIModelFeed) {
-        // todo
+        val currentDataState = dataState.get()
+        if (currentDataState is NewsFeedDataState.Data) {
+            if (currentDataState.newsFeed.contains(element)) {
+                val newLikes =
+                    if (element.likes.currentUserLiked) {
+                        userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.NONE, DynamicUserChoicer.Action.LIKE)
+                        element.likes.setupLike(currentUser.get(), false)
+                    } else {
+                        userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.LIKE, DynamicUserChoicer.Action.NONE)
+                        element.likes.setupLike(currentUser.get(), true)
+                    }
+
+                currentDataState.newsFeed.replaceElement(element, element.changeLikes(newLikes))
+            }
+        }
     }
 
     fun openCommentsOf(element: UIModelFeed) {
@@ -125,27 +142,23 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         val currentDataState = dataState.get()
         if (currentDataState is NewsFeedDataState.Data) {
             if (currentDataState.newsFeed.contains(element)) {
-                val choices = element.choices.map {
-                    if (it == choice) {
-                        val voters = it.pollChoice.voters.toMutableList()
-                        voters.add(currentUser.get())
-                        it.copy(pollChoice = it.pollChoice.copy(voters = voters),
-                                totalVotes = it.totalVotes + 1)
-                    } else
-                        it.copy(totalVotes = it.totalVotes + 1)
-                }
-                val newFeedElement = element.copy(choices = choices, userChoice = choice.pollChoice)
+                val newPollChoices = element
+                    .choices
+                    .map { it.pollChoice }
+                    .map { if (it.uid == choice.pollChoice.uid) choice.pollChoice.copy(voters = choice.pollChoice.voters.plus(currentUser.get())) else it }
 
-                currentDataState.newsFeed.replaceElement(element, newFeedElement)
+                currentDataState.newsFeed
+                    .replaceElement(element, element.copy(choices = newPollChoices.toPollVotedResult(), userChoice = choice.pollChoice))
 
                 interactor.answerForPoll(choice.pollChoice, element.uid)
                     .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
                     .subscribe({ updatedElement ->
                                    val upToDateDataState = dataState.get()
                                    if (upToDateDataState is NewsFeedDataState.Data) {
-                                       if (upToDateDataState.newsFeed.contains(newFeedElement)) {
-                                           upToDateDataState.newsFeed.replaceElement(newFeedElement,
-                                                                                     updatedElement.toNewsFeedElement(currentUser.get()))
+                                       val listElement = currentDataState.newsFeed.firstOrNull { item -> item.uid == element.uid }
+
+                                       if (null != listElement) {
+                                           upToDateDataState.newsFeed.replaceElement(listElement, updatedElement.toNewsFeedElement(currentUser.get()))
                                        }
                                    }
                                },
@@ -154,8 +167,13 @@ class NewsFeedViewModel @Inject constructor(router: Router,
 
                                    val upToDateDataState = dataState.get()
                                    if (upToDateDataState is NewsFeedDataState.Data) {
-                                       if (upToDateDataState.newsFeed.contains(newFeedElement)) {
-                                           upToDateDataState.newsFeed.replaceElement(newFeedElement, element)
+                                       val listElement = currentDataState.newsFeed.firstOrNull { item -> item.uid == element.uid } as? UIModelFeed.Poll
+
+                                       if (null != listElement) {
+                                           val oldPollChoices = element.choices.map { it.pollChoice }.toPollVotedResult()
+
+                                           upToDateDataState.newsFeed.replaceElement(listElement,
+                                                                                     listElement.copy(choices = oldPollChoices, userChoice = null))
                                            errorState.set(NewsFeedErrorState.NonFatalErrorState(t))
                                            errorState.set(NewsFeedErrorState.NoErrorState)
                                        }
@@ -174,7 +192,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
         paginator.loadNewPage()
     }
 
-    private fun observeAudienceChange() {
+    private fun onInit() {
         router.setResultListener(ResultCodes.AUDIENCE_SELECTION, {
             if (it is Audience) {
                 selectedAudience.set(it)
@@ -193,9 +211,11 @@ class NewsFeedViewModel @Inject constructor(router: Router,
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
             .subscribe { paginator.forceRefresh() }
             .addTo(disposables)
+
+        observeLikeActions()
     }
 
-    private fun loadNextPage(page: Int): Single<List<UIModelFeed>> {
+    private fun executeLoadNextPage(page: Int): Single<List<UIModelFeed>> {
         return interactor
             .loadNewsFeedPage(page, if (1 == page) null else (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.createdAtDateTime)
             .subscribeOn(rxSchedulersAbs.ioScheduler)
@@ -205,11 +225,31 @@ class NewsFeedViewModel @Inject constructor(router: Router,
                     .map<UIModelFeed> { it.toNewsFeedElement(currentUser.get()) }
                     .toList()
             }
-            .onErrorReturn {
-                Timber.d(it, "error during page $page load")
-                generateTestData(currentUser.get()!!, page)
-            }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
+    }
+
+    private fun executeLikeAction(uiModelFeed: UIModelFeed, action: DynamicUserChoicer.Action): Completable {
+        return interactor
+            .changeUserLikeForPost(uiModelFeed.feedItem, action == DynamicUserChoicer.Action.LIKE)
+            .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
+    }
+
+    private fun observeLikeActions() {
+        userLikeChoicer
+            .activate()
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe {
+                val currentDataState = dataState.get()
+                if (currentDataState is NewsFeedDataState.Data) {
+                    val element = currentDataState.newsFeed.firstOrNull { item -> item.uid == it.first.uid }
+
+                    if (null != element) {
+                        val newLikes = element.likes.setupLike(currentUser.get(), it.second == DynamicUserChoicer.Action.LIKE)
+                        currentDataState.newsFeed.replaceElement(element, element.changeLikes(newLikes))
+                    }
+                }
+            }
+            .addTo(disposables)
     }
 
     override fun onCleared() {
@@ -220,24 +260,48 @@ class NewsFeedViewModel @Inject constructor(router: Router,
     }
 }
 
+private fun UILikes.setupLike(currentUser: User, like: Boolean): UILikes =
+    if (like) {
+        UILikes(currentUser, allUsersLiked.filter { it.uid != currentUser.uid }.plus(currentUser))
+    } else {
+        UILikes(currentUser, allUsersLiked.filter { it.uid != currentUser.uid })
+    }
+
+@Suppress("REDUNDANT_ELSE_IN_WHEN")
+private fun UIModelFeed.changeLikes(newLikes: UILikes): UIModelFeed =
+    when (this) {
+        is UIModelFeed.Message -> copy(likes = newLikes)
+        is UIModelFeed.Poll    -> copy(likes = newLikes)
+        is UIModelFeed.Link    -> copy(likes = newLikes)
+        else                   -> throw IllegalStateException("unknown element")
+    }
+
 private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
     when (this) {
-        is NewsFeedItemPoll -> UIModelFeed.Poll(uid,
-                                                user,
-                                                pollCreatedAt,
-                                                locked,
-                                                pinned,
-                                                announcement,
-                                                questionText,
-                                                choices.toPollVotedResult(),
-                                                choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
-                                                pollEndsTime.endsFrom(pollCreatedAt),
-                                                UILikes(
-                                                         currentUser.uid,
-                                                         likes),
-                                                UIComments(
-                                                         comments))
-        else                -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
+        is NewsFeedItemPoll    -> UIModelFeed.Poll(uid,
+                                                   this,
+                                                   user,
+                                                   pollCreatedAt,
+                                                   locked,
+                                                   pinned,
+                                                   announcement,
+                                                   questionText,
+                                                   choices.toPollVotedResult(),
+                                                   choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
+                                                   pollEndsTime.endsFrom(pollCreatedAt),
+                                                   UILikes(currentUser, likes),
+                                                   UIComments(comments))
+        is NewsFeedItemMessage -> UIModelFeed.Message(uid,
+                                                      this,
+                                                      user,
+                                                      messageCreatedAt,
+                                                      locked,
+                                                      pinned,
+                                                      announcement,
+                                                      messageText,
+                                                      UILikes(currentUser, likes),
+                                                      UIComments(comments))
+        else                   -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
     }
 
 private fun List<PollChoice>.toPollVotedResult(): List<UIModelFeed.Poll.PollChoiceResult> {
@@ -254,154 +318,4 @@ private fun List<PollChoice>.toPollVotedResult(): List<UIModelFeed.Poll.PollChoi
         acc
     })
     return map { UIModelFeed.Poll.PollChoiceResult(it, totalVotes, mostVoted.contains(it)) }
-}
-
-private fun generateTestData(currentUser: User, page: Int): List<UIModelFeed> {
-    return listOf(
-        UIModelFeed.Poll("${page * 20 + 0}",
-                         currentUser,
-                         DateTime.now(),
-                         true,
-                         true,
-                         null,
-                         "Is it true?",
-                         listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())).toPollVotedResult(),
-                         null,
-                         null,
-                         UILikes(currentUser.uid,
-                                      emptyList()),
-                         UIComments(emptyList())
-        ),
-        UIModelFeed.Poll("${page * 20 + 1}",
-                         currentUser,
-                         DateTime.now(),
-                         false,
-                         true,
-                         null,
-                         "Is it true?",
-                         listOf(PollChoice("1", "Yes", emptyList()),
-                                     PollChoice("2", "No", listOf(currentUser))).toPollVotedResult(),
-                         null,
-                         DateTime(2018, 1, 5, 10, 23, 0),
-                         UILikes(currentUser.uid,
-                                      emptyList()),
-                         UIComments(emptyList())
-        ),
-        UIModelFeed.Poll("${page * 20 + 2}",
-                         currentUser,
-                         DateTime.now(),
-                         false,
-                         true,
-                         null,
-                         "Is it true?",
-                         listOf(PollChoice("1", "Yes", listOf(currentUser)),
-                                     PollChoice("2", "No", listOf(currentUser, currentUser)))
-                                  .toPollVotedResult(),
-                         PollChoice("1", "Yes", emptyList()),
-                         DateTime.now(),
-                         UILikes(currentUser.uid,
-                                      emptyList()),
-                         UIComments(emptyList())
-        ),
-        UIModelFeed.Message("${page * 20 + 15}",
-                            currentUser,
-                            DateTime.now(),
-                            false,
-                            true,
-                            null,
-                            "test message $page",
-                            UILikes(currentUser.uid,
-                                         emptyList()),
-                            UIComments(emptyList())
-        ),
-        UIModelFeed.Message("${page * 20 + 16}",
-                            currentUser,
-                            DateTime(2017, 12, 7, 15, 20),
-                            true,
-                            true,
-                            Announcement.SAFETY,
-                            "just an other message $page",
-                            UILikes(currentUser.uid,
-                                         listOf(
-                                                  currentUser)),
-                            UIComments(emptyList())
-        ),
-        UIModelFeed.Message("${page * 20 + 17}",
-                            currentUser,
-                            DateTime(2017, 12, 25, 15, 0),
-                            true,
-                            false,
-                            Announcement.GENERAL,
-                            "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
-                            UILikes(currentUser.uid,
-                                         listOf(
-                                                  currentUser,
-                                                  currentUser,
-                                                  currentUser,
-                                                  currentUser,
-                                                  currentUser,
-                                                  currentUser)),
-                            UIComments(emptyList())
-        ),
-        UIModelFeed.Message("${page * 20 + 18}",
-                            currentUser,
-                            DateTime(2017, 10, 7, 15, 0),
-                            false,
-                            false,
-                            Announcement.GOOD_NEWS,
-                            "",
-                            UILikes(currentUser.uid,
-                                         emptyList()),
-                            UIComments(listOf(
-                                     Comment(currentUser,
-                                             "just comment!!!",
-                                             DateTime.now())))
-        ),
-        UIModelFeed.Message("${page * 20 + 19}",
-                            currentUser,
-                            DateTime(2017, 10, 1, 15, 0),
-                            false,
-                            false,
-                            Announcement.TRAGEDY,
-                            "test message",
-            /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
-            , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
-            "Does President Trump Want to Negotiate Middle East Peace?",
-            */
-                                 UILikes(currentUser.uid,
-                                         emptyList()),
-                            UIComments(listOf(
-                                     Comment(currentUser,
-                                             "comment 1!!!",
-                                             DateTime.now()),
-                                     Comment(currentUser,
-                                             "comment 2!!!",
-                                             DateTime(2017,
-                                                      12,
-                                                      7,
-                                                      20,
-                                                      40)),
-                                     Comment(currentUser,
-                                             "comment 3!!!",
-                                             DateTime(2017,
-                                                      12,
-                                                      7,
-                                                      19,
-                                                      40)),
-                                     Comment(currentUser,
-                                             "comment 4!!!",
-                                             DateTime(2017,
-                                                      12,
-                                                      6,
-                                                      23,
-                                                      40)),
-                                     Comment(currentUser,
-                                             "comment 5!!!",
-                                             DateTime(2017,
-                                                      12,
-                                                      3,
-                                                      20,
-                                                      40))))
-        )
-    )
 }

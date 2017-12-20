@@ -16,5 +16,6 @@ internal class NewsFeedAdapterLinkDelegateBase(viewModel: NewsFeedViewModel) :
 
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemNewsFeedTypeLinkBinding, payloads: MutableList<Any>) {
         binding.element = items[position] as? UIModelFeed.Link
+        super.onBindViewHolder(items, position, binding, payloads)
     }
 }

@@ -31,7 +31,6 @@ object ViewGroupBinder {
                     viewGroup.addView(child, i)
                     modelClickListener?.run { child.setOnClickListener { onModelClicked(i) } }
                     viewDataBinding.setVariable(BR.viewModel, viewModel)
-                    viewDataBinding.executePendingBindings()
                 } else {
                     if (i != viewGroup.indexOfChild(view)) {
                         val hasFocus = view.hasFocus()

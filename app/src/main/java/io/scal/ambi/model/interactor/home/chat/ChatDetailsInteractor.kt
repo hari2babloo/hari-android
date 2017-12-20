@@ -55,7 +55,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
     }
 
     override fun loadChatPage(page: Int): Single<List<ChatMessage>> {
-        if (10 < page) {
+        if (3 < page) {
             return Single.just(emptyList())
         }
 
@@ -153,11 +153,8 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                          "Sara",
                          "Ping")
         val random = SecureRandom()
-/*
         return Observable.interval(5, TimeUnit.SECONDS)
             .delay(random.nextInt(3000).toLong(), TimeUnit.MILLISECONDS)
             .map { ChatTypingInfo(if (random.nextBoolean()) user1 else user2, random.nextBoolean()) }
-*/
-        return Observable.never()
     }
 }

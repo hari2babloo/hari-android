@@ -11,14 +11,14 @@ abstract class AdapterDelegateBase<in Binding : ViewDataBinding, T> : AdapterDel
 
     abstract protected val layoutId: Int
 
-    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override final fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = DataBindingUtil.inflate<Binding>(LayoutInflater.from(parent.context), layoutId, parent, false)
         initBinding(binding)
         return BindingViewHolder(binding)
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun onBindViewHolder(items: T, position: Int, holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
+    override final fun onBindViewHolder(items: T, position: Int, holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
         val binding = (holder as BindingViewHolder<*>).binding as Binding
         onBindViewHolder(items, position, binding, payloads)
         binding.executePendingBindings()
@@ -28,5 +28,5 @@ abstract class AdapterDelegateBase<in Binding : ViewDataBinding, T> : AdapterDel
 
     protected abstract fun onBindViewHolder(items: T, position: Int, binding: Binding, payloads: MutableList<Any>)
 
-    protected open class BindingViewHolder<out Binding : ViewDataBinding>(internal val binding: Binding) : RecyclerView.ViewHolder(binding.root)
+    open class BindingViewHolder<out Binding : ViewDataBinding>(internal val binding: Binding) : RecyclerView.ViewHolder(binding.root)
 }

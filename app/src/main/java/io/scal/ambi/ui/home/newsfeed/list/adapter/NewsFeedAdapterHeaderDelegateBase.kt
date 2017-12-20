@@ -11,7 +11,4 @@ internal class NewsFeedAdapterHeaderDelegateBase(private val headerElement: Any,
 
     override fun isForViewType(items: List<Any>, position: Int): Boolean =
         headerElement == items[position]
-
-    override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemNewsFeedHeaderBinding, payloads: MutableList<Any>) {
-    }
 }

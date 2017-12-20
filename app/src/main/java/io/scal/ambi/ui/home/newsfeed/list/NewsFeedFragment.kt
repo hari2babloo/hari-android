@@ -40,7 +40,13 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
 
     private fun initRecyclerView() {
         binding.rvCollegeUpdates.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.rvCollegeUpdates.adapter = adapter
+//        binding.root.postDelayed({
+                                     binding.rvCollegeUpdates.adapter = adapter
+//                                 }, 5000)
+
+        binding.rvCollegeUpdates.setItemViewCacheSize(30)
+        binding.rvCollegeUpdates.isDrawingCacheEnabled = true
+        binding.rvCollegeUpdates.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
 
         binding.rvCollegeUpdates.listenForEndScroll(1)
             .subscribeOn(AndroidSchedulers.mainThread())

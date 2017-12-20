@@ -16,5 +16,6 @@ internal class NewsFeedAdapterPollDelegateBase(viewModel: NewsFeedViewModel) :
 
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: ItemNewsFeedTypePollBinding, payloads: MutableList<Any>) {
         binding.element = items[position] as? UIModelFeed.Poll
+        super.onBindViewHolder(items, position, binding, payloads)
     }
 }
