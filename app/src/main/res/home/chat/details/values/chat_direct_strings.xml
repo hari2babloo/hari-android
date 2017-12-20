@@ -10,4 +10,6 @@
     <string name="chat_details_today">Today</string>
     <string name="chat_details_yesterday">Yesterday</string>
 
+    <string name="chat_details_creation_hint">type your message here</string>
+
 </resources>

@@ -38,12 +38,27 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
-            android:id="@+id/rv_messages"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
+                android:id="@+id/rv_messages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/c_creation"
+                />
+
+            <include
+                android:id="@+id/c_creation"
+                layout="@layout/item_chat_details_creation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                bind:viewModel="@{viewModel}"/>
+
+        </RelativeLayout>
 
         <ProgressBar
             android:id="@+id/progress"

@@ -99,7 +99,11 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
                 binding.chatInfo = it.chatInfo
 
                 when (it) {
-                    is ChatDetailsDataState.Data -> adapter.updateData(it.allMessages)
+                    is ChatDetailsDataState.Data -> {
+                        binding.cCreation?.root?.visibility = View.VISIBLE
+                        adapter.updateData(it.allMessages)
+                    }
+                    else                         -> binding.cCreation?.root?.visibility = View.GONE
                 }
             }
             .addTo(destroyDisposables)

@@ -49,6 +49,8 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     internal val errorState = ObservableField<ChatDetailsErrorState>(ChatDetailsErrorState.NoErrorState)
     val dataState = ObservableField<ChatDetailsDataState>(ChatDetailsDataState.Initial(smallChatItem.toChatInfo()))
 
+    val userMessage = ObservableField<String>()
+
     private val paginator = Paginator(
         { page -> loadNextPage(page) },
         object : Paginator.ViewController<UIChatMessage> {
@@ -147,6 +149,18 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
     fun loadNextPage() {
         paginator.loadNewPage()
+    }
+
+    fun attachPicture() {}
+    fun attachFile() {}
+    fun attachEmoji() {}
+
+    fun sendMessage() {
+        val message = userMessage.get().orEmpty().trim()
+        if (message.isNotEmpty()) {
+            // todo
+            userMessage.set("")
+        }
     }
 
     private fun loadNextPage(page: Int): Single<List<UIChatMessage>> {
