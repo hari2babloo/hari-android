@@ -149,10 +149,6 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
         paginator.loadNewPage()
     }
 
-    fun changeUserLikeOf(element: UIChatMessage) {
-
-    }
-
     private fun loadNextPage(page: Int): Single<List<UIChatMessage>> {
         return interactor.loadChatPage(page)
             .subscribeOn(rxSchedulersAbs.ioScheduler)
