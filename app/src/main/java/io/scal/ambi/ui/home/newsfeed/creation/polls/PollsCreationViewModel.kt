@@ -4,7 +4,7 @@ import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.entity.feed.PollEndsTime

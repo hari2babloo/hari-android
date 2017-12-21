@@ -2,14 +2,15 @@ package io.scal.ambi.model.data.server.responses
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import io.scal.ambi.R
-import io.scal.ambi.entity.User
-import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
-import io.scal.ambi.extensions.view.IconImageUser
+import io.scal.ambi.entity.user.User
 
 open class ItemUser : Parceble<User> {
 
     @SerializedName("_id")
+    @Expose
+    var _id: String? = null
+
+    @SerializedName("id")
     @Expose
     var id: String? = null
 
@@ -25,11 +26,16 @@ open class ItemUser : Parceble<User> {
     @Expose
     var profilePicture: String? = null
 
-    override fun parse(): User {
-        return User(id!!,
-                    profilePicture?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
-                    firstName!!,
-                    lastName!!
-        )
+    @SerializedName("type")
+    @Expose
+    var type: Type? = null
+
+    protected fun extractId(): String =
+        (id ?: _id) ?: throw IllegalStateException("_id or id can not be null")
+
+    override fun parse(): User = throw UnsupportedOperationException("can not parse raw user")
+
+    enum class Type {
+        Student
     }
 }

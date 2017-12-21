@@ -18,11 +18,9 @@ internal class StrongRefPrefser : Prefser {
 
     override fun observePreferences(): Observable<String> {
         return Observable.create { e ->
-            val listener = object : SharedPreferences.OnSharedPreferenceChangeListener {
-                override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-                    if (!e.isDisposed) {
-                        e.onNext(key)
-                    }
+            val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                if (!e.isDisposed) {
+                    e.onNext(key)
                 }
             }
             preferences.registerOnSharedPreferenceChangeListener(listener)

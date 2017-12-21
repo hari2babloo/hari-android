@@ -1,4 +1,3 @@
 package io.scal.ambi.model.repository.auth
 
-data class AuthResult(val token: String,
-                      val userId: String)
+data class AuthResult(val token: String)

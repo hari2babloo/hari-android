@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.creation.polls
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.extensions.binding.observable.ObservableString
 

@@ -2,7 +2,7 @@ package io.scal.ambi.extensions
 
 import android.content.Context
 import io.scal.ambi.R
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 
 fun generateNamesText(context: Context, users: List<User>, singleString: Int, multiplyString: Int, currentUser: User? = null): String {
     val namesText = StringBuilder(40)

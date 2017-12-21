@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +17,12 @@ import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import io.scal.ambi.ui.global.view.behavior.StaticViewViewBehavior
 import io.scal.ambi.ui.home.chat.details.ChatDetailsActivity
 import io.scal.ambi.ui.home.chat.list.adapter.ChatListAdapter
 import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.android.SupportAppNavigator
 import kotlin.reflect.KClass
 
 class ChatListFragment : BaseNavigationFragment<ChatListViewModel, FragmentChatListBinding>() {
@@ -129,13 +128,11 @@ class ChatListFragment : BaseNavigationFragment<ChatListViewModel, FragmentChatL
         }
 
     override val navigator: Navigator?
-        get() = object : SupportAppNavigator(activity, R.id.container) {
-            override fun createActivityIntent(screenKey: String?, data: Any?): Intent? =
+        get() = object : BaseNavigator(activity!!) {
+            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
                     NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(activity!!, data as SmallChatItem)
-                    else                    -> null
+                    else                    -> super.createActivityIntent(screenKey, data)
                 }
-
-            override fun createFragment(screenKey: String?, data: Any?): Fragment? = null
         }
 }

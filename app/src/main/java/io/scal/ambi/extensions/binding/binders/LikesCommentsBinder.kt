@@ -10,7 +10,7 @@ import android.widget.RelativeLayout
 import io.scal.ambi.BR
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ItemLikeUserNamesBinding
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.generateNamesText
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
 

@@ -3,9 +3,9 @@ package io.scal.ambi.model.interactor.home.newsfeed
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.scal.ambi.entity.User
 import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.feed.*
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
@@ -25,7 +25,10 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
         postsRepository.loadPostsGeneral(dateTime?.millis)
             .onErrorReturn {
                 Timber.d(it, "error during page $page load")
-                generateTestData(User("wef", IconImageUser("http://www.digitalistmag.com/files/2016/01/1926935_55L0dcb.jpg"), "John", "Mirror"), page)
+                generateTestData(User.asStudent("wef",
+                                                IconImageUser("http://www.digitalistmag.com/files/2016/01/1926935_55L0dcb.jpg"),
+                                                "John",
+                                                "Mirror"), page)
             }
 
     override fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable =

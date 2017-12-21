@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.chat.details.data
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.chat.ChatAttachment
 import io.scal.ambi.extensions.view.IconImage
 import org.joda.time.DateTime

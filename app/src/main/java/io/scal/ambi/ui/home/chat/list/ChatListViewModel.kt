@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.extensions.binding.toObservable

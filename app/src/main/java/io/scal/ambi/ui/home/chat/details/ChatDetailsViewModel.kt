@@ -11,13 +11,11 @@ import android.text.style.StyleSpan
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.PublishSubject
 import io.scal.ambi.R
 import io.scal.ambi.entity.EmojiKeyboardState
-import io.scal.ambi.entity.User
-import io.scal.ambi.entity.chat.ChatAttachment
-import io.scal.ambi.entity.chat.ChatMessage
-import io.scal.ambi.entity.chat.FullChatItem
-import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.user.User
+import io.scal.ambi.entity.chat.*
 import io.scal.ambi.extensions.appendCustom
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -38,7 +36,6 @@ import java.text.DecimalFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.collections.ArrayList
 
 class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                                router: Router,
@@ -51,6 +48,9 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     internal val errorState = ObservableField<ChatDetailsErrorState>(ChatDetailsErrorState.NoErrorState)
     internal val dataState = ObservableField<ChatDetailsDataState>(ChatDetailsDataState.Initial(smallChatItem.toChatInfo()))
     val messageInputState = ObservableField<MessageInputState>(MessageInputState())
+
+    private val serverDataListSubject = PublishSubject.create<List<UIChatMessage>>()
+    private val serverTypingUsersSubject = PublishSubject.create<ChatTypingInfo>()
 
     private val paginator = Paginator(
         { page -> loadNextPage(page) },
@@ -69,14 +69,14 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             }
 
             override fun showEmptyView(show: Boolean) {
-                if (show) dataState.set(dataState.get().moveToEmpty())
+                if (show) serverDataListSubject.onNext(emptyList())
             }
 
             override fun showData(show: Boolean, data: List<UIChatMessage>) {
-                if (show) dataState.set(dataState.get().moveToData(data.prepareData()))
+                if (show) serverDataListSubject.onNext(data)
             }
 
-            override fun showNoMoreData(show: Boolean) {
+            override fun showNoMoreData(show: Boolean, data: List<UIChatMessage>) {
                 if (show) dataState.set(dataState.get().moveToDataNoMore())
             }
 
@@ -101,6 +101,22 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     override fun onCurrentUserFetched(user: User) {
         super.onCurrentUserFetched(user)
 
+        serverDataListSubject
+            .observeOn(rxSchedulersAbs.computationScheduler)
+            .doOnNext { Collections.sort(it, { o1, o2 -> o2.messageDateTime.compareTo(o1.messageDateTime) }) }
+            .map { it.addDateObjects() }
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe { dataState.set(dataState.get().moveToData(it)) }
+            .addTo(disposables)
+
+        serverTypingUsersSubject
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe {
+                val currentDataState = dataState.get()
+                dataState.set(if (it.typing) currentDataState.startTyping(it.user) else currentDataState.stopTyping(it.user))
+            }
+            .addTo(disposables)
+
         loadMainInformation()
     }
 
@@ -113,7 +129,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                     .compose(rxSchedulersAbs.getIOToMainTransformer())
                     .subscribe({
                                    progressState.set(ChatDetailsProgressState.NoProgress)
-                                   dataState.set(dataState.get().moveToInfo(it.toChatInfo(context)))
+                                   dataState.set(dataState.get().updateInfo(it.toChatInfo(context)))
 
                                    paginator.activate()
                                    paginator.refresh()
@@ -130,13 +146,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                     .compose(rxSchedulersAbs.getIOToMainTransformer())
                     .doOnError { Timber.e(it, "error during getting typing information. recovering...") }
                     .retry()
-                    .subscribe {
-                        if (it.typing) {
-                            dataState.set(dataState.get().startTyping(it.user))
-                        } else {
-                            dataState.set(dataState.get().stopTyping(it.user))
-                        }
-                    }
+                    .subscribe { serverTypingUsersSubject.onNext(it) }
                     .addTo(disposables)
             } else {
                 refresh()
@@ -179,43 +189,13 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {
+                val user = currentUser.get()
                 Observable.fromIterable(it)
-                    .flatMap { Observable.fromIterable(it.toChatDetailsElement(currentUser.get())) }
+                    .concatMap { Observable.fromIterable(it.toChatDetailsElement(user)) }
                     .toList()
             }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
     }
-
-    private fun List<UIChatMessage>.prepareData(): List<Any> {
-//        Collections.sort(this, { o1, o2 -> o2.messageDateTime.compareTo(o1.messageDateTime) })
-        return addDateObjects()
-    }
-}
-
-private fun List<UIChatMessage>.addDateObjects(): List<Any> {
-    // may be we should do it in BG thread.. for now lets do it here
-    val result = fold(ArrayList<Any>(),
-                      { acc, uiChatMessage ->
-                          val lastItem = acc.lastOrNull()
-                          if (lastItem is UIChatMessage) {
-                              val lastItemMessageLocalDate = lastItem.messageDateTime.toLocalDate()
-                              val currentMessageLocalDate = uiChatMessage.messageDateTime.toLocalDate()
-                              if (lastItemMessageLocalDate.dayOfYear != currentMessageLocalDate.dayOfYear) {
-                                  acc.add(UIChatDate(lastItemMessageLocalDate))
-                              }
-                          }
-                          acc.add(uiChatMessage)
-                          acc
-                      }
-    )
-    if (result.isNotEmpty()) {
-        val lastItem = result.last()
-        if (lastItem is UIChatMessage) {
-            result.add(UIChatDate(lastItem.messageDateTime.toLocalDate()))
-        }
-    }
-
-    return result
 }
 
 private fun SmallChatItem?.toChatInfo(): UIChatInfo? =
@@ -282,6 +262,32 @@ private fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMess
                 }
             }
     }
+
+private fun List<UIChatMessage>.addDateObjects(): List<Any> {
+    // may be we should do it in BG thread.. for now lets do it here
+    val result = fold(ArrayList<Any>(),
+                      { acc, uiChatMessage ->
+                          val lastItem = acc.lastOrNull()
+                          if (lastItem is UIChatMessage) {
+                              val lastItemMessageLocalDate = lastItem.messageDateTime.toLocalDate()
+                              val currentMessageLocalDate = uiChatMessage.messageDateTime.toLocalDate()
+                              if (lastItemMessageLocalDate.dayOfYear != currentMessageLocalDate.dayOfYear) {
+                                  acc.add(UIChatDate(lastItemMessageLocalDate))
+                              }
+                          }
+                          acc.add(uiChatMessage)
+                          acc
+                      }
+    )
+    if (result.isNotEmpty()) {
+        val lastItem = result.last()
+        if (lastItem is UIChatMessage) {
+            result.add(UIChatDate(lastItem.messageDateTime.toLocalDate()))
+        }
+    }
+
+    return result
+}
 
 private fun Long.getFileSize(): String {
     if (this <= 0)

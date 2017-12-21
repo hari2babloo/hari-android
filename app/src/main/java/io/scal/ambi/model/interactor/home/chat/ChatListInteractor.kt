@@ -3,10 +3,10 @@ package io.scal.ambi.model.interactor.home.chat
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.R
-import io.scal.ambi.entity.User
 import io.scal.ambi.entity.chat.ChatAttachment
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
@@ -24,14 +24,20 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
         return Single.just(listOf(
             SmallChatItem.Direct("$page _ 0",
                                  DateTime(2017, 12, 15, 16, 10),
-                                 User("2", IconImageUser(R.drawable.ic_tab_calendar_icon.toFrescoImagePath()), "Brad", "Jiss"),
+                                 User.asStudent("2",
+                                                IconImageUser(R.drawable.ic_tab_calendar_icon.toFrescoImagePath()),
+                                                "Brad",
+                                                "Jiss"),
                                  null,
                                  false
             ),
             SmallChatItem.Direct("$page _ 1",
                                  DateTime(2017, 12, 15, 15, 10),
-                                 User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
-                                 ChatMessage.TextMessage(User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
+                                 User.asStudent("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
+                                 ChatMessage.TextMessage(User.asStudent("2",
+                                                                        IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                                        "Brad",
+                                                                        "Jiss"),
                                                          DateTime(2017, 12, 15, 15, 30),
                                                          "Hey! How are you ? New",
                                                          emptyList()),
@@ -39,11 +45,14 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
             ),
             SmallChatItem.Direct("$page _ 2",
                                  DateTime(2017, 12, 11, 1, 23),
-                                 User("2", IconImageUser(R.drawable.ic_tab_notification_icon.toFrescoImagePath()), "Brad", "Jiss"),
-                                 ChatMessage.AttachmentMessage(User("2",
-                                                                    IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
-                                                                    "Brad",
-                                                                    "Jiss"),
+                                 User.asStudent("2",
+                                                IconImageUser(R.drawable.ic_tab_notification_icon.toFrescoImagePath()),
+                                                "Brad",
+                                                "Jiss"),
+                                 ChatMessage.AttachmentMessage(User.asStudent("2",
+                                                                              IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                                              "Brad",
+                                                                              "Jiss"),
                                                                DateTime(2017, 12, 11, 1, 24),
                                                                "Hey! How are you ? NO",
                                                                listOf(ChatAttachment.Image("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg")),
@@ -52,11 +61,11 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
             ),
             SmallChatItem.Direct("$page _ 3",
                                  DateTime(2017, 11, 10, 6, 0),
-                                 User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
-                                 ChatMessage.AttachmentMessage(User("2",
-                                                                    IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
-                                                                    "Brad",
-                                                                    "Jiss"),
+                                 User.asStudent("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
+                                 ChatMessage.AttachmentMessage(User.asStudent("2",
+                                                                              IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                                              "Brad",
+                                                                              "Jiss"),
                                                                DateTime(2017, 11, 10, 6, 1),
                                                                "Hey! How are you ? NO",
                                                                listOf(ChatAttachment.Image("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg"),
@@ -71,14 +80,20 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                 IconImage(R.drawable.ic_tab_more_icon.toFrescoImagePath()),
                                 "This is a test group YES",
                                 listOf(
-                                    User("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
-                                    User("3", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Frank", "Poooo"),
-                                    User("4", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Bruse", "Leeeee")
+                                    User.asStudent("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
+                                    User.asStudent("3",
+                                                   IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                   "Frank",
+                                                   "Poooo"),
+                                    User.asStudent("4",
+                                                   IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                   "Bruse",
+                                                   "Leeeee")
                                 ),
-                                ChatMessage.AttachmentMessage(User("2",
-                                                                   IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
-                                                                   "Brad",
-                                                                   "Jiss"),
+                                ChatMessage.AttachmentMessage(User.asStudent("2",
+                                                                             IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                                             "Brad",
+                                                                             "Jiss"),
                                                               DateTime(2017, 12, 15, 17, 31),
                                                               "Hey! How are you ?",
                                                               listOf(ChatAttachment.Image("https://i.ytimg.com/vi/nBlT6pEyq5k/maxresdefault.jpg"),

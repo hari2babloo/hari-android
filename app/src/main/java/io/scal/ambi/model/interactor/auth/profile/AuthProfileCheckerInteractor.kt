@@ -1,36 +1,41 @@
 package io.scal.ambi.model.interactor.auth.profile
 
+import android.os.SystemClock
 import io.reactivex.Observable
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.model.data.server.ServerResponseException
-import io.scal.ambi.model.repository.data.student.IStudentRepository
+import io.scal.ambi.model.repository.data.user.IUserRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AuthProfileCheckerInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository,
-                                                       private val studentRepository: IStudentRepository) : IAuthProfileCheckerInteractor {
+                                                       private val userRepository: IUserRepository) : IAuthProfileCheckerInteractor {
+
+    private var lastUpdateTime: Long = 0
 
     override fun getUserProfile(): Observable<User> {
-        val currentUser = localUserDataRepository.getCurrentUser()
-
-        return if (null == currentUser) {
-            Observable.error(IllegalArgumentException("no user found"))
-        } else {
-            localUserDataRepository.observeCurrentUser()
-                .doOnSubscribe { doUserProfileUpdate(currentUser) }
-        }
+        return localUserDataRepository.observeCurrentUser()
+            .doOnNext { doUserProfileUpdate(it) }
     }
 
     private fun doUserProfileUpdate(user: User) {
-        studentRepository.getStudentProfile(user.uid)
-            .flatMapCompletable { localUserDataRepository.saveCurrentUser(it) }
-            .subscribe(
-                { },
-                {
-                    if (it is ServerResponseException && (it.requiresLogin || it.notFound || it.notAuthorized)) {
-                        localUserDataRepository.removeAllUserInfo().subscribe()
+        if (SystemClock.elapsedRealtime() - lastUpdateTime > TimeUnit.MINUTES.toMillis(10)) {
+            userRepository.getProfile(user.uid)
+                .subscribe(
+                    {
+                        Timber.i("user has been updated")
+                        lastUpdateTime = SystemClock.elapsedRealtime()
+                        localUserDataRepository.saveCurrentUser(it).subscribe()
+                    },
+                    {
+                        Timber.i(it, "can not update user object")
+                        if (it is ServerResponseException && (it.requiresLogin || it.notFound || it.notAuthorized)) {
+                            localUserDataRepository.removeAllUserInfo().subscribe()
+                        }
                     }
-                }
-            )
+                )
+        }
     }
 }

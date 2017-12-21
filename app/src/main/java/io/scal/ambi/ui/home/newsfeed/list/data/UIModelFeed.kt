@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.list.data
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.extensions.view.IconImage
 import org.joda.time.DateTime

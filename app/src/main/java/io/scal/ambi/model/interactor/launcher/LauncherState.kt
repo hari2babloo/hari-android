@@ -1,6 +1,6 @@
 package io.scal.ambi.model.interactor.launcher
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 
 sealed class LauncherState {
 

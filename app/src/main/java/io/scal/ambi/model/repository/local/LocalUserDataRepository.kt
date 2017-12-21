@@ -4,7 +4,7 @@ import android.content.Context
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import javax.inject.Inject
 

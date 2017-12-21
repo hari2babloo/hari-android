@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.list.data
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 
 data class UILikes(private val currentUser: User,
                    val allUsersLiked: List<User>) {

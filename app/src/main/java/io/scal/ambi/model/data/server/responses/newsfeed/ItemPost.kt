@@ -2,11 +2,11 @@ package io.scal.ambi.model.data.server.responses.newsfeed
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import io.scal.ambi.entity.User
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollEndsTime
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.data.server.responses.ItemUser
 import io.scal.ambi.model.data.server.responses.Parceble
@@ -87,7 +87,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                          pinned ?: false,
                          locked ?: false,
 //                         poster!!.parse(),
-                         User("test", IconImageUser(poster), "MIG35", "TEST"),
+                         User.asStudent("test", IconImageUser(poster), "MIG35", "TEST"),
                          textContent.orEmpty(),
                          answerChoices!!.map { it.parse() },
                          DateTime(createdAt!!),

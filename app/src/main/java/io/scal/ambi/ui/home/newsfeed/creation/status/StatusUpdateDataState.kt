@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.creation.status
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.ObservableString
 
 sealed class StatusUpdateDataState(open val pinned: Boolean = false,

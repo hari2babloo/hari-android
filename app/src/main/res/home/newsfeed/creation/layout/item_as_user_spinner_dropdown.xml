@@ -8,7 +8,7 @@
 
         <variable
             name="item"
-            type="io.scal.ambi.entity.User"/>
+            type="io.scal.ambi.entity.user.User"/>
 
     </data>
 

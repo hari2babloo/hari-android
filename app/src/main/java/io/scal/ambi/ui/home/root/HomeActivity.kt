@@ -11,16 +11,14 @@ import io.scal.ambi.databinding.ActivityHomeBinding
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.extensions.view.ToolbarType
-import io.scal.ambi.navigation.NavigateTo
-import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
+import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
 import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.android.SupportAppNavigator
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
@@ -79,21 +77,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
         }
     }
 
-    override val navigator: Navigator by lazy {
-
-        object : SupportAppNavigator(this, R.id.container) {
-
-            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
-                when (screenKey) {
-                    NavigateTo.LOGIN -> LoginActivity.createScreen(this@HomeActivity)
-                    else             -> null
-                }
-
-            override fun createFragment(screenKey: String, data: Any?): Fragment? {
-                return null
-            }
-        }
-    }
+    override val navigator: Navigator by lazy { BaseNavigator(this) }
 
     companion object {
 

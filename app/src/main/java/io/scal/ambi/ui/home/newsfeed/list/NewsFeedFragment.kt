@@ -3,7 +3,6 @@ package io.scal.ambi.ui.home.newsfeed.list
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -15,13 +14,13 @@ import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreation
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
 import io.scal.ambi.ui.home.newsfeed.list.adapter.NewsFeedAdapter
 import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.android.SupportAppNavigator
 import kotlin.reflect.KClass
 
 class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsFeedBinding>() {
@@ -41,7 +40,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
     private fun initRecyclerView() {
         binding.rvCollegeUpdates.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 //        binding.root.postDelayed({
-                                     binding.rvCollegeUpdates.adapter = adapter
+        binding.rvCollegeUpdates.adapter = adapter
 //                                 }, 5000)
 
         binding.rvCollegeUpdates.setItemViewCacheSize(30)
@@ -104,21 +103,18 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
     }
 
     override val navigator: Navigator?
-        get() = object : SupportAppNavigator(activity, R.id.container) {
-            override fun createActivityIntent(screenKey: String?, data: Any?): Intent? =
+        get() = object : BaseNavigator(activity!!) {
+
+            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
                     NavigateTo.CHANGE_AUDIENCE     -> AudienceSelectionActivity.createScreen(activity!!, data as? Audience)
                     NavigateTo.CREATE_STATUS       -> goToCreationScreen(FeedItemCreation.STATUS)
                     NavigateTo.CREATE_ANNOUNCEMENT -> goToCreationScreen(FeedItemCreation.ANNOUNCEMENT)
                     NavigateTo.CREATE_POLL         -> goToCreationScreen(FeedItemCreation.POLL)
-                    else                           -> null
+                    else                           -> super.createActivityIntent(screenKey, data)
                 }
 
             private fun goToCreationScreen(feedItemCreation: FeedItemCreation): Intent =
                 FeedItemCreationActivity.createScreen(activity!!, feedItemCreation)
-
-            override fun createFragment(screenKey: String?, data: Any?): Fragment? {
-                return null
-            }
         }
 }

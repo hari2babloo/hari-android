@@ -1,6 +1,6 @@
 package io.scal.ambi.entity.chat
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import org.joda.time.DateTime
 import java.io.Serializable
 

@@ -6,8 +6,8 @@ import io.scal.ambi.model.repository.auth.AuthRepository
 import io.scal.ambi.model.repository.auth.IAuthRepository
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.data.newsfeed.PostsRepository
-import io.scal.ambi.model.repository.data.student.IStudentRepository
-import io.scal.ambi.model.repository.data.student.StudentRepository
+import io.scal.ambi.model.repository.data.user.IUserRepository
+import io.scal.ambi.model.repository.data.user.UserRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.local.LocalUserDataRepository
 import javax.inject.Singleton
@@ -22,7 +22,7 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindStudentRepository(studentRepository: StudentRepository): IStudentRepository
+    abstract fun bindStudentRepository(studentRepository: UserRepository): IUserRepository
 
     @Singleton
     @Binds

@@ -10,14 +10,10 @@ class AuthResponse : BaseResponse<AuthResult>() {
     @Expose
     var token: String? = null
 
-    @SerializedName("id")
-    @Expose
-    var userId: String? = null
-
     override fun parse(): AuthResult {
-        if (null == token || null == userId) {
-            throw IllegalArgumentException("token and userId can not be null")
+        if (null == token) {
+            throw IllegalArgumentException("token can not be null")
         }
-        return AuthResult(token!!, userId!!)
+        return AuthResult(token!!)
     }
 }

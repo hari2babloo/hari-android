@@ -2,7 +2,7 @@ package io.scal.ambi.model.repository.local
 
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 
 interface ILocalUserDataRepository {
 

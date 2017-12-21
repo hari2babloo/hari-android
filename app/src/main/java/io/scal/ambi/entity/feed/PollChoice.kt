@@ -1,6 +1,6 @@
 package io.scal.ambi.entity.feed
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 
 data class PollChoice(var uid: String, val text: String, val voters: List<User>) {
 

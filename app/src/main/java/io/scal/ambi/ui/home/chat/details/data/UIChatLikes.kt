@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.chat.details.data
 
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 
 data class UIChatLikes(private val currentUserId: String,
                        val allUsersLiked: List<User>) {

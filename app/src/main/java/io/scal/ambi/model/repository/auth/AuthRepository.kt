@@ -7,6 +7,7 @@ import io.scal.ambi.model.data.server.LoginRequest
 import io.scal.ambi.model.repository.toServerResponseException
 import javax.inject.Inject
 
+
 class AuthRepository @Inject constructor(private val authApi: AuthApi) : IAuthRepository {
 
     override fun login(email: String, password: String): Single<AuthResult> =

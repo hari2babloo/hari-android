@@ -3,7 +3,7 @@ package io.scal.ambi.ui.home.newsfeed.creation.status
 import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.entity.User
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable

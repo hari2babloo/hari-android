@@ -12,7 +12,7 @@
 
         <variable
             name="currentUser"
-            type="io.scal.ambi.entity.User"/>
+            type="io.scal.ambi.entity.user.User"/>
 
         <variable
             name="commentText"

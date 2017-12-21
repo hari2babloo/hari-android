@@ -3,7 +3,6 @@ package io.scal.ambi.ui.auth.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
@@ -13,9 +12,9 @@ import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.recover.RecoveryActivity
 import io.scal.ambi.ui.global.base.activity.BaseActivity
+import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.home.root.HomeActivity
 import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.android.SupportAppNavigator
 import kotlin.reflect.KClass
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
@@ -36,19 +35,15 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     override val navigator: Navigator by lazy {
 
-        object : SupportAppNavigator(this, R.id.container) {
+        object : BaseNavigator(this) {
 
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
                     NavigateTo.REGISTER        -> null // todo go ro register
                     NavigateTo.FORGOT_PASSWORD -> RecoveryActivity.createScreen(this@LoginActivity)
                     NavigateTo.HOME            -> HomeActivity.createScreen(this@LoginActivity)
-                    else                       -> null
+                    else                       -> super.createActivityIntent(screenKey, data)
                 }
-
-            override fun createFragment(screenKey: String, data: Any?): Fragment? {
-                return null
-            }
         }
     }
 
