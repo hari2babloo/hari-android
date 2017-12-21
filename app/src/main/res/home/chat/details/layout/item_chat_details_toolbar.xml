@@ -11,6 +11,10 @@
             name="viewModel"
             type="io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel"/>
 
+        <variable
+            name="content"
+            type="io.scal.ambi.ui.home.chat.details.ChatDetailsTitleToolbarContent"/>
+
     </data>
 
     <LinearLayout
@@ -24,7 +28,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:actualImageScaleType="centerInside"
-            app:iconImage="@{viewModel.dataState.chatInfo.icon}"
+            app:iconImage="@{content.contentInfo.icon}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:roundAsCircle="true"/>
@@ -34,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="7dp"
             android:letterSpacing="-0.03"
-            android:text="@{viewModel.dataState.chatInfo.title}"
+            android:text="@{content.contentInfo.title}"
             android:textColor="@color/gray"
             android:textSize="16sp"
             android:textStyle="bold"

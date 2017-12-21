@@ -1,6 +1,8 @@
 package io.scal.ambi.ui.home.chat.details
 
+import io.scal.ambi.entity.EmojiKeyboardState
 import io.scal.ambi.entity.User
+import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.ui.home.chat.details.data.UIChatInfo
 import io.scal.ambi.ui.home.chat.details.data.UIChatTyping
 
@@ -82,9 +84,7 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
             }
         }
 
-        override fun moveToDataNoMore(): ChatDetailsDataState {
-            return copy(noMoreData = true)
-        }
+        override fun moveToDataNoMore(): ChatDetailsDataState = copy(noMoreData = true)
     }
 
     open fun moveToInfo(chatInfo: UIChatInfo): ChatDetailsDataState = this
@@ -93,5 +93,16 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
 
     open fun startTyping(user: User): ChatDetailsDataState = this
     open fun stopTyping(user: User): ChatDetailsDataState = this
+
     open fun moveToDataNoMore(): ChatDetailsDataState = this
+}
+
+data class MessageInputState(val userInput: ObservableString = ObservableString(),
+                             val emojiKeyboardState: EmojiKeyboardState = EmojiKeyboardState.UNKNOWN) {
+
+    fun switchKeyboard(): MessageInputState =
+        when (emojiKeyboardState) {
+            EmojiKeyboardState.UNKNOWN -> copy(emojiKeyboardState = EmojiKeyboardState.EMOJI)
+            EmojiKeyboardState.EMOJI   -> copy(emojiKeyboardState = EmojiKeyboardState.UNKNOWN)
+        }
 }

@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <TextView
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/tv_image_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

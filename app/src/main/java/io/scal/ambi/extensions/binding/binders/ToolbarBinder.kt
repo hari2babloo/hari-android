@@ -21,6 +21,7 @@ object ToolbarBinder {
         content?.run {
             val binding = DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(viewGroup.context), layoutId, viewGroup, false)
             binding.setVariable(BR.viewModel, content.screenModel)
+            binding.setVariable(BR.content, content)
             viewGroup.addView(binding.root)
         }
     }

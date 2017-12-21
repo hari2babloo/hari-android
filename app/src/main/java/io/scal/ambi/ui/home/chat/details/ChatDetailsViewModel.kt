@@ -12,12 +12,14 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
+import io.scal.ambi.entity.EmojiKeyboardState
 import io.scal.ambi.entity.User
 import io.scal.ambi.entity.chat.ChatAttachment
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.FullChatItem
 import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.extensions.appendCustom
+import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
@@ -47,9 +49,8 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
     internal val progressState = ObservableField<ChatDetailsProgressState>(ChatDetailsProgressState.NoProgress)
     internal val errorState = ObservableField<ChatDetailsErrorState>(ChatDetailsErrorState.NoErrorState)
-    val dataState = ObservableField<ChatDetailsDataState>(ChatDetailsDataState.Initial(smallChatItem.toChatInfo()))
-
-    val userMessage = ObservableField<String>()
+    internal val dataState = ObservableField<ChatDetailsDataState>(ChatDetailsDataState.Initial(smallChatItem.toChatInfo()))
+    val messageInputState = ObservableField<MessageInputState>(MessageInputState())
 
     private val paginator = Paginator(
         { page -> loadNextPage(page) },
@@ -72,7 +73,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             }
 
             override fun showData(show: Boolean, data: List<UIChatMessage>) {
-                if (show) dataState.set(dataState.get().moveToData(data.addDateObjects()))
+                if (show) dataState.set(dataState.get().moveToData(data.prepareData()))
             }
 
             override fun showNoMoreData(show: Boolean) {
@@ -152,14 +153,24 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     }
 
     fun attachPicture() {}
+
     fun attachFile() {}
-    fun attachEmoji() {}
+
+    fun attachEmoji() {
+        messageInputState.set(messageInputState.get().switchKeyboard())
+    }
+
+    fun updateEmojiState(emojiKeyboardState: EmojiKeyboardState) {
+        messageInputState.set(messageInputState.get().copy(emojiKeyboardState = emojiKeyboardState))
+    }
 
     fun sendMessage() {
-        val message = userMessage.get().orEmpty().trim()
+        val currentDataState = messageInputState.get()
+        val message = currentDataState.userInput.get().trim()
         if (message.isNotEmpty()) {
             // todo
-            userMessage.set("")
+
+            messageInputState.set(currentDataState.copy(userInput = ObservableString()))
         }
     }
 
@@ -173,6 +184,11 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                     .toList()
             }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
+    }
+
+    private fun List<UIChatMessage>.prepareData(): List<Any> {
+//        Collections.sort(this, { o1, o2 -> o2.messageDateTime.compareTo(o1.messageDateTime) })
+        return addDateObjects()
     }
 }
 

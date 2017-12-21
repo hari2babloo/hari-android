@@ -28,6 +28,7 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
     override val viewModelClass: KClass<ChatDetailsViewModel> = ChatDetailsViewModel::class
 
     private val adapter by lazy { ChatDetailsAdapter(viewModel) }
+    private val emojiPopupHelper by lazy { EmojiPopupHelper() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +108,16 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
                 }
             }
             .addTo(destroyDisposables)
+
+        emojiPopupHelper
+            .activate(binding.cCreation!!.etMessage,
+                      viewModel.messageInputState
+                          .toObservable()
+                          .map { it.emojiKeyboardState }
+                          .observeOn(AndroidSchedulers.mainThread())
+            )
+            .subscribe { viewModel.updateEmojiState(it) }
+            .addTo(destroyDisposables)
     }
 
     companion object {
@@ -119,8 +130,7 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
                 .putExtra(EXTRA_CHAT_UID, chatUid)
 
         fun createScreen(context: Context, smallChatInfo: SmallChatItem): Intent =
-            Intent(context, ChatDetailsActivity::class.java)
-                .putExtra(EXTRA_CHAT_UID, smallChatInfo.uid)
+            createScreen(context, smallChatInfo.uid)
                 .putExtra(EXTRA_CHAT_INFO, smallChatInfo)
     }
 }
