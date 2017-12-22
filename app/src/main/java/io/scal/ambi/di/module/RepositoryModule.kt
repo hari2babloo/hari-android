@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import io.scal.ambi.model.repository.auth.AuthRepository
 import io.scal.ambi.model.repository.auth.IAuthRepository
+import io.scal.ambi.model.repository.data.chat.IChatRepository
+import io.scal.ambi.model.repository.data.chat.TwilioChatRepository
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.data.newsfeed.PostsRepository
 import io.scal.ambi.model.repository.data.user.IUserRepository
@@ -27,6 +29,10 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindNewsFeedRepository(newsFeedRepository: PostsRepository): IPostsRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindChatRepository(chatRepository: TwilioChatRepository): IChatRepository
 
     @Singleton
     @Binds

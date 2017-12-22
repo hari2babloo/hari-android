@@ -10,13 +10,15 @@ import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
+import io.scal.ambi.model.repository.data.chat.IChatRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.DateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class ChatListInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository) : IChatListInteractor {
+class ChatListInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository,
+                                             private val chatRepository: IChatRepository) : IChatListInteractor {
 
     override fun loadCurrentUser(): Observable<User> =
         localUserDataRepository.observeCurrentUser()
@@ -37,9 +39,9 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                  User.asStudent("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
                                  ChatMessage.TextMessage(UUID.randomUUID().toString(),
                                                          User.asStudent("2",
-                                                                                 IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
-                                                                                 "Brad",
-                                                                                 "Jiss"),
+                                                                        IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                                        "Brad",
+                                                                        "Jiss"),
                                                          DateTime(2017, 12, 15, 15, 30),
                                                          "Hey! How are you ? New",
                                                          emptyList()),

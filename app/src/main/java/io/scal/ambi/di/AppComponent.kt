@@ -18,6 +18,7 @@ import javax.inject.Singleton
     FragmentBuilder::class,
     AppModule::class,
     ApiModule::class,
+    TokenModule::class,
     RepositoryModule::class,
     UiCommonModule::class,
     NavigationModule::class
