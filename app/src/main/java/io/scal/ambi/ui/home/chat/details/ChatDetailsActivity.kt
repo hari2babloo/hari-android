@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
 import android.view.View
 import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,9 +17,12 @@ import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.extensions.view.listenForEndScrollInverse
+import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
+import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.home.chat.details.adapter.ChatDetailsAdapter
+import ru.terrakok.cicerone.Navigator
 import kotlin.reflect.KClass
 
 class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityChatDetailsBinding>() {
@@ -120,6 +122,17 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
             )
             .subscribe { viewModel.updateEmojiState(it) }
             .addTo(destroyDisposables)
+    }
+
+    override val navigator: Navigator by lazy {
+        object : BaseNavigator(this) {
+            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
+                when (screenKey) {
+                    NavigateTo.EXTERNAL_PHOTO -> null
+                    NavigateTo.EXTERNAL_FILE  -> null
+                    else                      -> super.createActivityIntent(screenKey, data)
+                }
+        }
     }
 
     companion object {

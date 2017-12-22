@@ -10,6 +10,8 @@ import dagger.Module
 import dagger.Provides
 import io.fabric.sdk.android.Fabric
 import io.scal.ambi.App
+import io.scal.ambi.extensions.FilePathHelper
+import io.scal.ambi.extensions.ImageUtils
 import io.scal.ambi.extensions.rx.general.RxSchedulers
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import javax.inject.Singleton
@@ -48,4 +50,12 @@ class AppModule(private val context: App) {
     @Singleton
     @Provides
     fun provideAbsScheduler(): RxSchedulersAbs = RxSchedulers()
+
+    @Singleton
+    @Provides
+    fun provideImageUrils() = ImageUtils(context)
+
+    @Singleton
+    @Provides
+    fun provideFilePathHelper(imageUtils: ImageUtils) = FilePathHelper(context, imageUtils)
 }

@@ -2,6 +2,11 @@ package io.scal.ambi.extensions
 
 import android.os.Build
 import android.text.SpannableStringBuilder
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.channels.FileChannel
 
 
 fun SpannableStringBuilder.appendCustom(text: CharSequence, what: Any, flags: Int): SpannableStringBuilder =
@@ -13,3 +18,38 @@ fun SpannableStringBuilder.appendCustom(text: CharSequence, what: Any, flags: In
         setSpan(what, start, length, flags)
         this
     }
+
+@Throws(IOException::class)
+fun FileInputStream.copyStreamToFile(dst: File) {
+    try {
+        var outChannel: FileChannel? = null
+        try {
+            //noinspection resource,IOResourceOpenedButNotSafelyClosed
+            outChannel = FileOutputStream(dst).channel
+
+            val fullSize = channel.size()
+            var transferred: Long = 0
+            do {
+                transferred += channel.transferTo(transferred, fullSize, outChannel)
+            } while (transferred < fullSize)
+            outChannel!!.force(true)
+        } finally {
+            try {
+                outChannel?.close()
+            } catch (ignored: IOException) {
+                // pass because we don't care
+            }
+        }
+    } finally {
+        try {
+            channel.close()
+        } catch (ignored: IOException) {
+            // pass because we don't care
+        }
+        try {
+            close()
+        } catch (ignored: IOException) {
+            // pass because we don't care
+        }
+    }
+}

@@ -17,4 +17,7 @@ object NavigateTo {
     const val CHAT_DETAILS = "CHAT_DETAILS"
 
     const val PROFILE_DETAILS = "PROFILE_DETAILS"
+
+    const val EXTERNAL_PHOTO = "EXTERNAL_PHOTO"
+    const val EXTERNAL_FILE = "EXTERNAL_FILE"
 }

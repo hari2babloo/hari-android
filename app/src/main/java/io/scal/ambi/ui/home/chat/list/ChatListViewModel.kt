@@ -70,13 +70,9 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         paginator.refresh()
     }
 
-    fun refresh() {
-        paginator.refresh()
-    }
+    fun refresh() = paginator.refresh()
 
-    fun loadNextPage() {
-        paginator.loadNewPage()
-    }
+    fun loadNextPage() = paginator.loadNewPage()
 
     fun openChatDetails(element: UIChatList) {
         router.navigateTo(NavigateTo.CHAT_DETAILS, element.chatInfo)

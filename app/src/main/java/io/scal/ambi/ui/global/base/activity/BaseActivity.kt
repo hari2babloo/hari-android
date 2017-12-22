@@ -56,7 +56,7 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
     private val localCiceroneViewModel: LocalCiceroneHolderViewModel by lazy {
         ViewModelProviders.of(this).get(LocalCiceroneHolderViewModel::class.java)
     }
-    protected open val navigator: Navigator? by lazy { BaseNavigator(this) }
+    protected open val navigator: Navigator by lazy { BaseNavigator(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)

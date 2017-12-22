@@ -16,6 +16,7 @@ import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
+import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
@@ -157,13 +158,11 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
         }
     }
 
-    fun loadNextPage() {
-        paginator.loadNewPage()
-    }
+    fun loadNextPage() = paginator.loadNewPage()
 
-    fun attachPicture() {}
+    fun attachPicture() = router.navigateTo(NavigateTo.EXTERNAL_PHOTO)
 
-    fun attachFile() {}
+    fun attachFile() = router.navigateTo(NavigateTo.EXTERNAL_FILE)
 
     fun attachEmoji() {
         messageInputState.set(messageInputState.get().switchKeyboard())

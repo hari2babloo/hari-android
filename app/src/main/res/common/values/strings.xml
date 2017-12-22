@@ -26,4 +26,9 @@
 
     <string name="comment_hint_post">write a comment…</string>
 
+    <string-array name="items_photo_picker">
+        <item>Camera</item>
+        <item>Gallery</item>
+    </string-array>
+
 </resources>
