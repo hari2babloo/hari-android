@@ -53,8 +53,6 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
 
         override fun startTyping(user: User): ChatDetailsDataState = copy(messages = messages.startTyping(user))
         override fun stopTyping(user: User): ChatDetailsDataState = copy(messages = messages.stopTyping(user))
-
-        override fun moveToDataNoMore(): ChatDetailsDataState = copy(messages = messages.copy(chatInfo = chatInfo))
     }
 
     open fun updateInfo(chatInfo: UIChatInfo): ChatDetailsDataState = this
@@ -64,8 +62,6 @@ sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
 
     open fun startTyping(user: User): ChatDetailsDataState = this
     open fun stopTyping(user: User): ChatDetailsDataState = this
-
-    open fun moveToDataNoMore(): ChatDetailsDataState = this
 }
 
 data class MessageInputState(val userInput: ObservableString = ObservableString(),

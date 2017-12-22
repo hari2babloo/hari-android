@@ -20,6 +20,7 @@ import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.DynamicUserChoicer
 import io.scal.ambi.ui.global.model.Paginator
+import io.scal.ambi.ui.global.model.createPaginator
 import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
@@ -38,7 +39,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
     val selectedAudience = ObservableField<Audience>(Audience.COLLEGE_UPDATE)
 
-    private val paginator = Paginator(
+    private val paginator = createPaginator(
         { page -> executeLoadNextPage(page) },
         object : Paginator.ViewController<UIModelFeed> {
             override fun showEmptyProgress(show: Boolean) {
@@ -309,7 +310,7 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
 
 private fun List<PollChoice>.toPollVotedResult(): List<UIModelFeed.Poll.PollChoiceResult> {
     val totalVotes = fold(0, { acc, pollChoice -> acc + pollChoice.voters.size })
-    val mostVoted = fold(ArrayList(), { acc: MutableList<PollChoice>, pollChoice ->
+    val mostVoted = fold(mutableListOf(), { acc: MutableList<PollChoice>, pollChoice ->
         when {
             acc.isEmpty()                                -> acc.add(pollChoice)
             acc[0].voters.size < pollChoice.voters.size  -> {

@@ -7,6 +7,8 @@
 
     <data>
 
+        <import type="io.scal.ambi.ui.home.chat.details.data.UIChatMessageStatus"/>
+
         <variable
             name="viewModel"
             type="io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel"/>
@@ -38,7 +40,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="3dp"
             android:ellipsize="end"
-            android:maxWidth="160dp"
+            android:maxWidth="@dimen/chat_direct_max_name_size"
             android:singleLine="true"
             android:text="@{element.sender.name}"
             android:textColor="#333333"
@@ -60,6 +62,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:timeValue="@{element.messageDateTime}"
             tools:text="10:04PM"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:gravity="end"
+            android:textSize="24sp"
+            app:chatDetailsState="@{element.state}"
+            app:layout_constraintEnd_toStartOf="@+id/c_user_likes"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="0dp"
+            tools:text="&#9716;"
             />
 
         <RelativeLayout

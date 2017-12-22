@@ -12,6 +12,7 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.DateTime
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -34,10 +35,11 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
             SmallChatItem.Direct("$page _ 1",
                                  DateTime(2017, 12, 15, 15, 10),
                                  User.asStudent("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
-                                 ChatMessage.TextMessage(User.asStudent("2",
-                                                                        IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
-                                                                        "Brad",
-                                                                        "Jiss"),
+                                 ChatMessage.TextMessage(UUID.randomUUID().toString(),
+                                                         User.asStudent("2",
+                                                                                 IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
+                                                                                 "Brad",
+                                                                                 "Jiss"),
                                                          DateTime(2017, 12, 15, 15, 30),
                                                          "Hey! How are you ? New",
                                                          emptyList()),
@@ -49,7 +51,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                 IconImageUser(R.drawable.ic_tab_notification_icon.toFrescoImagePath()),
                                                 "Brad",
                                                 "Jiss"),
-                                 ChatMessage.AttachmentMessage(User.asStudent("2",
+                                 ChatMessage.AttachmentMessage(UUID.randomUUID().toString(),
+                                                               User.asStudent("2",
                                                                               IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
                                                                               "Brad",
                                                                               "Jiss"),
@@ -62,7 +65,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
             SmallChatItem.Direct("$page _ 3",
                                  DateTime(2017, 11, 10, 6, 0),
                                  User.asStudent("2", IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()), "Brad", "Jiss"),
-                                 ChatMessage.AttachmentMessage(User.asStudent("2",
+                                 ChatMessage.AttachmentMessage(UUID.randomUUID().toString(),
+                                                               User.asStudent("2",
                                                                               IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
                                                                               "Brad",
                                                                               "Jiss"),
@@ -90,7 +94,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                                                    "Bruse",
                                                    "Leeeee")
                                 ),
-                                ChatMessage.AttachmentMessage(User.asStudent("2",
+                                ChatMessage.AttachmentMessage(UUID.randomUUID().toString(),
+                                                              User.asStudent("2",
                                                                              IconImageUser(R.drawable.ic_action_image.toFrescoImagePath()),
                                                                              "Brad",
                                                                              "Jiss"),

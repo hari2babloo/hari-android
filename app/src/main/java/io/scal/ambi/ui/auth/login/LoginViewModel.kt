@@ -2,6 +2,7 @@ package io.scal.ambi.ui.auth.login
 
 import android.content.Context
 import android.databinding.ObservableField
+import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -39,6 +40,7 @@ class LoginViewModel @Inject constructor(private val context: Context,
                                    }
                                stateModel.set(LoginStateModel.DataInputErrorStateModel(message, email, password))
                            })
+                .addTo(disposables)
         }
     }
 

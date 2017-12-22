@@ -10,24 +10,26 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.scal.ambi.R
 import io.scal.ambi.entity.EmojiKeyboardState
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.chat.*
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.appendCustom
 import io.scal.ambi.extensions.binding.observable.ObservableString
+import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.Paginator
-import io.scal.ambi.ui.home.chat.details.data.UIChatDate
-import io.scal.ambi.ui.home.chat.details.data.UIChatInfo
-import io.scal.ambi.ui.home.chat.details.data.UIChatLikes
-import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
+import io.scal.ambi.ui.global.model.createAppendablePaginator
+import io.scal.ambi.ui.home.chat.details.data.*
 import org.joda.time.format.DateTimeFormat
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
@@ -50,10 +52,10 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     internal val dataState = ObservableField<ChatDetailsDataState>(ChatDetailsDataState.Initial(smallChatItem.toChatInfo()))
     val messageInputState = ObservableField<MessageInputState>(MessageInputState())
 
-    private val serverDataListSubject = PublishSubject.create<List<UIChatMessage>>()
-    private val serverTypingUsersSubject = PublishSubject.create<ChatTypingInfo>()
+    private val serverDataListSubject = PublishSubject.create<AllMessagesInfo>()
+    private val pendingMessagesSubject = BehaviorSubject.createDefault(emptyList<UIChatMessage>())
 
-    private val paginator = Paginator(
+    private val paginator = createAppendablePaginator(
         { page -> loadNextPage(page) },
         object : Paginator.ViewController<UIChatMessage> {
             override fun showEmptyProgress(show: Boolean) {
@@ -70,15 +72,15 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             }
 
             override fun showEmptyView(show: Boolean) {
-                if (show) serverDataListSubject.onNext(emptyList())
+                if (show) serverDataListSubject.onNext(AllMessagesInfo(emptyList()))
             }
 
             override fun showData(show: Boolean, data: List<UIChatMessage>) {
-                if (show) serverDataListSubject.onNext(data)
+                if (show) serverDataListSubject.onNext(AllMessagesInfo(data))
             }
 
             override fun showNoMoreData(show: Boolean, data: List<UIChatMessage>) {
-                if (show) dataState.set(dataState.get().moveToDataNoMore())
+                if (show) serverDataListSubject.onNext(AllMessagesInfo(data, dataState.get().chatInfo))
             }
 
             override fun showErrorMessage(error: Throwable) {
@@ -102,20 +104,57 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     override fun onCurrentUserFetched(user: User) {
         super.onCurrentUserFetched(user)
 
-        serverDataListSubject
+        Observable.combineLatest(serverDataListSubject
+                                     .observeOn(rxSchedulersAbs.computationScheduler),
+                                 pendingMessagesSubject
+                                     .observeOn(rxSchedulersAbs.computationScheduler),
+                                 BiFunction<AllMessagesInfo, List<UIChatMessage>, AllMessagesInfo> { t1, t2 ->
+                                     AllMessagesInfo(t1.serverMessages.plus(t2), t1.chatInfo)
+                                 })
+            .subscribeOn(rxSchedulersAbs.computationScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
-            .doOnNext { Collections.sort(it, { o1, o2 -> o2.messageDateTime.compareTo(o1.messageDateTime) }) }
-            .map { it.addDateObjects() }
+            .doOnNext { Collections.sort(it.serverMessages, { o1, o2 -> o2.messageDateTime.compareTo(o1.messageDateTime) }) }
+            .map {
+                val messagesWithData = it.serverMessages.addDateObjects()
+                if (null == it.chatInfo) messagesWithData else messagesWithData.plus(it.chatInfo)
+            }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
             .subscribe { dataState.set(dataState.get().moveToData(it)) }
             .addTo(disposables)
 
-        serverTypingUsersSubject
+        interactor.loadTypingInfo()
+            .subscribeOn(rxSchedulersAbs.ioScheduler)
+            .doOnError { Timber.e(it, "error during getting typing information. recovering...") }
+            .retry()
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
             .subscribe {
                 val currentDataState = dataState.get()
                 dataState.set(if (it.typing) currentDataState.startTyping(it.user) else currentDataState.stopTyping(it.user))
             }
+            .addTo(disposables)
+
+        interactor.loadSendingMessagesInfo()
+            .subscribeOn(rxSchedulersAbs.ioScheduler)
+            .doOnError { Timber.e(it, "error during getting sending messages. recovering...") }
+            .retry()
+            .observeOn(rxSchedulersAbs.computationScheduler)
+            .flatMapSingle {
+                val currentUser = currentUser.get()
+                Observable.fromIterable(it)
+                    .concatMap { Observable.fromIterable(it.toChatDetailsElement(currentUser)) }
+                    .toList()
+            }
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe { pendingMessagesSubject.onNext(it) }
+            .addTo(disposables)
+
+        dataState.toObservable()
+            .subscribeOn(rxSchedulersAbs.mainThreadScheduler)
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .filter { it is ChatDetailsDataState.Data }
+            .firstOrError()
+            .retry()
+            .subscribe(Consumer { loadNewMessages() })
             .addTo(disposables)
 
         loadMainInformation()
@@ -142,21 +181,10 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                    errorState.set(ChatDetailsErrorState.FatalErrorState(t.toGoodUserMessage(context)))
                                })
                     .addTo(disposables)
-
-                interactor.loadTypingInformation()
-                    .compose(rxSchedulersAbs.getIOToMainTransformer())
-                    .doOnError { Timber.e(it, "error during getting typing information. recovering...") }
-                    .retry()
-                    .subscribe { serverTypingUsersSubject.onNext(it) }
-                    .addTo(disposables)
             } else {
-                refresh()
+                paginator.refresh()
             }
         }
-    }
-
-    fun refresh() {
-        paginator.refresh()
     }
 
     fun loadNextPage() {
@@ -179,7 +207,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
         val currentDataState = messageInputState.get()
         val message = currentDataState.userInput.get().trim()
         if (message.isNotEmpty()) {
-            // todo
+            interactor.sendTextMessage(message)
 
             messageInputState.set(currentDataState.copy(userInput = ObservableString()))
         }
@@ -196,6 +224,22 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                     .toList()
             }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
+    }
+
+    private fun loadNewMessages() {
+        interactor.loadNewMessages()
+            .doOnError { Timber.e(it, "error during getting new messages. recovering...") }
+            .retry()
+            .observeOn(rxSchedulersAbs.computationScheduler)
+            .flatMapSingle {
+                val currentUser = currentUser.get()
+                Observable.fromIterable(it)
+                    .concatMap { Observable.fromIterable(it.toChatDetailsElement(currentUser)) }
+                    .toList()
+            }
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe { paginator.appendNewData(it) }
+            .addTo(disposables)
     }
 }
 
@@ -236,8 +280,9 @@ private fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
 
 private fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMessage> =
     when (this) {
-        is ChatMessage.TextMessage       -> listOf(UIChatMessage.TextMessage(sender,
-                                                                             sender.uid == currentUser.uid,
+        is ChatMessage.TextMessage       -> listOf(UIChatMessage.TextMessage(uid,
+                                                                             sender,
+                                                                             myMessageState.toMessageState(),
                                                                              message,
                                                                              sendDate,
                                                                              UIChatLikes(currentUser.uid, likes)))
@@ -245,15 +290,17 @@ private fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMess
             attachments.map {
                 @Suppress("REDUNDANT_ELSE_IN_WHEN")
                 when (it) {
-                    is ChatAttachment.Image -> UIChatMessage.ImageMessage(sender,
-                                                                          sender.uid == currentUser.uid,
+                    is ChatAttachment.Image -> UIChatMessage.ImageMessage(uid,
+                                                                          sender,
+                                                                          myMessageState.toMessageState(),
                                                                           (message + "\n" + it.path.getFileName())
                                                                               .trim(),
                                                                           IconImage(it.path.toString()),
                                                                           sendDate,
                                                                           UIChatLikes(currentUser.uid, likes))
-                    is ChatAttachment.File  -> UIChatMessage.AttachmentMessage(sender,
-                                                                               sender.uid == currentUser.uid,
+                    is ChatAttachment.File  -> UIChatMessage.AttachmentMessage(uid,
+                                                                               sender,
+                                                                               myMessageState.toMessageState(),
                                                                                it,
                                                                                (message + "\n" + it.path.getFileName()),
                                                                                "${it.size.getFileSize()} ${it.typeName}",
@@ -262,6 +309,15 @@ private fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMess
                     else                    -> throw IllegalArgumentException("unknown attachment type")
                 }
             }
+    }
+
+private fun ChatMyMessageState?.toMessageState(): UIChatMessageStatus =
+    when (this) {
+        null                         -> UIChatMessageStatus.OTHER_USER_MESSAGE
+        ChatMyMessageState.PENDING   -> UIChatMessageStatus.MY_MESSAGE_PENDING
+        ChatMyMessageState.SEND      -> UIChatMessageStatus.MY_MESSAGE_SEND
+        ChatMyMessageState.DELIVERED -> UIChatMessageStatus.MY_MESSAGE_DELIVERED
+        ChatMyMessageState.READ      -> UIChatMessageStatus.MY_MESSAGE_READ
     }
 
 private fun List<UIChatMessage>.addDateObjects(): List<Any> {
@@ -304,3 +360,5 @@ private fun URI.getFileName(): String =
     } catch (t: Throwable) {
         ""
     }
+
+private data class AllMessagesInfo(val serverMessages: List<UIChatMessage>, val chatInfo: UIChatInfo? = null)

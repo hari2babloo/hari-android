@@ -16,6 +16,7 @@ import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.Paginator
+import io.scal.ambi.ui.global.model.createPaginator
 import io.scal.ambi.ui.home.chat.list.data.UIChatList
 import io.scal.ambi.ui.home.chat.list.data.UIChatListFilter
 import ru.terrakok.cicerone.Router
@@ -36,7 +37,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
     val filterModel = ChatFilterModel(listOf(UIChatListFilter.AllChats, UIChatListFilter.GroupChats, UIChatListFilter.ClassChats))
 
-    private val paginator = Paginator(
+    private val paginator = createPaginator(
         { page -> loadNextPage(page) },
         object : Paginator.ViewController<UIChatList> {
             override fun showEmptyProgress(show: Boolean) {

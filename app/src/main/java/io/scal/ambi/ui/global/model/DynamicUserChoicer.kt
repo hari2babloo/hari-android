@@ -28,7 +28,7 @@ class DynamicUserChoicer<Uid>(private val rxSchedulersAbs: RxSchedulersAbs,
                 // we need this to block any change event while we process previous
                 val barrier = AtomicBoolean(false)
                 // we need this to find if there are some more events to work with
-                val quire = ArrayList<UserChoice<Uid>>()
+                val quire = mutableListOf<UserChoice<Uid>>()
                 // will fire every interval so we can pack user actions
                 val readyPublisher = Observable.interval(700, TimeUnit.MILLISECONDS)
                     .observeOn(rxSchedulersAbs.mainThreadScheduler)

@@ -29,11 +29,13 @@ abstract class RecyclerViewAdapterDelegated<T> : RecyclerView.Adapter<RecyclerVi
     override fun getItemCount(): Int = dataList.size
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder?) {
+/*
         (holder as? AdapterDelegateBase.BindingViewHolder<*>)?.run {
             holder.binding.setVariable(BR.viewModel, null)
             holder.binding.setVariable(BR.element, null)
             holder.binding.executePendingBindings()
         }
+*/
 
         super.onViewRecycled(holder)
     }

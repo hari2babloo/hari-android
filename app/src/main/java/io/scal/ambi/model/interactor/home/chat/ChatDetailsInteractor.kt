@@ -1,18 +1,18 @@
 package io.scal.ambi.model.interactor.home.chat
 
+import android.databinding.ObservableArrayList
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.scal.ambi.entity.chat.ChatAttachment
-import io.scal.ambi.entity.chat.ChatMessage
-import io.scal.ambi.entity.chat.ChatTypingInfo
-import io.scal.ambi.entity.chat.FullChatItem
+import io.scal.ambi.entity.chat.*
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import java.security.SecureRandom
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
@@ -20,8 +20,11 @@ import javax.inject.Named
 class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val chatUid: String,
                                                 private val localUserDataRepository: ILocalUserDataRepository) : IChatDetailsInteractor {
 
+    private var currentUser: User? = null
+    private val pendingMessages = ObservableArrayList<ChatMessage>()
+
     override fun loadCurrentUser(): Observable<User> =
-        localUserDataRepository.observeCurrentUser()
+        localUserDataRepository.observeCurrentUser().doOnNext { currentUser = it }
 
     override fun loadChatInfo(): Observable<FullChatItem> {
         if (SecureRandom().nextBoolean()) {
@@ -61,6 +64,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
 
         return Single.just(listOf(
             ChatMessage.TextMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("1",
                                IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                "Josh",
@@ -70,6 +74,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             ),
             ChatMessage.TextMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("1",
                                IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                "Josh",
@@ -79,6 +84,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             ),
             ChatMessage.TextMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("1",
                                IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                "Josh",
@@ -88,6 +94,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             ),
             ChatMessage.TextMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("1",
                                IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                "Josh",
@@ -97,6 +104,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             ),
             ChatMessage.TextMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("1",
                                IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                "Josh",
@@ -106,6 +114,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             ),
             ChatMessage.AttachmentMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("1",
                                IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                "Josh",
@@ -116,6 +125,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             ),
             ChatMessage.AttachmentMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("1",
                                IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                "Josh",
@@ -127,6 +137,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                 emptyList()
             ),
             ChatMessage.AttachmentMessage(
+                UUID.randomUUID().toString(),
                 User.asStudent("2",
                                IconImageUser("https://cs8.pikabu.ru/post_img/2017/01/05/5/1483598291183026970.jpg"),
                                "Sara",
@@ -143,7 +154,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
             .delay(4, TimeUnit.SECONDS)
     }
 
-    override fun loadTypingInformation(): Observable<ChatTypingInfo> {
+    override fun loadTypingInfo(): Observable<ChatTypingInfo> {
         val user1 = User.asStudent("1",
                                    IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                    "Josh",
@@ -156,5 +167,42 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
         return Observable.interval(5, TimeUnit.SECONDS)
             .delay(random.nextInt(3000).toLong(), TimeUnit.MILLISECONDS)
             .map { ChatTypingInfo(if (random.nextBoolean()) user1 else user2, random.nextBoolean()) }
+            .firstOrError()
+            .toObservable()
+    }
+
+    override fun loadSendingMessagesInfo(): Observable<List<ChatMessage>> = pendingMessages.toObservable()
+
+    override fun loadNewMessages(): Observable<List<ChatMessage>> {
+        return Observable.never()
+    }
+
+    override fun sendTextMessage(message: String) {
+        synchronized(pendingMessages) {
+            currentUser?.run {
+                sendMessageInternal(
+                    ChatMessage.TextMessage(UUID.randomUUID().toString(), this, DateTime.now(), message, emptyList(), ChatMyMessageState.PENDING))
+            }
+        }
+    }
+
+    override fun resendMessage(uid: String) {
+        synchronized(pendingMessages) {
+            pendingMessages
+                .firstOrNull { it.uid == uid }
+                ?.run {
+                    pendingMessages.remove(this)
+                    val messageToResend =
+                        when (this) {
+                            is ChatMessage.TextMessage       -> copy(myMessageState = ChatMyMessageState.PENDING)
+                            is ChatMessage.AttachmentMessage -> copy(myMessageState = ChatMyMessageState.PENDING)
+                        }
+                    sendMessageInternal(messageToResend)
+                }
+        }
+    }
+
+    private fun sendMessageInternal(message: ChatMessage) {
+        pendingMessages.add(message)
     }
 }

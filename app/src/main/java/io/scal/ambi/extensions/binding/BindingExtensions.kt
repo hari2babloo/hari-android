@@ -94,12 +94,12 @@ fun <T> ObservableList<T>.toObservable(): Observable<List<T>> =
 
                               private fun onDataChanged(sender: ObservableList<T>) {
                                   if (!e.isDisposed) {
-                                      e.onNext(sender)
+                                      e.onNext(ArrayList(sender))
                                   }
                               }
                           }
 
-                          e.onNext(this)
+                          e.onNext(ArrayList(this))
 
                           this.addOnListChangedCallback(onListChangedCallback)
                           e.setCancellable { this.removeOnListChangedCallback(onListChangedCallback) }
