@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Ambi</string>
 
+    <string name="error_unknown">unknown error</string>
+
     <string name="dialog_ok">OK</string>
     <string name="hint_search">search</string>
 

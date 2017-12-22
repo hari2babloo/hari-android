@@ -80,12 +80,11 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
                 when (it) {
                     is NewsFeedErrorState.NoErrorState       -> snackBar = null
                     is NewsFeedErrorState.FatalErrorState    -> {
-                        snackBar = Snackbar.make(binding.srl, it.error.message.orEmpty(), Snackbar.LENGTH_INDEFINITE)
+                        snackBar = Snackbar.make(binding.srl, it.error, Snackbar.LENGTH_INDEFINITE)
                         snackBar!!.setAction(R.string.text_retry, { viewModel.refresh() })
                         snackBar!!.show()
                     }
-                    is NewsFeedErrorState.NonFatalErrorState ->
-                        Toast.makeText(activity, it.error.message, Toast.LENGTH_SHORT).show()
+                    is NewsFeedErrorState.NonFatalErrorState -> Toast.makeText(activity, it.error, Toast.LENGTH_SHORT).show()
                 }
             }
             .addTo(destroyViewDisposables)

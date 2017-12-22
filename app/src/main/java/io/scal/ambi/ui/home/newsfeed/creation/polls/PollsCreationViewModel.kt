@@ -1,5 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.creation.polls
 
+import android.content.Context
 import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
@@ -15,11 +16,13 @@ import io.scal.ambi.model.interactor.home.newsfeed.creation.IPollsCreationIntera
 import io.scal.ambi.model.interactor.home.newsfeed.creation.PollCreation
 import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
+import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomViewModel
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class PollsCreationViewModel @Inject constructor(router: Router,
+class PollsCreationViewModel @Inject constructor(private val context: Context,
+                                                 router: Router,
                                                  val bottomViewModel: CreationBottomViewModel,
                                                  private val interactor: IPollsCreationInteractor,
                                                  private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
@@ -119,7 +122,7 @@ class PollsCreationViewModel @Inject constructor(router: Router,
                                    { t ->
                                        handleError(t)
                                        progressStateModel.set(PollsCreationProgressState.NoProgress)
-                                       errorStateModel.set(PollsCreationErrorState.Error(t.message!!))
+                                       errorStateModel.set(PollsCreationErrorState.Error(t.toGoodUserMessage(context)))
                                        errorStateModel.set(PollsCreationErrorState.NoError)
                                    })
                         .addTo(disposables)

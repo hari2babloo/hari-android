@@ -18,9 +18,9 @@ internal sealed class NewsFeedErrorState {
 
     object NoErrorState : NewsFeedErrorState()
 
-    class FatalErrorState(val error: Throwable) : NewsFeedErrorState()
+    class FatalErrorState(val error: String) : NewsFeedErrorState()
 
-    class NonFatalErrorState(val error: Throwable) : NewsFeedErrorState()
+    class NonFatalErrorState(val error: String) : NewsFeedErrorState()
 }
 
 internal sealed class NewsFeedDataState {

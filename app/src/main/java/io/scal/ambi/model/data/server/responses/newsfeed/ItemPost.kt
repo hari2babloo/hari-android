@@ -7,6 +7,7 @@ import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.data.server.responses.ItemUser
 import io.scal.ambi.model.data.server.responses.Parceble
@@ -83,16 +84,16 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     }
 
     private fun parseAsPoll(): NewsFeedItem =
-        NewsFeedItemPoll(id!!,
+        NewsFeedItemPoll(id.notNullOrThrow("id"),
                          pinned ?: false,
                          locked ?: false,
 //                         poster!!.parse(),
                          User.asStudent("test", IconImageUser(poster), "MIG35", "TEST"),
                          textContent.orEmpty(),
-                         answerChoices!!.map { it.parse() },
-                         DateTime(createdAt!!),
+                         answerChoices.notNullOrThrow("answerChoices").map { it.parse() },
+                         DateTime(createdAt.notNullOrThrow("createdAt")),
                          pollEndsTime.toPollEndsTime(),
-                         audiences!!.mapNotNull { it.toAudience() },
+                         audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                          null,
                          comments?.map { it.parse() } ?: emptyList(),
                          likes?.map { it.parse() } ?: emptyList()

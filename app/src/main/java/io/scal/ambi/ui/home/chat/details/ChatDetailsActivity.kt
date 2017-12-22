@@ -83,12 +83,12 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
                 when (it) {
                     is ChatDetailsErrorState.NoErrorState       -> snackBar = null
                     is ChatDetailsErrorState.FatalErrorState    -> {
-                        snackBar = Snackbar.make(binding.rootContainer, it.error.message.orEmpty(), Snackbar.LENGTH_INDEFINITE)
+                        snackBar = Snackbar.make(binding.rootContainer, it.error, Snackbar.LENGTH_INDEFINITE)
                         snackBar!!.setAction(R.string.text_retry, { viewModel.loadMainInformation() })
                         snackBar!!.show()
                     }
                     is ChatDetailsErrorState.NonFatalErrorState ->
-                        Toast.makeText(this, it.error.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()
                 }
             }
             .addTo(destroyDisposables)

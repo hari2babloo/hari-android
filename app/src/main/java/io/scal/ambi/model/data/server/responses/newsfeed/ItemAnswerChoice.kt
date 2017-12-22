@@ -3,6 +3,7 @@ package io.scal.ambi.model.data.server.responses.newsfeed
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.feed.PollChoice
+import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.model.data.server.responses.ItemUser
 import io.scal.ambi.model.data.server.responses.Parceble
 
@@ -21,6 +22,6 @@ internal class ItemAnswerChoice : Parceble<PollChoice> {
     internal var voters: List<ItemUser>? = null
 
     override fun parse(): PollChoice {
-        return PollChoice(id!!, text.orEmpty(), voters?.map { it.parse() } ?: emptyList())
+        return PollChoice(id.notNullOrThrow("id"), text.orEmpty(), voters?.map { it.parse() } ?: emptyList())
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import io.scal.ambi.R
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
+import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.extensions.view.IconImageUser
 
 class UserResponse : BaseResponse<User>() {
@@ -14,7 +15,7 @@ class UserResponse : BaseResponse<User>() {
     internal var student: Student? = null
 
     override fun parse(): User {
-        student!!.type = ItemUser.Type.Student
+        student.notNullOrThrow("student").type = ItemUser.Type.Student
         return student!!.parse()
     }
 
@@ -38,8 +39,8 @@ class UserResponse : BaseResponse<User>() {
             }
             return User.asStudent(extractId(),
                                   profilePicture?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
-                                  firstName!!,
-                                  lastName!!
+                                  firstName.orEmpty(),
+                                  lastName.orEmpty()
             )
         }
     }

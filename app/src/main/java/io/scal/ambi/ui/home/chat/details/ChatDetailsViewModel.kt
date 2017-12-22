@@ -22,6 +22,7 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
+import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.Paginator
 import io.scal.ambi.ui.home.chat.details.data.UIChatDate
 import io.scal.ambi.ui.home.chat.details.data.UIChatInfo
@@ -62,7 +63,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
             override fun showEmptyError(show: Boolean, error: Throwable?) {
                 if (show && null != error) {
-                    errorState.set(ChatDetailsErrorState.FatalErrorState(error))
+                    errorState.set(ChatDetailsErrorState.FatalErrorState(error.toGoodUserMessage(context)))
                 } else {
                     errorState.set(ChatDetailsErrorState.NoErrorState)
                 }
@@ -81,7 +82,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             }
 
             override fun showErrorMessage(error: Throwable) {
-                errorState.set(ChatDetailsErrorState.NonFatalErrorState(error))
+                errorState.set(ChatDetailsErrorState.NonFatalErrorState(error.toGoodUserMessage(context)))
                 errorState.set(ChatDetailsErrorState.NoErrorState)
             }
 
@@ -138,7 +139,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                    handleError(t)
 
                                    progressState.set(ChatDetailsProgressState.NoProgress)
-                                   errorState.set(ChatDetailsErrorState.FatalErrorState(t))
+                                   errorState.set(ChatDetailsErrorState.FatalErrorState(t.toGoodUserMessage(context)))
                                })
                     .addTo(disposables)
 

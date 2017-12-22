@@ -17,9 +17,9 @@ internal sealed class ChatListErrorState {
 
     object NoErrorState : ChatListErrorState()
 
-    data class FatalErrorState(val error: Throwable) : ChatListErrorState()
+    data class FatalErrorState(val error: String) : ChatListErrorState()
 
-    data class NonFatalErrorState(val error: Throwable) : ChatListErrorState()
+    data class NonFatalErrorState(val error: String) : ChatListErrorState()
 }
 
 internal sealed class ChatListDataState {

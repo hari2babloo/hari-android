@@ -1,12 +1,13 @@
 package io.scal.ambi.ui.home.newsfeed.list
 
+import android.content.Context
 import android.databinding.ObservableField
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.*
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.replaceElements
@@ -16,6 +17,7 @@ import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
+import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.DynamicUserChoicer
 import io.scal.ambi.ui.global.model.Paginator
 import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
@@ -24,7 +26,8 @@ import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class NewsFeedViewModel @Inject constructor(router: Router,
+class NewsFeedViewModel @Inject constructor(private val context: Context,
+                                            router: Router,
                                             private val interactor: INewsFeedInteractor,
                                             rxSchedulersAbs: RxSchedulersAbs) :
     BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs) {
@@ -45,7 +48,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
 
             override fun showEmptyError(show: Boolean, error: Throwable?) {
                 if (show && null != error) {
-                    errorState.set(NewsFeedErrorState.FatalErrorState(error))
+                    errorState.set(NewsFeedErrorState.FatalErrorState(error.toGoodUserMessage(context)))
                 } else {
                     errorState.set(NewsFeedErrorState.NoErrorState)
                 }
@@ -67,7 +70,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
             }
 
             override fun showErrorMessage(error: Throwable) {
-                errorState.set(NewsFeedErrorState.NonFatalErrorState(error))
+                errorState.set(NewsFeedErrorState.NonFatalErrorState(error.toGoodUserMessage(context)))
                 errorState.set(NewsFeedErrorState.NoErrorState)
             }
 
@@ -174,7 +177,7 @@ class NewsFeedViewModel @Inject constructor(router: Router,
 
                                            upToDateDataState.newsFeed.replaceElement(listElement,
                                                                                      listElement.copy(choices = oldPollChoices, userChoice = null))
-                                           errorState.set(NewsFeedErrorState.NonFatalErrorState(t))
+                                           errorState.set(NewsFeedErrorState.NonFatalErrorState(t.toGoodUserMessage(context)))
                                            errorState.set(NewsFeedErrorState.NoErrorState)
                                        }
                                    }

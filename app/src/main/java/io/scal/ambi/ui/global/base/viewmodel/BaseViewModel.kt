@@ -1,7 +1,9 @@
 package io.scal.ambi.ui.global.base.viewmodel
 
 import android.arch.lifecycle.ViewModel
+import android.content.Context
 import io.reactivex.disposables.CompositeDisposable
+import io.scal.ambi.R
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
 
@@ -23,4 +25,8 @@ abstract class BaseViewModel(protected val router: Router) : ViewModel() {
 
         super.onCleared()
     }
+}
+
+fun Throwable.toGoodUserMessage(context: Context): String {
+    return message ?: context.getString(R.string.error_unknown)
 }

@@ -6,14 +6,15 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
+import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.Paginator
 import io.scal.ambi.ui.home.chat.list.data.UIChatList
 import io.scal.ambi.ui.home.chat.list.data.UIChatListFilter
@@ -45,7 +46,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
             override fun showEmptyError(show: Boolean, error: Throwable?) {
                 if (show && null != error) {
-                    errorState.set(ChatListErrorState.FatalErrorState(error))
+                    errorState.set(ChatListErrorState.FatalErrorState(error.toGoodUserMessage(context)))
                 } else {
                     errorState.set(ChatListErrorState.NoErrorState)
                 }
@@ -60,7 +61,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
             }
 
             override fun showErrorMessage(error: Throwable) {
-                errorState.set(ChatListErrorState.NonFatalErrorState(error))
+                errorState.set(ChatListErrorState.NonFatalErrorState(error.toGoodUserMessage(context)))
                 errorState.set(ChatListErrorState.NoErrorState)
             }
 

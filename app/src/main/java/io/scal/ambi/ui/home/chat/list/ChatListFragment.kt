@@ -77,12 +77,12 @@ class ChatListFragment : BaseNavigationFragment<ChatListViewModel, FragmentChatL
                 when (it) {
                     is ChatListErrorState.NoErrorState       -> snackBar = null
                     is ChatListErrorState.FatalErrorState    -> {
-                        snackBar = Snackbar.make(binding.srl, it.error.message.orEmpty(), Snackbar.LENGTH_INDEFINITE)
+                        snackBar = Snackbar.make(binding.srl, it.error, Snackbar.LENGTH_INDEFINITE)
                         snackBar!!.setAction(R.string.text_retry, { viewModel.refresh() })
                         snackBar!!.show()
                     }
                     is ChatListErrorState.NonFatalErrorState ->
-                        Toast.makeText(activity, it.error.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, it.error, Toast.LENGTH_SHORT).show()
                 }
             }
             .addTo(destroyViewDisposables)

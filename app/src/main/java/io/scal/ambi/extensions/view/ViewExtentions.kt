@@ -3,6 +3,7 @@ package io.scal.ambi.extensions.view
 import android.support.v4.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.ui.global.base.LocalNavigationHolder
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -17,11 +18,11 @@ fun View.enableCascade(enable: Boolean) {
 }
 
 fun Fragment.getNavigationHolder(): NavigatorHolder {
-    return getLocalNavigationHolder().getNavigationHolder(tag!!)
+    return getLocalNavigationHolder().getNavigationHolder(tag.notNullOrThrow("tag"))
 }
 
 fun Fragment.getRouter(): Router {
-    return getLocalNavigationHolder().getRouter(tag!!)
+    return getLocalNavigationHolder().getRouter(tag.notNullOrThrow("tag"))
 }
 
 private fun Fragment.getLocalNavigationHolder(): LocalNavigationHolder {

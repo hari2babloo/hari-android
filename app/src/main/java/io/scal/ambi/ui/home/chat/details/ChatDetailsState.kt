@@ -22,9 +22,9 @@ internal sealed class ChatDetailsErrorState {
 
     object NoErrorState : ChatDetailsErrorState()
 
-    data class FatalErrorState(val error: Throwable) : ChatDetailsErrorState()
+    data class FatalErrorState(val error: String) : ChatDetailsErrorState()
 
-    data class NonFatalErrorState(val error: Throwable) : ChatDetailsErrorState()
+    data class NonFatalErrorState(val error: String) : ChatDetailsErrorState()
 }
 
 sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
