@@ -2,12 +2,6 @@ package io.scal.ambi.ui.home.chat.details
 
 import android.content.Context
 import android.databinding.ObservableField
-import android.graphics.Typeface
-import android.support.v4.content.ContextCompat
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -15,27 +9,21 @@ import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import io.scal.ambi.R
 import io.scal.ambi.entity.EmojiKeyboardState
-import io.scal.ambi.entity.chat.*
+import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.entity.user.User
-import io.scal.ambi.extensions.appendCustom
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
-import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
-import io.scal.ambi.ui.global.model.Paginator
+import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createAppendablePaginator
-import io.scal.ambi.ui.home.chat.details.data.*
-import org.joda.time.format.DateTimeFormat
+import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
+import io.scal.ambi.ui.home.chat.details.data.UIChatMessageStatus
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
-import java.io.File
-import java.net.URI
-import java.text.DecimalFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -57,19 +45,16 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
     private val paginator = createAppendablePaginator(
         { page -> loadNextPage(page) },
-        object : Paginator.ViewController<UIChatMessage> {
-            override fun showEmptyProgress(show: Boolean) {
-                if (show) progressState.set(ChatDetailsProgressState.EmptyDataProgress)
-                else progressState.set(ChatDetailsProgressState.NoProgress)
-            }
+        object : PaginatorStateViewController<UIChatMessage, ChatDetailsProgressState, ChatDetailsErrorState>(context, progressState, errorState) {
 
-            override fun showEmptyError(show: Boolean, error: Throwable?) {
-                if (show && null != error) {
-                    errorState.set(ChatDetailsErrorState.FatalErrorState(error.toGoodUserMessage(context)))
-                } else {
-                    errorState.set(ChatDetailsErrorState.NoErrorState)
-                }
-            }
+            override fun generateProgressEmptyState() = ChatDetailsProgressState.EmptyDataProgress
+            override fun generateProgressNoState() = ChatDetailsProgressState.NoProgress
+            override fun generateProgressRefreshState() = ChatDetailsProgressState.RefreshProgress
+            override fun generateProgressPageState() = ChatDetailsProgressState.PageProgress
+
+            override fun generateErrorFatal(message: String) = ChatDetailsErrorState.FatalErrorState(message)
+            override fun generateErrorNonFatal(message: String) = ChatDetailsErrorState.NonFatalErrorState(message)
+            override fun generateErrorNo() = ChatDetailsErrorState.NoErrorState
 
             override fun showEmptyView(show: Boolean) {
                 if (show) serverDataListSubject.onNext(AllMessagesInfo(emptyList()))
@@ -81,21 +66,6 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
             override fun showNoMoreData(show: Boolean, data: List<UIChatMessage>) {
                 if (show) serverDataListSubject.onNext(AllMessagesInfo(data, dataState.get().chatInfo))
-            }
-
-            override fun showErrorMessage(error: Throwable) {
-                errorState.set(ChatDetailsErrorState.NonFatalErrorState(error.toGoodUserMessage(context)))
-                errorState.set(ChatDetailsErrorState.NoErrorState)
-            }
-
-            override fun showRefreshProgress(show: Boolean) {
-                if (show) progressState.set(ChatDetailsProgressState.RefreshProgress)
-                else progressState.set(ChatDetailsProgressState.NoProgress)
-            }
-
-            override fun showPageProgress(show: Boolean) {
-                if (show) progressState.set(ChatDetailsProgressState.PageProgress)
-                else progressState.set(ChatDetailsProgressState.NoProgress)
             }
         },
         true
@@ -203,6 +173,12 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
         messageInputState.set(messageInputState.get().copy(emojiKeyboardState = emojiKeyboardState))
     }
 
+    fun onMessageClick(element: UIChatMessage) {
+        if (UIChatMessageStatus.MY_MESSAGE_SEND_FAILED == element.state) {
+            interactor.resendMessage(element.uid)
+        }
+    }
+
     fun sendMessage() {
         val currentDataState = messageInputState.get()
         val message = currentDataState.userInput.get().trim()
@@ -242,123 +218,3 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             .addTo(disposables)
     }
 }
-
-private fun SmallChatItem?.toChatInfo(): UIChatInfo? =
-    if (null == this) {
-        null
-    } else {
-        UIChatInfo(icon, title, "")
-    }
-
-private fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
-    @Suppress("REDUNDANT_ELSE_IN_WHEN")
-    val description =
-        when (this) {
-            is FullChatItem.Direct -> {
-                val description = SpannableStringBuilder()
-                description.append(context.getString(R.string.chat_details_info_direct))
-                description.append(" ")
-                description.appendCustom(otherUser.name, StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                description
-            }
-            is FullChatItem.Group  -> {
-                val dateFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy' at 'HH:mm a").withLocale(Locale.ENGLISH)
-                val infoEndMessage = context.getString(R.string.chat_details_info_group_middle, dateFormatter.print(creationDateTime))
-                val creatorName = creator.name.let { "\ufeff@$it" }
-                val description = SpannableStringBuilder()
-                description.appendCustom(creatorName,
-                                         ForegroundColorSpan(ContextCompat.getColor(context, R.color.blueHref)),
-                                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                description.append(" ")
-                description.append(infoEndMessage)
-                description
-            }
-            else                   -> throw IllegalArgumentException("unknown type: ${this.javaClass.simpleName}")
-        }
-    return UIChatInfo(icon, title, description)
-}
-
-private fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMessage> =
-    when (this) {
-        is ChatMessage.TextMessage       -> listOf(UIChatMessage.TextMessage(uid,
-                                                                             sender,
-                                                                             myMessageState.toMessageState(),
-                                                                             message,
-                                                                             sendDate,
-                                                                             UIChatLikes(currentUser.uid, likes)))
-        is ChatMessage.AttachmentMessage ->
-            attachments.map {
-                @Suppress("REDUNDANT_ELSE_IN_WHEN")
-                when (it) {
-                    is ChatAttachment.Image -> UIChatMessage.ImageMessage(uid,
-                                                                          sender,
-                                                                          myMessageState.toMessageState(),
-                                                                          (message + "\n" + it.path.getFileName())
-                                                                              .trim(),
-                                                                          IconImage(it.path.toString()),
-                                                                          sendDate,
-                                                                          UIChatLikes(currentUser.uid, likes))
-                    is ChatAttachment.File  -> UIChatMessage.AttachmentMessage(uid,
-                                                                               sender,
-                                                                               myMessageState.toMessageState(),
-                                                                               it,
-                                                                               (message + "\n" + it.path.getFileName()),
-                                                                               "${it.size.getFileSize()} ${it.typeName}",
-                                                                               sendDate,
-                                                                               UIChatLikes(currentUser.uid, likes))
-                    else                    -> throw IllegalArgumentException("unknown attachment type")
-                }
-            }
-    }
-
-private fun ChatMyMessageState?.toMessageState(): UIChatMessageStatus =
-    when (this) {
-        null                         -> UIChatMessageStatus.OTHER_USER_MESSAGE
-        ChatMyMessageState.PENDING   -> UIChatMessageStatus.MY_MESSAGE_PENDING
-        ChatMyMessageState.SEND      -> UIChatMessageStatus.MY_MESSAGE_SEND
-        ChatMyMessageState.DELIVERED -> UIChatMessageStatus.MY_MESSAGE_DELIVERED
-        ChatMyMessageState.READ      -> UIChatMessageStatus.MY_MESSAGE_READ
-    }
-
-private fun List<UIChatMessage>.addDateObjects(): List<Any> {
-    // may be we should do it in BG thread.. for now lets do it here
-    val result = fold(ArrayList<Any>(),
-                      { acc, uiChatMessage ->
-                          val lastItem = acc.lastOrNull()
-                          if (lastItem is UIChatMessage) {
-                              val lastItemMessageLocalDate = lastItem.messageDateTime.toLocalDate()
-                              val currentMessageLocalDate = uiChatMessage.messageDateTime.toLocalDate()
-                              if (lastItemMessageLocalDate.dayOfYear != currentMessageLocalDate.dayOfYear) {
-                                  acc.add(UIChatDate(lastItemMessageLocalDate))
-                              }
-                          }
-                          acc.add(uiChatMessage)
-                          acc
-                      }
-    )
-    if (result.isNotEmpty()) {
-        val lastItem = result.last()
-        if (lastItem is UIChatMessage) {
-            result.add(UIChatDate(lastItem.messageDateTime.toLocalDate()))
-        }
-    }
-
-    return result
-}
-
-private fun Long.getFileSize(): String {
-    if (this <= 0)
-        return "0"
-    val units = arrayOf("B", "KB", "MB", "GB", "TB")
-    val digitGroups = (Math.log10(toDouble()) / Math.log10(1024.0)).toInt()
-    return DecimalFormat("#,##0.#").format(this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
-}
-
-private fun URI.getFileName(): String =
-    try {
-        File(path.toString()).name
-    } catch (t: Throwable) {
-        ""
-    }
-
-private data class AllMessagesInfo(val serverMessages: List<UIChatMessage>, val chatInfo: UIChatInfo? = null)

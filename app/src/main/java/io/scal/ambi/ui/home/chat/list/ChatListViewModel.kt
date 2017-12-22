@@ -14,8 +14,7 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
-import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
-import io.scal.ambi.ui.global.model.Paginator
+import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createPaginator
 import io.scal.ambi.ui.home.chat.list.data.UIChatList
 import io.scal.ambi.ui.home.chat.list.data.UIChatListFilter
@@ -39,19 +38,16 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
     private val paginator = createPaginator(
         { page -> loadNextPage(page) },
-        object : Paginator.ViewController<UIChatList> {
-            override fun showEmptyProgress(show: Boolean) {
-                if (show) progressState.set(ChatListProgressState.EmptyProgress)
-                else progressState.set(ChatListProgressState.NoProgress)
-            }
+        object : PaginatorStateViewController<UIChatList, ChatListProgressState, ChatListErrorState>(context, progressState, errorState) {
 
-            override fun showEmptyError(show: Boolean, error: Throwable?) {
-                if (show && null != error) {
-                    errorState.set(ChatListErrorState.FatalErrorState(error.toGoodUserMessage(context)))
-                } else {
-                    errorState.set(ChatListErrorState.NoErrorState)
-                }
-            }
+            override fun generateProgressEmptyState() = ChatListProgressState.EmptyProgress
+            override fun generateProgressNoState() = ChatListProgressState.NoProgress
+            override fun generateProgressRefreshState() = ChatListProgressState.RefreshProgress
+            override fun generateProgressPageState() = ChatListProgressState.PageProgress
+
+            override fun generateErrorFatal(message: String) = ChatListErrorState.FatalErrorState(message)
+            override fun generateErrorNonFatal(message: String) = ChatListErrorState.NonFatalErrorState(message)
+            override fun generateErrorNo() = ChatListErrorState.NoErrorState
 
             override fun showEmptyView(show: Boolean) {
                 if (show) allDataState.set(ChatListDataState.Empty)
@@ -59,21 +55,6 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
             override fun showData(show: Boolean, data: List<UIChatList>) {
                 if (show) allDataState.set(ChatListDataState.Data(data))
-            }
-
-            override fun showErrorMessage(error: Throwable) {
-                errorState.set(ChatListErrorState.NonFatalErrorState(error.toGoodUserMessage(context)))
-                errorState.set(ChatListErrorState.NoErrorState)
-            }
-
-            override fun showRefreshProgress(show: Boolean) {
-                if (show) progressState.set(ChatListProgressState.RefreshProgress)
-                else progressState.set(ChatListProgressState.NoProgress)
-            }
-
-            override fun showPageProgress(show: Boolean) {
-                if (show) progressState.set(ChatListProgressState.PageProgress)
-                else progressState.set(ChatListProgressState.NoProgress)
             }
         },
         true

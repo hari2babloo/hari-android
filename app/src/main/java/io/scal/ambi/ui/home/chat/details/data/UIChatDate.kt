@@ -7,7 +7,7 @@ import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import java.util.*
 
-class UIChatDate(private val dateVal: LocalDate) {
+class UIChatDate(val dateVal: LocalDate) {
 
     fun getDateText(context: Context): String {
         val duration = Duration(dateVal.toDateTimeAtCurrentTime(), LocalDate.now().toDateTimeAtCurrentTime())

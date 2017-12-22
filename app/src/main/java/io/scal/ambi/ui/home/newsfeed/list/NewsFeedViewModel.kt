@@ -19,7 +19,7 @@ import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.DynamicUserChoicer
-import io.scal.ambi.ui.global.model.Paginator
+import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createPaginator
 import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
@@ -41,19 +41,16 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
     private val paginator = createPaginator(
         { page -> executeLoadNextPage(page) },
-        object : Paginator.ViewController<UIModelFeed> {
-            override fun showEmptyProgress(show: Boolean) {
-                if (show) progressState.set(NewsFeedProgressState.EmptyProgress)
-                else progressState.set(NewsFeedProgressState.NoProgress)
-            }
+        object : PaginatorStateViewController<UIModelFeed, NewsFeedProgressState, NewsFeedErrorState>(context, progressState, errorState) {
 
-            override fun showEmptyError(show: Boolean, error: Throwable?) {
-                if (show && null != error) {
-                    errorState.set(NewsFeedErrorState.FatalErrorState(error.toGoodUserMessage(context)))
-                } else {
-                    errorState.set(NewsFeedErrorState.NoErrorState)
-                }
-            }
+            override fun generateProgressEmptyState() = NewsFeedProgressState.EmptyProgress
+            override fun generateProgressNoState() = NewsFeedProgressState.NoProgress
+            override fun generateProgressRefreshState() = NewsFeedProgressState.RefreshProgress
+            override fun generateProgressPageState() = NewsFeedProgressState.PageProgress
+
+            override fun generateErrorFatal(message: String) = NewsFeedErrorState.FatalErrorState(message)
+            override fun generateErrorNonFatal(message: String) = NewsFeedErrorState.NonFatalErrorState(message)
+            override fun generateErrorNo() = NewsFeedErrorState.NoErrorState
 
             override fun showEmptyView(show: Boolean) {
                 if (show) dataState.set(NewsFeedDataState.Empty)
@@ -68,21 +65,6 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
                         dataState.set(NewsFeedDataState.Data(OptimizedObservableArrayList(data)))
                     }
                 }
-            }
-
-            override fun showErrorMessage(error: Throwable) {
-                errorState.set(NewsFeedErrorState.NonFatalErrorState(error.toGoodUserMessage(context)))
-                errorState.set(NewsFeedErrorState.NoErrorState)
-            }
-
-            override fun showRefreshProgress(show: Boolean) {
-                if (show) progressState.set(NewsFeedProgressState.RefreshProgress)
-                else progressState.set(NewsFeedProgressState.NoProgress)
-            }
-
-            override fun showPageProgress(show: Boolean) {
-                if (show) progressState.set(NewsFeedProgressState.PageProgress)
-                else progressState.set(NewsFeedProgressState.NoProgress)
             }
         },
         true

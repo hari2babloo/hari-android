@@ -52,4 +52,8 @@ data class HeaderFooterList(private val headerElement: Any?,
             }
         }
     }
+
+    fun hasSameData(data: List<Any>): Boolean {
+        return data == this.data
+    }
 }

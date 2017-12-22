@@ -1,11 +1,14 @@
 package io.scal.ambi.model.interactor.home.chat
 
-import android.databinding.ObservableArrayList
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.entity.chat.*
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
+import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.toObservable
+import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
@@ -18,10 +21,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val chatUid: String,
-                                                private val localUserDataRepository: ILocalUserDataRepository) : IChatDetailsInteractor {
+                                                private val localUserDataRepository: ILocalUserDataRepository,
+                                                private val rxSchedulersAbs: RxSchedulersAbs) : IChatDetailsInteractor {
 
     private var currentUser: User? = null
-    private val pendingMessages = ObservableArrayList<ChatMessage>()
+    private val pendingMessages = OptimizedObservableArrayList<ChatMessage>()
 
     override fun loadCurrentUser(): Observable<User> =
         localUserDataRepository.observeCurrentUser().doOnNext { currentUser = it }
@@ -167,8 +171,6 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
         return Observable.interval(5, TimeUnit.SECONDS)
             .delay(random.nextInt(3000).toLong(), TimeUnit.MILLISECONDS)
             .map { ChatTypingInfo(if (random.nextBoolean()) user1 else user2, random.nextBoolean()) }
-            .firstOrError()
-            .toObservable()
     }
 
     override fun loadSendingMessagesInfo(): Observable<List<ChatMessage>> = pendingMessages.toObservable()
@@ -181,7 +183,9 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
         synchronized(pendingMessages) {
             currentUser?.run {
                 sendMessageInternal(
-                    ChatMessage.TextMessage(UUID.randomUUID().toString(), this, DateTime.now(), message, emptyList(), ChatMyMessageState.PENDING))
+                    ChatMessage.TextMessage(UUID.randomUUID().toString(), this, DateTime.now(), message, emptyList(), ChatMyMessageState.PENDING),
+                    null
+                )
             }
         }
     }
@@ -191,18 +195,44 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
             pendingMessages
                 .firstOrNull { it.uid == uid }
                 ?.run {
-                    pendingMessages.remove(this)
-                    val messageToResend =
-                        when (this) {
-                            is ChatMessage.TextMessage       -> copy(myMessageState = ChatMyMessageState.PENDING)
-                            is ChatMessage.AttachmentMessage -> copy(myMessageState = ChatMyMessageState.PENDING)
-                        }
-                    sendMessageInternal(messageToResend)
+                    if (myMessageState != ChatMyMessageState.SEND_FAILED) {
+                        // we can not resend non failed message
+                        return
+                    }
+                    val messageToResend = changeState(ChatMyMessageState.PENDING)
+                    sendMessageInternal(messageToResend, this)
                 }
         }
     }
 
-    private fun sendMessageInternal(message: ChatMessage) {
-        pendingMessages.add(message)
+    private fun sendMessageInternal(message: ChatMessage, oldMessage: ChatMessage?) {
+        if (null == oldMessage) {
+            pendingMessages.add(message)
+        } else {
+            pendingMessages.replaceElement(oldMessage, message)
+        }
+
+        executeMessageSending(message)
+            .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+            .subscribe({
+                           synchronized(pendingMessages) {
+                               if (pendingMessages.contains(message)) {
+                                   pendingMessages.replaceElement(message, it)
+                               }
+                           }
+                       }, {})
+    }
+
+    private fun executeMessageSending(message: ChatMessage): Single<ChatMessage> {
+        return Completable.complete()
+            .delay(5, TimeUnit.SECONDS)
+            .andThen(Single.error<ChatMessage>(IllegalArgumentException("error!")).map { message.changeState(ChatMyMessageState.SEND) })
+            .onErrorReturnItem(message.changeState(ChatMyMessageState.SEND_FAILED))
     }
 }
+
+private fun ChatMessage.changeState(chatMyMessageState: ChatMyMessageState): ChatMessage =
+    when (this) {
+        is ChatMessage.TextMessage       -> copy(myMessageState = chatMyMessageState)
+        is ChatMessage.AttachmentMessage -> copy(myMessageState = chatMyMessageState)
+    }

@@ -3,12 +3,10 @@ package io.scal.ambi.extensions.binding.models
 import android.databinding.BindingAdapter
 import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
-import android.util.TypedValue
 import android.widget.EditText
 import android.widget.TextView
 import io.scal.ambi.R
 import io.scal.ambi.entity.feed.PollEndsTime
-import io.scal.ambi.ui.home.chat.details.data.UIChatMessageStatus
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.Seconds
@@ -196,21 +194,6 @@ object TextViewDataBinder {
             textView.setTypeface(null, Typeface.BOLD)
         } else {
             textView.setTypeface(null, Typeface.NORMAL)
-        }
-    }
-
-    @JvmStatic
-    @BindingAdapter("chatDetailsState")
-    fun bindChatDetailsMessageState(textView: TextView, state: UIChatMessageStatus?) {
-        if (null == state) {
-            textView.text = null
-        } else {
-            textView.setText(state.chatTitleId)
-            if (state == UIChatMessageStatus.MY_MESSAGE_PENDING) {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
-            } else {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
-            }
         }
     }
 }

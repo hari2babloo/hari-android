@@ -19,6 +19,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{(view) -> viewModel.onMessageClick(element)}"
         android:paddingBottom="8dp"
         android:paddingEnd="18dp"
         android:paddingStart="18dp"
@@ -30,10 +31,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:element="@{element}"
-            app:viewModel="@{viewModel}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:viewModel="@{viewModel}"
             />
 
         <com.vanniktech.emoji.EmojiTextView
@@ -44,9 +45,9 @@
             android:layout_marginTop="30dp"
             android:ellipsize="end"
             android:lineSpacingExtra="6sp"
-            android:text="@{element.message}"
             android:textColor="#222222"
             android:textSize="14sp"
+            app:chatDetailsMessage="@{element.message}"
             app:customFontName="@{@string/font_pantra_regular}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
