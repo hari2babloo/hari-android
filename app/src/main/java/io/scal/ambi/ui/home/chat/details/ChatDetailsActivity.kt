@@ -48,6 +48,7 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.loadNextPage() }
+            .addTo(destroyDisposables)
     }
 
     private fun initToolbar() {

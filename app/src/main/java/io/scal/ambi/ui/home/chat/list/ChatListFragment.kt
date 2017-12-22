@@ -48,6 +48,7 @@ class ChatListFragment : BaseNavigationFragment<ChatListViewModel, FragmentChatL
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.loadNextPage() }
+            .addTo(destroyViewDisposables)
     }
 
     private fun observeStates() {

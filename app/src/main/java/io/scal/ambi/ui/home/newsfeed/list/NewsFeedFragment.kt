@@ -39,9 +39,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
 
     private fun initRecyclerView() {
         binding.rvCollegeUpdates.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//        binding.root.postDelayed({
         binding.rvCollegeUpdates.adapter = adapter
-//                                 }, 5000)
 
         binding.rvCollegeUpdates.setItemViewCacheSize(30)
         binding.rvCollegeUpdates.isDrawingCacheEnabled = true
@@ -51,6 +49,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.loadNextPage() }
+            .addTo(destroyViewDisposables)
     }
 
     private fun observeStates() {
