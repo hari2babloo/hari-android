@@ -19,58 +19,70 @@
             type="io.scal.ambi.ui.global.picker.PickerActionListener"/>
 
         <variable
+            name="zoomListener"
+            type="io.scal.ambi.ui.home.chat.details.MessageCreationZoomListener"/>
+
+        <variable
             name="chatInfo"
             type="io.scal.ambi.ui.home.chat.details.data.UIChatInfo"/>
 
     </data>
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
         android:id="@+id/root_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:expanded="false"
-            app:theme="@style/AppBarLayout">
+            android:layout_height="match_parent">
 
-            <include
-                layout="@layout/toolbar"
-                bind:toolbarType="@{toolbarType}"/>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
-                android:id="@+id/rv_messages"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/c_creation"
-                />
-
-            <include
-                android:id="@+id/c_creation"
-                layout="@layout/item_chat_details_creation"
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                bind:pickerListener="@{pickerListener}"
-                bind:viewModel="@{viewModel}"/>
+                app:expanded="false"
+                app:theme="@style/AppBarLayout">
 
-        </RelativeLayout>
+                <include
+                    layout="@layout/toolbar"
+                    bind:toolbarType="@{toolbarType}"/>
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            </android.support.design.widget.AppBarLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+            <RelativeLayout
+                android:id="@+id/c_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
+                    android:id="@+id/rv_messages"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/c_creation"
+                    />
+
+                <include
+                    android:id="@+id/c_creation"
+                    layout="@layout/item_chat_details_creation_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    bind:pickerListener="@{pickerListener}"
+                    bind:viewModel="@{viewModel}"
+                    bind:zoomListener="@{zoomListener}"/>
+
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </RelativeLayout>
 
 </layout>

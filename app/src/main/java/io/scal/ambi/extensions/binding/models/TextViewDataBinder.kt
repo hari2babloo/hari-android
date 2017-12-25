@@ -196,4 +196,14 @@ object TextViewDataBinder {
             textView.setTypeface(null, Typeface.NORMAL)
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("maxLines")
+    fun bindMaxLines(textView: TextView, maxLines: Int?) {
+        if (null == maxLines || 0 >= maxLines) {
+            textView.maxLines = -1
+        } else {
+            textView.maxLines = maxLines
+        }
+    }
 }
