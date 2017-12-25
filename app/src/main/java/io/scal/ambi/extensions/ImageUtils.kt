@@ -9,19 +9,19 @@ import javax.inject.Inject
 
 class ImageUtils @Inject constructor(private val context: Context) {
 
-    fun createImageFileWithProvider(): File {
+    fun createImageFileWithProvider(fileName: String? = null): File {
         val storageDir = File(context.filesDir, "cache/tmp") // look in image_path.xml
         if (!storageDir.exists()) {
             storageDir.mkdirs()
         }
-        return createImageFileFromPath(storageDir)
+        return createImageFileFromPath(storageDir, fileName)
     }
 
-    fun copyFdToFile(src: FileDescriptor?): File? {
+    fun copyFdToFile(src: FileDescriptor?, fileName: String? = null): File? {
         if (null == src) {
             return null
         }
-        val tmpFile = createImageFileWithProvider()
+        val tmpFile = createImageFileWithProvider(fileName)
         try {
             copyFdToFile(src, tmpFile)
             return tmpFile
@@ -33,15 +33,14 @@ class ImageUtils @Inject constructor(private val context: Context) {
         return null
     }
 
-    fun saveBitmap(bitmap: Bitmap): File? {
-        val tmpFile = createImageFileWithProvider()
+    fun saveBitmap(bitmap: Bitmap, fileName: String? = null): File? {
+        val tmpFile = createImageFileWithProvider(fileName)
         var fos: FileOutputStream? = null
         try {
             fos = FileOutputStream(tmpFile)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
             return tmpFile
         } catch (ignored: IOException) {
-
             tmpFile.delete()
         } finally {
             try {
@@ -57,8 +56,8 @@ class ImageUtils @Inject constructor(private val context: Context) {
     private fun copyFdToFile(src: FileDescriptor, dst: File) =
         FileInputStream(src).copyStreamToFile(dst)
 
-    private fun createImageFileFromPath(storageDir: File): File {
-        val tmpFile = File(storageDir, String.format(Locale.US, TEMP_IMAGE_FILE, Date().time))
+    private fun createImageFileFromPath(storageDir: File, fileName: String? = null): File {
+        val tmpFile = File(storageDir, fileName ?: String.format(Locale.US, TEMP_IMAGE_FILE, Date().time))
         if (!tmpFile.exists() || tmpFile.delete()) {
             return tmpFile
         }

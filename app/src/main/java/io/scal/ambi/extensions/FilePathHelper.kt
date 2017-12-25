@@ -13,9 +13,12 @@ import android.os.ParcelFileDescriptor
 import android.os.Parcelable
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.OpenableColumns
+import android.webkit.MimeTypeMap
 import io.scal.ambi.ui.global.picker.FileResource
 import java.io.IOException
 import javax.inject.Inject
+
 
 class FilePathHelper @Inject constructor(private val context: Context, private val imageUtils: ImageUtils) {
 
@@ -23,13 +26,14 @@ class FilePathHelper @Inject constructor(private val context: Context, private v
         // for 5.0 versions
         val selectedImageUri = data?.data
         if (null != selectedImageUri) {
+            val fileName = getFileNameWithExtension(context, selectedImageUri)
+
             var parcelFileDescriptor: ParcelFileDescriptor? = null
             try {
-
                 parcelFileDescriptor = context.contentResolver.openFileDescriptor(selectedImageUri, "r")
                 if (null != parcelFileDescriptor) {
                     val fileDescriptor = parcelFileDescriptor.fileDescriptor
-                    val imageFile = imageUtils.copyFdToFile(fileDescriptor)
+                    val imageFile = imageUtils.copyFdToFile(fileDescriptor, fileName)
                     if (null != imageFile) {
                         return FileResource.createInnerMemoryResource(imageFile)
                     }
@@ -43,7 +47,6 @@ class FilePathHelper @Inject constructor(private val context: Context, private v
                     } catch (ignored: IOException) {
                         // pass
                     }
-
                 }
             }
 
@@ -63,8 +66,32 @@ class FilePathHelper @Inject constructor(private val context: Context, private v
             }
         }
 
-
         return null
+    }
+
+    private fun getFileNameWithExtension(context: Context, uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            cursor.use {
+                if (it != null && it.moveToFirst()) {
+                    result = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/') ?: -1
+            if (cut != -1) {
+                result = result?.substring(cut + 1)
+            }
+        }
+        if (null != result) {
+            val extension = context.contentResolver.getType(uri)?.let { MimeTypeMap.getSingleton().getExtensionFromMimeType(it) }
+            result = extension?.let { result.plus(".").plus(it) } ?: result
+        }
+
+        return result
     }
 
     companion object {

@@ -145,12 +145,17 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
             }
 
             override fun attachFile() {
+                pickerViewModel.pickFile(this@ChatDetailsActivity)
             }
         }
     }
 
-    override fun setPickedImage(fileResource: FileResource) {
-        viewModel.attachPicture(fileResource)
+    override fun setPickedFile(fileResource: FileResource, image: Boolean) {
+        if (image) {
+            viewModel.attachPicture(fileResource)
+        } else {
+            viewModel.attachFile(fileResource)
+        }
     }
 
     override fun showPickerDialogFragment(dialogFragment: DialogFragment) {

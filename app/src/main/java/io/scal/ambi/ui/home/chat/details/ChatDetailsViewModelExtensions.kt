@@ -2,6 +2,7 @@ package io.scal.ambi.ui.home.chat.details
 
 import android.content.Context
 import android.graphics.Typeface
+import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -15,7 +16,7 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.ui.home.chat.details.data.*
 import org.joda.time.format.DateTimeFormat
 import java.io.File
-import java.net.URI
+import java.net.URLDecoder
 import java.text.DecimalFormat
 import java.util.*
 
@@ -69,8 +70,7 @@ internal fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMes
                     is ChatAttachment.Image -> UIChatMessage.ImageMessage(uid,
                                                                           sender,
                                                                           myMessageState.toMessageState(),
-                                                                          (message + "\n" + it.path.getFileName())
-                                                                              .trim(),
+                                                                          (message + "\n" + it.path.getFileName()).trim(),
                                                                           IconImage(it.path.toString()),
                                                                           sendDate,
                                                                           UIChatLikes(currentUser.uid, likes))
@@ -78,7 +78,7 @@ internal fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMes
                                                                                sender,
                                                                                myMessageState.toMessageState(),
                                                                                it,
-                                                                               (message + "\n" + it.path.getFileName()),
+                                                                               ((message + "\n" + it.path.getFileName())).trim(),
                                                                                "${it.size.getFileSize()} ${it.typeName}",
                                                                                sendDate,
                                                                                UIChatLikes(currentUser.uid, likes))
@@ -129,9 +129,9 @@ internal fun Long.getFileSize(): String {
     return DecimalFormat("#,##0.#").format(this / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }
 
-internal fun URI.getFileName(): String =
+internal fun Uri.getFileName(): String =
     try {
-        File(path.toString()).name
+        URLDecoder.decode(File(toString()).name, "utf-8")
     } catch (t: Throwable) {
         ""
     }

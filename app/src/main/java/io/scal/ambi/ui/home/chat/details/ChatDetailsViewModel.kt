@@ -161,11 +161,11 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     fun loadNextPage() = paginator.loadNewPage()
 
     fun attachPicture(fileResource: FileResource) {
-
+        interactor.sendPictureMessage(fileResource)
     }
 
     fun attachFile(fileResource: FileResource) {
-
+        interactor.sendFileMessage(fileResource)
     }
 
     fun attachEmoji() {

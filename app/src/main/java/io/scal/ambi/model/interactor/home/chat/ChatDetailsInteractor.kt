@@ -1,10 +1,13 @@
 package io.scal.ambi.model.interactor.home.chat
 
+import android.content.Context
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.scal.ambi.R
 import io.scal.ambi.entity.chat.*
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.toObservable
@@ -12,6 +15,7 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
+import io.scal.ambi.ui.global.picker.FileResource
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import java.security.SecureRandom
@@ -20,7 +24,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
+
 class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val chatUid: String,
+                                                private val context: Context,
                                                 private val localUserDataRepository: ILocalUserDataRepository,
                                                 private val rxSchedulersAbs: RxSchedulersAbs) : IChatDetailsInteractor {
 
@@ -190,6 +196,44 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
         }
     }
 
+    override fun sendPictureMessage(fileResource: FileResource) {
+        synchronized(pendingMessages) {
+            currentUser?.run {
+                sendMessageInternal(
+                    ChatMessage.AttachmentMessage(UUID.randomUUID().toString(),
+                                                  this,
+                                                  DateTime.now(),
+                                                  "",
+                                                  listOf(ChatAttachment.LocalImage(fileResource)),
+                                                  emptyList(),
+                                                  ChatMyMessageState.PENDING),
+                    null
+                )
+            }
+        }
+    }
+
+    override fun sendFileMessage(fileResource: FileResource) {
+        synchronized(pendingMessages) {
+            currentUser?.run {
+                sendMessageInternal(
+                    ChatMessage.AttachmentMessage(UUID.randomUUID().toString(),
+                                                  this,
+                                                  DateTime.now(),
+                                                  "",
+                                                  listOf(
+                                                      ChatAttachment.LocalFile(fileResource,
+                                                                               fileResource.typeName(),
+                                                                               fileResource.typeIcon(context),
+                                                                               fileResource.file.length())),
+                                                  emptyList(),
+                                                  ChatMyMessageState.PENDING),
+                    null
+                )
+            }
+        }
+    }
+
     override fun resendMessage(uid: String) {
         synchronized(pendingMessages) {
             pendingMessages
@@ -218,6 +262,15 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
                            synchronized(pendingMessages) {
                                if (pendingMessages.contains(message)) {
                                    pendingMessages.replaceElement(message, it)
+                                   if (it.myMessageState == ChatMyMessageState.SEND && message is ChatMessage.AttachmentMessage) {
+                                       message.attachments.mapNotNull {
+                                           when (it) {
+                                               is ChatAttachment.LocalImage -> it.imageFile
+                                               is ChatAttachment.LocalFile  -> it.fileFile
+                                               else                         -> null
+                                           }
+                                       }.forEach { it.cleanUp() }
+                                   }
                                }
                            }
                        }, {})
@@ -236,3 +289,12 @@ private fun ChatMessage.changeState(chatMyMessageState: ChatMyMessageState): Cha
         is ChatMessage.TextMessage       -> copy(myMessageState = chatMyMessageState)
         is ChatMessage.AttachmentMessage -> copy(myMessageState = chatMyMessageState)
     }
+
+private fun FileResource.typeName(): String = file.extension
+
+private fun FileResource.typeIcon(context: Context): String {
+    val typeName = typeName()
+
+    val drawableId = context.resources.getIdentifier("ic_extension_$typeName", "drawable", context.packageName)
+    return (if (0 == drawableId) R.drawable.ic_extension_unknown else drawableId).toFrescoImagePath()
+}

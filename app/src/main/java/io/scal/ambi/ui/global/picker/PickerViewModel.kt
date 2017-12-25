@@ -14,7 +14,14 @@ class PickerViewModel @Inject constructor(private val filePathHelper: FilePathHe
                                           private val imageUtils: ImageUtils) : ViewModel() {
 
     private var customFileResource: FileResource? = null
-    private var intentData: Intent? = null
+
+    private var intentData: IntentDataResult? = null
+
+    fun pickFile(viewController: PickerViewController) {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "*/*"
+        viewController.startActivityForResult(intent, REQUEST_CODE_OPEN_FILE)
+    }
 
     fun pickAnImage(viewController: PickerViewController, context: Context) {
         if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
@@ -36,22 +43,30 @@ class PickerViewModel @Inject constructor(private val filePathHelper: FilePathHe
     fun onActivityResult(viewController: PickerViewController, requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_OPEN_GALLERY ->
-                if (Activity.RESULT_OK == resultCode) {
-                    intentData = data
+                if (Activity.RESULT_OK == resultCode && null != data) {
+                    intentData = IntentDataResult(data, true)
                     viewController.askForReadExternalStoragePermission()
                 }
             REQUEST_CODE_OPEN_CAMERA  ->
                 if (Activity.RESULT_OK == resultCode) {
-                    customFileResource?.run { viewController.setPickedImage(this) }
+                    customFileResource?.run { viewController.setPickedFile(this, true) }
+                }
+            REQUEST_CODE_OPEN_FILE    ->
+                if (Activity.RESULT_OK == resultCode && null != data) {
+                    intentData = IntentDataResult(data, false)
+                    viewController.askForReadExternalStoragePermission()
                 }
         }
     }
 
     fun onReadExternalStoragePermissionGranted(viewController: PickerViewController) {
         if (null != intentData) {
-            filePathHelper.getResultPath(intentData)?.run { viewController.setPickedImage(this) }
+            filePathHelper.getResultPath(intentData?.intent)?.run { viewController.setPickedFile(this, intentData!!.image) }
+            intentData = null
         }
     }
+
+    private class IntentDataResult(val intent: Intent, val image: Boolean)
 
     companion object {
 
@@ -59,5 +74,6 @@ class PickerViewModel @Inject constructor(private val filePathHelper: FilePathHe
 
         private val REQUEST_CODE_OPEN_GALLERY = 1141
         private val REQUEST_CODE_OPEN_CAMERA = 1142
+        private val REQUEST_CODE_OPEN_FILE = 1143
     }
 }

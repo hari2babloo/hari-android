@@ -61,6 +61,13 @@ object ImageViewDataBinder {
     @JvmStatic
     @BindingAdapter("imageUrl")
     fun setImageUri(simpleDraweeView: SimpleDraweeView, imageUri: String?) {
+        if (null != imageUri) {
+            val localRespurse = getResourceDrawable(simpleDraweeView.context, imageUri)
+            if (null != localRespurse) {
+                simpleDraweeView.setImageDrawable(localRespurse)
+                return
+            }
+        }
         simpleDraweeView.setImageURI(imageUri)
     }
 

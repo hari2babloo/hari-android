@@ -6,6 +6,7 @@ import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.ChatTypingInfo
 import io.scal.ambi.entity.chat.FullChatItem
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.ui.global.picker.FileResource
 
 interface IChatDetailsInteractor {
 
@@ -22,6 +23,10 @@ interface IChatDetailsInteractor {
     fun loadNewMessages(): Observable<List<ChatMessage>>
 
     fun sendTextMessage(message: String)
+
+    fun sendPictureMessage(fileResource: FileResource)
+
+    fun sendFileMessage(fileResource: FileResource)
 
     fun resendMessage(uid: String)
 }

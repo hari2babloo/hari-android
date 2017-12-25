@@ -5,7 +5,7 @@ import android.support.v4.app.DialogFragment
 
 interface PickerViewController {
 
-    fun setPickedImage(fileResource: FileResource)
+    fun setPickedFile(fileResource: FileResource, image: Boolean)
 
     fun showPickerDialogFragment(dialogFragment: DialogFragment)
 
