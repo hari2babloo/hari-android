@@ -2,10 +2,8 @@ package io.scal.ambi.ui.home.newsfeed.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
@@ -14,7 +12,11 @@ import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.global.base.ErrorState
+import io.scal.ambi.ui.global.base.ProgressState
 import io.scal.ambi.ui.global.base.activity.BaseNavigator
+import io.scal.ambi.ui.global.base.asErrorState
+import io.scal.ambi.ui.global.base.asProgressStateSrl
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreation
@@ -53,40 +55,28 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
     }
 
     private fun observeStates() {
-        viewModel.progressState
-            .toObservable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                adapter.showPageProgress(false)
+        viewModel.progressState.asProgressStateSrl(binding.srl,
+                                                   { adapter.showPageProgress(it) },
+                                                   {
+                                                       when (it) {
+                                                           is NewsFeedProgressState.EmptyProgress   -> ProgressState.EmptyProgress
+                                                           is NewsFeedProgressState.PageProgress    -> ProgressState.PageProgress
+                                                           is NewsFeedProgressState.RefreshProgress -> ProgressState.RefreshProgress
+                                                           is NewsFeedProgressState.NoProgress      -> ProgressState.NoProgress
+                                                       }
+                                                   },
+                                                   destroyViewDisposables)
 
-                when (it) {
-                    is NewsFeedProgressState.EmptyProgress   -> binding.srl.isRefreshing = true
-                    is NewsFeedProgressState.PageProgress    -> adapter.showPageProgress(true)
-                    is NewsFeedProgressState.RefreshProgress -> binding.srl.isRefreshing = true
-                    is NewsFeedProgressState.NoProgress      -> {
-                        binding.srl.isRefreshing = false
-                    }
-                }
-            }
-            .addTo(destroyViewDisposables)
-
-        var snackBar: Snackbar? = null
-        viewModel.errorState
-            .toObservable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                snackBar?.dismiss()
-                when (it) {
-                    is NewsFeedErrorState.NoErrorState       -> snackBar = null
-                    is NewsFeedErrorState.FatalErrorState    -> {
-                        snackBar = Snackbar.make(binding.srl, it.error, Snackbar.LENGTH_INDEFINITE)
-                        snackBar!!.setAction(R.string.text_retry, { viewModel.refresh() })
-                        snackBar!!.show()
-                    }
-                    is NewsFeedErrorState.NonFatalErrorState -> Toast.makeText(activity, it.error, Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addTo(destroyViewDisposables)
+        viewModel.errorState.asErrorState(binding.srl,
+                                          { viewModel.refresh() },
+                                          {
+                                              when (it) {
+                                                  is NewsFeedErrorState.NoErrorState       -> ErrorState.NoError
+                                                  is NewsFeedErrorState.NonFatalErrorState -> ErrorState.NonFatalError(it.error)
+                                                  is NewsFeedErrorState.FatalErrorState    -> ErrorState.FatalError(it.error)
+                                              }
+                                          },
+                                          destroyViewDisposables)
 
         viewModel.dataState
             .toObservable()

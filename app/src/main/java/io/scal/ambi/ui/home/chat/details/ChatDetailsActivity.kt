@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -14,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
@@ -25,7 +23,9 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.extensions.view.listenForEndScrollInverse
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
+import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
+import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.global.picker.FileResource
 import io.scal.ambi.ui.global.picker.PickerActionListener
 import io.scal.ambi.ui.global.picker.PickerViewController
@@ -94,24 +94,16 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
             }
             .addTo(destroyDisposables)
 
-        var snackBar: Snackbar? = null
-        viewModel.errorState
-            .toObservable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                snackBar?.dismiss()
-                when (it) {
-                    is ChatDetailsErrorState.NoErrorState       -> snackBar = null
-                    is ChatDetailsErrorState.FatalErrorState    -> {
-                        snackBar = Snackbar.make(binding.rootContainer, it.error, Snackbar.LENGTH_INDEFINITE)
-                        snackBar!!.setAction(R.string.text_retry, { viewModel.loadMainInformation() })
-                        snackBar!!.show()
-                    }
-                    is ChatDetailsErrorState.NonFatalErrorState ->
-                        Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addTo(destroyDisposables)
+        viewModel.errorState.asErrorState(binding.rootContainer,
+                                          { viewModel.loadMainInformation() },
+                                          {
+                                              when (it) {
+                                                  is ChatDetailsErrorState.NoErrorState       -> ErrorState.NoError
+                                                  is ChatDetailsErrorState.NonFatalErrorState -> ErrorState.NonFatalError(it.error)
+                                                  is ChatDetailsErrorState.FatalErrorState    -> ErrorState.FatalError(it.error)
+                                              }
+                                          },
+                                          destroyDisposables)
     }
 
     private fun initCreationListeners() {

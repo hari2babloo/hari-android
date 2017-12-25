@@ -1,19 +1,19 @@
 package io.scal.ambi.ui.home.newsfeed.creation.polls
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.view.View
 import android.widget.AdapterView
-import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.FragmentPollsCreationBinding
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.PollEndsTime
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
+import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
+import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
 import kotlin.reflect.KClass
 
@@ -93,22 +93,15 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
             }
             .addTo(destroyViewDisposables)
 
-        var snackBar: Snackbar? = null
-        viewModel.errorStateModel
-            .toObservable()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                snackBar?.dismiss()
-                when (it) {
-                    PollsCreationErrorState.NoError       -> snackBar = null
-                    is PollsCreationErrorState.Error      -> Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
-                    is PollsCreationErrorState.ErrorFatal -> {
-                        snackBar = Snackbar.make(binding.rootContainer, it.message, Snackbar.LENGTH_INDEFINITE)
-                        snackBar!!.setAction(R.string.text_retry, { viewModel.reload() })
-                        snackBar!!.show()
-                    }
-                }
-            }
-            .addTo(destroyViewDisposables)
+        viewModel.errorStateModel.asErrorState(binding.rootContainer,
+                                               { viewModel.reload() },
+                                               {
+                                                   when (it) {
+                                                       is PollsCreationErrorState.NoError    -> ErrorState.NoError
+                                                       is PollsCreationErrorState.Error      -> ErrorState.NonFatalError(it.message)
+                                                       is PollsCreationErrorState.ErrorFatal -> ErrorState.FatalError(it.message)
+                                                   }
+                                               },
+                                               destroyViewDisposables)
     }
 }

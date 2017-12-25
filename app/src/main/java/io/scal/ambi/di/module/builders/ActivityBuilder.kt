@@ -10,6 +10,8 @@ import io.scal.ambi.ui.auth.recover.RecoveryModule
 import io.scal.ambi.ui.global.picker.PickerModule
 import io.scal.ambi.ui.home.chat.details.ChatDetailsActivity
 import io.scal.ambi.ui.home.chat.details.ChatDetailsModule
+import io.scal.ambi.ui.home.chat.new.ChatNewMessageActivity
+import io.scal.ambi.ui.home.chat.new.ChatNewMessageModule
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionModule
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
@@ -42,4 +44,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [ChatDetailsModule::class, AuthProfileModule::class, PickerModule::class])
     abstract fun bindChatDetailsActivity(): ChatDetailsActivity
+
+    @ContributesAndroidInjector(modules = [ChatNewMessageModule::class, AuthProfileModule::class])
+    abstract fun bindChatNewActivity(): ChatNewMessageActivity
 }
