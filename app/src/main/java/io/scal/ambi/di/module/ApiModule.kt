@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import io.scal.ambi.BuildConfig
 import io.scal.ambi.model.data.server.AuthApi
+import io.scal.ambi.model.data.server.ChatApi
 import io.scal.ambi.model.data.server.PostsApi
 import io.scal.ambi.model.data.server.StudentApi
 import io.scal.ambi.model.data.server.intercepters.AuthInterceptor
@@ -73,4 +74,9 @@ class ApiModule {
     @Singleton
     internal fun providePostsApi(@Named("mainServer") retrofit: Retrofit): PostsApi =
         retrofit.create(PostsApi::class.java)
+
+    @Provides
+    @Singleton
+    internal fun provideChatApi(@Named("mainServer") retrofit: Retrofit): ChatApi =
+        retrofit.create(ChatApi::class.java)
 }

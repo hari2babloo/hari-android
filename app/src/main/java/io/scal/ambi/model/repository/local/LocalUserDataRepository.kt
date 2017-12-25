@@ -5,11 +5,9 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.scal.ambi.entity.user.User
-import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import javax.inject.Inject
 
-class LocalUserDataRepository @Inject constructor(context: Context,
-                                                  private val rxSchedulersAbs: RxSchedulersAbs) : ILocalUserDataRepository {
+class LocalUserDataRepository @Inject constructor(context: Context) : ILocalUserDataRepository {
 
     private val prefs = StrongRefPrefser(context.getSharedPreferences("localUserData", Context.MODE_PRIVATE))
 
