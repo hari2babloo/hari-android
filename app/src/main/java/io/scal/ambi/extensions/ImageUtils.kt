@@ -12,7 +12,6 @@ class ImageUtils @Inject constructor(private val context: Context) {
     fun createImageFileWithProvider(): File {
         val storageDir = File(context.filesDir, "cache/tmp") // look in image_path.xml
         if (!storageDir.exists()) {
-
             storageDir.mkdirs()
         }
         return createImageFileFromPath(storageDir)

@@ -12,5 +12,5 @@ internal abstract class PickerModule {
     @Binds
     @IntoMap
     @ViewModelKey(PickerViewModel::class)
-    abstract fun bindViewModel(launcherViewModel: PickerViewModel): ViewModel
+    abstract fun bindViewModel(pickerViewModel: PickerViewModel): ViewModel
 }

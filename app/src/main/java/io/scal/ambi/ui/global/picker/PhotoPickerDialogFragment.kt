@@ -1,7 +1,6 @@
 package io.scal.ambi.ui.global.picker
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -22,10 +21,10 @@ class PhotoPickerDialogFragment : BaseDialogFragment() {
     @InjectSavedState
     private var cameraRequestCode: Int = 0
 
-    override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
-        val builder = AlertDialog.Builder(activity)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val builder = AlertDialog.Builder(activity!!)
 
-        builder.setItems(R.array.items_photo_picker, DialogInterface.OnClickListener { dialog, which ->
+        builder.setItems(R.array.items_photo_picker, { _, which ->
             val intent: Intent
             val requestCode: Int
             when (which) {
@@ -46,7 +45,7 @@ class PhotoPickerDialogFragment : BaseDialogFragment() {
     }
 
     private fun processIntent(intent: Intent, requestCode: Int) {
-        val context = activity
+        val context = if (null == activity) return else activity!!
         val resInfoList = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         if (!resInfoList.isEmpty()) {
             resInfoList
@@ -54,29 +53,29 @@ class PhotoPickerDialogFragment : BaseDialogFragment() {
                 .forEach { context.grantUriPermission(it, customFileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
 
             if (null == targetFragment) {
-                activity.startActivityForResult(intent, requestCode)
+                context.startActivityForResult(intent, requestCode)
             } else {
-                targetFragment.startActivityForResult(intent, requestCode)
+                targetFragment!!.startActivityForResult(intent, requestCode)
             }
         }
     }
 
     class Builder(customFileUri: Uri) {
 
-        private val mDialog: PhotoPickerDialogFragment = PhotoPickerDialogFragment()
+        private val dialog: PhotoPickerDialogFragment = PhotoPickerDialogFragment()
 
         init {
-            mDialog.customFileUri = customFileUri
+            dialog.customFileUri = customFileUri
         }
 
         fun requestCodes(galleryRequestCode: Int, cameraRequestCode: Int): Builder {
-            mDialog.galleryRequestCode = galleryRequestCode
-            mDialog.cameraRequestCode = cameraRequestCode
+            dialog.galleryRequestCode = galleryRequestCode
+            dialog.cameraRequestCode = cameraRequestCode
             return this
         }
 
         fun build(): PhotoPickerDialogFragment {
-            return mDialog
+            return dialog
         }
     }
 

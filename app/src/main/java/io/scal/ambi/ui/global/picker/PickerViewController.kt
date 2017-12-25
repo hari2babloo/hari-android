@@ -1,15 +1,15 @@
 package io.scal.ambi.ui.global.picker
 
-import android.app.DialogFragment
 import android.content.Intent
+import android.support.v4.app.DialogFragment
 
 interface PickerViewController {
 
-    abstract fun setPickedImage(photoResource: PhotoResource?)
+    fun setPickedImage(fileResource: FileResource)
 
-    abstract fun showPickerDialogFragment(dialogFragment: DialogFragment)
+    fun showPickerDialogFragment(dialogFragment: DialogFragment)
 
-    abstract fun startPickerActivity(intent: Intent, requestCode: Int)
+    fun startActivityForResult(intent: Intent, requestCode: Int)
 
-    abstract fun askForReadExternalStoragePermission()
+    fun askForReadExternalStoragePermission()
 }

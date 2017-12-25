@@ -15,6 +15,10 @@
             type="io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel"/>
 
         <variable
+            name="pickerListener"
+            type="io.scal.ambi.ui.global.picker.PickerActionListener"/>
+
+        <variable
             name="chatInfo"
             type="io.scal.ambi.ui.home.chat.details.data.UIChatInfo"/>
 
@@ -56,6 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                bind:pickerListener="@{pickerListener}"
                 bind:viewModel="@{viewModel}"/>
 
         </RelativeLayout>

@@ -9,6 +9,10 @@
             name="viewModel"
             type="io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel"/>
 
+        <variable
+            name="pickerListener"
+            type="io.scal.ambi.ui.global.picker.PickerActionListener"/>
+
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -37,28 +41,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <!--
-                <EditText
-                    android:id="@+id/et_message"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="9dp"
-                    android:layout_marginStart="9dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@null"
-                    android:hint="@string/chat_details_creation_hint"
-                    android:inputType="text|textCapSentences|textAutoCorrect|textLongMessage|textMultiLine"
-                    android:letterSpacing="-0.03"
-                    android:text="@={viewModel.userMessage}"
-                    android:textColor="#222222"
-                    android:textColorHint="#9f9f9f"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toStartOf="@+id/iv_zoom"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
-        -->
-
         <ImageView
             android:id="@+id/iv_picture"
             android:layout_width="20dp"
@@ -66,7 +48,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginStart="29dp"
             android:layout_marginTop="18dp"
-            android:onClick="@{(view) -> viewModel.attachPicture()}"
+            android:onClick="@{(view) -> pickerListener.attachPicture()}"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +60,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="14dp"
-            android:onClick="@{(view) -> viewModel.attachFile()}"
+            android:onClick="@{(view) -> pickerListener.attachFile()}"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="@+id/iv_picture"
             app:layout_constraintStart_toEndOf="@+id/iv_picture"

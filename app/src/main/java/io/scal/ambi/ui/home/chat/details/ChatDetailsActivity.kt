@@ -1,10 +1,13 @@
 package io.scal.ambi.ui.home.chat.details
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.DialogFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -17,15 +20,21 @@ import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.extensions.view.listenForEndScrollInverse
-import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
+import io.scal.ambi.ui.global.picker.FileResource
+import io.scal.ambi.ui.global.picker.PickerActionListener
+import io.scal.ambi.ui.global.picker.PickerViewController
+import io.scal.ambi.ui.global.picker.PickerViewModel
 import io.scal.ambi.ui.home.chat.details.adapter.ChatDetailsAdapter
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.RuntimePermissions
 import ru.terrakok.cicerone.Navigator
 import kotlin.reflect.KClass
 
-class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityChatDetailsBinding>() {
+@RuntimePermissions
+class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityChatDetailsBinding>(), PickerViewController {
 
     override val layoutId: Int = R.layout.activity_chat_details
     override val viewModelClass: KClass<ChatDetailsViewModel> = ChatDetailsViewModel::class
@@ -33,9 +42,14 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
     private val adapter by lazy { ChatDetailsAdapter(viewModel) }
     private val emojiPopupHelper by lazy { EmojiPopupHelper() }
 
+    private val pickerViewModel: PickerViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory).get(PickerViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initPicker()
         initRecyclerView()
         initToolbar()
         observeStates()
@@ -124,14 +138,49 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
             .addTo(destroyDisposables)
     }
 
+    private fun initPicker() {
+        binding.pickerListener = object : PickerActionListener {
+            override fun attachPicture() {
+                pickerViewModel.pickAnImage(this@ChatDetailsActivity, this@ChatDetailsActivity)
+            }
+
+            override fun attachFile() {
+            }
+        }
+    }
+
+    override fun setPickedImage(fileResource: FileResource) {
+        viewModel.attachPicture(fileResource)
+    }
+
+    override fun showPickerDialogFragment(dialogFragment: DialogFragment) {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.add(dialogFragment, null)
+        ft.commitAllowingStateLoss()
+    }
+
+    override fun askForReadExternalStoragePermission() {
+        notifyPickerViewModelAboutPermissionWithPermissionCheck()
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    internal fun notifyPickerViewModelAboutPermission() {
+        pickerViewModel.onReadExternalStoragePermissionGranted(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        pickerViewModel.onActivityResult(this, requestCode, resultCode, data)
+    }
+
+    @SuppressLint("NeedOnRequestPermissionsResult")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        onRequestPermissionsResult(requestCode, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     override val navigator: Navigator by lazy {
         object : BaseNavigator(this) {
-            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
-                when (screenKey) {
-                    NavigateTo.EXTERNAL_PHOTO -> null
-                    NavigateTo.EXTERNAL_FILE  -> null
-                    else                      -> super.createActivityIntent(screenKey, data)
-                }
         }
     }
 

@@ -16,11 +16,11 @@ import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
-import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createAppendablePaginator
+import io.scal.ambi.ui.global.picker.FileResource
 import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
 import io.scal.ambi.ui.home.chat.details.data.UIChatMessageStatus
 import ru.terrakok.cicerone.Router
@@ -160,9 +160,13 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
     fun loadNextPage() = paginator.loadNewPage()
 
-    fun attachPicture() = router.navigateTo(NavigateTo.EXTERNAL_PHOTO)
+    fun attachPicture(fileResource: FileResource) {
 
-    fun attachFile() = router.navigateTo(NavigateTo.EXTERNAL_FILE)
+    }
+
+    fun attachFile(fileResource: FileResource) {
+
+    }
 
     fun attachEmoji() {
         messageInputState.set(messageInputState.get().switchKeyboard())

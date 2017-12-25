@@ -13,13 +13,13 @@ import android.os.ParcelFileDescriptor
 import android.os.Parcelable
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import io.scal.ambi.ui.global.picker.PhotoResource
+import io.scal.ambi.ui.global.picker.FileResource
 import java.io.IOException
 import javax.inject.Inject
 
 class FilePathHelper @Inject constructor(private val context: Context, private val imageUtils: ImageUtils) {
 
-    fun getResultPath(data: Intent?): PhotoResource? {
+    fun getResultPath(data: Intent?): FileResource? {
         // for 5.0 versions
         val selectedImageUri = data?.data
         if (null != selectedImageUri) {
@@ -31,7 +31,7 @@ class FilePathHelper @Inject constructor(private val context: Context, private v
                     val fileDescriptor = parcelFileDescriptor.fileDescriptor
                     val imageFile = imageUtils.copyFdToFile(fileDescriptor)
                     if (null != imageFile) {
-                        return PhotoResource.createInnerMemoryResource(imageFile)
+                        return FileResource.createInnerMemoryResource(imageFile)
                     }
                 }
             } catch (ignored: IOException) {
@@ -59,7 +59,7 @@ class FilePathHelper @Inject constructor(private val context: Context, private v
             val imageFile = imageUtils.saveBitmap(bitmap!!)
             bitmap.recycle()
             if (null != imageFile) {
-                return PhotoResource.createInnerMemoryResource(imageFile)
+                return FileResource.createInnerMemoryResource(imageFile)
             }
         }
 
@@ -69,7 +69,7 @@ class FilePathHelper @Inject constructor(private val context: Context, private v
 
     companion object {
 
-        private fun getFromCursor(context: Context, selectedData: Uri?): PhotoResource? {
+        private fun getFromCursor(context: Context, selectedData: Uri?): FileResource? {
             if (null == selectedData) {
                 return null
             }
@@ -82,13 +82,13 @@ class FilePathHelper @Inject constructor(private val context: Context, private v
                     if (it.moveToFirst()) {
                         val imagePathString = it.getString(it.getColumnIndex(filePathColumn[0]))
                         if (null != imagePathString) {
-                            return PhotoResource.createOutMemoryResource(imagePathString)
+                            return FileResource.createOutMemoryResource(imagePathString)
                         }
                     }
                 }
                 val pathAsString = getPath(context, selectedData)
                 if (null != pathAsString) {
-                    return PhotoResource.createOutMemoryResource(pathAsString)
+                    return FileResource.createOutMemoryResource(pathAsString)
                 }
             } catch (ignored: Exception) {
                 // pass

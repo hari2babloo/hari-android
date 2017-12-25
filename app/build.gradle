@@ -65,6 +65,10 @@ android {
     }
 }
 
+kapt {
+    generateStubs = true
+}
+
 dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -116,8 +120,11 @@ dependencies {
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakCanaryVersion"
 
     // Permission Dispatcher
-    implementation "com.github.hotchemi:permissionsdispatcher:$rootProject.permissionVersion"
-    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:$rootProject.permissionVersion"
+    implementation("com.github.hotchemi:permissionsdispatcher:$rootProject.permissionVersion") {
+        // if you don't use android.app.Fragment you can exclude support for them
+        exclude module: "support-v13"
+    }
+    kapt "com.github.hotchemi:permissionsdispatcher-processor:$rootProject.permissionVersion"
 
     // time
     implementation "joda-time:joda-time:2.9.9"

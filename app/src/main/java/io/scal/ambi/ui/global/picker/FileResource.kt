@@ -3,7 +3,7 @@ package io.scal.ambi.ui.global.picker
 import java.io.File
 import java.io.Serializable
 
-class PhotoResource private constructor(private val innerMemory: Boolean, private var mFile: File?) : Serializable {
+class FileResource private constructor(private val innerMemory: Boolean, private var mFile: File?) : Serializable {
 
     val file: File
         get() {
@@ -22,15 +22,15 @@ class PhotoResource private constructor(private val innerMemory: Boolean, privat
 
     companion object {
 
-        fun createInnerMemoryResource(file: File): PhotoResource {
-            return PhotoResource(true, file)
+        fun createInnerMemoryResource(file: File): FileResource {
+            return FileResource(true, file)
         }
 
-        fun createOutMemoryResource(file: File): PhotoResource {
-            return PhotoResource(false, file)
+        fun createOutMemoryResource(file: File): FileResource {
+            return FileResource(false, file)
         }
 
-        fun createOutMemoryResource(path: String): PhotoResource {
+        fun createOutMemoryResource(path: String): FileResource {
             return createOutMemoryResource(File(path))
         }
     }
