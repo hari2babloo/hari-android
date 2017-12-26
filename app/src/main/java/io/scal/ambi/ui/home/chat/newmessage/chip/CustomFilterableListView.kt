@@ -72,6 +72,7 @@ internal class CustomFilterableListView(context: Context) : FilterableListView(c
 
     fun doRealFadeOut() {
         super.fadeOut()
+        visibility = View.GONE
     }
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams) {

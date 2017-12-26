@@ -81,9 +81,18 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     override fun onTextChanged(text: CharSequence) {
+        val filterableListView = filterableListViewField.get(this) as? FilterableListView
+        filterableListViewField.set(this, null)
         super.onTextChanged(text)
+        filterableListViewField.set(this, filterableListView)
 
-        (filterableListViewField.get(this) as? FilterableListView)?.filterList(text)
+        filterableListView?.filterList(text)
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        (filterableListViewField.get(this) as? CustomFilterableListView)?.isEnabled = enabled
     }
 
     override fun addChip(chip: ChipInterface?) {
