@@ -12,11 +12,11 @@ class ChatNewMessageInteractor @Inject constructor() : IChatNewMessageInteractor
     override fun loadUserWithPrefix(searchString: String, page: Int): Single<List<User>> {
         val random = SecureRandom()
         return Single.fromCallable {
-            if (random.nextInt(10) > 3) {
+            if (page == 1 || random.nextInt(10) > 3) {
                 (0 until 15).map {
                     val inName = random.nextBoolean()
                     User.asStudent(UUID.randomUUID().toString(),
-                                   IconImageUser(),
+                                   IconImageUser("https://developers.google.com/web/images/contributors/philipwalton.jpg"),
                                    (if (inName) "" else searchString) + getRandomString(random.nextInt(8)),
                                    (if (!inName) "" else searchString) + getRandomString(random.nextInt(8)))
                 }

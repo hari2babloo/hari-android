@@ -24,6 +24,7 @@ import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import io.scal.ambi.ui.global.view.behavior.StaticViewViewBehavior
 import io.scal.ambi.ui.home.chat.details.ChatDetailsActivity
 import io.scal.ambi.ui.home.chat.list.adapter.ChatListAdapter
+import io.scal.ambi.ui.home.chat.newmessage.ChatNewMessageActivity
 import ru.terrakok.cicerone.Navigator
 import kotlin.reflect.KClass
 
@@ -121,8 +122,9 @@ class ChatListFragment : BaseNavigationFragment<ChatListViewModel, FragmentChatL
         get() = object : BaseNavigator(activity!!) {
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
-                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(activity!!, data as SmallChatItem)
-                    else                    -> super.createActivityIntent(screenKey, data)
+                    NavigateTo.CHAT_DETAILS     -> ChatDetailsActivity.createScreen(activity!!, data as SmallChatItem)
+                    NavigateTo.CHAT_NEW_MESSAGE -> ChatNewMessageActivity.createScreen(activity!!)
+                    else                        -> super.createActivityIntent(screenKey, data)
                 }
         }
 }

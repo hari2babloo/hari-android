@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.home.chat.new
+package io.scal.ambi.ui.home.chat.newmessage
 
 import android.arch.lifecycle.ViewModel
 import dagger.Binds
@@ -30,6 +30,5 @@ abstract class ChatNewMessageModule {
         fun provideLocalNavigation(@Named("rootRouter") router: Router): Router {
             return router
         }
-
     }
 }

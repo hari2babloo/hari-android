@@ -1,8 +1,9 @@
-package io.scal.ambi.ui.home.chat.new
+package io.scal.ambi.ui.home.chat.newmessage
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
@@ -12,11 +13,8 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.ErrorState
-import io.scal.ambi.ui.global.base.ProgressState
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.base.asErrorState
-import io.scal.ambi.ui.global.base.asProgressStateSrl
-import io.scal.ambi.ui.home.chat.details.ChatDetailsDataState
 import kotlin.reflect.KClass
 
 class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, ActivityChatNewMessageBinding>() {
@@ -42,18 +40,6 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
     }
 
     private fun observeStates() {
-        viewModel.progressState.asProgressStateSrl(binding.srl,
-                                                   { adapter.showPageProgress(it) },
-                                                   {
-                                                       when (it) {
-                                                           is ChatNewMessageProgressState.EmptyProgress   -> ProgressState.EmptyProgress
-                                                           is ChatNewMessageProgressState.PageProgress    -> ProgressState.PageProgress
-                                                           is ChatNewMessageProgressState.RefreshProgress -> ProgressState.RefreshProgress
-                                                           is ChatNewMessageProgressState.NoProgress      -> ProgressState.NoProgress
-                                                       }
-                                                   },
-                                                   destroyDisposables)
-
         viewModel.errorState.asErrorState(binding.rootContainer,
                                           { viewModel.refresh() },
                                           {
@@ -69,16 +55,22 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
             .toObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.chatInfo = it.chatInfo
-
                 when (it) {
-                    is ChatDetailsDataState.Data -> {
-                        binding.cCreation?.root?.visibility = View.VISIBLE
-                        adapter.updateData(it.allMessages)
+                    is ChatNewMessageDataState.EmptyData -> {
+                        binding.chipsInput.filterableList = emptyList()
                     }
-                    else                         -> binding.cCreation?.root?.visibility = View.GONE
+                    is ChatNewMessageDataState.Data      -> {
+                        binding.chipsInput.filterableList = it.users
+                    }
                 }
             }
             .addTo(destroyDisposables)
+    }
+
+    companion object {
+
+        fun createScreen(context: Context): Intent {
+            return Intent(context, ChatNewMessageActivity::class.java)
+        }
     }
 }

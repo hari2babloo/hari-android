@@ -1,7 +1,4 @@
-package io.scal.ambi.ui.home.chat.new
-
-import android.databinding.ObservableList
-import io.scal.ambi.entity.user.User
+package io.scal.ambi.ui.home.chat.newmessage
 
 internal sealed class ChatNewMessageProgressState {
 
@@ -23,9 +20,9 @@ internal sealed class ChatNewMessageErrorState {
     data class NonFatalErrorState(val error: String) : ChatNewMessageErrorState()
 }
 
-sealed class ChatNewMessageDataState() {
+internal sealed class ChatNewMessageDataState() {
 
     data class EmptyData(private val noData: Boolean = true) : ChatNewMessageDataState()
 
-    data class Data(val users: ObservableList<User>) : ChatNewMessageDataState()
+    data class Data(val users: List<UIUserChip>) : ChatNewMessageDataState()
 }

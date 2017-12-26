@@ -70,6 +70,8 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         paginator.refresh()
     }
 
+    fun createNewMessage() = router.navigateTo(NavigateTo.CHAT_NEW_MESSAGE)
+
     fun refresh() = paginator.refresh()
 
     fun loadNextPage() = paginator.loadNewPage()

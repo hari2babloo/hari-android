@@ -9,7 +9,7 @@ class User private constructor(val uid: String,
                                firstName: String,
                                lastName: String) : Serializable {
 
-    val name: String = "$firstName $lastName"
+    val name: String = "$firstName $lastName".trim()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

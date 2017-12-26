@@ -148,4 +148,5 @@ dependencies {
     implementation "com.roughike:bottom-bar:2.3.1"
     implementation 'com.hannesdorfmann:adapterdelegates3:3.0.1' // for news feed recycler view with different view types
     implementation 'com.vanniktech:emoji-google:0.5.1'
+    implementation 'com.github.pchmn:MaterialChipsInput:1.0.8'
 }

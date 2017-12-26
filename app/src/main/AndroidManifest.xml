@@ -54,8 +54,8 @@
             android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
-            android:name=".ui.home.chat.new.ChatNewMessageActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:name=".ui.home.chat.newmessage.ChatNewMessageActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <!-- For camera picker -->
         <provider

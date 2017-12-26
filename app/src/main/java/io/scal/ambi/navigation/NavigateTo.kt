@@ -15,6 +15,7 @@ object NavigateTo {
     const val CREATE_POLL = "CREATE_POLL"
 
     const val CHAT_DETAILS = "CHAT_DETAILS"
+    const val CHAT_NEW_MESSAGE = "CHAT_NEW_MESSAGE"
 
     const val PROFILE_DETAILS = "PROFILE_DETAILS"
 }
