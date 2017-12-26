@@ -1,29 +1,37 @@
 package io.scal.ambi.model.interactor.home.chat
 
+import io.reactivex.Completable
 import io.reactivex.Single
+import io.scal.ambi.entity.chat.SmallChatItem
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.view.IconImageUser
 import java.security.SecureRandom
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ChatNewMessageInteractor @Inject constructor() : IChatNewMessageInteractor {
 
-    override fun loadUserWithPrefix(searchString: String, page: Int): Single<List<User>> {
+    override fun loadUserWithPrefix(): Single<List<User>> {
+        // here we should load all data
         val random = SecureRandom()
         return Single.fromCallable {
-            if (page == 1 || random.nextInt(10) > 3) {
+            if (random.nextInt(10) > 3) {
                 (0 until 15).map {
-                    val inName = random.nextBoolean()
                     User.asStudent(UUID.randomUUID().toString(),
                                    IconImageUser("https://developers.google.com/web/images/contributors/philipwalton.jpg"),
-                                   (if (inName) "" else searchString) + getRandomString(random.nextInt(8)),
-                                   (if (!inName) "" else searchString) + getRandomString(random.nextInt(8)))
+                                   getRandomString(random.nextInt(8) + 1),
+                                   getRandomString(random.nextInt(8) + 1)
+                    )
                 }
             } else {
-                emptyList()
+                throw IllegalStateException("just test")
             }
         }
+    }
+
+    override fun createChat(selectedUsers: List<User>): Single<SmallChatItem> {
+        return Completable.timer(5, TimeUnit.SECONDS).andThen(Single.error(IllegalStateException("not implemented yet")))
     }
 
     private val ALLOWED_CHARACTERS = "qwertyuiopasdfghjklzxcvbnm"

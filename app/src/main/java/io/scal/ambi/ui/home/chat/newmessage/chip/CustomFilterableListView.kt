@@ -5,6 +5,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import com.pchmn.materialchips.util.ActivityUtil
@@ -56,10 +57,26 @@ internal class CustomFilterableListView(context: Context) : FilterableListView(c
         super.onDetachedFromWindow()
     }
 
+    override fun fadeIn() {
+        if (isEnabled) {
+            super.fadeIn()
+        }
+    }
+
     override fun fadeOut() {
         post {
             visibility = View.GONE
             fadeIn()
         }
+    }
+
+    fun doRealFadeOut() {
+        super.fadeOut()
+    }
+
+    override fun setLayoutParams(params: ViewGroup.LayoutParams) {
+        (params as MarginLayoutParams).bottomMargin +=
+            (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 51f, context.resources.displayMetrics)).toInt()
+        super.setLayoutParams(params)
     }
 }

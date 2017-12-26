@@ -11,7 +11,10 @@ import com.pchmn.materialchips.adapter.ChipsAdapter
 import com.pchmn.materialchips.model.ChipInterface
 import com.pchmn.materialchips.views.DetailedChipView
 import com.pchmn.materialchips.views.FilterableListView
+import io.reactivex.Observable
 import io.scal.ambi.R
+import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
+import io.scal.ambi.extensions.binding.toObservable
 import java.lang.reflect.Field
 
 class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ChipsInput(context, attrs) {
@@ -25,12 +28,35 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
 
     private var prevDetailedChipView: DetailedChipView? = null
 
+    private val selectedChipList = OptimizedObservableArrayList<ChipInterface>()
+
     init {
         chipListField.isAccessible = true
         filterableListViewField.isAccessible = true
         chipsAdapterField.isAccessible = true
         filterableListBackgroundColorField.isAccessible = true
         filterableListTextColorField.isAccessible = true
+
+        addChipsListener(object : ChipsListener {
+            override fun onChipAdded(p0: ChipInterface, p1: Int) {
+                selectedChipList.add(p0)
+            }
+
+            override fun onChipRemoved(p0: ChipInterface, p1: Int) {
+                selectedChipList.remove(p0)
+            }
+
+            override fun onTextChanged(p0: CharSequence?) {}
+        })
+    }
+
+    fun observeSelectedList(): Observable<List<ChipInterface>> = selectedChipList.toObservable()
+
+    fun setSelectedChipList(selectedChips: List<ChipInterface>) {
+        val itemsToDelete = selectedChipList.filter { !selectedChips.contains(it) }
+        itemsToDelete.forEach { removeChip(it) }
+        val itemsToAdd = selectedChips.filter { !selectedChipList.contains(it) }
+        itemsToAdd.forEach { addChip(it) }
     }
 
     override fun setFilterableList(list: MutableList<out ChipInterface>?) {
@@ -44,6 +70,14 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
         filterableListViewField.set(this, filterableListView)
 
         (chipsAdapterField.get(this) as ChipsAdapter).setFilterableListView(filterableListView)
+    }
+
+    fun showPopup() {
+        (filterableListViewField.get(this) as? CustomFilterableListView)?.fadeIn()
+    }
+
+    fun hidePopup() {
+        (filterableListViewField.get(this) as? CustomFilterableListView)?.doRealFadeOut()
     }
 
     override fun onTextChanged(text: CharSequence) {
@@ -80,10 +114,6 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun addChip(label: String?, info: String?) {
         removePreDetailedView()
         super.addChip(label, info)
-    }
-
-    override fun isShowChipDetailed(): Boolean {
-        return super.isShowChipDetailed()
     }
 
     override fun getDetailedChipView(chip: ChipInterface?): DetailedChipView {

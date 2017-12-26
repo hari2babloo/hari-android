@@ -4,17 +4,27 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityChatNewMessageBinding
+import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
+import io.scal.ambi.extensions.view.enableCascade
+import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.ErrorState
+import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.base.asErrorState
+import io.scal.ambi.ui.home.chat.details.ChatDetailsActivity
+import ru.terrakok.cicerone.Navigator
 import kotlin.reflect.KClass
 
 class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, ActivityChatNewMessageBinding>() {
@@ -40,32 +50,79 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
     }
 
     private fun observeStates() {
-        viewModel.errorState.asErrorState(binding.rootContainer,
-                                          { viewModel.refresh() },
-                                          {
-                                              when (it) {
-                                                  is ChatNewMessageErrorState.NoErrorState       -> ErrorState.NoError
-                                                  is ChatNewMessageErrorState.NonFatalErrorState -> ErrorState.NonFatalError(it.error)
-                                                  is ChatNewMessageErrorState.FatalErrorState    -> ErrorState.FatalError(it.error)
-                                              }
-                                          },
-                                          destroyDisposables)
+        viewModel.progressState
+            .toObservable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                when (it) {
+                    is ChatNewMessageProgressState.NoProgress -> {
+                        binding.progress.visibility = View.GONE
+                        binding.cData.enableCascade(true)
+                        binding.chipsInput.showPopup()
+                    }
+                    else                                      -> {
+                        binding.progress.visibility = View.VISIBLE
+                        binding.cData.enableCascade(false)
+                        binding.chipsInput.hidePopup()
+                    }
+                }
+            }
+            .addTo(destroyDisposables)
+
+        viewModel.errorState
+            .asErrorState(binding.rootContainer,
+                          { viewModel.refresh() },
+                          {
+                              when (it) {
+                                  is ChatNewMessageErrorState.NoErrorState       -> ErrorState.NoError
+                                  is ChatNewMessageErrorState.NonFatalErrorState -> ErrorState.NonFatalError(it.error)
+                                  is ChatNewMessageErrorState.FatalErrorState    -> ErrorState.FatalError(it.error)
+                              }
+                          },
+                          destroyDisposables)
+
+        val chipsInputDisposable = CompositeDisposable()
+        destroyDisposables.add(chipsInputDisposable)
 
         viewModel.dataState
             .toObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                binding.cData.visibility = View.VISIBLE
+                chipsInputDisposable.clear()
+
                 when (it) {
                     is ChatNewMessageDataState.EmptyData -> {
                         binding.chipsInput.filterableList = emptyList()
+                        binding.chipsInput.selectedChipList = emptyList<UIUserChip>()
                     }
                     is ChatNewMessageDataState.Data      -> {
                         binding.chipsInput.filterableList = it.users
+                        binding.chipsInput.selectedChipList = it.selectedUsers
+
+                        binding.chipsInput
+                            .observeSelectedList()
+                            .flatMapSingle { Observable.fromIterable(it).map { it as UIUserChip }.toList() }
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { userSelection ->
+                                binding.bAction.isEnabled = userSelection.isNotEmpty()
+                                it.selectedUsers.replaceElements(userSelection)
+                            }
+                            .addTo(chipsInputDisposable)
                     }
                 }
             }
             .addTo(destroyDisposables)
     }
+
+    override val navigator: Navigator
+        get() = object : BaseNavigator(this) {
+            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
+                when (screenKey) {
+                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(this@ChatNewMessageActivity, data as SmallChatItem)
+                    else                    -> super.createActivityIntent(screenKey, data)
+                }
+        }
 
     companion object {
 

@@ -3,4 +3,8 @@
 
     <string name="title_chat_new_message">New Message</string>
 
+    <string name="chat_new_message_hint_title">to:</string>
+    <string name="chat_new_message_hint"/>
+    <string name="chat_new_message_create">create</string>
+
 </resources>
