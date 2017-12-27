@@ -25,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val chatUid: String,
+class ChatDetailsInteractor @Inject constructor(@Named("chatDescription") private val chatDescription: ChatChannelDescription,
                                                 private val context: Context,
                                                 private val localUserDataRepository: ILocalUserDataRepository,
                                                 private val rxSchedulersAbs: RxSchedulersAbs) : IChatDetailsInteractor {
@@ -39,21 +39,33 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatUid") private val ch
     override fun loadChatInfo(): Observable<FullChatItem> {
         if (SecureRandom().nextBoolean()) {
             return Observable.just(FullChatItem.Direct("fasf",
-                                                       DateTime.now().minus(Duration.standardHours(3)),
+                                                       ChatChannelDescription("fasf",
+                                                                              "Josh Lucas",
+                                                                              IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
+                                                                              DateTime.now().minus(Duration.standardHours(3))),
                                                        User.asStudent("1",
                                                                       IconImageUser("http://cdn01.ru/files/users/images/32/c4/32c4cb047498da9301d64986ee0a646b.jpeg"),
                                                                       "Josh",
                                                                       "Lucas")
             ))
         } else {
+            val chatChannelDescription = ChatChannelDescription("fasf",
+                                                                "#general",
+                                                                IconImageUser("https://1833.fm/wp-content/uploads/2013/08/artworks-000055367262-c2ccus-t500x500.jpg"),
+                                                                DateTime.now().minus(Duration.standardHours(3)))
             return Observable.just(FullChatItem.Group("fasf",
                                                       User.asStudent("1",
                                                                      IconImageUser("https://1833.fm/wp-content/uploads/2013/08/artworks-000055367262-c2ccus-t500x500.jpg"),
                                                                      "Josh",
                                                                      "Lucas"),
-                                                      DateTime.now().minus(Duration.standardHours(3)),
+                                                      chatChannelDescription,
+                                                      listOf(chatChannelDescription,
+                                                             ChatChannelDescription("fasfd2f",
+                                                                                    "#test",
+                                                                                    IconImage("https://a3-images.myspacecdn.com/images03/30/1dfa855bd0b847458c1b73bb7a240972/300x300.jpg"),
+                                                                                    DateTime.now().minus(Duration.standardHours(9)))
+                                                      ),
                                                       IconImage("https://a3-images.myspacecdn.com/images03/30/1dfa855bd0b847458c1b73bb7a240972/300x300.jpg"),
-                                                      "Test group",
                                                       listOf(User.asStudent("1",
                                                                             IconImageUser("https://1833.fm/wp-content/uploads/2013/08/artworks-000055367262-c2ccus-t500x500.jpg"),
                                                                             "Josh",

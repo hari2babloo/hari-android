@@ -8,7 +8,7 @@ import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.model.interactor.home.chat.ChatNewMessageInteractor
 import io.scal.ambi.model.interactor.home.chat.IChatNewMessageInteractor
-import ru.terrakok.cicerone.Router
+import io.scal.ambi.ui.global.base.BetterRouter
 import javax.inject.Named
 
 @Module
@@ -27,7 +27,7 @@ abstract class ChatNewMessageModule {
 
         @JvmStatic
         @Provides
-        fun provideLocalNavigation(@Named("rootRouter") router: Router): Router {
+        fun provideLocalNavigation(@Named("rootRouter") router: BetterRouter): BetterRouter {
             return router
         }
     }

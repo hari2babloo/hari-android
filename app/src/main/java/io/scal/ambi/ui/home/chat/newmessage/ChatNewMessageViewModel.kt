@@ -9,15 +9,15 @@ import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatNewMessageInteractor
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createAppendablePaginator
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class ChatNewMessageViewModel @Inject constructor(private val context: Context,
-                                                  router: Router,
+                                                  router: BetterRouter,
                                                   private val rxSchedulersAbs: RxSchedulersAbs,
                                                   private val interactor: IChatNewMessageInteractor) : BaseViewModel(router) {
 

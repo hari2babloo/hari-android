@@ -6,12 +6,12 @@ import io.scal.ambi.R
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.auth.recover.IRecoveryInteractor
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class RecoveryViewModel @Inject constructor(private val context: Context,
-                                            router: Router,
+                                            router: BetterRouter,
                                             private val interactor: IRecoveryInteractor,
                                             private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 

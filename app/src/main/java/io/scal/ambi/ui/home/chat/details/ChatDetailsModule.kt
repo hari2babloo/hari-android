@@ -5,11 +5,15 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import io.scal.ambi.R
 import io.scal.ambi.di.ViewModelKey
-import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.chat.ChatChannelDescription
+import io.scal.ambi.entity.chat.PreviewChatItem
+import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.interactor.home.chat.ChatDetailsInteractor
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
-import ru.terrakok.cicerone.Router
+import io.scal.ambi.ui.global.base.BetterRouter
+import org.joda.time.DateTime
 import javax.inject.Named
 
 @Module
@@ -28,24 +32,24 @@ abstract class ChatDetailsModule {
 
         @JvmStatic
         @Provides
-        @Named("chatUid")
-        fun provideChatUid(activity: ChatDetailsActivity): String {
-            val chatUid = activity.intent.getStringExtra(ChatDetailsActivity.EXTRA_CHAT_UID)
-            if (null == chatUid) {
+        @Named("chatDescription")
+        fun provideChatUid(activity: ChatDetailsActivity): ChatChannelDescription {
+            val chatDescription = activity.intent.getSerializableExtra(ChatDetailsActivity.EXTRA_CHAT_DESCRIPTION) as? ChatChannelDescription
+            if (null == chatDescription) {
                 activity.finish()
             }
-            return chatUid ?: ""
+            return chatDescription ?: ChatChannelDescription("", "", IconImage(R.drawable.ic_ambi_logo), DateTime.now())
         }
 
         @JvmStatic
         @Provides
         @Named("chatInfo")
-        fun provideChatInfo(activity: ChatDetailsActivity): SmallChatItem? =
-            activity.intent.getSerializableExtra(ChatDetailsActivity.EXTRA_CHAT_INFO) as SmallChatItem
+        fun provideChatInfo(activity: ChatDetailsActivity): PreviewChatItem? =
+            activity.intent.getSerializableExtra(ChatDetailsActivity.EXTRA_CHAT_INFO) as? PreviewChatItem
 
         @JvmStatic
         @Provides
-        fun provideLocalNavigation(@Named("rootRouter") router: Router): Router {
+        fun provideLocalNavigation(@Named("rootRouter") router: BetterRouter): BetterRouter {
             return router
         }
     }

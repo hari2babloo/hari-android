@@ -15,14 +15,14 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.newsfeed.creation.IPollsCreationInteractor
 import io.scal.ambi.model.interactor.home.newsfeed.creation.PollCreation
 import io.scal.ambi.navigation.ResultCodes
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomViewModel
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class PollsCreationViewModel @Inject constructor(private val context: Context,
-                                                 router: Router,
+                                                 router: BetterRouter,
                                                  val bottomViewModel: CreationBottomViewModel,
                                                  private val interactor: IPollsCreationInteractor,
                                                  private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {

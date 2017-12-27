@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import io.scal.ambi.extensions.notNullOrThrow
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.LocalNavigationHolder
 import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 
 fun View.enableCascade(enable: Boolean) {
     if (this is ViewGroup) {
@@ -21,7 +21,7 @@ fun Fragment.getNavigationHolder(): NavigatorHolder {
     return getLocalNavigationHolder().getNavigationHolder(tag.notNullOrThrow("tag"))
 }
 
-fun Fragment.getRouter(): Router {
+fun Fragment.getRouter(): BetterRouter {
     return getLocalNavigationHolder().getRouter(tag.notNullOrThrow("tag"))
 }
 

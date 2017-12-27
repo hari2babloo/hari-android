@@ -15,12 +15,12 @@ import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
 import io.scal.ambi.BR
 import io.scal.ambi.extensions.ContextLeakHelper
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.LocalCiceroneHolderViewModel
 import io.scal.ambi.ui.global.base.LocalNavigationHolder
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.reflect.KClass
@@ -52,7 +52,7 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
     @Inject
     internal lateinit var navigationHolder: NavigatorHolder
     @Inject
-    internal lateinit var router: Router
+    internal lateinit var router: BetterRouter
     private val localCiceroneViewModel: LocalCiceroneHolderViewModel by lazy {
         ViewModelProviders.of(this).get(LocalCiceroneHolderViewModel::class.java)
     }
@@ -80,6 +80,11 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
         super.onPause()
     }
 
+    override fun finish() {
+        navigationHolder.removeNavigator()
+        super.finish()
+    }
+
     override fun onBackPressed() {
         if (!viewModel.onBackPressed()) {
             super.onBackPressed()
@@ -88,6 +93,7 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
 
     override fun onDestroy() {
         destroyDisposables.dispose()
+        binding.setVariable(BR.viewModel, null)
 
         super.onDestroy()
 
@@ -99,6 +105,6 @@ abstract class BaseActivity<IViewModel : BaseViewModel, Binding : ViewDataBindin
     override fun getNavigationHolder(tag: String): NavigatorHolder =
         localCiceroneViewModel.getNavigationHolder(tag, router)
 
-    override fun getRouter(tag: String): Router =
+    override fun getRouter(tag: String): BetterRouter =
         localCiceroneViewModel.getRouter(tag, router)
 }

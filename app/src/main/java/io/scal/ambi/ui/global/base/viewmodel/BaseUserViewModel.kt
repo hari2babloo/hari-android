@@ -5,10 +5,10 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
-import ru.terrakok.cicerone.Router
+import io.scal.ambi.ui.global.base.BetterRouter
 import java.util.concurrent.atomic.AtomicBoolean
 
-abstract class BaseUserViewModel(router: Router,
+abstract class BaseUserViewModel(router: BetterRouter,
                                  private val userLoader: () -> Observable<User>,
                                  protected val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 

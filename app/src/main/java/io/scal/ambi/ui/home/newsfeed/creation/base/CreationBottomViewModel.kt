@@ -7,11 +7,11 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import io.scal.ambi.entity.feed.Audience
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class CreationBottomViewModel @Inject constructor(router: Router) : BaseViewModel(router) {
+class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseViewModel(router) {
 
     val attachmentActionsEnabled = ObservableBoolean(true)
 

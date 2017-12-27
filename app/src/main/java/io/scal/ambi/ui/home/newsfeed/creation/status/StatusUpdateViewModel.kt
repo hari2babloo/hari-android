@@ -11,12 +11,12 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.newsfeed.creation.IStatusUpdateInteractor
 import io.scal.ambi.model.interactor.home.newsfeed.creation.StatusUpdate
 import io.scal.ambi.navigation.ResultCodes
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomViewModel
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class StatusUpdateViewModel @Inject constructor(router: Router,
+class StatusUpdateViewModel @Inject constructor(router: BetterRouter,
                                                 val bottomViewModel: CreationBottomViewModel,
                                                 private val interactor: IStatusUpdateInteractor,
                                                 private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {

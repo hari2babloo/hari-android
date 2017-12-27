@@ -8,11 +8,11 @@ import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.auth.profile.IAuthProfileCheckerInteractor
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class AuthProfileCheckerViewModel @Inject constructor(router: Router,
+class AuthProfileCheckerViewModel @Inject constructor(router: BetterRouter,
                                                       interactor: IAuthProfileCheckerInteractor,
                                                       rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 

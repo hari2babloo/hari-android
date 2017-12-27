@@ -4,9 +4,9 @@ import io.scal.ambi.entity.user.User
 import io.scal.ambi.ui.home.chat.details.data.UIChatInfo
 import io.scal.ambi.ui.home.chat.details.data.UIChatTyping
 
-data class MessagesData(private val data: List<Any>,
-                        private val chatInfo: UIChatInfo? = null,
-                        private val chatTyping: UIChatTyping = UIChatTyping(emptyList())) : AbstractList<Any>() {
+internal data class MessagesData(private val data: List<Any>,
+                                 private val chatInfo: UIChatInfo? = null,
+                                 private val chatTyping: UIChatTyping = UIChatTyping(emptyList())) : AbstractList<Any>() {
 
     private val hasChatTyping: Boolean
         get() = chatTyping.users.isNotEmpty()

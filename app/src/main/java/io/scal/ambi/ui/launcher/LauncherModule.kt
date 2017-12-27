@@ -8,7 +8,7 @@ import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.model.interactor.launcher.ILauncherInteractor
 import io.scal.ambi.model.interactor.launcher.LauncherInteractor
-import ru.terrakok.cicerone.Router
+import io.scal.ambi.ui.global.base.BetterRouter
 import javax.inject.Named
 
 @Module
@@ -27,7 +27,7 @@ internal abstract class LauncherModule {
 
         @JvmStatic
         @Provides
-        fun provideLocalNavigation(@Named("rootRouter") router: Router): Router {
+        fun provideLocalNavigation(@Named("rootRouter") router: BetterRouter): BetterRouter {
             return router
         }
     }

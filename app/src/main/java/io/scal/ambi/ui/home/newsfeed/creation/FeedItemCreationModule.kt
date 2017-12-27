@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
-import ru.terrakok.cicerone.Router
+import io.scal.ambi.ui.global.base.BetterRouter
 import javax.inject.Named
 
 @Module
@@ -30,7 +30,7 @@ abstract class FeedItemCreationModule {
 
         @JvmStatic
         @Provides
-        fun provideLocalNavigation(@Named("rootRouter") router: Router): Router {
+        fun provideLocalNavigation(@Named("rootRouter") router: BetterRouter): BetterRouter {
             return router
         }
     }

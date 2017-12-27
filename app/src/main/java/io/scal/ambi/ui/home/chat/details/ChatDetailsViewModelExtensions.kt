@@ -20,16 +20,16 @@ import java.net.URLDecoder
 import java.text.DecimalFormat
 import java.util.*
 
-internal fun SmallChatItem?.toChatInfo(): UIChatInfo? =
+internal fun PreviewChatItem?.toChatInfo(): UIChatInfo? =
     if (null == this) {
         null
     } else {
-        UIChatInfo(icon, title, "")
+        UIChatInfo(description, (this as? PreviewChatItem.Group)?.friendlyChannels, icon, description.title, "")
     }
 
 internal fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
     @Suppress("REDUNDANT_ELSE_IN_WHEN")
-    val description =
+    val descriptionText =
         when (this) {
             is FullChatItem.Direct -> {
                 val description = SpannableStringBuilder()
@@ -40,7 +40,7 @@ internal fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
             }
             is FullChatItem.Group  -> {
                 val dateFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy' at 'HH:mm a").withLocale(Locale.ENGLISH)
-                val infoEndMessage = context.getString(R.string.chat_details_info_group_middle, dateFormatter.print(creationDateTime))
+                val infoEndMessage = context.getString(R.string.chat_details_info_group_middle, dateFormatter.print(description.creationDateTime))
                 val creatorName = creator.name.let { "\ufeff@$it" }
                 val description = SpannableStringBuilder()
                 description.appendCustom(creatorName,
@@ -52,7 +52,7 @@ internal fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
             }
             else                   -> throw IllegalArgumentException("unknown type: ${this.javaClass.simpleName}")
         }
-    return UIChatInfo(icon, title, description)
+    return UIChatInfo(description, (this as? FullChatItem.Group)?.friendlyChannels, icon, description.title, descriptionText)
 }
 
 internal fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMessage> =

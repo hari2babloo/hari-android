@@ -7,22 +7,22 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.entity.chat.ChatMessage
-import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createPaginator
 import io.scal.ambi.ui.home.chat.list.data.UIChatList
 import io.scal.ambi.ui.home.chat.list.data.UIChatListFilter
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class ChatListViewModel @Inject internal constructor(private val context: Context,
-                                                     router: Router,
+                                                     router: BetterRouter,
                                                      val searchViewModel: ChatSearchViewModel,
                                                      val interactor: IChatListInteractor,
                                                      rxSchedulersAbs: RxSchedulersAbs) :
@@ -136,17 +136,17 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
     }
 }
 
-private fun SmallChatItem.toChatListElement(context: Context, currentUser: User): UIChatList {
+private fun PreviewChatItem.toChatListElement(context: Context, currentUser: User): UIChatList {
     val lastMessageSenderName: String? =
         when {
-            null == lastMessage          -> null
-            this is SmallChatItem.Direct -> {
+            null == lastMessage            -> null
+            this is PreviewChatItem.Direct -> {
                 when {
                     lastMessage!!.sender.uid == currentUser.uid -> context.getString(R.string.chat_list_message_sender_you)
                     else                                        -> ""
                 }
             }
-            else                         -> {
+            else                           -> {
                 when {
                     lastMessage!!.sender.uid == currentUser.uid -> context.getString(R.string.chat_list_message_sender_you)
                     else                                        -> lastMessage!!.sender.name
@@ -164,7 +164,7 @@ private fun SmallChatItem.toChatListElement(context: Context, currentUser: User)
                           is ChatMessage.AttachmentMessage ->
                               context.getString(R.string.chat_list_message_text, lastMessageSenderName, lastMessage!!.toMessageData(context))
                       }.trim(),
-                      lastMessage?.sendDate ?: creationDateTime,
+                      lastMessage?.sendDate ?: description.creationDateTime,
                       hasNewMessages,
                       UIChatListFilter.AllChats
     )

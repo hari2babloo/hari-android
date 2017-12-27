@@ -33,24 +33,37 @@
             app:layout_constraintTop_toTopOf="parent"
             app:roundAsCircle="true"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
-            android:letterSpacing="-0.03"
-            android:text="@{content.contentInfo.title}"
-            android:textColor="@color/gray"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="#general"
-            />
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:onClick="@{(view) -> viewModel.openChannelDetails()}"
+            android:paddingEnd="40dp">
 
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_marginStart="5dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_creation_spinner_dropdown"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:ellipsize="end"
+                android:letterSpacing="-0.03"
+                android:maxWidth="230dp"
+                android:singleLine="true"
+                android:text="@{content.contentInfo.title}"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="#general"
+                />
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="5dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_creation_spinner_dropdown"
+                app:visibility="@{null != content.contentInfo.friendlyChatDescriptions}"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

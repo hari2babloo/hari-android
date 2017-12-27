@@ -10,8 +10,8 @@ import io.scal.ambi.extensions.view.getNavigationHolder
 import io.scal.ambi.extensions.view.getRouter
 import io.scal.ambi.model.interactor.home.chat.ChatListInteractor
 import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
+import io.scal.ambi.ui.global.base.BetterRouter
 import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 import javax.inject.Named
 
 @Module
@@ -36,7 +36,7 @@ abstract class ChatListModule {
 
         @JvmStatic
         @Provides
-        fun provideRouter(fragment: ChatListFragment): Router =
+        fun provideRouter(fragment: ChatListFragment): BetterRouter =
             fragment.getRouter()
     }
 }

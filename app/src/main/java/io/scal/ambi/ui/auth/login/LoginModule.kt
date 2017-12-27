@@ -9,7 +9,7 @@ import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.model.interactor.auth.login.ILoginInteractor
 import io.scal.ambi.model.interactor.auth.login.LoginInteractor
-import ru.terrakok.cicerone.Router
+import io.scal.ambi.ui.global.base.BetterRouter
 import javax.inject.Named
 
 @Module
@@ -31,7 +31,7 @@ internal abstract class LoginModule {
 
         @JvmStatic
         @Provides
-        fun provideLocalNavigation(@Named("rootRouter") router: Router): Router {
+        fun provideLocalNavigation(@Named("rootRouter") router: BetterRouter): BetterRouter {
             return router
         }
     }

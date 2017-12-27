@@ -10,8 +10,8 @@ import io.scal.ambi.extensions.view.getNavigationHolder
 import io.scal.ambi.extensions.view.getRouter
 import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.model.interactor.home.newsfeed.NewsFeedInteractor
+import io.scal.ambi.ui.global.base.BetterRouter
 import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 import javax.inject.Named
 
 @Module
@@ -36,7 +36,7 @@ internal abstract class NewsFeedModule {
 
         @JvmStatic
         @Provides
-        fun provideRouter(fragment: NewsFeedFragment): Router =
+        fun provideRouter(fragment: NewsFeedFragment): BetterRouter =
             fragment.getRouter()
     }
 }

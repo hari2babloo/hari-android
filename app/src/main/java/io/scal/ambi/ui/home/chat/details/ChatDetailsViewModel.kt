@@ -10,12 +10,17 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.scal.ambi.entity.EmojiKeyboardState
-import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.chat.ChatChannelDescription
+import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
+import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.navigation.NavigateToParamChatChannelSelection
+import io.scal.ambi.navigation.ResultCodes
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
@@ -23,26 +28,36 @@ import io.scal.ambi.ui.global.model.createAppendablePaginator
 import io.scal.ambi.ui.global.picker.FileResource
 import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
 import io.scal.ambi.ui.home.chat.details.data.UIChatMessageStatus
-import ru.terrakok.cicerone.Router
+import ru.terrakok.cicerone.result.ResultListener
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
 class ChatDetailsViewModel @Inject constructor(private val context: Context,
-                                               router: Router,
-                                               @Named("chatInfo") smallChatItem: SmallChatItem?,
+                                               router: BetterRouter,
+                                               @Named("chatInfo") previewChatItem: PreviewChatItem?,
                                                private val interactor: IChatDetailsInteractor,
                                                rxSchedulersAbs: RxSchedulersAbs) :
     BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs) {
 
     internal val progressState = ObservableField<ChatDetailsProgressState>(ChatDetailsProgressState.NoProgress)
     internal val errorState = ObservableField<ChatDetailsErrorState>(ChatDetailsErrorState.NoErrorState)
-    internal val dataState = ObservableField<ChatDetailsDataState>(ChatDetailsDataState.Initial(smallChatItem.toChatInfo()))
+    internal val dataState = ObservableField<ChatDetailsDataState>(ChatDetailsDataState.Initial(previewChatItem.toChatInfo()))
     val messageInputState = ObservableField<MessageInputState>(MessageInputState())
 
     private val serverDataListSubject = PublishSubject.create<AllMessagesInfo>()
     private val pendingMessagesSubject = BehaviorSubject.createDefault(emptyList<UIChatMessage>())
+
+    private val channelSelectionListener = ResultListener { resultData ->
+        if (resultData is ChatChannelDescription) {
+            router.replaceScreen(NavigateTo.CHAT_DETAILS, resultData)
+        }
+    }
+
+    init {
+        router.setResultListener(ResultCodes.CHAT_CHANNEL_SELECTION, channelSelectionListener)
+    }
 
     private val paginator = createAppendablePaginator(
         { page -> loadNextPage(page) },
@@ -160,17 +175,11 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
     fun loadNextPage() = paginator.loadNewPage()
 
-    fun attachPicture(fileResource: FileResource) {
-        interactor.sendPictureMessage(fileResource)
-    }
+    fun attachPicture(fileResource: FileResource) = interactor.sendPictureMessage(fileResource)
 
-    fun attachFile(fileResource: FileResource) {
-        interactor.sendFileMessage(fileResource)
-    }
+    fun attachFile(fileResource: FileResource) = interactor.sendFileMessage(fileResource)
 
-    fun attachEmoji() {
-        messageInputState.set(messageInputState.get().switchKeyboard())
-    }
+    fun attachEmoji() = messageInputState.set(messageInputState.get().switchKeyboard())
 
     fun updateEmojiState(emojiKeyboardState: EmojiKeyboardState) {
         messageInputState.set(messageInputState.get().copy(emojiKeyboardState = emojiKeyboardState))
@@ -189,6 +198,17 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             interactor.sendTextMessage(message)
 
             messageInputState.set(currentDataState.copy(userInput = ObservableString()))
+        }
+    }
+
+    fun openChannelDetails() {
+        val currentDataState = dataState.get()
+        if (currentDataState is ChatDetailsDataState.OnlyInfo || currentDataState is ChatDetailsDataState.Data) {
+            if ((currentDataState.chatInfo!!.friendlyChatDescriptions?.size ?: 0) > 1) {
+                router.navigateTo(NavigateTo.CHAT_CHANNEL_SELECTION,
+                                  NavigateToParamChatChannelSelection(currentDataState.chatInfo!!.channelDescription,
+                                                                      currentDataState.chatInfo!!.friendlyChatDescriptions!!))
+            }
         }
     }
 
@@ -219,5 +239,12 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
             .subscribe { paginator.appendNewData(it) }
             .addTo(disposables)
+    }
+
+    override fun onCleared() {
+        paginator.release()
+        router.removeResultListener(ResultCodes.CHAT_CHANNEL_SELECTION, channelSelectionListener)
+
+        super.onCleared()
     }
 }

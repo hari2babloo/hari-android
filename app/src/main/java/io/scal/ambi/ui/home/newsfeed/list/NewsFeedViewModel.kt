@@ -16,6 +16,7 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.navigation.ResultCodes
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.DynamicUserChoicer
@@ -24,11 +25,11 @@ import io.scal.ambi.ui.global.model.createPaginator
 import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
-import ru.terrakok.cicerone.Router
+import ru.terrakok.cicerone.result.ResultListener
 import javax.inject.Inject
 
 class NewsFeedViewModel @Inject constructor(private val context: Context,
-                                            router: Router,
+                                            router: BetterRouter,
                                             private val interactor: INewsFeedInteractor,
                                             rxSchedulersAbs: RxSchedulersAbs) :
     BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs) {
@@ -38,6 +39,18 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
     internal val dataState = ObservableField<NewsFeedDataState>()
 
     val selectedAudience = ObservableField<Audience>(Audience.COLLEGE_UPDATE)
+
+    private val audienceSelectionListener = ResultListener { audience ->
+        if (audience is Audience) {
+            selectedAudience.set(audience)
+        }
+    }
+    private val newsFeedItemCreationListener = ResultListener {
+        if (it is NewsFeedItem) {
+            // todo may be should add it here and do not do a full refresh?
+            paginator.forceRefresh()
+        }
+    }
 
     private val paginator = createPaginator(
         { page -> executeLoadNextPage(page) },
@@ -179,17 +192,8 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
     }
 
     private fun onInit() {
-        router.setResultListener(ResultCodes.AUDIENCE_SELECTION, {
-            if (it is Audience) {
-                selectedAudience.set(it)
-            }
-        })
-        router.setResultListener(ResultCodes.NEWS_FEED_ITEM_CREATED, {
-            if (it is NewsFeedItem) {
-                // todo may be should add it here and do not do a full refresh?
-                paginator.forceRefresh()
-            }
-        })
+        router.setResultListener(ResultCodes.AUDIENCE_SELECTION, audienceSelectionListener)
+        router.setResultListener(ResultCodes.NEWS_FEED_ITEM_CREATED, newsFeedItemCreationListener)
 
         selectedAudience
             .toObservable()
@@ -240,7 +244,8 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
     override fun onCleared() {
         paginator.release()
-        router.removeResultListener(ResultCodes.AUDIENCE_SELECTION)
+        router.removeResultListener(ResultCodes.AUDIENCE_SELECTION, audienceSelectionListener)
+        router.removeResultListener(ResultCodes.NEWS_FEED_ITEM_CREATED, newsFeedItemCreationListener)
 
         super.onCleared()
     }

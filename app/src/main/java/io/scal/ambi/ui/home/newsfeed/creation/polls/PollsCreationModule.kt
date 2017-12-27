@@ -9,8 +9,8 @@ import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.extensions.view.getNavigationHolder
 import io.scal.ambi.model.interactor.home.newsfeed.creation.IPollsCreationInteractor
 import io.scal.ambi.model.interactor.home.newsfeed.creation.PollsCreationInteractor
+import io.scal.ambi.ui.global.base.BetterRouter
 import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 import javax.inject.Named
 
 @Module
@@ -35,7 +35,7 @@ abstract class PollsCreationModule {
 
         @JvmStatic
         @Provides
-        fun provideRouter(@Named("rootRouter") router: Router): Router {
+        fun provideRouter(@Named("rootRouter") router: BetterRouter): BetterRouter {
             return router
         }
     }

@@ -2,7 +2,7 @@ package io.scal.ambi.model.interactor.home.chat
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.view.IconImageUser
 import java.security.SecureRandom
@@ -30,7 +30,7 @@ class ChatNewMessageInteractor @Inject constructor() : IChatNewMessageInteractor
         }
     }
 
-    override fun createChat(selectedUsers: List<User>): Single<SmallChatItem> {
+    override fun createChat(selectedUsers: List<User>): Single<PreviewChatItem> {
         return Completable.timer(5, TimeUnit.SECONDS).andThen(Single.error(IllegalStateException("not implemented yet")))
     }
 

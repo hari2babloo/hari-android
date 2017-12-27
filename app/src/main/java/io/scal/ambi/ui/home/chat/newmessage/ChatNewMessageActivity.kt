@@ -11,7 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityChatNewMessageBinding
-import io.scal.ambi.entity.chat.SmallChatItem
+import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
@@ -119,7 +119,7 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
         get() = object : BaseNavigator(this) {
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
-                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(this@ChatNewMessageActivity, data as SmallChatItem)
+                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(this@ChatNewMessageActivity, data as PreviewChatItem)
                     else                    -> super.createActivityIntent(screenKey, data)
                 }
         }

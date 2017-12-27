@@ -6,3 +6,11 @@ fun <T> T?.notNullOrThrow(fieldName: String): T {
     }
     return this
 }
+
+fun Boolean?.trueOrThrow(fieldName: String): Boolean {
+    if (this != null && this) {
+        return this
+    } else {
+        throw IllegalStateException("$fieldName should be true!")
+    }
+}

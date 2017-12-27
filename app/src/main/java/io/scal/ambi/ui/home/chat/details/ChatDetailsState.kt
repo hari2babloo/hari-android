@@ -29,20 +29,20 @@ internal sealed class ChatDetailsErrorState {
 
 sealed class ChatDetailsDataState(open val chatInfo: UIChatInfo?) {
 
-    class Initial(override val chatInfo: UIChatInfo?) : ChatDetailsDataState(chatInfo) {
+    internal class Initial(override val chatInfo: UIChatInfo?) : ChatDetailsDataState(chatInfo) {
 
         override fun updateInfo(chatInfo: UIChatInfo): ChatDetailsDataState = OnlyInfo(chatInfo)
     }
 
-    data class OnlyInfo(override val chatInfo: UIChatInfo) : ChatDetailsDataState(chatInfo) {
+    internal data class OnlyInfo(override val chatInfo: UIChatInfo) : ChatDetailsDataState(chatInfo) {
 
         override fun updateInfo(chatInfo: UIChatInfo): ChatDetailsDataState = copy(chatInfo = chatInfo)
         override fun moveToEmpty(): ChatDetailsDataState = Data(chatInfo, MessagesData(emptyList()))
         override fun moveToData(data: List<Any>): ChatDetailsDataState = Data(chatInfo, MessagesData(data))
     }
 
-    data class Data(override val chatInfo: UIChatInfo,
-                    internal val messages: MessagesData) : ChatDetailsDataState(chatInfo) {
+    internal data class Data(override val chatInfo: UIChatInfo,
+                             val messages: MessagesData) : ChatDetailsDataState(chatInfo) {
 
         val allMessages: List<Any> = messages
 

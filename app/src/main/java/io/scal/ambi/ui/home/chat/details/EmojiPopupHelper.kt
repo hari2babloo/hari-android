@@ -8,7 +8,7 @@ import io.scal.ambi.R
 import io.scal.ambi.entity.EmojiKeyboardState
 import java.util.concurrent.atomic.AtomicReference
 
-class EmojiPopupHelper {
+internal class EmojiPopupHelper {
 
     fun activate(editText: EmojiEditText, observable: Observable<EmojiKeyboardState>): Observable<EmojiKeyboardState> {
         return observable

@@ -12,7 +12,8 @@ android {
                     "src/main/res/home/newsfeed/creation",
                     "src/main/res/home/chat/list",
                     "src/main/res/home/chat/details",
-                    "src/main/res/home/chat/new"
+                    "src/main/res/home/chat/new",
+                    "src/main/res/home/chat/channelselection"
             ]
         }
     }

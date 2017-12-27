@@ -4,10 +4,10 @@ import android.arch.lifecycle.ViewModel
 import android.content.Context
 import io.reactivex.disposables.CompositeDisposable
 import io.scal.ambi.R
-import ru.terrakok.cicerone.Router
+import io.scal.ambi.ui.global.base.BetterRouter
 import timber.log.Timber
 
-abstract class BaseViewModel(protected val router: Router) : ViewModel() {
+abstract class BaseViewModel(protected val router: BetterRouter) : ViewModel() {
 
     protected val disposables: CompositeDisposable = CompositeDisposable()
 

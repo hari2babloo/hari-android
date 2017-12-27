@@ -8,12 +8,12 @@ import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.auth.login.ILoginInteractor
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(private val context: Context,
-                                         router: Router,
+                                         router: BetterRouter,
                                          private val interactor: ILoginInteractor,
                                          private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 
