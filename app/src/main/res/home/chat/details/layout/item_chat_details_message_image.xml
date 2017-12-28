@@ -54,7 +54,7 @@
             tools:text="Screenshort 2017-11-27.png"
             />
 
-        <io.scal.ambi.ui.global.view.SquareRelativeLayout
+        <io.scal.ambi.ui.global.view.AspectRelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -71,7 +71,7 @@
                 app:roundedCornerRadius="10dp"
                 />
 
-        </io.scal.ambi.ui.global.view.SquareRelativeLayout>
+        </io.scal.ambi.ui.global.view.AspectRelativeLayout>
 
     </android.support.constraint.ConstraintLayout>
 

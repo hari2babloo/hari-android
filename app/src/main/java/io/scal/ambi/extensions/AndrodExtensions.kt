@@ -1,6 +1,10 @@
 package io.scal.ambi.extensions
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
+import android.support.v7.app.AppCompatActivity
 import android.text.SpannableStringBuilder
 import java.io.File
 import java.io.FileInputStream
@@ -52,4 +56,19 @@ fun FileInputStream.copyStreamToFile(dst: File) {
             // pass because we don't care
         }
     }
+}
+
+fun Context.asActivity(): Activity =
+    when {
+        this is Activity       -> this
+        this is ContextWrapper -> this.baseContext.asActivity()
+        else                   -> throw IllegalArgumentException("context with class ${javaClass.name} can not be cast to Activity")
+    }
+
+fun Context.asAppCompatActivity(): AppCompatActivity {
+    val activity = asActivity()
+    if (activity is AppCompatActivity) {
+        return activity
+    }
+    throw IllegalArgumentException("activity with class ${javaClass.name} can not be cast to AppCompatActivity")
 }

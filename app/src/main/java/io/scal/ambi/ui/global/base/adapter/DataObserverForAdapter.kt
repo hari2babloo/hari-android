@@ -14,6 +14,10 @@ open class DataObserverForAdapter<Item>(private val items: ObservableList<Item>,
 
     fun getItemCount(): Int = items.size
 
+    fun getItem(position: Int): Item {
+        return items[position]
+    }
+
     fun release() {
         items.removeOnListChangedCallback(listener)
     }

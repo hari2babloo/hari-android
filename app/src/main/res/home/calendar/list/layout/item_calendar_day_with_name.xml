@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="event"
+            type="io.scal.ambi.ui.home.calendar.view.UICalendarDayWithEvents"/>
+
+        <variable
+            name="weekNameVisibility"
+            type="Boolean"/>
+
+        <variable
+            name="selected"
+            type="Boolean"/>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <include
+            layout="@layout/item_calendar_week_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            app:day="@{event.date}"
+            app:visibility="@{weekNameVisibility}"
+            />
+
+        <include
+            layout="@layout/item_calendar_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            app:disabled="@{!event.enabled}"
+            app:event="@{event}"
+            app:highLighted="@{selected ?? false}"
+            />
+
+    </LinearLayout>
+
+</layout>

@@ -1,0 +1,95 @@
+package io.scal.ambi.ui.home.calendar.view
+
+import android.annotation.SuppressLint
+import android.databinding.BindingAdapter
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TextView
+import io.scal.ambi.databinding.ItemCalendarDayEventBinding
+import org.joda.time.LocalDate
+import org.joda.time.YearMonth
+import org.joda.time.format.DateTimeFormat
+import java.lang.ref.WeakReference
+import java.util.*
+
+object CalendarBinder {
+
+    private val maxEventsCount = 3
+    private val eventsViewsCache = mutableListOf<WeakReference<ItemCalendarDayEventBinding>>()
+
+    @JvmStatic
+    @BindingAdapter("calendarDayEvents")
+    fun bindDayEvents(viewGroup: ViewGroup, events: List<UICalendarDayWithEvents.Event>?) {
+        removeAllEventsViews(viewGroup)
+
+        if (null != events) {
+            if (events.size > maxEventsCount) {
+                (0 until maxEventsCount)
+                    .forEach { index -> addEventView(viewGroup, events[index], index == maxEventsCount - 1) }
+            } else {
+                events.forEach { addEventView(viewGroup, it, false) }
+            }
+        }
+    }
+
+    private fun addEventView(viewGroup: ViewGroup, event: UICalendarDayWithEvents.Event, more: Boolean) {
+        val binding = getEventsView(viewGroup)
+        binding.more = more
+        binding.root.setBackgroundColor(event.color)
+        viewGroup.addView(binding.root)
+    }
+
+    private fun getEventsView(viewGroup: ViewGroup): ItemCalendarDayEventBinding {
+        val layoutInflater by lazy { LayoutInflater.from(viewGroup.context) }
+        val iterator = eventsViewsCache.iterator()
+        while (iterator.hasNext()) {
+            val eventsBindingRef = iterator.next()
+            val eventsBinding = eventsBindingRef.get()
+            iterator.remove()
+            if (null != eventsBinding) {
+                return eventsBinding
+            }
+        }
+        return ItemCalendarDayEventBinding.inflate(layoutInflater, viewGroup, false)
+    }
+
+    private fun removeAllEventsViews(viewGroup: ViewGroup) {
+        (0 until viewGroup.childCount)
+            .map { viewGroup.getChildAt(it) }
+            .map { ItemCalendarDayEventBinding.bind(it) }
+            .forEach {
+                viewGroup.removeView(it.root)
+                eventsViewsCache.add(WeakReference(it))
+            }
+    }
+
+    private val dayOfWeekFormatter = DateTimeFormat.forPattern("E").withLocale(Locale.ENGLISH)
+    private val monthFormatter = DateTimeFormat.forPattern("MMMM").withLocale(Locale.ENGLISH)
+    private val yearFormatter = DateTimeFormat.forPattern("yyyy").withLocale(Locale.ENGLISH)
+
+    @JvmStatic
+    @BindingAdapter("calendarWeekDayName")
+    fun bindWeekDayName(textView: TextView, day: LocalDate?) {
+        val dayOfWeek = day?.let { dayOfWeekFormatter.print(it) } ?: ""
+        textView.text = dayOfWeek.firstOrNull()?.toString().orEmpty().toUpperCase()
+    }
+
+    @SuppressLint("SetTextI18n")
+    @JvmStatic
+    @BindingAdapter("calendarMonth")
+    fun bindMonthName(textView: TextView, yearMonth: YearMonth?) {
+        val monthName = yearMonth?.let { monthFormatter.print(it) }?.toLowerCase() ?: ""
+        if (monthName.length > 1) {
+            textView.text = monthName.first().toUpperCase().toString() + monthName.substring(1)
+        } else {
+            textView.text = monthName
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("calendarYear")
+    fun bindYearName(textView: TextView, yearMonth: YearMonth?) {
+        val year = yearMonth?.year
+        textView.text = year?.toString() ?: ""
+    }
+}

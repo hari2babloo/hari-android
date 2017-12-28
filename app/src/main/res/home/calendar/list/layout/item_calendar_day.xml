@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="event"
+            type="io.scal.ambi.ui.home.calendar.view.UICalendarDayWithEvents"/>
+
+        <variable
+            name="highLighted"
+            type="Boolean"/>
+
+        <variable
+            name="disabled"
+            type="Boolean"/>
+    </data>
+
+    <io.scal.ambi.ui.global.view.AspectRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="@{disabled ? 0.56f : 1f}"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:aspect_height="34"
+        app:aspect_width="50">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(event.date.dayOfMonth)}"
+            android:textColor="@{highLighted ? @color/calendar_day_high_lighted : @color/calendar_day_simple}"
+            android:textSize="16sp"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            app:calendarDayEvents="@{event.events}"/>
+
+    </io.scal.ambi.ui.global.view.AspectRelativeLayout>
+
+</layout>

@@ -11,8 +11,11 @@ abstract class RecyclerViewAdapterBase : RecyclerView.Adapter<RecyclerView.ViewH
     override open fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutId = onCreateBindingLayoutId(parent, viewType)
         val binding = DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(parent.context), layoutId, parent, false)
+        onCreateBinding(binding, viewType)
         return BindingViewHolder(binding)
     }
+
+    protected open fun onCreateBinding(binding: ViewDataBinding, viewType: Int) {}
 
     protected abstract fun onCreateBindingLayoutId(parent: ViewGroup, viewType: Int): Int
 

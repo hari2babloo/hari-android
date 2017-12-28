@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <data>
+
+        <variable
+            name="more"
+            type="Boolean"/>
+
+    </data>
+
+    <View
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginEnd="1.5dp"
+        android:layout_marginStart="1.5dp"
+        android:background="@{more ? @drawable/ic_calendar_day_event_more : @drawable/ic_calendar_day_event_simple}"/>
+
+</layout>

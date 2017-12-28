@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="AspectRelativeLayout">
+        <attr name="aspect_width" format="integer"/>
+        <attr name="aspect_height" format="integer"/>
+    </declare-styleable>
+
+</resources>

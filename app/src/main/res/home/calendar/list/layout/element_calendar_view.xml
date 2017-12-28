@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.calendar.view.CalendarViewModel"/>
+
+        <variable
+            name="selectedYearMonth"
+            type="org.joda.time.YearMonth"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/c_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:onClick="@{(view) -> viewModel.switchShowingMode()}"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="-0.03"
+                android:textColor="#1d2129"
+                android:textSize="28sp"
+                app:calendarMonth="@{selectedYearMonth}"
+                app:customFontName="@{@string/font_pantra_bold}"
+                tools:text="September"
+                />
+
+            <TextView
+                android:id="@+id/tv_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:letterSpacing="-0.03"
+                android:textColor="#666b7c93"
+                android:textSize="28sp"
+                app:calendarYear="@{selectedYearMonth}"
+                app:customFontName="@{@string/font_pantra_bold}"
+                tools:text="2017"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/calendar_arrow_margin"
+                android:tint="#6b7c93"
+                app:srcCompat="@drawable/ic_arrow_down"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_today"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="18dp"
+            android:onClick="@{(view) -> viewModel.setupCurrentDay()}"
+            android:tint="#6b7c93"
+            app:layout_constraintBottom_toBottomOf="@+id/c_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/c_date"
+            app:srcCompat="@drawable/ic_tab_calendar_icon"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_dates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="17dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/c_date"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>
