@@ -26,13 +26,15 @@ internal class CalendarMainAdapter : RecyclerViewAdapterBase() {
 
     override fun onCreateBinding(binding: ViewDataBinding, viewType: Int) {
         super.onCreateBinding(binding, viewType)
-        val elementBinding = (binding as ElementCalendarItemGroupBinding)
-        elementBinding.rvDateGroup.recycledViewPool = innerRecyclerViewPoll
-        elementBinding.rvDateGroup.layoutManager = GridLayoutManager(binding.root.context, 7, GridLayoutManager.VERTICAL, false)
+        binding as ElementCalendarItemGroupBinding
+        binding.rvDateGroup.recycledViewPool = innerRecyclerViewPoll
+        binding.rvDateGroup.layoutManager = GridLayoutManager(binding.root.context, 7, GridLayoutManager.VERTICAL, false)
+        binding.rvDateGroup.adapter = CalendarGroupAdapter(null)
     }
 
     override fun onBindBinding(binding: ViewDataBinding, holder: RecyclerViewAdapterBase.BindingViewHolder<*>, position: Int) {
-        (binding as ElementCalendarItemGroupBinding).rvDateGroup.adapter = CalendarGroupAdapter(dataObserver!!.getItem(position))
+        binding as ElementCalendarItemGroupBinding
+        (binding.rvDateGroup.adapter as CalendarGroupAdapter).updateGroupDays(dataObserver!!.getItem(position))
     }
 
     fun updateData(data: ObservableList<UICalendarGroupDays>) {

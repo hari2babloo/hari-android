@@ -1,10 +1,13 @@
 package io.scal.ambi.ui.home.calendar.view
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,25 +23,44 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     private var disposable: CompositeDisposable? = null
     private var currentSelectedDay: LocalDate? = null
+    private var currentMode: CalendarMode? = null
 
     private val calendarBinding = ElementCalendarViewBinding.inflate(LayoutInflater.from(context), this, false)
     private val adapter = CalendarMainAdapter()
     private var layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     private val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
 
-            if (RecyclerView.SCROLL_STATE_IDLE == newState || RecyclerView.SCROLL_STATE_SETTLING == newState) {
-                val currentAdapterPosition = layoutManager.findFirstVisibleItemPosition()
+        private val handler = Handler(Looper.getMainLooper())
+        private val currentDateCalculate: Runnable = object : Runnable {
+            override fun run() {
+                val firstAdapterPosition = layoutManager.findFirstVisibleItemPosition()
+                val lastAdapterPosition = layoutManager.findLastVisibleItemPosition()
+                if (firstAdapterPosition != lastAdapterPosition) {
+                    handler.postDelayed(this, 10)
+                    return
+                }
+
                 val selectedDay = currentSelectedDay
                 if (null != selectedDay) {
-                    val adapterItem = adapter.getItem(currentAdapterPosition)
+                    val adapterItem = adapter.getItem(firstAdapterPosition)
 
                     if (!adapterItem.containsDate(selectedDay)) {
                         val newSelectedDay = adapterItem.days.firstOrNull { it.enabled }
                         newSelectedDay?.run { calendarBinding.viewModel?.setupDay(this.date) }
                     }
                 }
+            }
+        }
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+
+            if (RecyclerView.SCROLL_STATE_IDLE == newState) {
+                handler.removeCallbacks(currentDateCalculate)
+                currentDateCalculate.run()
+            } else if (RecyclerView.SCROLL_STATE_SETTLING == newState) {
+                handler.removeCallbacks(currentDateCalculate)
+                handler.postDelayed(currentDateCalculate, 150)
             }
         }
     }
@@ -48,6 +70,8 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
         calendarBinding.rvDates.isNestedScrollingEnabled = false
         calendarBinding.rvDates.layoutManager = layoutManager
         calendarBinding.rvDates.adapter = adapter
+        layoutManager.isItemPrefetchEnabled = true
+        layoutManager.initialPrefetchItemCount = 4
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(calendarBinding.rvDates)
@@ -55,8 +79,6 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     fun setupViewModel(calendarViewModel: CalendarViewModel) {
         calendarBinding.viewModel = calendarViewModel
-
-        adapter.updateData(calendarViewModel.listOfData)
 
         observeModel(calendarViewModel)
     }
@@ -80,6 +102,23 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
                 }
                 .addTo(this)
+
+            calendarViewModel.observeDataModeChange()
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    currentMode = it.first
+                    prevHeight = null
+                    requestLayout()
+
+                    adapter.updateData(it.second)
+
+                    val selectedDay = currentSelectedDay
+                    if (null != selectedDay) {
+                        val scrollToIndex = (0 until adapter.itemCount).firstOrNull { adapter.getItem(it).containsDate(selectedDay) }
+                        scrollToIndex?.run { layoutManager.scrollToPosition(this) }
+                    }
+                }
         }
     }
 
@@ -108,6 +147,38 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
         disposable = null
 
         super.onDetachedFromWindow()
+    }
+
+    private var prevWidth: Int? = null
+    private var prevHeight: Int? = null
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        if (null == currentMode) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        } else {
+            val fullWidth = MeasureSpec.getSize(widthMeasureSpec)
+            if (null != prevWidth && prevWidth == fullWidth && null != prevHeight) {
+                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(prevHeight!!, MeasureSpec.EXACTLY))
+                return
+            }
+
+            val aboveRVSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 69f, context.resources.displayMetrics)
+            val rvMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32f, context.resources.displayMetrics)
+            val rvWidth = fullWidth - rvMargin
+            val cellWidth = rvWidth / 7
+            val weekNameHeight = cellWidth * 17 / 50 + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics)
+            val dateHeight = cellWidth * 34 / 50 + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12f, context.resources.displayMetrics)
+            val rvHeight =
+                when (currentMode) {
+                    CalendarMode.WEEK  -> weekNameHeight + dateHeight
+                    CalendarMode.MONTH -> weekNameHeight + dateHeight * 6
+                    else               -> 0f
+                }
+
+            prevWidth = fullWidth
+            prevHeight = Math.round(aboveRVSize + rvHeight)
+            super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(prevHeight!!, MeasureSpec.EXACTLY))
+        }
     }
 }
 

@@ -22,6 +22,7 @@ abstract class RecyclerViewAdapterBase : RecyclerView.Adapter<RecyclerView.ViewH
     override open fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is BindingViewHolder<*>) {
             onBindBinding(holder.binding, holder, position)
+            holder.binding.executePendingBindings()
         }
     }
 

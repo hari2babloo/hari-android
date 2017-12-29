@@ -20,7 +20,7 @@
     <io.scal.ambi.ui.global.view.AspectRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:aspect_height="16"
+        app:aspect_height="17"
         app:aspect_width="50"
         app:visibility="@{visibility ?? false}">
 
