@@ -60,7 +60,7 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
                 currentDateCalculate.run()
             } else if (RecyclerView.SCROLL_STATE_SETTLING == newState) {
                 handler.removeCallbacks(currentDateCalculate)
-                handler.postDelayed(currentDateCalculate, 150)
+                handler.postDelayed(currentDateCalculate, 50)
             }
         }
     }
@@ -71,7 +71,7 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
         calendarBinding.rvDates.layoutManager = layoutManager
         calendarBinding.rvDates.adapter = adapter
         layoutManager.isItemPrefetchEnabled = true
-        layoutManager.initialPrefetchItemCount = 4
+        layoutManager.initialPrefetchItemCount = 2
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(calendarBinding.rvDates)
