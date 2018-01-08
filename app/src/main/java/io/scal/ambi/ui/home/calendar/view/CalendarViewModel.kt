@@ -11,6 +11,7 @@ import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
+import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -40,7 +41,16 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
         observeDateChange()
     }
 
-    internal fun observeSelectedDay(): Observable<LocalDate> = uiSelectedDay.distinctUntilChanged()
+    fun observeVisibleDateRange(): Observable<CalendarVisibleDateRange> =
+        observeDataModeChange()
+            .observeOn(rxSchedulersAbs.computationScheduler)
+            .map { it.second }
+            .switchMap { it.toObservable() }
+            .filter { it.isNotEmpty() }
+            .map { CalendarVisibleDateRange(it.first().days.first().date, it.last().days.last().date) }
+            .distinctUntilChanged()
+
+    fun observeSelectedDay(): Observable<LocalDate> = uiSelectedDay.distinctUntilChanged()
 
     internal fun observeDataModeChange(): Observable<Pair<CalendarMode, ObservableList<UICalendarGroupDays>>> =
         mode.toObservable()
@@ -51,6 +61,38 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
                     CalendarMode.MONTH -> Observable.just(Pair(it, monthListOfData))
                 }
             }
+
+    fun setupCurrentDay() {
+        setupDay(LocalDate.now())
+    }
+
+    fun setupDay(date: LocalDate) {
+        selectedDay.set(date)
+    }
+
+    fun switchShowingMode() {
+        val currentMode = mode.get()
+        mode.set(currentMode.nextMode())
+    }
+
+    fun updateEventsForDay(date: LocalDate, eventColors: List<Int>) {
+        updateEventsForDay(weekListOfData, date, eventColors)
+        updateEventsForDay(monthListOfData, date, eventColors)
+    }
+
+    private fun updateEventsForDay(dataList: ObservableList<UICalendarGroupDays>, date: LocalDate, eventColors: List<Int>) {
+        var dayEvent: UICalendarDayWithEvents? = null
+        val dataItem = dataList.firstOrNull {
+            dayEvent = it.days.firstOrNull { it.date == date }
+            null != dayEvent
+        }
+        if (null != dayEvent && null != dataItem) {
+            val newDayEvent = dayEvent!!.copy(events = eventColors.map { UICalendarDayWithEvents.Event(it) })
+            val newItemDays = dataItem.days.toMutableList()
+            newItemDays.replaceElement(dayEvent!!, newDayEvent)
+            dataList.replaceElement(dataItem, dataItem.updateDays(newItemDays))
+        }
+    }
 
     private fun initFirstData() {
         setupCurrentDay()
@@ -72,19 +114,6 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
                                uiSelectedDay.onNext(currentSelectedDay)
                            })
         }
-    }
-
-    fun setupCurrentDay() {
-        setupDay(LocalDate.now())
-    }
-
-    fun setupDay(date: LocalDate) {
-        selectedDay.set(date)
-    }
-
-    fun switchShowingMode() {
-        val currentMode = mode.get()
-        mode.set(currentMode.nextMode())
     }
 
     private fun observeDateChange() {
