@@ -1,6 +1,7 @@
 package io.scal.ambi.extensions.rx.general
 
 import io.reactivex.*
+import io.reactivex.schedulers.Schedulers
 
 abstract class RxSchedulersAbs {
 
@@ -9,6 +10,8 @@ abstract class RxSchedulersAbs {
     abstract val ioScheduler: Scheduler
 
     abstract val computationScheduler: Scheduler
+
+    val immediateScheduler = Schedulers.trampoline()
 
     public fun <T> getIOToMainTransformer(): ObservableTransformer<T, T> {
         return ObservableTransformer { objectObservable ->
