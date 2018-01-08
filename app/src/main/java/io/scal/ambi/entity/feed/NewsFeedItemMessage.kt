@@ -1,7 +1,7 @@
 package io.scal.ambi.entity.feed
 
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.actions.Comment
+import io.scal.ambi.entity.user.User
 import org.joda.time.DateTime
 
 data class NewsFeedItemMessage(val uid: String,
@@ -10,6 +10,14 @@ data class NewsFeedItemMessage(val uid: String,
                                val user: User,
                                val messageText: String,
                                var messageCreatedAt: DateTime,
+                               val audiences: List<Audience>,
                                val announcement: Announcement?,
                                val comments: List<Comment>,
-                               val likes: List<User>) : NewsFeedItem
+                               val likes: List<User>) : NewsFeedItem {
+
+    init {
+        if (audiences.isEmpty()) {
+            throw IllegalArgumentException("audience can not be null")
+        }
+    }
+}

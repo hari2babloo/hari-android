@@ -279,7 +279,7 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                    questionText,
                                                    choices.toPollVotedResult(),
                                                    choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
-                                                   pollEndsTime.endsFrom(pollCreatedAt),
+                                                   pollEndsTime,
                                                    UILikes(currentUser, likes),
                                                    UIComments(comments))
         is NewsFeedItemMessage -> UIModelFeed.Message(uid,

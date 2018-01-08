@@ -1,15 +1,10 @@
 package io.scal.ambi.entity.feed
 
-import org.joda.time.DateTime
 import org.joda.time.Duration
 
 sealed class PollEndsTime {
 
     abstract class TimeDuration(val duration: Duration) : PollEndsTime() {
-
-        override fun endsFrom(startDateTime: DateTime): DateTime? {
-            return startDateTime.plus(duration)
-        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -35,10 +30,5 @@ sealed class PollEndsTime {
 
     class CustomDefault : Custom(Duration.standardDays(30))
 
-    object Never : PollEndsTime() {
-
-        override fun endsFrom(startDateTime: DateTime): DateTime? = null
-    }
-
-    abstract fun endsFrom(startDateTime: DateTime): DateTime?
+    object Never : PollEndsTime()
 }

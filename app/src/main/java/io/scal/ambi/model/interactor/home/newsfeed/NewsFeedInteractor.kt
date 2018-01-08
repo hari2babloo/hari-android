@@ -10,7 +10,6 @@ import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.DateTime
-import org.joda.time.Duration
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -51,7 +50,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                          "Is it true?",
                          listOf(PollChoice("1", "Yes", emptyList()), PollChoice("2", "No", listOf())),
                          DateTime.now(),
-                         PollEndsTime.Never,
+                         null,
                          listOf(Audience.FACULTY),
                          null,
                          emptyList(),
@@ -65,7 +64,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                          listOf(PollChoice("1", "Yes", emptyList()),
                                 PollChoice("2", "No", listOf(currentUser))),
                          DateTime.now(),
-                         PollEndsTime.OneWeek,
+                         DateTime.now().plusWeeks(1),
                          listOf(Audience.STAFF),
                          null,
                          emptyList(),
@@ -79,7 +78,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                          listOf(PollChoice("1", "Yes", listOf(currentUser)),
                                 PollChoice("2", "No", listOf(currentUser, currentUser))),
                          DateTime.now(),
-                         PollEndsTime.Custom(Duration.standardDays(16)),
+                         DateTime.now().plusDays(16),
                          listOf(Audience.NEWS),
                          Announcement.TRAGEDY,
                          emptyList(),
@@ -91,6 +90,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                             currentUser,
                             "test message $page",
                             DateTime.now(),
+                            listOf(Audience.STAFF),
                             Announcement.EVENT,
                             emptyList(),
                             emptyList()
@@ -101,6 +101,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                             currentUser,
                             "just an other message $page",
                             DateTime(2017, 12, 7, 15, 20),
+                            listOf(Audience.STAFF),
                             Announcement.SAFETY,
                             emptyList(),
                             listOf(currentUser)
@@ -111,6 +112,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                             currentUser,
                             "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
                             DateTime(2017, 12, 25, 15, 0),
+                            listOf(Audience.STAFF),
                             Announcement.GENERAL,
                             emptyList(),
                             listOf(currentUser, currentUser, currentUser, currentUser, currentUser, currentUser)
@@ -121,8 +123,9 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                             currentUser,
                             "",
                             DateTime(2017, 10, 7, 15, 0),
+                            listOf(Audience.STAFF),
                             Announcement.GOOD_NEWS,
-                            listOf(Comment(currentUser,
+                            listOf(Comment("$page ste 1", currentUser,
                                            "just comment!!!",
                                            DateTime.now())),
                             emptyList()
@@ -133,37 +136,38 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                             currentUser,
                             "test message",
                             DateTime(2017, 10, 1, 15, 0),
+                            listOf(Audience.STAFF),
                             Announcement.GOOD_NEWS,
             /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
            , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
            "Does President Trump Want to Negotiate Middle East Peace?",
            */
                             listOf(
-                                Comment(currentUser,
+                                Comment("$page ste 2", currentUser,
                                         "comment 1!!!",
                                         DateTime.now()),
-                                Comment(currentUser,
+                                Comment("$page ste 3", currentUser,
                                         "comment 2!!!",
                                         DateTime(2017,
                                                  12,
                                                  7,
                                                  20,
                                                  40)),
-                                Comment(currentUser,
+                                Comment("$page ste 4", currentUser,
                                         "comment 3!!!",
                                         DateTime(2017,
                                                  12,
                                                  7,
                                                  19,
                                                  40)),
-                                Comment(currentUser,
+                                Comment("$page ste 5", currentUser,
                                         "comment 4!!!",
                                         DateTime(2017,
                                                  12,
                                                  6,
                                                  23,
                                                  40)),
-                                Comment(currentUser,
+                                Comment("$page ste 6", currentUser,
                                         "comment 5!!!",
                                         DateTime(2017,
                                                  12,

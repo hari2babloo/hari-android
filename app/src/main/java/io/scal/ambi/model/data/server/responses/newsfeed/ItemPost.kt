@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
+import io.scal.ambi.entity.feed.NewsFeedItemMessage
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
-import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.extensions.view.IconImageUser
@@ -42,9 +42,9 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     @Expose
     internal var textContent: String? = null
 
-    @SerializedName("dateCreated")
+    @SerializedName("createdAt")
     @Expose
-    internal var createdAt: Long? = null
+    internal var createdAt: String? = null
 
 
     @SerializedName("audience")
@@ -68,15 +68,16 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
 
     @SerializedName("pollEndsTime")
     @Expose
-    internal var pollEndsTime: Long? = null
+    internal var pollEndsTime: String? = null
 
     override fun parse(): NewsFeedItem? {
         if (null == id || null == kind) {
             throw IllegalArgumentException("id and kind can not be null")
         }
         return when (kind) {
-            "PollPost" -> parseAsPoll()
-            else       -> {
+            "PollPost"   -> parseAsPoll()
+            "UpdatePost" -> parseAsUpdate()
+            else         -> {
                 Timber.d(IllegalArgumentException("unknown news feed item kind: $kind"), "we can not parse unknown type: $kind")
                 null
             }
@@ -87,17 +88,37 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
         NewsFeedItemPoll(id.notNullOrThrow("id"),
                          pinned ?: false,
                          locked ?: false,
-//                         poster!!.parse(),
-                         User.asStudent("test", IconImageUser(poster), "MIG35", "TEST"),
+                         parsePosterUser(),
                          textContent.orEmpty(),
                          answerChoices.notNullOrThrow("answerChoices").map { it.parse() },
-                         DateTime(createdAt.notNullOrThrow("createdAt")),
-                         pollEndsTime.toPollEndsTime(),
+                         createdAt.toDateTime("createdAt"),
+                         pollEndsTime.toDateTimePollEnds("pollEndsTime"),
                          audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                          null,
                          comments?.map { it.parse() } ?: emptyList(),
                          likes?.map { it.parse() } ?: emptyList()
         )
+
+    private fun parseAsUpdate(): NewsFeedItem =
+        NewsFeedItemMessage(id.notNullOrThrow("id"),
+                            pinned ?: false,
+                            locked ?: false,
+                            parsePosterUser(),
+                            textContent.orEmpty(),
+                            createdAt.toDateTime("createdAt"),
+                            audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
+                            null,
+                            comments?.map { it.parse() } ?: emptyList(),
+                            likes?.map { it.parse() } ?: emptyList()
+        )
+
+    // todo change to actual user
+    private fun parsePosterUser(): User {
+        return User.asStudent(poster.notNullOrThrow("id"),
+                              IconImageUser("http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg?quality=0.60"),
+                              "MIG35",
+                              "TEST")
+    }
 }
 
 private fun String.toAudience(): Audience? =
@@ -111,11 +132,10 @@ private fun String.toAudience(): Audience? =
         }
     }
 
-private fun Long?.toPollEndsTime(): PollEndsTime {
-    if (null == this) {
-        return PollEndsTime.Never
-    } else {
-        // todo add parsing
-        throw UnsupportedOperationException("not implemented yet")
-    }
+private fun String?.toDateTime(fieldName: String): DateTime {
+    val notNullString = notNullOrThrow(fieldName)
+    return DateTime.parse(notNullString)
 }
+
+private fun String?.toDateTimePollEnds(fieldName: String): DateTime? =
+    this?.toDateTime(fieldName)

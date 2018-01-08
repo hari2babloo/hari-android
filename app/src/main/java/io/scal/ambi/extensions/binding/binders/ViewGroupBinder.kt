@@ -24,7 +24,8 @@ object ViewGroupBinder {
             for (i in viewModels.indices) {
                 val viewModel = viewModels[i]
                 val view = getCurrentViewOfModel(viewGroup, viewModel)
-                if (null == view) {
+                val viewIndex = view?.let { viewGroup.indexOfChild(it) } ?: -1
+                if (-1 == viewIndex || viewIndex < i) {
                     val viewDataBinding = DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, layoutId, viewGroup, false)
                     val child = viewDataBinding.root
                     child.setTag(R.id.id_screen_model, viewModel)
@@ -32,8 +33,8 @@ object ViewGroupBinder {
                     modelClickListener?.run { child.setOnClickListener { onModelClicked(i) } }
                     viewDataBinding.setVariable(BR.viewModel, viewModel)
                 } else {
-                    if (i != viewGroup.indexOfChild(view)) {
-                        val hasFocus = view.hasFocus()
+                    if (i != viewIndex) {
+                        val hasFocus = view!!.hasFocus()
                         viewGroup.removeView(view)
                         viewGroup.addView(view, i)
                         modelClickListener?.run { view.setOnClickListener { onModelClicked(i) } }

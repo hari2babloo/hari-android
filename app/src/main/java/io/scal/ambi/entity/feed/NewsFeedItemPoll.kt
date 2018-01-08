@@ -1,7 +1,7 @@
 package io.scal.ambi.entity.feed
 
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.actions.Comment
+import io.scal.ambi.entity.user.User
 import org.joda.time.DateTime
 
 data class NewsFeedItemPoll(val uid: String,
@@ -11,7 +11,7 @@ data class NewsFeedItemPoll(val uid: String,
                             val questionText: String,
                             val choices: List<PollChoice>,
                             var pollCreatedAt: DateTime,
-                            val pollEndsTime: PollEndsTime,
+                            val pollEndsTime: DateTime?,
                             val audiences: List<Audience>,
                             val announcement: Announcement?,
                             val comments: List<Comment>,
