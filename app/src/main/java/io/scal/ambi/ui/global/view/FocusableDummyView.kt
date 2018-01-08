@@ -7,8 +7,10 @@ import android.view.View
 import android.view.View.OnFocusChangeListener
 import io.scal.ambi.ui.global.KeyboardUtils
 
-class FocusableDummyView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
-    View(context.applicationContext, attrs, defStyleAttr, defStyleRes) {
+class FocusableDummyView @JvmOverloads constructor(context: Context,
+                                                   attrs: AttributeSet? = null,
+                                                   defStyleAttr: Int = 0) :
+    View(context.applicationContext, attrs, defStyleAttr) {
 
     private var focusChangeListener = OnFocusChangeListener { _, hasFocus -> if (hasFocus) KeyboardUtils.hideSoftKeyboard(context) }
 

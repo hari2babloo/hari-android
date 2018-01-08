@@ -35,7 +35,7 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
             override fun run() {
                 val firstAdapterPosition = layoutManager.findFirstVisibleItemPosition()
                 val lastAdapterPosition = layoutManager.findLastVisibleItemPosition()
-                if (firstAdapterPosition != lastAdapterPosition) {
+                if (firstAdapterPosition != lastAdapterPosition || adapter.itemCount == 0) {
                     handler.postDelayed(this, 10)
                     return
                 }
@@ -91,6 +91,9 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
                     calendarBinding.selectedYearMonth = YearMonth(selectedDay)
                     currentSelectedDay = selectedDay
 
+                    if (adapter.itemCount == 0) {
+                        return@subscribe
+                    }
                     val currentPosition = findCurrentAdapterPosition()
                     if (null != currentPosition && adapter.getItem(currentPosition).containsDate(selectedDay)) {
                         return@subscribe
@@ -99,7 +102,6 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
                         val scrollToIndex = (0 until adapter.itemCount).firstOrNull { adapter.getItem(it).containsDate(selectedDay) }
                         scrollToIndex?.run { layoutManager.scrollToPosition(this) }
                     }
-
                 }
                 .addTo(this)
 

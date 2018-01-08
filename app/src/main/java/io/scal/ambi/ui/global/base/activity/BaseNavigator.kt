@@ -3,6 +3,8 @@ package io.scal.ambi.ui.global.base.activity
 import android.content.Intent
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
 import io.scal.ambi.BuildConfig
 import io.scal.ambi.R
 import io.scal.ambi.navigation.NavigateTo
@@ -10,6 +12,8 @@ import io.scal.ambi.ui.auth.login.LoginActivity
 import ru.terrakok.cicerone.android.SupportAppNavigator
 import ru.terrakok.cicerone.commands.Command
 import timber.log.Timber
+import java.io.PrintWriter
+import java.io.StringWriter
 
 open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNavigator(activity, R.id.container) {
 
@@ -32,4 +36,14 @@ open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNav
         }
 
     override fun createFragment(screenKey: String, data: Any?): Fragment? = null
+
+    override fun unknownScreen(command: Command) {
+        val sw = StringWriter()
+        val pw = PrintWriter(sw)
+        Throwable().printStackTrace(pw)
+        val sStackTrace = sw.toString() // stack trace as a string
+
+        val navigationException = RuntimeException("Can't create a screen for passed screenKey: $command. with trace: $sStackTrace")
+        Crashlytics.logException(navigationException)
+    }
 }
