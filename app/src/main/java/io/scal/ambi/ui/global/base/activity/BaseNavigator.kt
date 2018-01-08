@@ -1,6 +1,7 @@
 package io.scal.ambi.ui.global.base.activity
 
 import android.content.Intent
+import android.support.annotation.CallSuper
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import com.crashlytics.android.Crashlytics
@@ -29,6 +30,7 @@ open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNav
         }
     }
 
+    @CallSuper
     override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
         when (screenKey) {
             NavigateTo.LOGIN -> LoginActivity.createScreen(activity)

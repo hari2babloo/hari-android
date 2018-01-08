@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.scal.ambi.R
 import io.scal.ambi.ui.global.base.adapter.DataObserverForAdapter
+import org.joda.time.LocalDate
 
-internal class CalendarMainAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+internal class CalendarMainAdapter(private val viewModel: CalendarViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataObserver: DataObserverForAdapter<UICalendarGroupDays>? = null
+    private var selectedDay: LocalDate? = null
 
     fun getItem(position: Int): UICalendarGroupDays {
         return dataObserver!!.getItem(position)
@@ -19,12 +21,19 @@ internal class CalendarMainAdapter : RecyclerView.Adapter<RecyclerView.ViewHolde
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.element_calendar_item_group, parent, false)
-        return BaseViewHolder(view as CalendarWeekMonthView)
+        view as CalendarWeekMonthView
+        view.setup(viewModel)
+        return BaseViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder as BaseViewHolder
-        holder.view.setupDays(dataObserver!!.getItem(position))
+        holder.view.updateDays(dataObserver!!.getItem(position), selectedDay)
+    }
+
+    fun setSelectedDay(selectedDay: LocalDate) {
+        this.selectedDay = selectedDay
+        (0 until itemCount).forEach { notifyItemChanged(it) }
     }
 
     fun updateData(data: ObservableList<UICalendarGroupDays>) {

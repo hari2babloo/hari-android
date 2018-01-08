@@ -6,7 +6,11 @@
     <data>
 
         <variable
-            name="event"
+            name="viewModel"
+            type="io.scal.ambi.ui.home.calendar.view.CalendarViewModel"/>
+
+        <variable
+            name="calendarDay"
             type="io.scal.ambi.ui.home.calendar.view.UICalendarDayWithEvents"/>
 
         <variable
@@ -22,6 +26,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@{selected ? @drawable/ic_calendar_day_selected : @drawable/ic_calendar_day_simple}"
         android:orientation="vertical"
         >
 
@@ -30,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:day="@{event.date}"
+            app:day="@{calendarDay.date}"
             app:visibility="@{weekNameVisibility}"
             />
 
@@ -40,8 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="6dp"
-            app:disabled="@{!event.enabled}"
-            app:event="@{event}"
+            app:calendarDay="@{calendarDay}"
+            app:disabled="@{!calendarDay.enabled}"
             app:highLighted="@{selected ?? false}"
             />
 

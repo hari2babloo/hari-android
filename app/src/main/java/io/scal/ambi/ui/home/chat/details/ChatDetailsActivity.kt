@@ -241,7 +241,7 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
                                                                   params.allChatDescriptions)
                     }
                     NavigateTo.CHAT_DETAILS           -> createScreen(this@ChatDetailsActivity, data as ChatChannelDescription)
-                    else                              -> null
+                    else                              -> super.createActivityIntent(screenKey, data)
                 }
         }
     }

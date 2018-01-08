@@ -7,7 +7,7 @@
     <data>
 
         <variable
-            name="event"
+            name="calendarDay"
             type="io.scal.ambi.ui.home.calendar.view.UICalendarDayWithEvents"/>
 
         <variable
@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{String.valueOf(event.date.dayOfMonth)}"
+            android:text="@{String.valueOf(calendarDay.date.dayOfMonth)}"
             android:textColor="@{highLighted ? @color/calendar_day_high_lighted : @color/calendar_day_simple}"
             android:textSize="16sp"
             />
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            app:calendarDayEvents="@{event.events}"/>
+            app:calendarDayEvents="@{calendarDay.events}"/>
 
     </io.scal.ambi.ui.global.view.AspectRelativeLayout>
 

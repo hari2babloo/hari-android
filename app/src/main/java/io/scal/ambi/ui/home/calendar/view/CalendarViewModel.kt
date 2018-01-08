@@ -17,7 +17,6 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import org.joda.time.DateTimeConstants
 import org.joda.time.LocalDate
 import org.joda.time.YearMonth
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewModel() {
@@ -80,7 +79,6 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
     }
 
     fun setupDay(date: LocalDate) {
-        Timber.i("setup day: $date")
         selectedDay.set(date)
     }
 
@@ -90,26 +88,43 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
     }
 
     private fun observeDateChange() {
-        val modeObservable = mode.toObservable().distinctUntilChanged().observeOn(rxSchedulersAbs.computationScheduler)
         val selectedDayObservable = selectedDay.toObservable().distinctUntilChanged().observeOn(rxSchedulersAbs.computationScheduler)
+        val modeObservable = mode.toObservable().distinctUntilChanged().observeOn(rxSchedulersAbs.computationScheduler)
         val weekStartDayObservable = weekStartDay.toObservable().distinctUntilChanged().observeOn(rxSchedulersAbs.computationScheduler)
 
         Observable.combineLatest(modeObservable,
                                  selectedDayObservable,
                                  weekStartDayObservable,
-                                 Function3<CalendarMode, LocalDate, Int, Triple<CalendarMode, LocalDate, Int>> { t1, t2, t3 -> Triple(t1, t2, t3) }
+                                 Function3<CalendarMode, LocalDate, Int, GenerationData> { t1, t2, t3 -> GenerationData(t1, t2, t3) }
         )
             .observeOn(rxSchedulersAbs.computationScheduler)
             .toFlowable(BackpressureStrategy.LATEST)
             .throttleLast(100, TimeUnit.MILLISECONDS)
-            .concatMap { triple ->
-                val otherMode = if (CalendarMode.WEEK == triple.first) CalendarMode.MONTH else CalendarMode.WEEK
+            .distinctUntilChanged { old, new ->
+                if (old.weekStartDay != new.weekStartDay) {
+                    // items are different
+                    return@distinctUntilChanged false
+                }
+                if (old.selectedDay == new.selectedDay) {
+                    // mode is different but selected day is the same. so we have all the data to show
+                    return@distinctUntilChanged true
+                }
+                val oldStartDay = startDayByMode(old.mode, old.selectedDay, new.weekStartDay)
+                val newStartDay = startDayByMode(new.mode, new.selectedDay, new.weekStartDay)
+                if (oldStartDay == newStartDay) {
+                    // we have same start day, so we can simply update the UI now with existing data
+                    uiSelectedDay.onNext(new.selectedDay)
+                }
+                false
+            }
+            .concatMap { generationData ->
+                val otherMode = if (CalendarMode.WEEK == generationData.mode) CalendarMode.MONTH else CalendarMode.WEEK
 
-                val firstFlowable = buildDataForCalendar(triple.first, triple.second, triple.third)
-                val secondFlowable = buildDataForCalendar(otherMode, triple.second, triple.third)
+                val firstFlowable = buildDataForCalendar(generationData.mode, generationData.selectedDay, generationData.weekStartDay)
+                val secondFlowable = buildDataForCalendar(otherMode, generationData.selectedDay, generationData.weekStartDay)
 
-                firstFlowable.map { Triple(triple.first, triple.second, it) }
-                    .concatWith(secondFlowable.map { Triple(otherMode, triple.second, it) })
+                firstFlowable.map { Triple(generationData.mode, generationData.selectedDay, it) }
+                    .concatWith(secondFlowable.map { Triple(otherMode, generationData.selectedDay, it) })
             }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
             .subscribe {
@@ -120,6 +135,13 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
                 uiSelectedDay.onNext(it.second)
             }
             .addTo(disposable)
+    }
+
+    private fun startDayByMode(mode: CalendarMode, selectedDay: LocalDate, weekStartDay: Int): LocalDate {
+        return when (mode) {
+            CalendarMode.WEEK  -> selectedDay.startOfWeek(weekStartDay)
+            CalendarMode.MONTH -> selectedDay.startOfMonth()
+        }
     }
 
     private fun buildDataForCalendar(calendarMode: CalendarMode,
@@ -166,7 +188,7 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
 
     private fun buildDateForDayMonth(mainDate: LocalDate, weekStartDay: Int, offsetMonth: Int): Flowable<List<UICalendarGroupDays>> {
         return Flowable.fromCallable {
-            val monthStartDate = LocalDate(mainDate.year, mainDate.monthOfYear, 1)
+            val monthStartDate = mainDate.startOfMonth()
 
             val generationStartDate = monthStartDate.minusMonths(offsetMonth)
             val generationEndDate = monthStartDate.plusMonths(offsetMonth + 1)
@@ -222,3 +244,8 @@ private fun LocalDate.startOfWeek(weekStartDay: Int): LocalDate {
     }
     return currentDate
 }
+
+private fun LocalDate.startOfMonth(): LocalDate =
+    LocalDate(year, monthOfYear, 1)
+
+private class GenerationData(val mode: CalendarMode, val selectedDay: LocalDate, val weekStartDay: Int)
