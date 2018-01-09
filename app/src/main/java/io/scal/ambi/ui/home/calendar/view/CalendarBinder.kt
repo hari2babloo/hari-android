@@ -2,10 +2,11 @@ package io.scal.ambi.ui.home.calendar.view
 
 import android.annotation.SuppressLint
 import android.databinding.BindingAdapter
+import android.support.v7.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import io.scal.ambi.databinding.ItemCalendarDayEventBinding
+import io.scal.ambi.R
 import org.joda.time.LocalDate
 import org.joda.time.YearMonth
 import org.joda.time.format.DateTimeFormat
@@ -15,7 +16,7 @@ import java.util.*
 object CalendarBinder {
 
     private val maxEventsCount = 3
-    private val eventsViewsCache = mutableListOf<WeakReference<ItemCalendarDayEventBinding>>()
+    private val eventsViewsCache = mutableListOf<WeakReference<AppCompatImageView>>()
 
     @JvmStatic
     @BindingAdapter("calendarDayEvents")
@@ -33,13 +34,13 @@ object CalendarBinder {
     }
 
     private fun addEventView(viewGroup: ViewGroup, event: UICalendarDayWithEvents.Event, more: Boolean) {
-        val binding = getEventsView(viewGroup)
-        binding.more = more
-        binding.root.setBackgroundColor(event.color)
-        viewGroup.addView(binding.root)
+        val view = getEventsView(viewGroup)
+        view.setImageResource(if (more) R.drawable.ic_calendar_day_event_more else R.drawable.ic_calendar_day_event_simple)
+        view.setColorFilter(event.color, android.graphics.PorterDuff.Mode.SRC_IN)
+        viewGroup.addView(view)
     }
 
-    private fun getEventsView(viewGroup: ViewGroup): ItemCalendarDayEventBinding {
+    private fun getEventsView(viewGroup: ViewGroup): AppCompatImageView {
         val layoutInflater by lazy { LayoutInflater.from(viewGroup.context) }
         val iterator = eventsViewsCache.iterator()
         while (iterator.hasNext()) {
@@ -50,17 +51,19 @@ object CalendarBinder {
                 return eventsBinding
             }
         }
-        return ItemCalendarDayEventBinding.inflate(layoutInflater, viewGroup, false)
+        return layoutInflater.inflate(R.layout.item_calendar_day_event, viewGroup, false) as AppCompatImageView
     }
 
     private fun removeAllEventsViews(viewGroup: ViewGroup) {
-        (0 until viewGroup.childCount)
-            .map { viewGroup.getChildAt(it) }
-            .map { ItemCalendarDayEventBinding.bind(it) }
-            .forEach {
-                viewGroup.removeView(it.root)
-                eventsViewsCache.add(WeakReference(it))
-            }
+        if (viewGroup.childCount > 0) {
+            (0 until viewGroup.childCount)
+                .map { viewGroup.getChildAt(it) }
+                .map { it as AppCompatImageView }
+                .forEach {
+                    viewGroup.removeView(it)
+                    eventsViewsCache.add(WeakReference(it))
+                }
+        }
     }
 
     private val dayOfWeekFormatter = DateTimeFormat.forPattern("E").withLocale(Locale.ENGLISH)

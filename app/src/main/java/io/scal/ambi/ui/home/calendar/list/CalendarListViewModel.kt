@@ -24,9 +24,12 @@ class CalendarListViewModel @Inject constructor(router: BetterRouter,
 
         calendarViewModel.observeVisibleDateRange()
             .observeOn(rxSchedulersAbs.ioScheduler)
+            .distinctUntilChanged()
             .switchMap { interactor.loadEventsForRange(it.startDate, it.endDate) }
+            .observeOn(rxSchedulersAbs.computationScheduler)
+            .map { Pair(it.day, it.events.map { it.color }) }
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
-            .subscribe { calendarViewModel.updateEventsForDay() }
+            .subscribe { calendarViewModel.updateEventsForDay(it.first, it.second) }
     }
 
     override fun onBackPressed(): Boolean =

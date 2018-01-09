@@ -18,6 +18,7 @@ import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import org.joda.time.DateTimeConstants
 import org.joda.time.LocalDate
 import org.joda.time.YearMonth
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewModel() {
@@ -76,22 +77,23 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
     }
 
     fun updateEventsForDay(date: LocalDate, eventColors: List<Int>) {
+        Timber.i("!!!!!!!!!!!! events for $date = ${eventColors.size}")
         updateEventsForDay(weekListOfData, date, eventColors)
         updateEventsForDay(monthListOfData, date, eventColors)
     }
 
     private fun updateEventsForDay(dataList: ObservableList<UICalendarGroupDays>, date: LocalDate, eventColors: List<Int>) {
-        var dayEvent: UICalendarDayWithEvents? = null
-        val dataItem = dataList.firstOrNull {
-            dayEvent = it.days.firstOrNull { it.date == date }
-            null != dayEvent
-        }
-        if (null != dayEvent && null != dataItem) {
-            val newDayEvent = dayEvent!!.copy(events = eventColors.map { UICalendarDayWithEvents.Event(it) })
-            val newItemDays = dataItem.days.toMutableList()
-            newItemDays.replaceElement(dayEvent!!, newDayEvent)
-            dataList.replaceElement(dataItem, dataItem.updateDays(newItemDays))
-        }
+        (0 until dataList.size)
+            .forEach {
+                val dataItem = dataList[it]
+                val dayEvent = dataItem.days.firstOrNull { it.date == date }
+                if (null != dayEvent) {
+                    val newDayEvent = dayEvent.copy(events = eventColors.map { UICalendarDayWithEvents.Event(it) })
+                    val newItemDays = dataItem.days.toMutableList()
+                    newItemDays.replaceElement(dayEvent, newDayEvent)
+                    dataList.replaceElement(dataItem, dataItem.updateDays(newItemDays))
+                }
+            }
     }
 
     private fun initFirstData() {

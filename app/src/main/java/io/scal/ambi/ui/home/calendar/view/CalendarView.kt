@@ -176,8 +176,8 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
             val rvMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32f, context.resources.displayMetrics)
             val rvWidth = fullWidth - rvMargin
             val cellWidth = rvWidth / 7
-            val weekNameHeight = cellWidth * 17 / 50 + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics)
-            val dateHeight = cellWidth * 34 / 50 + TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12f, context.resources.displayMetrics)
+            val weekNameHeight = cellWidth * 39 / 50
+            val dateHeight = cellWidth * 56 / 50
             val rvHeight =
                 when (currentMode) {
                     CalendarMode.WEEK  -> weekNameHeight + dateHeight

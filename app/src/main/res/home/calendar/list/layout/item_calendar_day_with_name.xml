@@ -34,7 +34,6 @@
             layout="@layout/item_calendar_week_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             app:day="@{calendarDay.date}"
             app:visibility="@{weekNameVisibility}"
             />
@@ -43,8 +42,6 @@
             layout="@layout/item_calendar_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
             app:calendarDay="@{calendarDay}"
             app:disabled="@{!calendarDay.enabled}"
             app:highLighted="@{selected ?? false}"
