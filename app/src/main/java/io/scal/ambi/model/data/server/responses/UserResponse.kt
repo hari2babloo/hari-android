@@ -10,20 +10,16 @@ import io.scal.ambi.extensions.view.IconImageUser
 
 class UserResponse : BaseResponse<User>() {
 
-    @SerializedName("student")
+    @SerializedName("user")
     @Expose
-    internal var student: Student? = null
+    internal var user: BigUser? = null
 
     override fun parse(): User {
-        student.notNullOrThrow("student").type = ItemUser.Type.Student
-        return student!!.parse()
+        user.notNullOrThrow("user").type = ItemUser.Type.Student // todo remove this
+        return user!!.parse()
     }
 
-    class Student : ItemUser() {
-
-        @SerializedName("birthDay")
-        @Expose
-        var birthDay: String? = null
+    class BigUser : ItemUser() {
 
         @SerializedName("school")
         @Expose
@@ -33,15 +29,14 @@ class UserResponse : BaseResponse<User>() {
         @Expose
         var gender: String? = null
 
-        override fun parse(): User {
-            if (Type.Student != type) {
-                throw IllegalStateException("can not parse Student from type: $type")
+        override fun parse(): User =
+            when (type) {
+                Type.Student -> User.asStudent(extractId(),
+                                               profilePicture?.url?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
+                                               firstName.orEmpty(),
+                                               lastName.orEmpty()
+                )
+                else         -> throw IllegalStateException("can not parse Student from type: $type")
             }
-            return User.asStudent(extractId(),
-                                  profilePicture?.url?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
-                                  firstName.orEmpty(),
-                                  lastName.orEmpty()
-            )
-        }
     }
 }

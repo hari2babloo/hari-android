@@ -20,23 +20,23 @@ object CalendarBinder {
 
     @JvmStatic
     @BindingAdapter("calendarDayEvents")
-    fun bindDayEvents(viewGroup: ViewGroup, events: List<UICalendarDayWithEvents.Event>?) {
+    fun bindDayEvents(viewGroup: ViewGroup, events: UICalendarEvents?) {
         removeAllEventsViews(viewGroup)
 
         if (null != events) {
-            if (events.size > maxEventsCount) {
+            if (events.colors.size > maxEventsCount) {
                 (0 until maxEventsCount)
-                    .forEach { index -> addEventView(viewGroup, events[index], index == maxEventsCount - 1) }
+                    .forEach { index -> addEventView(viewGroup, events.colors[index], index == maxEventsCount - 1) }
             } else {
-                events.forEach { addEventView(viewGroup, it, false) }
+                events.colors.forEach { addEventView(viewGroup, it, false) }
             }
         }
     }
 
-    private fun addEventView(viewGroup: ViewGroup, event: UICalendarDayWithEvents.Event, more: Boolean) {
+    private fun addEventView(viewGroup: ViewGroup, color: Int, more: Boolean) {
         val view = getEventsView(viewGroup)
         view.setImageResource(if (more) R.drawable.ic_calendar_day_event_more else R.drawable.ic_calendar_day_event_simple)
-        view.setColorFilter(event.color, android.graphics.PorterDuff.Mode.SRC_IN)
+        view.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
         viewGroup.addView(view)
     }
 

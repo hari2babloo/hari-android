@@ -6,7 +6,7 @@ import io.scal.ambi.BuildConfig
 import io.scal.ambi.model.data.server.AuthApi
 import io.scal.ambi.model.data.server.ChatApi
 import io.scal.ambi.model.data.server.PostsApi
-import io.scal.ambi.model.data.server.StudentApi
+import io.scal.ambi.model.data.server.UserApi
 import io.scal.ambi.model.data.server.intercepters.AuthInterceptor
 import io.scal.ambi.model.data.server.intercepters.Http2FixInterceptor
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
@@ -67,8 +67,8 @@ class ApiModule {
 
     @Provides
     @Singleton
-    internal fun provideStudentApi(@Named("mainServer") retrofit: Retrofit): StudentApi =
-        retrofit.create(StudentApi::class.java)
+    internal fun provideStudentApi(@Named("mainServer") retrofit: Retrofit): UserApi =
+        retrofit.create(UserApi::class.java)
 
     @Provides
     @Singleton

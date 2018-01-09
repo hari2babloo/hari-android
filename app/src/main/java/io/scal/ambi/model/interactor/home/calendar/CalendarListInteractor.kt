@@ -8,6 +8,8 @@ import io.scal.ambi.extensions.trueOrThrow
 import io.scal.ambi.model.repository.data.calendar.ICalendarRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.LocalDate
+import java.security.SecureRandom
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CalendarListInteractor @Inject internal constructor(private val localUserDataRepository: ILocalUserDataRepository,
@@ -43,6 +45,7 @@ class CalendarListInteractor @Inject internal constructor(private val localUserD
             .toSingle()
             .onErrorResumeNext(
                 calendarRepository.loadEventForDate(eventDate)
+                    .delay(SecureRandom().nextInt(10).toLong(), TimeUnit.SECONDS)
                     .subscribeOn(rxSchedulersAbs.ioScheduler)
                     .doOnSuccess { cachedCalendarEventsRepository.updateCachedDataForDay(eventDate, it) }
             )

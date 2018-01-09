@@ -59,7 +59,6 @@
             app:layout_constraintTop_toBottomOf="@+id/c_audience_selector"
             app:onSwipeToRefresh="@{() -> viewModel.refresh()}">
 
-
             <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
                 android:id="@+id/rv_college_updates"
                 android:layout_width="match_parent"

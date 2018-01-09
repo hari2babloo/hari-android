@@ -5,8 +5,8 @@ import io.scal.ambi.model.data.server.responses.UserResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface StudentApi {
+interface UserApi {
 
-    @GET("v1/students/{userId}")
-    fun getStudentProfile(@Path("userId") userId: String): Single<UserResponse>
+    @GET("v1/users/{userId}?populate=profilePicture")
+    fun getUserProfile(@Path("userId") userId: String): Single<UserResponse>
 }

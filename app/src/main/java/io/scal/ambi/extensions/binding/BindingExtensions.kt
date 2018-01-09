@@ -1,7 +1,6 @@
 package io.scal.ambi.extensions.binding
 
 import android.databinding.*
-import android.support.v4.util.Pair
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -53,12 +52,12 @@ fun <T> ObservableField<T>.toObservable(): Observable<T> =
                       })
 
 
-fun <K, V> ObservableMap<K, V>.toObservable(): Observable<Pair<K, V>> =
+fun <K, V> ObservableMap<K, V?>.toObservable(): Observable<Pair<K, V?>> =
     Observable.create({ e ->
-                          val propertyChangeCallback = object : ObservableMap.OnMapChangedCallback<ObservableMap<K, V>, K, V>() {
-                              override fun onMapChanged(sender: ObservableMap<K, V>, key: K) {
+                          val propertyChangeCallback = object : ObservableMap.OnMapChangedCallback<ObservableMap<K, V?>, K, V?>() {
+                              override fun onMapChanged(sender: ObservableMap<K, V?>, key: K) {
                                   if (!e.isDisposed) {
-                                      e.onNext(Pair<K, V>(key, sender[key]))
+                                      e.onNext(Pair(key, sender[key]))
                                   }
                               }
                           }

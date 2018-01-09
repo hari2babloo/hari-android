@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_calendar_tab_events">events</string>
+    <string name="title_calendar_tab_to_dos">to-dos</string>
+
+</resources>

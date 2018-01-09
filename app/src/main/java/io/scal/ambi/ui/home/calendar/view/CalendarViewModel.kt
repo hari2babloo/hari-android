@@ -11,14 +11,12 @@ import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
-import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import org.joda.time.DateTimeConstants
 import org.joda.time.LocalDate
 import org.joda.time.YearMonth
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewModel() {
@@ -74,26 +72,6 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
     fun switchShowingMode() {
         val currentMode = mode.get()
         mode.set(currentMode.nextMode())
-    }
-
-    fun updateEventsForDay(date: LocalDate, eventColors: List<Int>) {
-        Timber.i("!!!!!!!!!!!! events for $date = ${eventColors.size}")
-        updateEventsForDay(weekListOfData, date, eventColors)
-        updateEventsForDay(monthListOfData, date, eventColors)
-    }
-
-    private fun updateEventsForDay(dataList: ObservableList<UICalendarGroupDays>, date: LocalDate, eventColors: List<Int>) {
-        (0 until dataList.size)
-            .forEach {
-                val dataItem = dataList[it]
-                val dayEvent = dataItem.days.firstOrNull { it.date == date }
-                if (null != dayEvent) {
-                    val newDayEvent = dayEvent.copy(events = eventColors.map { UICalendarDayWithEvents.Event(it) })
-                    val newItemDays = dataItem.days.toMutableList()
-                    newItemDays.replaceElement(dayEvent, newDayEvent)
-                    dataList.replaceElement(dataItem, dataItem.updateDays(newItemDays))
-                }
-            }
     }
 
     private fun initFirstData() {
@@ -239,7 +217,7 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
         val currentMonth = monthStartDate.monthOfYear
         var weekStartDate = monthStartDate.startOfWeek(weekStartDay)
 
-        val days = mutableListOf<UICalendarDayWithEvents>()
+        val days = mutableListOf<UICalendarDay>()
         (0 until 6).forEach {
             days.addAll(generateWeekDays(weekStartDate, currentMonth))
             weekStartDate = weekStartDate.plusWeeks(1)
@@ -248,8 +226,8 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
         return UICalendarGroupDays.Month(YearMonth(monthStartDate), days)
     }
 
-    private fun generateWeekDays(weekStartDate: LocalDate, currentMonth: Int): List<UICalendarDayWithEvents> {
-        return (0 until 7).map { weekStartDate.plusDays(it) }.map { UICalendarDayWithEvents(it, it.monthOfYear == currentMonth) }
+    private fun generateWeekDays(weekStartDate: LocalDate, currentMonth: Int): List<UICalendarDay> {
+        return (0 until 7).map { weekStartDate.plusDays(it) }.map { UICalendarDay(it, it.monthOfYear == currentMonth) }
     }
 
     fun onBackPressed(): Boolean {

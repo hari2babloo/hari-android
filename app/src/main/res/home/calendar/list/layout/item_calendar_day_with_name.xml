@@ -11,7 +11,11 @@
 
         <variable
             name="calendarDay"
-            type="io.scal.ambi.ui.home.calendar.view.UICalendarDayWithEvents"/>
+            type="io.scal.ambi.ui.home.calendar.view.UICalendarDay"/>
+
+        <variable
+            name="calendarDayEvents"
+            type="io.scal.ambi.ui.home.calendar.view.UICalendarEvents"/>
 
         <variable
             name="weekNameVisibility"
@@ -43,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:calendarDay="@{calendarDay}"
+            app:calendarDayEvents="@{calendarDayEvents}"
             app:disabled="@{!calendarDay.enabled}"
             app:highLighted="@{selected ?? false}"
             />

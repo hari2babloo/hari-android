@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.notNullOrThrow
-import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.data.server.responses.ItemUser
 import io.scal.ambi.model.data.server.responses.Parceble
 import org.joda.time.DateTime
@@ -32,8 +31,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
 
     @SerializedName("poster")
     @Expose
-//    internal var poster: ItemUser? = null // todo uncomment this line
-    internal var poster: String? = null
+    internal var poster: ItemUser? = null
 
     @SerializedName("textContent")
     @Expose
@@ -127,12 +125,8 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
         )
     }
 
-    // todo change to actual user
     private fun parsePosterUser(): User {
-        return User.asStudent(poster.notNullOrThrow("id"),
-                              IconImageUser("http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg?quality=0.60"),
-                              "MIG35",
-                              "TEST")
+        return poster.notNullOrThrow("poster").parse()
     }
 }
 

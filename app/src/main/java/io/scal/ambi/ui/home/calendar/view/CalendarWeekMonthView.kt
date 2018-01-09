@@ -33,7 +33,7 @@ class CalendarWeekMonthView @JvmOverloads constructor(context: Context, attrs: A
             }
     }
 
-    internal fun updateDays(uiCalendarGroupDays: UICalendarGroupDays, selectedDay: LocalDate?) {
+    internal fun updateDays(uiCalendarGroupDays: UICalendarGroupDays, selectedDay: LocalDate?, events: Map<LocalDate, UICalendarEvents?>) {
         val days = uiCalendarGroupDays.days
         if (days.size % 7 != 0) {
             throw IllegalArgumentException("days should be a multiple of 7")
@@ -43,6 +43,7 @@ class CalendarWeekMonthView @JvmOverloads constructor(context: Context, attrs: A
             .forEachIndexed { index, uiCalendarDayWithEvents ->
                 val itemBinding = bindings[index]
                 itemBinding.calendarDay = uiCalendarDayWithEvents
+                itemBinding.calendarDayEvents = events[uiCalendarDayWithEvents.date]
                 itemBinding.weekNameVisibility = index < 7
                 itemBinding.selected = uiCalendarDayWithEvents.enabled && uiCalendarDayWithEvents.date == selectedDay
                 itemBinding.executePendingBindings()

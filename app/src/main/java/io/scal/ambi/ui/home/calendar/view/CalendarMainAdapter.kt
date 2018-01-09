@@ -8,39 +8,50 @@ import io.scal.ambi.R
 import io.scal.ambi.ui.global.base.adapter.DataObserverForAdapter
 import org.joda.time.LocalDate
 
-internal class CalendarMainAdapter(private val viewModel: CalendarViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class CalendarMainAdapter(private val viewModel: CalendarViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataObserver: DataObserverForAdapter<UICalendarGroupDays>? = null
-    private var selectedDay: LocalDate? = null
 
-    fun getItem(position: Int): UICalendarGroupDays {
+    private var selectedDay: LocalDate? = null
+    private var cachedEvents: Map<LocalDate, UICalendarEvents?> = emptyMap()
+
+    internal fun getItem(position: Int): UICalendarGroupDays {
         return dataObserver!!.getItem(position)
     }
 
     override fun getItemCount(): Int = dataObserver?.getItemCount() ?: 0
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override final fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.element_calendar_item_group, parent, false)
         view as CalendarWeekMonthView
         view.setup(viewModel)
         return BaseViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override final fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder as BaseViewHolder
-        holder.view.updateDays(dataObserver!!.getItem(position), selectedDay)
+        holder.view.updateDays(dataObserver!!.getItem(position), selectedDay, cachedEvents)
     }
 
-    fun setSelectedDay(selectedDay: LocalDate) {
+    internal fun setSelectedDay(selectedDay: LocalDate) {
         this.selectedDay = selectedDay
-        (0 until itemCount).forEach { notifyItemChanged(it) }
+        notifyDataUpdated()
     }
 
-    fun updateData(data: ObservableList<UICalendarGroupDays>) {
+    fun updateEvent(events: Map<LocalDate, UICalendarEvents?>) {
+        cachedEvents = events
+        notifyDataUpdated()
+    }
+
+    internal fun updateData(data: ObservableList<UICalendarGroupDays>) {
         dataObserver?.release()
 
         dataObserver = DataObserverForAdapter(data, this)
         notifyDataSetChanged()
+    }
+
+    internal fun notifyDataUpdated() {
+        (0 until itemCount).forEach { notifyItemChanged(it) }
     }
 
     private class BaseViewHolder(internal val view: CalendarWeekMonthView) : RecyclerView.ViewHolder(view)
