@@ -1,7 +1,10 @@
 package io.scal.ambi.ui.home.newsfeed.list.data
 
+import io.scal.ambi.entity.feed.Announcement
+import io.scal.ambi.entity.feed.NewsFeedItem
+import io.scal.ambi.entity.feed.NewsFeedItemPoll
+import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.entity.user.User
-import io.scal.ambi.entity.feed.*
 import io.scal.ambi.extensions.view.IconImage
 import org.joda.time.DateTime
 
@@ -17,7 +20,7 @@ sealed class UIModelFeed(open val uid: String,
                          open val comments: UIComments) {
 
     data class Message(override val uid: String,
-                       override val feedItem: NewsFeedItemMessage,
+                       override val feedItem: NewsFeedItem,
                        val author: User,
                        override val createdAtDateTime: DateTime,
                        override val locked: Boolean,

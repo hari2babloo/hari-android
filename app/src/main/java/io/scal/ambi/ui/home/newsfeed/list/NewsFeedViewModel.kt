@@ -10,7 +10,6 @@ import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
-import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.newsfeed.INewsFeedInteractor
@@ -71,12 +70,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
             override fun showData(show: Boolean, data: List<UIModelFeed>) {
                 if (show) {
-                    val currentState = dataState.get()
-                    if (currentState is NewsFeedDataState.Data) {
-                        currentState.newsFeed.replaceElements(data)
-                    } else {
-                        dataState.set(NewsFeedDataState.Data(OptimizedObservableArrayList(data)))
-                    }
+                    dataState.set(NewsFeedDataState.Data(OptimizedObservableArrayList(data)))
                 }
             }
         },
@@ -269,30 +263,40 @@ private fun UIModelFeed.changeLikes(newLikes: UILikes): UIModelFeed =
 
 private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
     when (this) {
-        is NewsFeedItemPoll    -> UIModelFeed.Poll(uid,
-                                                   this,
-                                                   user,
-                                                   pollCreatedAt,
-                                                   locked,
-                                                   pinned,
-                                                   announcement,
-                                                   questionText,
-                                                   choices.toPollVotedResult(),
-                                                   choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
-                                                   pollEndsTime,
-                                                   UILikes(currentUser, likes),
-                                                   UIComments(comments))
-        is NewsFeedItemMessage -> UIModelFeed.Message(uid,
-                                                      this,
-                                                      user,
-                                                      messageCreatedAt,
-                                                      locked,
-                                                      pinned,
-                                                      announcement,
-                                                      messageText,
-                                                      UILikes(currentUser, likes),
-                                                      UIComments(comments))
-        else                   -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
+        is NewsFeedItemPoll         -> UIModelFeed.Poll(uid,
+                                                        this,
+                                                        user,
+                                                        pollCreatedAt,
+                                                        locked,
+                                                        pinned,
+                                                        null,
+                                                        questionText,
+                                                        choices.toPollVotedResult(),
+                                                        choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
+                                                        pollEndsTime,
+                                                        UILikes(currentUser, likes),
+                                                        UIComments(comments))
+        is NewsFeedItemUpdate       -> UIModelFeed.Message(uid,
+                                                           this,
+                                                           user,
+                                                           messageCreatedAt,
+                                                           locked,
+                                                           pinned,
+                                                           null,
+                                                           messageText,
+                                                           UILikes(currentUser, likes),
+                                                           UIComments(comments))
+        is NewsFeedItemAnnouncement -> UIModelFeed.Message(uid,
+                                                           this,
+                                                           user,
+                                                           messageCreatedAt,
+                                                           locked,
+                                                           pinned,
+                                                           announcement,
+                                                           messageText,
+                                                           UILikes(currentUser, likes),
+                                                           UIComments(comments))
+        else                        -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
     }
 
 private fun List<PollChoice>.toPollVotedResult(): List<UIModelFeed.Poll.PollChoiceResult> {

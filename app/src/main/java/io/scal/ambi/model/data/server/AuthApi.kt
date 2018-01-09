@@ -8,10 +8,10 @@ import retrofit2.http.POST
 
 interface AuthApi {
 
-    @POST("auth")
+    @POST("v1/auth")
     fun login(@Body loginRequest: LoginRequest): Single<AuthResponse>
 
-    @POST("recover")
+    @POST("v1/recover")
     fun recover(): Completable
 }
 

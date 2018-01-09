@@ -13,7 +13,6 @@ data class NewsFeedItemPoll(val uid: String,
                             var pollCreatedAt: DateTime,
                             val pollEndsTime: DateTime?,
                             val audiences: List<Audience>,
-                            val announcement: Announcement?,
                             val comments: List<Comment>,
                             val likes: List<User>) : NewsFeedItem {
     init {

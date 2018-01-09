@@ -38,7 +38,7 @@ class UserResponse : BaseResponse<User>() {
                 throw IllegalStateException("can not parse Student from type: $type")
             }
             return User.asStudent(extractId(),
-                                  profilePicture?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
+                                  profilePicture?.url?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
                                   firstName.orEmpty(),
                                   lastName.orEmpty()
             )

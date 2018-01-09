@@ -10,10 +10,10 @@ import retrofit2.http.Query
 
 interface PostsApi {
 
-    @GET("posts/general")
+    @GET("v1/posts/general")
     fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 
-    @POST("poll-posts")
+    @POST("v1/poll-posts")
     fun postNewPoll(@Body body: PollCreationRequest): Single<PostPollCreationResponse>
 }
 

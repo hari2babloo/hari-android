@@ -17,7 +17,15 @@ class LoginViewModel @Inject constructor(private val context: Context,
                                          private val interactor: ILoginInteractor,
                                          private val rxSchedulersAbs: RxSchedulersAbs) : BaseViewModel(router) {
 
-    val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel("abhatnagar2@babson.edu", "password"))
+    val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel(null, null))
+
+    init {
+        if (true) {
+            stateModel.set(LoginStateModel.DataInputStateModel("Genevieve@ambi.work", "q1w2e3r4t5y6"))
+        } else {
+            stateModel.set(LoginStateModel.DataInputStateModel("abhatnagar2@babson.edu", "password"))
+        }
+    }
 
     fun login() {
         val currentStateModel = stateModel.get()

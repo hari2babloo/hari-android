@@ -40,8 +40,6 @@ android {
             crunchPngs true
 
             signingConfig signingConfigs.debug
-
-            buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/v1/"'
         }
         debug {
             debuggable true
@@ -52,7 +50,21 @@ android {
 
             versionNameSuffix "-debug"
 
-            buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/v1/"'
+        }
+    }
+
+    flavorDimensions "api"
+    productFlavors {
+        aws {
+            dimension "api"
+
+            buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/"'
+        }
+
+        arpit {
+            dimension "api"
+
+            buildConfigField "String", "MAIN_SERVER_URL", '"http://ambi-android-api.ngrok.io/api/"'
         }
     }
 

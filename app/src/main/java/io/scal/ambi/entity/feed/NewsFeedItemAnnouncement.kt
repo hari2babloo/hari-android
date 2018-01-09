@@ -4,14 +4,14 @@ import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.user.User
 import org.joda.time.DateTime
 
-data class NewsFeedItemMessage(val uid: String,
+class NewsFeedItemAnnouncement(val uid: String,
                                val pinned: Boolean,
                                val locked: Boolean,
                                val user: User,
                                val messageText: String,
                                var messageCreatedAt: DateTime,
                                val audiences: List<Audience>,
-                               val announcement: Announcement?,
+                               val announcement: Announcement,
                                val comments: List<Comment>,
                                val likes: List<User>) : NewsFeedItem {
 

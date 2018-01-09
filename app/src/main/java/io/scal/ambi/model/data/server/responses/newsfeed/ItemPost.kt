@@ -2,10 +2,7 @@ package io.scal.ambi.model.data.server.responses.newsfeed
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItem
-import io.scal.ambi.entity.feed.NewsFeedItemMessage
-import io.scal.ambi.entity.feed.NewsFeedItemPoll
+import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.extensions.view.IconImageUser
@@ -70,14 +67,20 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     @Expose
     internal var pollEndsTime: String? = null
 
+    //    announcement
+    @SerializedName("announcementType")
+    @Expose
+    internal var announcementType: String? = null
+
     override fun parse(): NewsFeedItem? {
         if (null == id || null == kind) {
             throw IllegalArgumentException("id and kind can not be null")
         }
         return when (kind) {
-            "PollPost"   -> parseAsPoll()
-            "UpdatePost" -> parseAsUpdate()
-            else         -> {
+            "PollPost"         -> parseAsPoll()
+            "UpdatePost"       -> parseAsUpdate()
+            "AnnouncementPost" -> parseAsAnnouncement()
+            else               -> {
                 Timber.d(IllegalArgumentException("unknown news feed item kind: $kind"), "we can not parse unknown type: $kind")
                 null
             }
@@ -94,23 +97,35 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                          createdAt.toDateTime("createdAt"),
                          pollEndsTime.toDateTimePollEnds("pollEndsTime"),
                          audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
-                         null,
                          comments?.map { it.parse() } ?: emptyList(),
                          likes?.map { it.parse() } ?: emptyList()
         )
 
     private fun parseAsUpdate(): NewsFeedItem =
-        NewsFeedItemMessage(id.notNullOrThrow("id"),
-                            pinned ?: false,
-                            locked ?: false,
-                            parsePosterUser(),
-                            textContent.orEmpty(),
-                            createdAt.toDateTime("createdAt"),
-                            audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
-                            null,
-                            comments?.map { it.parse() } ?: emptyList(),
-                            likes?.map { it.parse() } ?: emptyList()
+        NewsFeedItemUpdate(id.notNullOrThrow("id"),
+                           pinned ?: false,
+                           locked ?: false,
+                           parsePosterUser(),
+                           textContent.orEmpty(),
+                           createdAt.toDateTime("createdAt"),
+                           audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
+                           comments?.map { it.parse() } ?: emptyList(),
+                           likes?.map { it.parse() } ?: emptyList()
         )
+
+    private fun parseAsAnnouncement(): NewsFeedItem {
+        return NewsFeedItemAnnouncement(id.notNullOrThrow("id"),
+                                        pinned ?: false,
+                                        locked ?: false,
+                                        parsePosterUser(),
+                                        textContent.orEmpty(),
+                                        createdAt.toDateTime("createdAt"),
+                                        audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
+                                        announcementType.toAnnouncement(),
+                                        comments?.map { it.parse() } ?: emptyList(),
+                                        likes?.map { it.parse() } ?: emptyList()
+        )
+    }
 
     // todo change to actual user
     private fun parsePosterUser(): User {
@@ -120,6 +135,16 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                               "TEST")
     }
 }
+
+private fun String?.toAnnouncement(): Announcement =
+    when (this) {
+        "safety"    -> Announcement.SAFETY
+        "good news" -> Announcement.GOOD_NEWS
+        "event"     -> Announcement.EVENT
+        "tragedy"   -> Announcement.TRAGEDY
+        "general"   -> Announcement.GENERAL
+        else        -> throw IllegalArgumentException("unknown announcement type: $this")
+    }
 
 private fun String.toAudience(): Audience? =
     when (this) {

@@ -7,6 +7,6 @@ import retrofit2.http.Path
 
 interface StudentApi {
 
-    @GET("students/{userId}")
+    @GET("v1/students/{userId}")
     fun getStudentProfile(@Path("userId") userId: String): Single<UserResponse>
 }

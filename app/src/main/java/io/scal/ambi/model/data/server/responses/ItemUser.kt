@@ -24,7 +24,7 @@ open class ItemUser : Parceble<User> {
 
     @SerializedName("profilePicture")
     @Expose
-    var profilePicture: String? = null
+    var profilePicture: Picture? = null
 
     @SerializedName("type")
     @Expose
@@ -37,5 +37,16 @@ open class ItemUser : Parceble<User> {
 
     enum class Type {
         Student
+    }
+
+    class Picture {
+
+        @SerializedName("_id")
+        @Expose
+        var _id: String? = null
+
+        @SerializedName("url")
+        @Expose
+        var url: String? = null
     }
 }
