@@ -18,7 +18,7 @@ interface PostsApi {
     fun getStatusPostAsString(@Path("postId") postId: String): Single<String>
 
     @PUT("v1/update-posts/{postId}")
-    fun updateStatusPost(@Path("postId") postId: String, @Body body: String): Completable
+    fun updateStatusPost(@Path("postId") postId: String, @Header("Content-Type") contentType: String, @Body body: String): Completable
 
 
     @POST("v1/announcement-posts")
@@ -28,7 +28,7 @@ interface PostsApi {
     fun getAnnouncementPostAsString(@Path("postId") postId: String): Single<String>
 
     @PUT("v1/announcement-posts/{postId}")
-    fun updateAnnouncementPost(@Path("postId") postId: String, @Body body: String): Completable
+    fun updateAnnouncementPost(@Path("postId") postId: String, @Header("Content-Type") contentType: String, @Body body: String): Completable
 
 
     @POST("v1/poll-posts")
@@ -38,7 +38,7 @@ interface PostsApi {
     fun getPollPostAsString(@Path("postId") postId: String): Single<String>
 
     @PUT("v1/poll-posts/{postId}")
-    fun updatePollPost(@Path("postId") postId: String, @Body body: String): Completable
+    fun updatePollPost(@Path("postId") postId: String, @Header("Content-Type") contentType: String, @Body body: String): Completable
 }
 
 class StatusCreationRequest(val poster: String,

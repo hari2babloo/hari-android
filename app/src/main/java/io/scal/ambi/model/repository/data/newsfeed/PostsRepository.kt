@@ -109,6 +109,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                         else                        -> throw IllegalArgumentException("unknown news feed type")
                     }
                 val comments = postJsonItem.getAsJsonArray("comments")
+                postJsonItem.keySet().toMutableSet().forEach { postJsonItem.remove(it) }
                 val newComment = JsonObject()
                 newComment.add("user", JsonPrimitive(pair.first.uid))
                 newComment.add("text", JsonPrimitive(userCommentText))
@@ -117,13 +118,14 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                 newComments.add(newComment)
                 comments.iterator().forEach { newComments.add(it) }
                 postJsonItem.add("comments", newComments)
-                Pair(pair.first, postJson.toString())
+                Pair(pair.first, postJsonItem.toString())
             }
             .flatMap { pair ->
+                val contentType = "application/json"
                 when (newsFeedItem) {
-                    is NewsFeedItemUpdate       -> postsApi.updateStatusPost(newsFeedItem.uid, pair.second)
-                    is NewsFeedItemAnnouncement -> postsApi.updateAnnouncementPost(newsFeedItem.uid, pair.second)
-                    is NewsFeedItemPoll         -> postsApi.updatePollPost(newsFeedItem.uid, pair.second)
+                    is NewsFeedItemUpdate       -> postsApi.updateStatusPost(newsFeedItem.uid, contentType, pair.second)
+                    is NewsFeedItemAnnouncement -> postsApi.updateAnnouncementPost(newsFeedItem.uid, contentType, pair.second)
+                    is NewsFeedItemPoll         -> postsApi.updatePollPost(newsFeedItem.uid, contentType, pair.second)
                     else                        -> throw IllegalArgumentException("unknown news feed type")
                 }
                     .andThen(Single.just(pair.first))
