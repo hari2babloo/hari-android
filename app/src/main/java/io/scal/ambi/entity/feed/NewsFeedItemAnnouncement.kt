@@ -11,7 +11,7 @@ class NewsFeedItemAnnouncement(val uid: String,
                                val messageText: String,
                                var messageCreatedAt: DateTime,
                                val audiences: List<Audience>,
-                               val announcement: Announcement,
+                               val announcementType: AnnouncementType,
                                val comments: List<Comment>,
                                val likes: List<User>) : NewsFeedItem {
 

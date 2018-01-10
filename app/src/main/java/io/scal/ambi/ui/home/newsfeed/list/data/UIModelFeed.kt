@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.list.data
 
-import io.scal.ambi.entity.feed.Announcement
+import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollChoice
@@ -15,7 +15,7 @@ sealed class UIModelFeed(open val uid: String,
                          open val createdAtDateTime: DateTime,
                          open val locked: Boolean,
                          open val pinned: Boolean,
-                         open val announcement: Announcement?,
+                         open val announcementType: AnnouncementType?,
                          open val likes: UILikes,
                          open val comments: UIComments) {
 
@@ -25,11 +25,11 @@ sealed class UIModelFeed(open val uid: String,
                        override val createdAtDateTime: DateTime,
                        override val locked: Boolean,
                        override val pinned: Boolean,
-                       override val announcement: Announcement?,
+                       override val announcementType: AnnouncementType?,
                        val message: String,
                        override val likes: UILikes,
                        override val comments: UIComments) :
-        UIModelFeed(uid, feedItem, author.name, author.avatar, createdAtDateTime, locked, pinned, announcement, likes, comments)
+        UIModelFeed(uid, feedItem, author.name, author.avatar, createdAtDateTime, locked, pinned, announcementType, likes, comments)
 
     data class Poll(override val uid: String,
                     override val feedItem: NewsFeedItemPoll,
@@ -37,14 +37,14 @@ sealed class UIModelFeed(open val uid: String,
                     override val createdAtDateTime: DateTime,
                     override val locked: Boolean,
                     override val pinned: Boolean,
-                    override val announcement: Announcement?,
+                    override val announcementType: AnnouncementType?,
                     val question: String,
                     val choices: List<PollChoiceResult>,
                     val userChoice: PollChoice?,
                     val pollEndsDateTime: DateTime?,
                     override val likes: UILikes,
                     override val comments: UIComments) :
-        UIModelFeed(uid, feedItem, author.name, author.avatar, createdAtDateTime, locked, pinned, announcement, likes, comments) {
+        UIModelFeed(uid, feedItem, author.name, author.avatar, createdAtDateTime, locked, pinned, announcementType, likes, comments) {
 
         init {
             if (choices.isEmpty()) {
@@ -62,12 +62,12 @@ sealed class UIModelFeed(open val uid: String,
                     override val createdAtDateTime: DateTime,
                     override val locked: Boolean,
                     override val pinned: Boolean,
-                    override val announcement: Announcement?,
+                    override val announcementType: AnnouncementType?,
                     val message: String,
                     val linkUri: String,
                     val linkPreviewImage: IconImage?,
                     val linkTitle: String,
                     override val likes: UILikes,
                     override val comments: UIComments) :
-        UIModelFeed(uid, feedItem, actor, icon, createdAtDateTime, locked, pinned, announcement, likes, comments)
+        UIModelFeed(uid, feedItem, actor, icon, createdAtDateTime, locked, pinned, announcementType, likes, comments)
 }

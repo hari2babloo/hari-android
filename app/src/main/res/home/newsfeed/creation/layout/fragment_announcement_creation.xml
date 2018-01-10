@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationViewModel"/>
+            type="io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationViewModel"/>
 
     </data>
 
@@ -102,71 +102,18 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="8dp"
                     android:background="@null"
-                    android:hint="@string/creation_poll_question_hint"
+                    android:gravity="top|start"
+                    android:hint="@string/status_update_text_hint"
                     android:inputType="textAutoComplete|textAutoCorrect|textCapSentences|textMultiLine|textLongMessage"
                     android:lineSpacingExtra="4sp"
+                    android:minLines="4"
                     android:singleLine="false"
-                    android:text="@={viewModel.dataStateModel.questionText.data}"
+                    android:text="@={viewModel.dataStateModel.announcementText.data}"
                     android:textColor="#8a333333"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/c_as_user_selection"/>
-
-                <LinearLayout
-                    android:id="@+id/c_questions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="17dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/et_question"
-                    app:viewGroupModels="@{viewModel.dataStateModel.choices}"
-                    app:viewModelLayoutId="@{@layout/item_poll_choice}"/>
-
-                <TextView
-                    android:id="@+id/tv_poll_ends"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="14dp"
-                    android:text="@string/creation_polls_ends"
-                    android:textColor="#9b9b9b"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/c_questions"/>
-
-                <Spinner
-                    android:id="@+id/s_poll_ends"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="7dp"
-                    android:background="@drawable/bg_creation_action_selector"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_poll_ends"
-                    app:layout_constraintStart_toEndOf="@+id/tv_poll_ends"
-                    app:layout_constraintTop_toBottomOf="@+id/c_questions"
-                    app:layout_constraintTop_toTopOf="@+id/tv_poll_ends"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:onClick="@{(view) -> viewModel.addNewChoice()}"
-                    android:paddingBottom="4dp"
-                    android:paddingTop="4dp"
-                    android:text="@string/creation_add_choice"
-                    android:textColor="#404040"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_poll_ends"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/c_questions"
-                    app:layout_constraintTop_toTopOf="@+id/tv_poll_ends"
-                    />
 
             </android.support.constraint.ConstraintLayout>
 

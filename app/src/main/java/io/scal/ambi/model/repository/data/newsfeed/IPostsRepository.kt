@@ -1,6 +1,7 @@
 package io.scal.ambi.model.repository.data.newsfeed
 
 import io.reactivex.Single
+import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
 import org.joda.time.Duration
@@ -9,20 +10,23 @@ interface IPostsRepository {
 
     fun loadPostsGeneral(lastPostTime: Long?): Single<List<NewsFeedItem>>
 
-    fun postNewPoll(pinned: Boolean,
-                    locked: Boolean,
-                    asUserUid: String,
-                    questionText: String,
-                    choices: List<String>,
-                    duration: Duration?,
-                    audience: List<Audience>,
-                    hosts: List<Host>): Single<NewsFeedItem>
-
     fun postNewStatus(pinned: Boolean,
                       locked: Boolean,
                       asUserUid: String,
                       statusText: String,
                       audiences: List<Audience>): Single<NewsFeedItem>
 
-    data class Host(val id: String, val kind: PostHostKind)
+    fun postNewAnnouncement(pinned: Boolean,
+                            locked: Boolean,
+                            asUserUid: String,
+                            statusText: String,
+                            announcementType: AnnouncementType,
+                            audiences: List<Audience>): Single<NewsFeedItem>
+
+    fun postNewPoll(pinned: Boolean,
+                    locked: Boolean,
+                    asUserUid: String,
+                    questionText: String,
+                    choices: List<String>,
+                    duration: Duration?): Single<NewsFeedItem>
 }

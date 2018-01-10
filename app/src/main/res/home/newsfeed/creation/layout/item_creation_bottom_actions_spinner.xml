@@ -30,13 +30,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="@{item.titleId}"
             android:textColor="#494949"
             android:textSize="10sp"
             app:customFontName="@{@string/font_pantra_bold}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_icon"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:textResId="@{item.titleId}"/>
 
     </android.support.constraint.ConstraintLayout>
 

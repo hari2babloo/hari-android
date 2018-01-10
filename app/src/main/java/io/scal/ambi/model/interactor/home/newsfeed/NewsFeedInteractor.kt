@@ -88,7 +88,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                                  "test message $page",
                                  DateTime.now(),
                                  listOf(Audience.STAFF),
-                                 Announcement.EVENT,
+                                 AnnouncementType.EVENT,
                                  emptyList(),
                                  emptyList()
         ),
@@ -99,7 +99,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                                  "just an other message $page",
                                  DateTime(2017, 12, 7, 15, 20),
                                  listOf(Audience.STAFF),
-                                 Announcement.SAFETY,
+                                 AnnouncementType.SAFETY,
                                  emptyList(),
                                  listOf(currentUser)
         ),
@@ -110,7 +110,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                                  "big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. big text message. ",
                                  DateTime(2017, 12, 25, 15, 0),
                                  listOf(Audience.STAFF),
-                                 Announcement.GENERAL,
+                                 AnnouncementType.GENERAL,
                                  emptyList(),
                                  listOf(currentUser, currentUser, currentUser, currentUser, currentUser, currentUser)
         ),
@@ -121,7 +121,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                                  "",
                                  DateTime(2017, 10, 7, 15, 0),
                                  listOf(Audience.STAFF),
-                                 Announcement.GOOD_NEWS,
+                                 AnnouncementType.GOOD_NEWS,
                                  listOf(Comment("$page ste 1", currentUser,
                                                 "just comment!!!",
                                                 DateTime.now())),
@@ -134,7 +134,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                                  "test message",
                                  DateTime(2017, 10, 1, 15, 0),
                                  listOf(Audience.STAFF),
-                                 Announcement.GOOD_NEWS,
+                                 AnnouncementType.GOOD_NEWS,
             /*"https://www.nytimes.com/2017/12/05/opinion/does-president-trump-want-to-negotiate-middle-east-peace.html?action=click&pgtype=Homepage&clickSource=story-heading&module=opinion-c-col-left-region&region=opinion-c-col-left-region&WT.nav=opinion-c-col-left-region"
            , IconImage("https://static01.nyt.com/images/2017/12/06/opinion/06wed1/06wed1-superJumbo.jpg"),
            "Does President Trump Want to Negotiate Middle East Peace?",

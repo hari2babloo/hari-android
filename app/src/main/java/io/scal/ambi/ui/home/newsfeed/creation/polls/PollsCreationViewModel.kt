@@ -5,10 +5,9 @@ import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.entity.user.User
-import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.entity.feed.PollEndsTime
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -38,9 +37,7 @@ class PollsCreationViewModel @Inject constructor(private val context: Context,
         observePostAction()
         observePostActionValidation()
 
-        val audiences = interactor.availableAudiences.toMutableList()
-        audiences.add(0, Audience.EVERYONE)
-        bottomViewModel.updateAudiences(audiences)
+        bottomViewModel.updateAudiences(emptyList())
         bottomViewModel.attachmentActionsEnabled.set(false)
     }
 

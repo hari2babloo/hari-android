@@ -1,7 +1,6 @@
 package io.scal.ambi.model.interactor.home.newsfeed.creation
 
 import io.reactivex.Single
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
@@ -9,18 +8,12 @@ import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.toServerResponseException
 import javax.inject.Inject
 
-class StatusUpdateInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository,
-                                                 private val postsRepository: IPostsRepository) : IStatusUpdateInteractor {
+class StatusUpdateInteractor @Inject constructor(localUserDataRepository: ILocalUserDataRepository,
+                                                 private val postsRepository: IPostsRepository) :
+    BaseCreationInteractor(localUserDataRepository),
+    IStatusUpdateInteractor {
 
     override val availableAudiences: List<Audience> = listOf(Audience.STUDENTS, Audience.FACULTY, Audience.STAFF)
-
-    override fun loadAsUsers(): Single<List<User>> {
-        // todo load as users
-        return localUserDataRepository.observeCurrentUser()
-            .map { listOf(it) }
-            .firstOrError()
-    }
-
 
     override fun updateStatus(statusUpdate: StatusUpdate): Single<NewsFeedItem> {
         val audiences =

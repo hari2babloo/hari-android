@@ -292,7 +292,7 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                            messageCreatedAt,
                                                            locked,
                                                            pinned,
-                                                           announcement,
+                                                           announcementType,
                                                            messageText,
                                                            UILikes(currentUser, likes),
                                                            UIComments(comments))

@@ -5,15 +5,15 @@ import android.util.AttributeSet
 import android.widget.RelativeLayout
 import io.scal.ambi.R
 
-class AspectRelativeLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
-    RelativeLayout(context, attrs, defStyleAttr, defStyleRes) {
+class AspectRelativeLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    RelativeLayout(context, attrs, defStyleAttr) {
 
     private val aspectWidth: Int
     private val aspectHeight: Int
 
     init {
         if (null != attrs) {
-            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.AspectRelativeLayout, defStyleAttr, defStyleRes)
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.AspectRelativeLayout)
 
             aspectWidth = typedArray.getInteger(R.styleable.AspectRelativeLayout_aspect_width, 1)
             aspectHeight = typedArray.getInteger(R.styleable.AspectRelativeLayout_aspect_height, 1)

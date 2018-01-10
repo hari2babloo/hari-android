@@ -41,8 +41,8 @@
         <include
             android:id="@+id/v_announcement_header"
             layout="@layout/item_news_feed_announcement"
-            app:announcement="@{element.announcement}"
-            app:visibility="@{null != element.announcement}"/>
+            app:announcementType="@{element.announcementType}"
+            app:visibility="@{null != element.announcementType}"/>
 
         <include
             android:id="@+id/c_pin_lock"

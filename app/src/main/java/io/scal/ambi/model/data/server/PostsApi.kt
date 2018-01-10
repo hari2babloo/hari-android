@@ -13,15 +13,35 @@ interface PostsApi {
     @GET("v1/posts/general?populate=profilePicture")
     fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 
+    @POST("v1/update-posts")
+    fun postNewStatus(@Body body: StatusCreationRequest): Single<PostPollCreationResponse>
+
+    @POST("v1/announcement-posts")
+    fun postNewAnnouncement(@Body body: AnnouncementCreationRequest): Single<PostPollCreationResponse>
+
     @POST("v1/poll-posts")
     fun postNewPoll(@Body body: PollCreationRequest): Single<PostPollCreationResponse>
 }
+
+class StatusCreationRequest(val poster: String,
+                            val isPinned: Boolean,
+                            val isLocked: Boolean,
+                            val textContent: String,
+                            val hosts: List<Host>,
+                            val audience: List<String>)
+
+class AnnouncementCreationRequest(val poster: String,
+                                  val isPinned: Boolean,
+                                  val isLocked: Boolean,
+                                  val textContent: String,
+                                  val hosts: List<Host>,
+                                  val announcementType: String,
+                                  val audience: List<String>)
 
 class PollCreationRequest(val poster: String,
                           val isPinned: Boolean,
                           val isLocked: Boolean,
                           val textContent: String,
-                          val audience: List<String>,
                           val answerChoices: List<ChoiceRequest>,
                           val pollEnds: Long?,
                           val hosts: List<Host>)

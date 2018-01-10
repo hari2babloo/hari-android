@@ -17,6 +17,7 @@ import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.FragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
+import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationFragment
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationFragment
 import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateFragment
 import kotlin.reflect.KClass
@@ -60,7 +61,7 @@ class FeedItemCreationActivity : BaseToolbarActivity<FeedItemCreationViewModel, 
             .map {
                 when (it) {
                     FeedItemCreation.STATUS       -> StatusUpdateFragment::class
-                    FeedItemCreation.ANNOUNCEMENT -> Fragment::class
+                    FeedItemCreation.ANNOUNCEMENT -> AnnouncementCreationFragment::class
                     FeedItemCreation.POLL         -> PollsCreationFragment::class
                 }
             }

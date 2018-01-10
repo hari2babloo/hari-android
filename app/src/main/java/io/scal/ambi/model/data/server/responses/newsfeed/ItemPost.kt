@@ -65,7 +65,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     @Expose
     internal var pollEndsTime: String? = null
 
-    //    announcement
+    //    announcementType
     @SerializedName("announcementType")
     @Expose
     internal var announcementType: String? = null
@@ -130,14 +130,14 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     }
 }
 
-private fun String?.toAnnouncement(): Announcement =
+private fun String?.toAnnouncement(): AnnouncementType =
     when (this) {
-        "safety"    -> Announcement.SAFETY
-        "good news" -> Announcement.GOOD_NEWS
-        "event"     -> Announcement.EVENT
-        "tragedy"   -> Announcement.TRAGEDY
-        "general"   -> Announcement.GENERAL
-        else        -> throw IllegalArgumentException("unknown announcement type: $this")
+        "safety"    -> AnnouncementType.SAFETY
+        "good news" -> AnnouncementType.GOOD_NEWS
+        "event"     -> AnnouncementType.EVENT
+        "tragedy"   -> AnnouncementType.TRAGEDY
+        "general"   -> AnnouncementType.GENERAL
+        else        -> throw IllegalArgumentException("unknown announcementType type: $this")
     }
 
 private fun String.toAudience(): Audience? =

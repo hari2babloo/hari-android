@@ -6,6 +6,8 @@ import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
 import io.scal.ambi.ui.home.calendar.list.CalendarListModule
 import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.chat.list.ChatListModule
+import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationFragment
+import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationModule
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomModule
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationFragment
 import io.scal.ambi.ui.home.newsfeed.creation.polls.PollsCreationModule
@@ -25,6 +27,9 @@ abstract class FragmentBuilder {
 
     @ContributesAndroidInjector(modules = [StatusUpdateModule::class, CreationBottomModule::class])
     abstract fun bindStatusUpdateFragment(): StatusUpdateFragment
+
+    @ContributesAndroidInjector(modules = [AnnouncementCreationModule::class, CreationBottomModule::class])
+    abstract fun bindAnnouncementCreationFragment(): AnnouncementCreationFragment
 
     @ContributesAndroidInjector(modules = [ChatListModule::class])
     abstract fun bindChatListFragment(): ChatListFragment

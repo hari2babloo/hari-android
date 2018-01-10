@@ -17,6 +17,12 @@
     <string name="news_feed_announcement_tragedy">Tragedy announcement</string>
     <string name="news_feed_announcement_event">Event announcement</string>
 
+    <string name="news_feed_announcement_safety_small">Safety</string>
+    <string name="news_feed_announcement_good_news_small">Excited</string>
+    <string name="news_feed_announcement_general_small">General</string>
+    <string name="news_feed_announcement_tragedy_small">Tragedy</string>
+    <string name="news_feed_announcement_event_small">Event</string>
+
     <string name="news_feed_status_update">status update</string>
     <string name="news_feed_status_update_description">share something interesting…</string>
 

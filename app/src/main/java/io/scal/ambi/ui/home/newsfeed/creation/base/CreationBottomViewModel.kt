@@ -6,6 +6,7 @@ import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
@@ -15,8 +16,13 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
 
     val attachmentActionsEnabled = ObservableBoolean(true)
 
+    val announcementListVisibility = ObservableBoolean(false)
+    val announcementList = ObservableArrayList<AnnouncementType>()
+    val selectedAnnouncementType = ObservableField<AnnouncementType>()
+
     val audienceList = ObservableArrayList<Audience>()
     val selectedAudience = ObservableField<Audience>()
+
     val postEnable = ObservableBoolean(false)
 
     val postAction: Observable<Any> = PublishSubject.create()
@@ -26,13 +32,33 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
     }
 
     fun updateAudiences(availableAudiences: List<Audience>) {
-        selectedAudience.set(null)
+        updateListSelectionData(availableAudiences, audienceList, selectedAudience)
+    }
 
-        audienceList.clear()
-        audienceList.addAll(availableAudiences)
+    fun updateAnnouncementTypes(announcementTypes: List<AnnouncementType>) {
+        updateListSelectionData(announcementTypes, announcementList, selectedAnnouncementType)
+    }
 
-        if (availableAudiences.isNotEmpty()) {
-            selectedAudience.set(availableAudiences.first())
+    fun onAnnouncementTypeClicked(elementIndex: Int) {
+        if (elementIndex >= 0 && elementIndex < announcementList.size) {
+            selectedAnnouncementType.set(announcementList[elementIndex])
+        }
+    }
+
+    fun switchAnnouncementTypesVisibility() {
+        announcementListVisibility.set(!announcementListVisibility.get())
+    }
+
+    private fun <T> updateListSelectionData(newData: List<T>,
+                                            observableList: ObservableArrayList<T>,
+                                            selectedItem: ObservableField<T>) {
+        selectedItem.set(null)
+
+        observableList.clear()
+        observableList.addAll(newData)
+
+        if (observableList.isNotEmpty()) {
+            selectedItem.set(observableList.first())
         }
     }
 }
