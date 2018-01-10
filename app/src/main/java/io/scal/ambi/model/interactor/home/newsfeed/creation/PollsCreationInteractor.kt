@@ -1,7 +1,6 @@
 package io.scal.ambi.model.interactor.home.newsfeed.creation
 
-import io.reactivex.Single
-import io.scal.ambi.entity.feed.NewsFeedItem
+import io.reactivex.Completable
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
@@ -13,7 +12,7 @@ class PollsCreationInteractor @Inject constructor(localUserDataRepository: ILoca
     BaseCreationInteractor(localUserDataRepository),
     IPollsCreationInteractor {
 
-    override fun postPoll(pollCreation: PollCreation): Single<NewsFeedItem> {
+    override fun postPoll(pollCreation: PollCreation): Completable {
         val duration =
             if (pollCreation.pollDuration is PollEndsTime.Never) {
                 null
@@ -29,6 +28,6 @@ class PollsCreationInteractor @Inject constructor(localUserDataRepository: ILoca
                          pollCreation.choices.map { it.text },
                          duration
             )
-            .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
+            .onErrorResumeNext { t -> Completable.error(t.toServerResponseException()) }
     }
 }

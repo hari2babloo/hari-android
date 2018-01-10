@@ -1,9 +1,8 @@
 package io.scal.ambi.model.interactor.home.newsfeed.creation
 
-import io.reactivex.Single
+import io.reactivex.Completable
 import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.toServerResponseException
@@ -21,7 +20,7 @@ class AnnouncementCreationInteractor @Inject constructor(localUserDataRepository
                                                                              AnnouncementType.GOOD_NEWS,
                                                                              AnnouncementType.EVENT)
 
-    override fun createAnnouncement(announcementCreation: AnnouncementCreation): Single<NewsFeedItem> {
+    override fun createAnnouncement(announcementCreation: AnnouncementCreation): Completable {
         val audiences =
             if (announcementCreation.audiences == Audience.EVERYONE) {
                 availableAudiences
@@ -37,6 +36,6 @@ class AnnouncementCreationInteractor @Inject constructor(localUserDataRepository
                                  announcementCreation.announcementType,
                                  audiences
             )
-            .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
+            .onErrorResumeNext { t -> Completable.error(t.toServerResponseException()) }
     }
 }

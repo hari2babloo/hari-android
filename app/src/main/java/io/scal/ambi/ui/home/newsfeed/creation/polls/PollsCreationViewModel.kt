@@ -108,13 +108,12 @@ class PollsCreationViewModel @Inject constructor(private val context: Context,
                                                     currentState.selectedAsUser,
                                                     currentState.questionText.get(),
                                                     currentState.choices.map { it.choiceInput.get() }.map { PollChoice.createNew(it) },
-                                                    currentState.selectedPollDuration,
-                                                    bottomViewModel.selectedAudience.get())
+                                                    currentState.selectedPollDuration)
 
                     interactor.postPoll(pollToCreate)
-                        .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                        .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                         .subscribe({
-                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, it)
+                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, null)
                                    },
                                    { t ->
                                        handleError(t)

@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModel
 import android.content.Context
 import io.reactivex.disposables.CompositeDisposable
 import io.scal.ambi.R
+import io.scal.ambi.model.data.server.ServerResponseException
+import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.BetterRouter
 import timber.log.Timber
 
@@ -13,6 +15,9 @@ abstract class BaseViewModel(protected val router: BetterRouter) : ViewModel() {
 
     protected fun handleError(throwable: Throwable) {
         Timber.e(throwable)
+        if (throwable is ServerResponseException && (throwable.requiresLogin || throwable.notFound || throwable.notAuthorized)) {
+            router.newRootScreen(NavigateTo.LOGIN)
+        }
     }
 
     open fun onBackPressed(): Boolean {

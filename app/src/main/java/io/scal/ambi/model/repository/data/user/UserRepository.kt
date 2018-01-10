@@ -23,7 +23,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi) : IUserRe
         return userApi.getUserProfile(userId)
             .map { it.parse() }
             .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
-            .onErrorResumeNext { t -> Single.error(IllegalAccessException("todo remove me")) }
+//            .onErrorResumeNext { t -> Single.error(IllegalAccessException("todo remove me")) }
     }
 }
 

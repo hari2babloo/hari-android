@@ -1,7 +1,7 @@
 package io.scal.ambi.model.data.server
 
+import io.reactivex.Completable
 import io.reactivex.Single
-import io.scal.ambi.model.data.server.responses.newsfeed.PostPollCreationResponse
 import io.scal.ambi.model.data.server.responses.newsfeed.PostsResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,13 +14,13 @@ interface PostsApi {
     fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 
     @POST("v1/update-posts")
-    fun postNewStatus(@Body body: StatusCreationRequest): Single<PostPollCreationResponse>
+    fun postNewStatus(@Body body: StatusCreationRequest): Completable
 
     @POST("v1/announcement-posts")
-    fun postNewAnnouncement(@Body body: AnnouncementCreationRequest): Single<PostPollCreationResponse>
+    fun postNewAnnouncement(@Body body: AnnouncementCreationRequest): Completable
 
     @POST("v1/poll-posts")
-    fun postNewPoll(@Body body: PollCreationRequest): Single<PostPollCreationResponse>
+    fun postNewPoll(@Body body: PollCreationRequest): Completable
 }
 
 class StatusCreationRequest(val poster: String,

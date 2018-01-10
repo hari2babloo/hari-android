@@ -44,12 +44,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
             selectedAudience.set(audience)
         }
     }
-    private val newsFeedItemCreationListener = ResultListener {
-        if (it is NewsFeedItem) {
-            // todo may be should add it here and do not do a full refresh?
-            paginator.forceRefresh()
-        }
-    }
+    private val newsFeedItemCreationListener = ResultListener { paginator.forceRefresh() }
 
     private val paginator = createPaginator(
         { page -> executeLoadNextPage(page) },

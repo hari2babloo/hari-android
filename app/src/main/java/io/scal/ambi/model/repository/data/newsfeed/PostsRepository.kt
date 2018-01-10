@@ -1,5 +1,6 @@
 package io.scal.ambi.model.repository.data.newsfeed
 
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
@@ -19,7 +20,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                locked: Boolean,
                                asUserUid: String,
                                statusText: String,
-                               audiences: List<Audience>): Single<NewsFeedItem> {
+                               audiences: List<Audience>): Completable {
         return postsApi
             .postNewStatus(
                 StatusCreationRequest(asUserUid,
@@ -30,7 +31,6 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                       audiences.map { it.toServerName() }
                 )
             )
-            .map { it.parse() }
     }
 
     override fun postNewAnnouncement(pinned: Boolean,
@@ -38,7 +38,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                      asUserUid: String,
                                      statusText: String,
                                      announcementType: AnnouncementType,
-                                     audiences: List<Audience>): Single<NewsFeedItem> {
+                                     audiences: List<Audience>): Completable {
         return postsApi
             .postNewAnnouncement(
                 AnnouncementCreationRequest(asUserUid,
@@ -50,7 +50,6 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                             audiences.map { it.toServerName() }
                 )
             )
-            .map { it.parse() }
     }
 
     override fun postNewPoll(pinned: Boolean,
@@ -58,7 +57,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                              asUserUid: String,
                              questionText: String,
                              choices: List<String>,
-                             duration: Duration?): Single<NewsFeedItem> {
+                             duration: Duration?): Completable {
         return postsApi
             .postNewPoll(
                 PollCreationRequest(asUserUid,
@@ -70,7 +69,6 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                     listOf(Host(PostHostKind.USER.toServerName(), asUserUid))
                 )
             )
-            .map { it.parse() }
     }
 }
 

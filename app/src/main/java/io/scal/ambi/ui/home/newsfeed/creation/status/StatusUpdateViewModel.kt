@@ -3,8 +3,8 @@ package io.scal.ambi.ui.home.newsfeed.creation.status
 import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.Audience
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -79,9 +79,9 @@ class StatusUpdateViewModel @Inject constructor(router: BetterRouter,
                                                     bottomViewModel.selectedAudience.get())
 
                     interactor.updateStatus(pollToCreate)
-                        .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                        .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                         .subscribe({
-                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, it)
+                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, null)
                                    },
                                    { t ->
                                        handleError(t)

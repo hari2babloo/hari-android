@@ -1,8 +1,7 @@
 package io.scal.ambi.model.interactor.home.newsfeed.creation
 
-import io.reactivex.Single
+import io.reactivex.Completable
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.toServerResponseException
@@ -15,7 +14,7 @@ class StatusUpdateInteractor @Inject constructor(localUserDataRepository: ILocal
 
     override val availableAudiences: List<Audience> = listOf(Audience.STUDENTS, Audience.FACULTY, Audience.STAFF)
 
-    override fun updateStatus(statusUpdate: StatusUpdate): Single<NewsFeedItem> {
+    override fun updateStatus(statusUpdate: StatusUpdate): Completable {
         val audiences =
             if (statusUpdate.audiences == Audience.EVERYONE) {
                 availableAudiences
@@ -30,6 +29,6 @@ class StatusUpdateInteractor @Inject constructor(localUserDataRepository: ILocal
                            statusUpdate.statusText,
                            audiences
             )
-            .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
+            .onErrorResumeNext { t -> Completable.error(t.toServerResponseException()) }
     }
 }

@@ -82,9 +82,9 @@ class AnnouncementCreationViewModel @Inject constructor(router: BetterRouter,
                                                             bottomViewModel.selectedAudience.get())
 
                     interactor.createAnnouncement(pollToCreate)
-                        .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                        .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                         .subscribe({
-                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, it)
+                                       router.exitWithResult(ResultCodes.NEWS_FEED_ITEM_CREATED, null)
                                    },
                                    { t ->
                                        handleError(t)

@@ -1,9 +1,9 @@
 package io.scal.ambi.model.interactor.home.newsfeed.creation
 
+import io.reactivex.Completable
 import io.reactivex.Single
-import io.scal.ambi.entity.user.User
 import io.scal.ambi.entity.feed.Audience
-import io.scal.ambi.entity.feed.NewsFeedItem
+import io.scal.ambi.entity.user.User
 
 interface IStatusUpdateInteractor {
 
@@ -11,5 +11,5 @@ interface IStatusUpdateInteractor {
 
     fun loadAsUsers(): Single<List<User>>
 
-    fun updateStatus(statusUpdate: StatusUpdate): Single<NewsFeedItem>
+    fun updateStatus(statusUpdate: StatusUpdate): Completable
 }
