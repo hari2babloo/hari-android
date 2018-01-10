@@ -5,6 +5,7 @@ import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import io.scal.ambi.model.repository.toServerResponseException
+import org.joda.time.DateTime
 import javax.inject.Inject
 
 class PollsCreationInteractor @Inject constructor(localUserDataRepository: ILocalUserDataRepository,
@@ -26,7 +27,7 @@ class PollsCreationInteractor @Inject constructor(localUserDataRepository: ILoca
                          pollCreation.selectedAsUser.uid,
                          pollCreation.questionText,
                          pollCreation.choices.map { it.text },
-                         duration
+                         duration?.let { DateTime.now().plus(it) }
             )
             .onErrorResumeNext { t -> Completable.error(t.toServerResponseException()) }
     }

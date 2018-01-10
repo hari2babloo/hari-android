@@ -25,10 +25,10 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerViewAdapterDelegat
         }
 
     init {
-        addDelegate(NewsFeedAdapterHeaderDelegateBase(headerElement, viewModel))
-        addDelegate(NewsFeedAdapterMessageDelegateBase(viewModel))
-        addDelegate(NewsFeedAdapterPollDelegateBase(viewModel))
-        addDelegate(NewsFeedAdapterLinkDelegateBase(viewModel))
+        addDelegate(NewsFeedAdapterHeaderDelegate(headerElement, viewModel))
+        addDelegate(NewsFeedAdapterMessageDelegate(viewModel))
+        addDelegate(NewsFeedAdapterPollDelegate(viewModel))
+        addDelegate(NewsFeedAdapterLinkDelegate(viewModel))
         addDelegate(AdapterDelegateStaticView(footerElement, R.layout.item_adapter_progress_footer))
 
         setHasStableIds(true)

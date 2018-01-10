@@ -6,7 +6,7 @@ import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.model.data.server.*
-import org.joda.time.Duration
+import org.joda.time.DateTime
 import javax.inject.Inject
 
 class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPostsRepository {
@@ -57,7 +57,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                              asUserUid: String,
                              questionText: String,
                              choices: List<String>,
-                             duration: Duration?): Completable {
+                             pollEndsTime: DateTime?): Completable {
         return postsApi
             .postNewPoll(
                 PollCreationRequest(asUserUid,
@@ -65,7 +65,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi) : IPos
                                     locked,
                                     questionText,
                                     choices.map { ChoiceRequest(it) },
-                                    duration?.millis,
+                                    pollEndsTime?.millis,
                                     listOf(Host(PostHostKind.USER.toServerName(), asUserUid))
                 )
             )

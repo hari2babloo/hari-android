@@ -30,7 +30,7 @@ class PollsCreationViewModel @Inject constructor(private val context: Context,
     val progressStateModel = ObservableField<PollsCreationProgressState>(PollsCreationProgressState.Progress)
     val errorStateModel = ObservableField<PollsCreationErrorState>(PollsCreationErrorState.NoError)
 
-    private val allPollEnds = listOf(PollEndsTime.OneDay, PollEndsTime.OneWeek, PollEndsTime.CustomDefault(), PollEndsTime.Never)
+    private val allPollEnds = listOf(PollEndsTime.OneDay, PollEndsTime.OneWeek, PollEndsTime.UserCustomDefault, PollEndsTime.Never)
 
     init {
         loadAsUsers()
@@ -74,9 +74,9 @@ class PollsCreationViewModel @Inject constructor(private val context: Context,
         val currentState = dataStateModel.get()
         if (currentState is PollsCreationDataState.Data) {
             val newPollDurations =
-                if (pollEndsTime is PollEndsTime.Custom) {
+                if (pollEndsTime is PollEndsTime.UserCustom) {
                     currentState.pollDurations
-                        .map { if (it is PollEndsTime.Custom) pollEndsTime else it }
+                        .map { if (it is PollEndsTime.UserCustom) pollEndsTime else it }
                 } else {
                     currentState.pollDurations
                 }

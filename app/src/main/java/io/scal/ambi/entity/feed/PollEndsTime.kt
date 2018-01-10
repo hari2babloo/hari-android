@@ -26,9 +26,9 @@ sealed class PollEndsTime {
 
     object OneWeek : TimeDuration(Duration.standardDays(7))
 
-    open class Custom(duration: Duration) : TimeDuration(duration)
+    open class UserCustom(duration: Duration) : TimeDuration(duration)
 
-    class CustomDefault : Custom(Duration.standardDays(30))
+    object UserCustomDefault : UserCustom(Duration.standardDays(0))
 
     object Never : PollEndsTime()
 }

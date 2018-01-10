@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
-import org.joda.time.Duration
+import org.joda.time.DateTime
 
 interface IPostsRepository {
 
@@ -29,5 +29,5 @@ interface IPostsRepository {
                     asUserUid: String,
                     questionText: String,
                     choices: List<String>,
-                    duration: Duration?): Completable
+                    pollEndsTime: DateTime?): Completable
 }

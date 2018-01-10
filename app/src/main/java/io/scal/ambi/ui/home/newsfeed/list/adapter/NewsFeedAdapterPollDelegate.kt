@@ -5,7 +5,7 @@ import io.scal.ambi.databinding.ItemNewsFeedTypePollBinding
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 
-internal class NewsFeedAdapterPollDelegateBase(viewModel: NewsFeedViewModel) :
+internal class NewsFeedAdapterPollDelegate(viewModel: NewsFeedViewModel) :
     NewsFeedAdapterDelegateBase<ItemNewsFeedTypePollBinding>(viewModel) {
 
     override val layoutId: Int = R.layout.item_news_feed_type_poll

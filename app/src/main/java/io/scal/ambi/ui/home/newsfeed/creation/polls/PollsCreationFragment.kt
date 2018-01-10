@@ -1,5 +1,6 @@
 package io.scal.ambi.ui.home.newsfeed.creation.polls
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -15,6 +16,8 @@ import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
 import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
+import org.joda.time.DateTime
+import org.joda.time.Duration
 import kotlin.reflect.KClass
 
 class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPollsCreationBinding>() {
@@ -63,8 +66,8 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
 
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val pollEndsTime = parent.getItemAtPosition(position) as PollEndsTime
-                if (pollEndsTime is PollEndsTime.Custom) {
-                    // todo
+                if (pollEndsTime is PollEndsTime.UserCustomDefault) {
+                    onCustomDurationSelected()
                 } else {
                     viewModel.selectPollEnds(pollEndsTime)
                 }
@@ -81,6 +84,22 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
                 binding.sPollEnds.setSelection(it.pollDurations.indexOf(it.selectedPollDuration))
             }
             .addTo(destroyViewDisposables)
+    }
+
+    private fun onCustomDurationSelected() {
+        val minDate = DateTime.now().plusDays(1)
+        val picker = DatePickerDialog(activity,
+                                      DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                                          val nowDate = DateTime.now()
+                                          val selectedDate = nowDate.withYear(year).withMonthOfYear(month + 1).withDayOfMonth(dayOfMonth)
+                                          val duration = Duration(nowDate, selectedDate)
+                                          viewModel.selectPollEnds(PollEndsTime.UserCustom(duration))
+                                      },
+                                      minDate.year,
+                                      minDate.monthOfYear - 1,
+                                      minDate.dayOfMonth)
+        picker.datePicker.minDate = minDate.toDate().time
+        picker.show()
     }
 
     private fun initStateModel() {
