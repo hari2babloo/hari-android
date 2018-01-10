@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface PostsApi {
 
-    @GET("v1/posts/general")
+    @GET("v1/posts/general?populate=profilePicture")
     fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 
     @POST("v1/poll-posts")

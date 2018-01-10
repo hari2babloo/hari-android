@@ -93,6 +93,9 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     private fun observeModel(calendarViewModel: CalendarViewModel, recyclerView: CalendarFixedSizeRecyclerView) {
         disposable?.run {
+            recyclerView.removeOnScrollListener(scrollListener)
+            recyclerView.addOnScrollListener(scrollListener)
+
             calendarViewModel.observeSelectedDay()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { selectedDay ->
@@ -152,7 +155,6 @@ class CalendarView @JvmOverloads constructor(context: Context, attrs: AttributeS
         disposable = CompositeDisposable()
 
         if (null != recyclerView) {
-            recyclerView!!.addOnScrollListener(scrollListener)
             calendarBinding.viewModel?.run { observeModel(this, recyclerView!!) }
         }
     }

@@ -28,7 +28,7 @@ class CalendarWeekMonthView @JvmOverloads constructor(context: Context, attrs: A
             .flatMap { viewGroup -> (0 until viewGroup.childCount).map { viewGroup.getChildAt(it) } }
             .map { ItemCalendarDayWithNameBinding.bind(it) }
             .map { binding ->
-                binding.root.setOnClickListener { binding.calendarDay?.run { viewModel.setupDay(this.date) } }
+                binding.root.setOnClickListener { binding.calendarDay?.run { viewModel.setupDayFromUserAction(this.date) } }
                 binding
             }
     }

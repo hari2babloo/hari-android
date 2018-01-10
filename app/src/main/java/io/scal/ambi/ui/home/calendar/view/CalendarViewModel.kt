@@ -18,6 +18,7 @@ import org.joda.time.DateTimeConstants
 import org.joda.time.LocalDate
 import org.joda.time.YearMonth
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewModel() {
 
@@ -28,11 +29,13 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
 
     private val weekStartDay = ObservableField<Int>(DateTimeConstants.SUNDAY)
     private val mode = ObservableField<CalendarMode>(CalendarMode.WEEK)
-    private val selectedDay = ObservableField<LocalDate>()
+    private val selectedDay = ObservableField<LocalDate>(LocalDate.now())
 
     private val uiSelectedDay = BehaviorSubject.create<LocalDate>()
     private val weekListOfData = OptimizedObservableArrayList<UICalendarGroupDays>()
     private val monthListOfData = OptimizedObservableArrayList<UICalendarGroupDays>()
+
+    private var userAction = AtomicBoolean(false)
 
     init {
         initFirstData()
@@ -62,11 +65,16 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
             }
 
     fun setupCurrentDay() {
-        setupDay(LocalDate.now())
+        setupDayFromUserAction(LocalDate.now())
     }
 
     fun setupDay(date: LocalDate) {
         selectedDay.set(date)
+    }
+
+    fun setupDayFromUserAction(date: LocalDate) {
+        userAction.set(true)
+        setupDay(date)
     }
 
     fun switchShowingMode() {
@@ -75,8 +83,6 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
     }
 
     private fun initFirstData() {
-        setupCurrentDay()
-
         val currentMode = mode.get()!!
         val dataList =
             when (currentMode) {
@@ -116,6 +122,7 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
                 }
                 if (old.selectedDay == new.selectedDay) {
                     // mode is different but selected day is the same. so we have all the data to show
+                    checkUserMode()
                     return@distinctUntilChanged true
                 }
                 val oldStartDay = startDayByMode(old.mode, old.selectedDay, new.weekStartDay)
@@ -142,8 +149,15 @@ class CalendarViewModel(private val rxSchedulersAbs: RxSchedulersAbs) : ViewMode
                     CalendarMode.MONTH -> monthListOfData.replaceElements(it.third)
                 }
                 uiSelectedDay.onNext(it.second)
+                checkUserMode()
             }
             .addTo(disposable)
+    }
+
+    private fun checkUserMode() {
+        if (userAction.compareAndSet(true, false)) {
+            mode.set(CalendarMode.WEEK)
+        }
     }
 
     private fun startDayByMode(mode: CalendarMode, selectedDay: LocalDate, weekStartDay: Int): LocalDate {
