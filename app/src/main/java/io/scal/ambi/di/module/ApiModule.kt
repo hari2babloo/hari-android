@@ -15,6 +15,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Named
@@ -47,6 +48,7 @@ class ApiModule {
     internal fun provideRetrofitBuilder(okHttpClient: OkHttpClient): Retrofit.Builder {
         return Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
     }

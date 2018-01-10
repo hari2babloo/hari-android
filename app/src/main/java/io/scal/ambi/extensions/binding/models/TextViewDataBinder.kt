@@ -3,6 +3,8 @@ package io.scal.ambi.extensions.binding.models
 import android.databinding.BindingAdapter
 import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import io.scal.ambi.R
@@ -201,5 +203,31 @@ object TextViewDataBinder {
         } else {
             textView.maxLines = maxLines
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("imeDoneClickListener")
+    fun bindImeDoneClickListener(editText: EditText, imeDoneClickListener: DoneActionClickListener?) {
+        if (null == imeDoneClickListener) {
+            editText.setOnEditorActionListener(null)
+        } else {
+            val listener = TextView.OnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
+                    || actionId == EditorInfo.IME_ACTION_DONE
+                    || event.action == KeyEvent.ACTION_DOWN
+                    && event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                    imeDoneClickListener.onDoneActionClicked()
+                    true
+                } else {
+                    false
+                }
+            }
+            editText.setOnEditorActionListener(listener)
+        }
+    }
+
+    interface DoneActionClickListener {
+
+        fun onDoneActionClicked()
     }
 }

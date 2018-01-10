@@ -39,6 +39,10 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
         Completable.complete()
             .delay(3, TimeUnit.SECONDS)
             .andThen(Single.error(IllegalArgumentException("not implemented")))
+
+    override fun sendUserCommentToPost(newsFeedItem: NewsFeedItem, userCommentText: String): Single<Comment> {
+        return postsRepository.sendUserCommentToPost(newsFeedItem, userCommentText)
+    }
 }
 
 private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {

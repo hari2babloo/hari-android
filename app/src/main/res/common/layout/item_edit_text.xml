@@ -29,6 +29,10 @@
             name="textField"
             type="io.scal.ambi.extensions.binding.observable.ObservableString"/>
 
+        <variable
+            name="doneClickListener"
+            type="io.scal.ambi.extensions.binding.models.TextViewDataBinder.DoneActionClickListener"/>
+
     </data>
 
     <RelativeLayout
@@ -56,11 +60,13 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/iv_icon"
             android:background="@null"
+            android:enabled="@{textField.enabled}"
             android:hint="@{hint}"
             android:imeOptions="@{imeOption ?? EditorInfo.IME_NULL}"
             android:singleLine="true"
             android:text="@={textField.data}"
             android:textSize="14sp"
+            app:imeDoneClickListener="@{doneClickListener}"
             app:inputType="@{inputType ?? -1}"
             tools:text="asfsdf"/>
 

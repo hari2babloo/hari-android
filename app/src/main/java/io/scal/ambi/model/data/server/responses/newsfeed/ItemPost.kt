@@ -132,12 +132,15 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
 
 private fun String?.toAnnouncement(): AnnouncementType =
     when (this) {
-        "safety"    -> AnnouncementType.SAFETY
-        "good news" -> AnnouncementType.GOOD_NEWS
-        "event"     -> AnnouncementType.EVENT
-        "tragedy"   -> AnnouncementType.TRAGEDY
-        "general"   -> AnnouncementType.GENERAL
-        else        -> throw IllegalArgumentException("unknown announcementType type: $this")
+        "safety"       -> AnnouncementType.SAFETY
+        "good news"    -> AnnouncementType.GOOD_NEWS
+        "event update" -> AnnouncementType.EVENT
+        "tragedy"      -> AnnouncementType.TRAGEDY
+        "general"      -> AnnouncementType.GENERAL
+        else           -> {
+            Timber.w(IllegalArgumentException("unknown announcementType type: $this. switching to general"))
+            AnnouncementType.GENERAL
+        }
     }
 
 private fun String.toAudience(): Audience? =

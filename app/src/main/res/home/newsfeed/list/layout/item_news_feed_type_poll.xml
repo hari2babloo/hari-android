@@ -241,7 +241,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:layout_marginTop="12dp"
+                app:commentText="@{element.userCommentText}"
                 app:currentUser="@{viewModel.currentUser}"
+                app:doneClickListener="@{() -> viewModel.sendCommentForElement(element)}"
                 />
 
         </LinearLayout>

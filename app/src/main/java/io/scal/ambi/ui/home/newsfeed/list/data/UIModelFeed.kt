@@ -5,6 +5,7 @@ import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.view.IconImage
 import org.joda.time.DateTime
 
@@ -17,7 +18,8 @@ sealed class UIModelFeed(open val uid: String,
                          open val pinned: Boolean,
                          open val announcementType: AnnouncementType?,
                          open val likes: UILikes,
-                         open val comments: UIComments) {
+                         open val comments: UIComments,
+                         open val userCommentText: ObservableString) {
 
     data class Message(override val uid: String,
                        override val feedItem: NewsFeedItem,
@@ -28,8 +30,22 @@ sealed class UIModelFeed(open val uid: String,
                        override val announcementType: AnnouncementType?,
                        val message: String,
                        override val likes: UILikes,
-                       override val comments: UIComments) :
-        UIModelFeed(uid, feedItem, author.name, author.avatar, createdAtDateTime, locked, pinned, announcementType, likes, comments)
+                       override val comments: UIComments,
+                       override val userCommentText: ObservableString) :
+        UIModelFeed(uid,
+                    feedItem,
+                    author.name,
+                    author.avatar,
+                    createdAtDateTime,
+                    locked,
+                    pinned,
+                    announcementType,
+                    likes,
+                    comments,
+                    userCommentText) {
+
+        override fun updateComments(uiComments: UIComments): UIModelFeed = copy(comments = uiComments)
+    }
 
     data class Poll(override val uid: String,
                     override val feedItem: NewsFeedItemPoll,
@@ -43,14 +59,27 @@ sealed class UIModelFeed(open val uid: String,
                     val userChoice: PollChoice?,
                     val pollEndsDateTime: DateTime?,
                     override val likes: UILikes,
-                    override val comments: UIComments) :
-        UIModelFeed(uid, feedItem, author.name, author.avatar, createdAtDateTime, locked, pinned, announcementType, likes, comments) {
+                    override val comments: UIComments,
+                    override val userCommentText: ObservableString) :
+        UIModelFeed(uid,
+                    feedItem,
+                    author.name,
+                    author.avatar,
+                    createdAtDateTime,
+                    locked,
+                    pinned,
+                    announcementType,
+                    likes,
+                    comments,
+                    userCommentText) {
 
         init {
             if (choices.isEmpty()) {
                 throw IllegalArgumentException("choices can not be empty")
             }
         }
+
+        override fun updateComments(uiComments: UIComments): UIModelFeed = copy(comments = uiComments)
 
         data class PollChoiceResult(val pollChoice: PollChoice, val totalVotes: Int, val mostVoted: Boolean)
     }
@@ -68,6 +97,12 @@ sealed class UIModelFeed(open val uid: String,
                     val linkPreviewImage: IconImage?,
                     val linkTitle: String,
                     override val likes: UILikes,
-                    override val comments: UIComments) :
-        UIModelFeed(uid, feedItem, actor, icon, createdAtDateTime, locked, pinned, announcementType, likes, comments)
+                    override val comments: UIComments,
+                    override val userCommentText: ObservableString) :
+        UIModelFeed(uid, feedItem, actor, icon, createdAtDateTime, locked, pinned, announcementType, likes, comments, userCommentText) {
+
+        override fun updateComments(uiComments: UIComments): UIModelFeed = copy(comments = uiComments)
+    }
+
+    abstract fun updateComments(uiComments: UIComments): UIModelFeed
 }

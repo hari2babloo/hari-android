@@ -42,6 +42,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
                     NavigateTo.REGISTER        -> null // todo go ro register
                     NavigateTo.FORGOT_PASSWORD -> RecoveryActivity.createScreen(this@LoginActivity)
                     NavigateTo.HOME            -> HomeActivity.createScreen(this@LoginActivity)
+                    NavigateTo.LOGIN           -> null
                     else                       -> super.createActivityIntent(screenKey, data)
                 }
         }

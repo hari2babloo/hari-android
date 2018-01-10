@@ -3,24 +3,42 @@ package io.scal.ambi.model.data.server
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.scal.ambi.model.data.server.responses.newsfeed.PostsResponse
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface PostsApi {
 
     @GET("v1/posts/general?populate=poster")
     fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 
+
     @POST("v1/update-posts")
     fun postNewStatus(@Body body: StatusCreationRequest): Completable
+
+    @GET("v1/update-posts/{postId}")
+    fun getStatusPostAsString(@Path("postId") postId: String): Single<String>
+
+    @PUT("v1/update-posts/{postId}")
+    fun updateStatusPost(@Path("postId") postId: String, @Body body: String): Completable
+
 
     @POST("v1/announcement-posts")
     fun postNewAnnouncement(@Body body: AnnouncementCreationRequest): Completable
 
+    @GET("v1/announcement-posts/{postId}")
+    fun getAnnouncementPostAsString(@Path("postId") postId: String): Single<String>
+
+    @PUT("v1/announcement-posts/{postId}")
+    fun updateAnnouncementPost(@Path("postId") postId: String, @Body body: String): Completable
+
+
     @POST("v1/poll-posts")
     fun postNewPoll(@Body body: PollCreationRequest): Completable
+
+    @GET("v1/poll-posts/{postId}")
+    fun getPollPostAsString(@Path("postId") postId: String): Single<String>
+
+    @PUT("v1/poll-posts/{postId}")
+    fun updatePollPost(@Path("postId") postId: String, @Body body: String): Completable
 }
 
 class StatusCreationRequest(val poster: String,

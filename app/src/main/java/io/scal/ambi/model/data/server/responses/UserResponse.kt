@@ -29,14 +29,5 @@ class UserResponse : BaseResponse<User>() {
         @Expose
         var gender: String? = null
 
-        override fun parse(): User =
-            when (type) {
-                Type.Student -> User.asStudent(extractId(),
-                                               profilePicture?.url?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
-                                               firstName.orEmpty(),
-                                               lastName.orEmpty()
-                )
-                else         -> throw IllegalStateException("can not parse Student from type: $type")
-            }
     }
 }

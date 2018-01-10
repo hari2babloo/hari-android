@@ -18,6 +18,10 @@
             name="commentText"
             type="io.scal.ambi.extensions.binding.observable.ObservableString"/>
 
+        <variable
+            name="doneClickListener"
+            type="io.scal.ambi.extensions.binding.models.TextViewDataBinder.DoneActionClickListener"/>
+
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -41,6 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            app:doneClickListener="@{doneClickListener}"
             app:hint="@{@string/comment_hint_post}"
             app:imeOption="@{EditorInfo.IME_ACTION_DONE}"
             app:inputType="@{null == commentText ? -1 : InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_NORMAL}"

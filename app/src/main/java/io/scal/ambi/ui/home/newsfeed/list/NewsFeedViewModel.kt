@@ -8,6 +8,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.toObservable
@@ -126,6 +127,37 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 //        router.navigateTo(NavigateTo.ALL_COMMENTS_OF, element)
     }
 
+    fun sendCommentForElement(element: UIModelFeed) {
+        val userCommentText = element.userCommentText.data.get().orEmpty().trim()
+        if (userCommentText.isNotEmpty()) {
+            element.userCommentText.enabled.set(false)
+
+            interactor.sendUserCommentToPost(element.feedItem, userCommentText)
+                .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                .subscribe({
+                               val upToDateDataState = dataState.get()
+                               if (upToDateDataState is NewsFeedDataState.Data) {
+                                   val listElement = upToDateDataState.newsFeed.firstOrNull { item -> item.uid == element.uid }
+
+                                   if (null != listElement) {
+                                       val newComments = listElement.comments.comments.plus(it)
+                                       val updatedElement = listElement.updateComments(UIComments(newComments))
+
+                                       upToDateDataState.newsFeed.replaceElement(listElement, updatedElement)
+
+                                       listElement.userCommentText.enabled.set(true)
+                                       listElement.userCommentText.data.set("")
+                                   }
+                               }
+                           },
+                           { t ->
+                               handleError(t)
+
+                               element.userCommentText.enabled.set(true)
+                           })
+        }
+    }
+
     fun selectPollChoice(element: UIModelFeed.Poll, choice: UIModelFeed.Poll.PollChoiceResult) {
         val currentDataState = dataState.get()
         if (currentDataState is NewsFeedDataState.Data) {
@@ -143,7 +175,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
                     .subscribe({ updatedElement ->
                                    val upToDateDataState = dataState.get()
                                    if (upToDateDataState is NewsFeedDataState.Data) {
-                                       val listElement = currentDataState.newsFeed.firstOrNull { item -> item.uid == element.uid }
+                                       val listElement = upToDateDataState.newsFeed.firstOrNull { item -> item.uid == element.uid }
 
                                        if (null != listElement) {
                                            upToDateDataState.newsFeed.replaceElement(listElement, updatedElement.toNewsFeedElement(currentUser.get()))
@@ -155,7 +187,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
                                    val upToDateDataState = dataState.get()
                                    if (upToDateDataState is NewsFeedDataState.Data) {
-                                       val listElement = currentDataState.newsFeed.firstOrNull { item -> item.uid == element.uid } as? UIModelFeed.Poll
+                                       val listElement = upToDateDataState.newsFeed.firstOrNull { item -> item.uid == element.uid } as? UIModelFeed.Poll
 
                                        if (null != listElement) {
                                            val oldPollChoices = element.choices.map { it.pollChoice }.toPollVotedResult()
@@ -270,7 +302,8 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                         choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
                                                         pollEndsTime,
                                                         UILikes(currentUser, likes),
-                                                        UIComments(comments))
+                                                        UIComments(comments),
+                                                        ObservableString())
         is NewsFeedItemUpdate       -> UIModelFeed.Message(uid,
                                                            this,
                                                            user,
@@ -280,7 +313,8 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                            null,
                                                            messageText,
                                                            UILikes(currentUser, likes),
-                                                           UIComments(comments))
+                                                           UIComments(comments),
+                                                           ObservableString())
         is NewsFeedItemAnnouncement -> UIModelFeed.Message(uid,
                                                            this,
                                                            user,
@@ -290,7 +324,8 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                            announcementType,
                                                            messageText,
                                                            UILikes(currentUser, likes),
-                                                           UIComments(comments))
+                                                           UIComments(comments),
+                                                           ObservableString())
         else                        -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
     }
 

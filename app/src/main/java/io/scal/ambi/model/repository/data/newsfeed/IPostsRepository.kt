@@ -2,6 +2,7 @@ package io.scal.ambi.model.repository.data.newsfeed
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
@@ -30,4 +31,6 @@ interface IPostsRepository {
                     questionText: String,
                     choices: List<String>,
                     pollEndsTime: DateTime?): Completable
+
+    fun sendUserCommentToPost(newsFeedItem: NewsFeedItem, userCommentText: String): Single<Comment>
 }

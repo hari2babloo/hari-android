@@ -123,9 +123,11 @@ dependencies {
     // Retrofit 2
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-scalars:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     implementation "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
+
 
     // LeakCanary
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakCanaryVersion"
