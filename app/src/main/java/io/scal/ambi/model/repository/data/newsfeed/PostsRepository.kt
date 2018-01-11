@@ -1,9 +1,6 @@
 package io.scal.ambi.model.repository.data.newsfeed
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.JsonPrimitive
+import com.google.gson.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -81,6 +78,83 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
     }
 
     override fun sendUserCommentToPost(newsFeedItem: NewsFeedItem, userCommentText: String): Single<Comment> {
+        return getPostWithCurrentUserInfo(newsFeedItem, "comments")
+            .map { pair ->
+                val comments = pair.second as JsonArray
+
+                val newComment = JsonObject()
+                val userObj = JsonObject()
+                userObj.add("id", JsonPrimitive(pair.first.uid))
+                newComment.add("user", userObj)
+                newComment.add("text", JsonPrimitive(userCommentText))
+                newComment.add("dateCreated", JsonPrimitive(DateTime.now().millis))
+
+                val newComments = JsonArray()
+                newComments.add(newComment)
+                comments.iterator().forEach { newComments.add(it) }
+
+                val postJsonItem = JsonObject()
+                postJsonItem.add("comments", newComments)
+                Pair(pair.first, postJsonItem.toString())
+            }
+            .flatMap { pair -> sendPostWithUpdatedInfo(newsFeedItem, pair) }
+            .map { user -> Comment(UUID.randomUUID().toString(), user, userCommentText, DateTime.now()) }
+    }
+
+    override fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable {
+        return getPostWithCurrentUserInfo(feedItem, "likes")
+            .map { pair ->
+                val likes = pair.second as JsonArray
+
+                val newLikes = JsonArray()
+                likes
+                    .filter { it.asJsonObject.getAsJsonPrimitive("id").asString != pair.first.uid }
+                    .forEach { newLikes.add(it) }
+                if (like) {
+                    val userObj = JsonObject()
+                    userObj.add("id", JsonPrimitive(pair.first.uid))
+                    newLikes.add(userObj)
+                }
+
+                val postJsonItem = JsonObject()
+                postJsonItem.add("likes", newLikes)
+                Pair(pair.first, postJsonItem.toString())
+            }
+            .flatMap { pair -> sendPostWithUpdatedInfo(feedItem, pair) }
+            .toCompletable()
+    }
+
+    override fun answerForPoll(feedItemPoll: NewsFeedItemPoll, pollChoice: PollChoice): Single<NewsFeedItem> {
+        return getPostWithCurrentUserInfo(feedItemPoll, "answerChoices")
+            .map { pair ->
+                val answerChoices = pair.second as JsonArray
+
+                val selectedAnswer = answerChoices
+                    .map { it.asJsonObject }
+                    .first { it.getAsJsonPrimitive("text").asString == pollChoice.text }
+
+                val selectedAnswerVoters = selectedAnswer.get("voters").asJsonArray
+                if (null == selectedAnswerVoters
+                    .map { it as JsonObject }
+                    .firstOrNull { it.getAsJsonPrimitive("id").asString == pair.first.uid }) {
+
+                    val userObj = JsonObject()
+                    userObj.add("id", JsonPrimitive(pair.first.uid))
+                    selectedAnswerVoters.add(userObj)
+                }
+
+                val postJsonItem = JsonObject()
+                postJsonItem.add("answerChoices", answerChoices)
+                Pair(pair.first, postJsonItem.toString())
+            }
+            .flatMap { pair -> sendPostWithUpdatedInfo(feedItemPoll, pair) }
+            .map { user ->
+                val choices = feedItemPoll.choices.map { if (it.uid == pollChoice.uid) it.copy(voters = it.voters.plus(user)) else it }
+                feedItemPoll.copy(choices = choices)
+            }
+    }
+
+    private fun getPostWithCurrentUserInfo(newsFeedItem: NewsFeedItem, childToReturn: String?): Single<Pair<User, JsonElement>> {
         val currentUserObservable: Single<User> = localUserDataRepository.observeCurrentUser().firstOrError()
         val postAsStringObservable: Single<String> =
             when (newsFeedItem) {
@@ -108,29 +182,19 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                         is NewsFeedItemPoll         -> postJson.getAsJsonObject("pollPost")
                         else                        -> throw IllegalArgumentException("unknown news feed type")
                     }
-                val comments = postJsonItem.getAsJsonArray("comments")
-                postJsonItem.keySet().toMutableSet().forEach { postJsonItem.remove(it) }
-                val newComment = JsonObject()
-                newComment.add("user", JsonPrimitive(pair.first.uid))
-                newComment.add("text", JsonPrimitive(userCommentText))
-                newComment.add("dateCreated", JsonPrimitive(DateTime.now().millis))
-                val newComments = JsonArray()
-                newComments.add(newComment)
-                comments.iterator().forEach { newComments.add(it) }
-                postJsonItem.add("comments", newComments)
-                Pair(pair.first, postJsonItem.toString())
+                Pair(pair.first, childToReturn?.let { postJsonItem.get(it) } ?: postJsonItem)
             }
-            .flatMap { pair ->
-                val contentType = "application/json"
-                when (newsFeedItem) {
-                    is NewsFeedItemUpdate       -> postsApi.updateStatusPost(newsFeedItem.uid, contentType, pair.second)
-                    is NewsFeedItemAnnouncement -> postsApi.updateAnnouncementPost(newsFeedItem.uid, contentType, pair.second)
-                    is NewsFeedItemPoll         -> postsApi.updatePollPost(newsFeedItem.uid, contentType, pair.second)
-                    else                        -> throw IllegalArgumentException("unknown news feed type")
-                }
-                    .andThen(Single.just(pair.first))
-            }
-            .map { user -> Comment(UUID.randomUUID().toString(), user, userCommentText, DateTime.now()) }
+    }
+
+    private fun sendPostWithUpdatedInfo(newsFeedItem: NewsFeedItem, pair: Pair<User, String>): Single<User> {
+        val contentType = "application/json"
+        return when (newsFeedItem) {
+            is NewsFeedItemUpdate       -> postsApi.updateStatusPost(newsFeedItem.uid, contentType, pair.second)
+            is NewsFeedItemAnnouncement -> postsApi.updateAnnouncementPost(newsFeedItem.uid, contentType, pair.second)
+            is NewsFeedItemPoll         -> postsApi.updatePollPost(newsFeedItem.uid, contentType, pair.second)
+            else                        -> throw IllegalArgumentException("unknown news feed type")
+        }
+            .andThen(Single.just(pair.first))
     }
 
     companion object {

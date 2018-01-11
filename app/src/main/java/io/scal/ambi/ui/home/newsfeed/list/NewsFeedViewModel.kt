@@ -170,7 +170,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
                 currentDataState.newsFeed
                     .replaceElement(element, element.copy(choices = newPollChoices.toPollVotedResult(), userChoice = choice.pollChoice))
 
-                interactor.answerForPoll(choice.pollChoice, element.uid)
+                interactor.answerForPoll(element.feedItem, choice.pollChoice)
                     .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
                     .subscribe({ updatedElement ->
                                    val upToDateDataState = dataState.get()

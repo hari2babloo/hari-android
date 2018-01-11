@@ -11,7 +11,6 @@ import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import org.joda.time.DateTime
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class NewsFeedInteractor @Inject constructor(private val postsRepository: IPostsRepository,
@@ -30,15 +29,13 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
                                                 "Mirror"), page)
             }
 
-    override fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable =
-        Completable.complete()
-            .delay(3, TimeUnit.SECONDS)
-            .andThen(Completable.error(IllegalArgumentException("not implemented")))
+    override fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable {
+        return postsRepository.changeUserLikeForPost(feedItem, like)
+    }
 
-    override fun answerForPoll(pollChoice: PollChoice, pollUid: String): Single<NewsFeedItem> =
-        Completable.complete()
-            .delay(3, TimeUnit.SECONDS)
-            .andThen(Single.error(IllegalArgumentException("not implemented")))
+    override fun answerForPoll(feedItemPoll: NewsFeedItemPoll, pollChoice: PollChoice): Single<NewsFeedItem> {
+        return postsRepository.answerForPoll(feedItemPoll, pollChoice)
+    }
 
     override fun sendUserCommentToPost(newsFeedItem: NewsFeedItem, userCommentText: String): Single<Comment> {
         return postsRepository.sendUserCommentToPost(newsFeedItem, userCommentText)
