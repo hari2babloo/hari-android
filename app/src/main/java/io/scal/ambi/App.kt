@@ -9,6 +9,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import io.scal.ambi.di.DaggerAppComponent
 import io.scal.ambi.di.module.AppModule
+import io.scal.ambi.model.repository.data.chat.IChatRepository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -17,6 +18,9 @@ class App : MultiDexApplication(), HasActivityInjector {
 
     @Inject
     lateinit var activityDispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    lateinit var chatRepository: IChatRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -29,7 +33,6 @@ class App : MultiDexApplication(), HasActivityInjector {
 
         initLogger()
         initDi()
-
 
         EmojiManager.install(GoogleEmojiProvider()) // todo move to other place if this lib is ok
     }

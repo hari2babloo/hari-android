@@ -15,7 +15,10 @@ class LocalUserDataRepository @Inject constructor(context: Context) : ILocalUser
         Completable.fromAction { prefs.put(USER_INFO, user) }
 
     override fun removeAllUserInfo(): Completable =
-        Completable.fromAction { prefs.remove(USER_INFO) }
+        Completable.fromAction {
+            prefs.remove(USER_INFO)
+            prefs.remove(USER_TOKEN)
+        }
 
     override fun observeCurrentUser(): Observable<User> =
         observePrefs(USER_INFO, User::class.java, DEFAULT_AUTH_RESULT, true)
