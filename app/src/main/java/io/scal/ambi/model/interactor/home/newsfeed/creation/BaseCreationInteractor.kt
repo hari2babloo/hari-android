@@ -7,7 +7,6 @@ import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 abstract class BaseCreationInteractor(private val localUserDataRepository: ILocalUserDataRepository) {
 
     fun loadAsUsers(): Single<List<User>> {
-        // todo load as users
         return localUserDataRepository.observeCurrentUser()
             .map { listOf(it) }
             .firstOrError()
