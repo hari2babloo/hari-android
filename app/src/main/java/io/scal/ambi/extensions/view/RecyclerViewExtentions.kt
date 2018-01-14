@@ -2,8 +2,10 @@ package io.scal.ambi.extensions.view
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 fun RecyclerView.listenForEndScrollInverse(visibleThreshold: Int): Observable<Any> {
     return listenForEndScroll(visibleThreshold, true)
@@ -33,4 +35,7 @@ private fun RecyclerView.listenForEndScroll(visibleThreshold: Int, inverse: Bool
         }
     })
     return subject
+        .toFlowable(BackpressureStrategy.DROP)
+        .throttleFirst(3, TimeUnit.SECONDS)
+        .toObservable()
 }

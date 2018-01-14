@@ -7,7 +7,7 @@ import retrofit2.http.*
 
 interface PostsApi {
 
-    @GET("v1/posts/general?populate=poster")
+    @GET("v1/posts/general/populate")
     fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
 
 

@@ -60,7 +60,11 @@ android {
 
             buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/"'
         }
+        sandbox {
+            dimension "api"
 
+            buildConfigField "String", "MAIN_SERVER_URL", '"https://sandbox.ambi.work/api/"'
+        }
         arpit {
             dimension "api"
 

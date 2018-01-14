@@ -4,25 +4,26 @@ import android.net.Uri
 import io.scal.ambi.ui.global.picker.FileResource
 import java.io.Serializable
 
-sealed class ChatAttachment(open val path: Uri) : Serializable {
+sealed class ChatAttachment(open val pathAsString: String) : Serializable {
 
-    open class Image(override val path: Uri) : ChatAttachment(path) {
+    val path: Uri
+        get() = Uri.parse(pathAsString)
 
-        constructor(path: String) : this(Uri.parse(path))
+    open class Image(path: String) : ChatAttachment(path) {
+
+        constructor(path: Uri) : this(path.toString())
     }
 
     class LocalImage(val imageFile: FileResource) : Image(Uri.fromFile(imageFile.file))
 
-    open class File(override val path: Uri,
+    open class File(path: String,
                     val typeName: String,
-                    val typeIcon: String,
                     val size: Long) : ChatAttachment(path) {
 
-        constructor(path: String, typeName: String, typeIcon: String, size: Long) : this(Uri.parse(path), typeName, typeIcon, size)
+        constructor(path: Uri, typeName: String, size: Long) : this(path.toString(), typeName, size)
     }
 
     class LocalFile(val fileFile: FileResource,
                     typeName: String,
-                    typeIcon: String,
-                    size: Long) : File(Uri.fromFile(fileFile.file), typeName, typeIcon, size)
+                    size: Long) : File(Uri.fromFile(fileFile.file), typeName, size)
 }

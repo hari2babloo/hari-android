@@ -5,7 +5,6 @@ import android.support.annotation.CallSuper
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
 import io.scal.ambi.BuildConfig
 import io.scal.ambi.R
 import io.scal.ambi.navigation.NavigateTo
@@ -47,5 +46,6 @@ open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNav
 
         val navigationException = RuntimeException("Can't create a screen for passed screenKey: $command. with trace: $sStackTrace")
         Crashlytics.logException(navigationException)
+        Timber.w(navigationException, "navigation error")
     }
 }

@@ -15,7 +15,7 @@ sealed class ChatMessage(open val uid: String,
                            override val sender: User,
                            override val sendDate: DateTime,
                            override val message: String,
-                           override val likes: List<User>,
+                           override val likes: List<User> = emptyList(),
                            override val myMessageState: ChatMyMessageState? = null) :
         ChatMessage(uid, sender, sendDate, message, likes, myMessageState)
 
@@ -24,7 +24,7 @@ sealed class ChatMessage(open val uid: String,
                                  override val sendDate: DateTime,
                                  override val message: String,
                                  val attachments: List<ChatAttachment>,
-                                 override val likes: List<User>,
+                                 override val likes: List<User> = emptyList(),
                                  override val myMessageState: ChatMyMessageState? = null) :
         ChatMessage(uid, sender, sendDate, message, likes, myMessageState) {
         init {

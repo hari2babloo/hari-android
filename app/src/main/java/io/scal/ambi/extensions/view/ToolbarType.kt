@@ -4,6 +4,7 @@ import android.support.annotation.DrawableRes
 import android.support.annotation.LayoutRes
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
+import com.facebook.drawee.view.SimpleDraweeView
 import io.scal.ambi.R
 
 data class ToolbarType constructor(val leftIcon: IconImage?,
@@ -12,7 +13,9 @@ data class ToolbarType constructor(val leftIcon: IconImage?,
                                    val rightIcon: IconImage?,
                                    val rightIconClickListener: Runnable?,
                                    var collapsingFlags: Int? = null,
-                                   var scrollFlags: Int? = null) {
+                                   var scrollFlags: Int? = null,
+                                   var leftIconCustomization: IconCustomization? = null,
+                                   var rightIconCustomization: IconCustomization? = null) {
 
     constructor(leftIcon: IconImage?, content: Content?, rightIcon: IconImage?) :
         this(leftIcon, null, content, rightIcon, null)
@@ -34,5 +37,9 @@ data class ToolbarType constructor(val leftIcon: IconImage?,
 
     fun makePin() {
         collapsingFlags = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN
+    }
+
+    interface IconCustomization {
+        fun applyNewStyle(simpleDraweeView: SimpleDraweeView)
     }
 }

@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.facebook.drawee.drawable.ScalingUtils
+import com.facebook.drawee.generic.RoundingParams
+import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityHomeBinding
@@ -47,6 +50,14 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
     private fun initToolbar() {
         defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_ambi_logo_small), SearchToolbarContent(searchViewModel), IconImageUser())
         defaultToolbarType!!.makeScrolling()
+        defaultToolbarType!!.rightIconCustomization = object : ToolbarType.IconCustomization {
+            override fun applyNewStyle(simpleDraweeView: SimpleDraweeView) {
+                simpleDraweeView.hierarchy.apply {
+                    actualImageScaleType = ScalingUtils.ScaleType.CENTER_CROP
+                    roundingParams = RoundingParams.asCircle()
+                }
+            }
+        }
         setToolbarType(defaultToolbarType)
 
         authProfileCheckerViewModel

@@ -39,7 +39,7 @@ class LoginViewModel @Inject constructor(private val context: Context,
                 .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                 .subscribe({ router.newRootScreen(NavigateTo.HOME) },
                            {
-                               handleError(it)
+                               handleError(it, false)
 
                                val message =
                                    when (it) {
@@ -53,7 +53,7 @@ class LoginViewModel @Inject constructor(private val context: Context,
     }
 
     fun goToRegister() {
-//        router.navigateTo(NavigateTo.REGISTER)
+        router.navigateTo(NavigateTo.REGISTER)
     }
 
     fun goToForgotPassword() {

@@ -25,7 +25,7 @@ open class ItemUser : Parceble<User> {
     @Expose
     var lastName: String? = null
 
-    @SerializedName("profilePictureREMOVE") // todo remove it
+    @SerializedName("profilePicture")
     @Expose
     var profilePicture: Picture? = null
 

@@ -4,10 +4,8 @@ import android.content.Context
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.scal.ambi.R
 import io.scal.ambi.entity.chat.*
 import io.scal.ambi.entity.user.User
-import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.toObservable
@@ -168,7 +166,6 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatDescription") privat
                 "sip protocol",
                 listOf(ChatAttachment.File("http://tasuka.idv.tw/SIP/SIP.pdf",
                                            "PDF",
-                                           "https://cdn4.iconfinder.com/data/icons/file-extensions-1/64/pdfs-512.png",
                                            2938048L)),
                 emptyList()
             )
@@ -236,8 +233,8 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatDescription") privat
                                                   listOf(
                                                       ChatAttachment.LocalFile(fileResource,
                                                                                fileResource.typeName(),
-                                                                               fileResource.typeIcon(context),
-                                                                               fileResource.file.length())),
+                                                                               fileResource.file.length())
+                                                  ),
                                                   emptyList(),
                                                   ChatMyMessageState.PENDING),
                     null
@@ -301,12 +298,3 @@ private fun ChatMessage.changeState(chatMyMessageState: ChatMyMessageState): Cha
         is ChatMessage.TextMessage       -> copy(myMessageState = chatMyMessageState)
         is ChatMessage.AttachmentMessage -> copy(myMessageState = chatMyMessageState)
     }
-
-private fun FileResource.typeName(): String = file.extension
-
-private fun FileResource.typeIcon(context: Context): String {
-    val typeName = typeName()
-
-    val drawableId = context.resources.getIdentifier("ic_extension_$typeName", "drawable", context.packageName)
-    return (if (0 == drawableId) R.drawable.ic_extension_unknown else drawableId).toFrescoImagePath()
-}

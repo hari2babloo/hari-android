@@ -67,7 +67,7 @@ class ChatListFragment : BaseNavigationFragment<ChatListViewModel, FragmentChatL
                                                    },
                                                    destroyViewDisposables)
 
-        viewModel.errorState.asErrorState(binding.rootContainer,
+        viewModel.errorState.asErrorState(binding.coordinator.parent as View,
                                           { viewModel.refresh() },
                                           {
                                               when (it) {

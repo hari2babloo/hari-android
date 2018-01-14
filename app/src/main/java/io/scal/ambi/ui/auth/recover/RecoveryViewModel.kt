@@ -28,7 +28,7 @@ class RecoveryViewModel @Inject constructor(private val context: Context,
                 .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
                 .subscribe({ stateModel.set(RecoveryStateModel.Success(email)) },
                            {
-                               handleError(it)
+                               handleError(it, false)
 
                                val message =
                                    when (it) {

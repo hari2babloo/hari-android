@@ -8,8 +8,10 @@ import android.support.annotation.DrawableRes
 import android.support.v7.content.res.AppCompatResources
 import android.widget.ImageView
 import com.facebook.common.util.UriUtil
+import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.view.SimpleDraweeView
 import io.scal.ambi.extensions.view.IconImage
+import io.scal.ambi.extensions.view.ToolbarType
 
 
 object ImageViewDataBinder {
@@ -82,6 +84,17 @@ object ImageViewDataBinder {
                 .build()
         }
         simpleDraweeView.setImageURI(imageUri)
+    }
+
+    @JvmStatic
+    @BindingAdapter("draweeViewCustomization")
+    fun setDraweeViewCustomization(simpleDraweeView: SimpleDraweeView, customization: ToolbarType.IconCustomization?) {
+        if (null == customization) {
+            simpleDraweeView.hierarchy.actualImageScaleType = ScalingUtils.ScaleType.CENTER_INSIDE
+            simpleDraweeView.hierarchy.roundingParams = null
+        } else {
+            customization.applyNewStyle(simpleDraweeView)
+        }
     }
 
     private fun getResourceDrawable(context: Context, resourcePath: String): Drawable? {

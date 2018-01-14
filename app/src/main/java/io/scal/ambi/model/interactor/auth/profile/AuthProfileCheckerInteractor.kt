@@ -21,7 +21,7 @@ class AuthProfileCheckerInteractor @Inject constructor(private val localUserData
     }
 
     private fun doUserProfileUpdate(user: User) {
-        if (SystemClock.elapsedRealtime() - lastUpdateTime > TimeUnit.MINUTES.toMillis(10)) {
+        if (SystemClock.elapsedRealtime() - lastUpdateTime > TimeUnit.MINUTES.toMillis(1)) {
             userRepository.getProfile(user.uid)
                 .subscribe(
                     {

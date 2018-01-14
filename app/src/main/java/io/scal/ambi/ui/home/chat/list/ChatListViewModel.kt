@@ -124,7 +124,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
     }
 
     private fun loadNextPage(page: Int): Single<List<UIChatList>> {
-        return interactor.loadChatListPage(page)
+        return interactor.loadChatListPage(1 == page)
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {

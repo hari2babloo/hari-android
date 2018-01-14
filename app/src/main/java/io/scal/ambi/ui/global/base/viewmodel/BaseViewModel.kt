@@ -13,9 +13,9 @@ abstract class BaseViewModel(protected val router: BetterRouter) : ViewModel() {
 
     protected val disposables: CompositeDisposable = CompositeDisposable()
 
-    protected fun handleError(throwable: Throwable) {
+    protected fun handleError(throwable: Throwable, doLogoutAction: Boolean = true) {
         Timber.e(throwable)
-        if (throwable is ServerResponseException && (throwable.requiresLogin || throwable.notFound || throwable.notAuthorized)) {
+        if (doLogoutAction && throwable is ServerResponseException && (throwable.requiresLogin || throwable.notFound || throwable.notAuthorized)) {
             router.newRootScreen(NavigateTo.LOGIN)
         }
     }
