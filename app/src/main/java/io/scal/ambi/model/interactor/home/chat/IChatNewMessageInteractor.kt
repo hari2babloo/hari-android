@@ -6,7 +6,7 @@ import io.scal.ambi.entity.user.User
 
 interface IChatNewMessageInteractor {
 
-    fun loadUserWithPrefix(): Single<List<User>>
+    fun loadUserWithPrefix(userSelectionText: String, page: Int): Single<List<User>>
 
     fun createChat(selectedUsers: List<User>): Single<PreviewChatItem>
 }

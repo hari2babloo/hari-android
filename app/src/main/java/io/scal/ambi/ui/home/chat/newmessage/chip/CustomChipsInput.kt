@@ -12,6 +12,7 @@ import com.pchmn.materialchips.model.ChipInterface
 import com.pchmn.materialchips.views.DetailedChipView
 import com.pchmn.materialchips.views.FilterableListView
 import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import io.scal.ambi.R
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.toObservable
@@ -30,6 +31,8 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
 
     private val selectedChipList = OptimizedObservableArrayList<ChipInterface>()
 
+    private val selectedTextSubject = BehaviorSubject.create<String>()
+
     init {
         chipListField.isAccessible = true
         filterableListViewField.isAccessible = true
@@ -40,6 +43,7 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
         addChipsListener(object : ChipsListener {
             override fun onChipAdded(p0: ChipInterface, p1: Int) {
                 selectedChipList.add(p0)
+                validateViewSize()
             }
 
             override fun onChipRemoved(p0: ChipInterface, p1: Int) {
@@ -51,6 +55,7 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun observeSelectedList(): Observable<List<ChipInterface>> = selectedChipList.toObservable()
+    fun observeSelectedText(): Observable<String> = selectedTextSubject
 
     fun setSelectedChipList(selectedChips: List<ChipInterface>) {
         val itemsToDelete = selectedChipList.filter { !selectedChips.contains(it) }
@@ -70,6 +75,20 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
         filterableListViewField.set(this, filterableListView)
 
         (chipsAdapterField.get(this) as ChipsAdapter).setFilterableListView(filterableListView)
+
+        (filterableListViewField.get(this) as? CustomFilterableListView)?.filterList(selectedTextSubject.value ?: "")
+
+        validateViewSize()
+    }
+
+    private fun validateViewSize() {
+        requestLayout()
+        post {
+            (filterableListViewField.get(this) as? CustomFilterableListView)?.run {
+                visibility = View.GONE
+                fadeIn()
+            }
+        }
     }
 
     fun showPopup() {
@@ -81,6 +100,8 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     override fun onTextChanged(text: CharSequence) {
+        selectedTextSubject.onNext(text.toString())
+
         val filterableListView = filterableListViewField.get(this) as? FilterableListView
         filterableListViewField.set(this, null)
         super.onTextChanged(text)

@@ -16,7 +16,6 @@ import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
-import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.ErrorState
@@ -55,14 +54,15 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 when (it) {
-                    is ChatNewMessageProgressState.NoProgress -> {
-                        binding.progress.visibility = View.GONE
-                        binding.cData.enableCascade(true)
-                        binding.chipsInput.showPopup()
+                    is ChatNewMessageProgressState.NoProgress    -> {
+                        if (binding.progress.visibility == View.VISIBLE) {
+                            binding.progress.visibility = View.GONE
+                            binding.chipsInput.showPopup()
+                        }
                     }
-                    else                                      -> {
+                    is ChatNewMessageProgressState.EmptyProgress -> {
                         binding.progress.visibility = View.VISIBLE
-                        binding.cData.enableCascade(false)
+                        binding.bAction.isEnabled = false
                         binding.chipsInput.hidePopup()
                     }
                 }
@@ -112,6 +112,14 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
                     }
                 }
             }
+            .addTo(destroyDisposables)
+
+        binding.chipsInput
+            .observeSelectedText()
+            .map { it.trim() }
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { userText -> viewModel.updateList(userText) }
             .addTo(destroyDisposables)
     }
 

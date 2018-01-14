@@ -26,8 +26,8 @@ class AppendablePaginator<in T>(
         currentState.refresh()
     }
 
-    override fun forceRefresh() {
-        currentState.forceRefresh()
+    override fun forceRefresh(resetState: Boolean) {
+        currentState.forceRefresh(resetState)
     }
 
     override fun loadNewPage() {
@@ -54,16 +54,22 @@ class AppendablePaginator<in T>(
     private inner open class State<in T> {
         open fun activate() {}
         open fun refresh() {}
-        open fun forceRefresh() {
-            viewController.showData(false)
-            viewController.showEmptyView(false)
-            viewController.showEmptyError(false)
-            viewController.showPageProgress(false)
-            viewController.showRefreshProgress(false)
-            viewController.showEmptyProgress(false)
+        open fun forceRefresh(resetState: Boolean) {
+            if (resetState) {
+                viewController.showData(false)
+                viewController.showEmptyView(false)
+                viewController.showEmptyError(false)
+                viewController.showPageProgress(false)
+                viewController.showRefreshProgress(false)
+                viewController.showEmptyProgress(false)
 
-            currentState = EMPTY()
-            currentState.refresh()
+                currentState = EMPTY()
+                currentState.refresh()
+            } else {
+                currentState = EMPTY_PROGRESS()
+                viewController.showPageProgress(true)
+                loadPage(firstPage)
+            }
         }
 
         open fun loadNewPage() {}
@@ -103,6 +109,8 @@ class AppendablePaginator<in T>(
 
         override fun newData(data: List<T>) {
             super.newData(data)
+
+            viewController.showPageProgress(false)
 
             if (data.isNotEmpty()) {
                 currentState = DATA()

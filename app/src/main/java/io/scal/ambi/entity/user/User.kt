@@ -28,5 +28,10 @@ class User private constructor(val uid: String,
                       firstName: String,
                       lastName: String) = User(uid, UserType.STUDENT, avatar, firstName, lastName)
 
+        // todo remove this
+        fun asSimple(uid: String,
+                     avatar: IconImageUser,
+                     firstName: String,
+                     lastName: String) = User(uid, UserType.UNKNOWN, avatar, firstName, lastName)
     }
 }

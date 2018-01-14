@@ -25,6 +25,11 @@ class UserRepository @Inject constructor(private val userApi: UserApi) : IUserRe
             .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
 //            .onErrorResumeNext { t -> Single.error(IllegalAccessException("todo remove me")) }
     }
+
+    override fun searchProfiles(searchQuery: String): Single<List<User>> {
+        return userApi.searchProfiles(searchQuery)
+            .map { it.parse() }
+    }
 }
 
 private fun String.createUser(gson: Gson): ItemUser {

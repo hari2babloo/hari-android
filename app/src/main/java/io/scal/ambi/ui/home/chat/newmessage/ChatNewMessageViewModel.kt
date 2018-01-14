@@ -13,7 +13,7 @@ import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
-import io.scal.ambi.ui.global.model.createAppendablePaginator
+import io.scal.ambi.ui.global.model.createPaginator
 import javax.inject.Inject
 
 class ChatNewMessageViewModel @Inject constructor(private val context: Context,
@@ -25,7 +25,9 @@ class ChatNewMessageViewModel @Inject constructor(private val context: Context,
     internal val errorState = ObservableField<ChatNewMessageErrorState>(ChatNewMessageErrorState.NoErrorState)
     internal val dataState = ObservableField<ChatNewMessageDataState>()
 
-    private val paginator = createAppendablePaginator(
+    private var userSelectionText = ""
+
+    private val paginator = createPaginator(
         { page -> loadNextPage(page) },
         object : PaginatorStateViewController<UIUserChip, ChatNewMessageProgressState, ChatNewMessageErrorState>(context, progressState, errorState) {
 
@@ -49,7 +51,14 @@ class ChatNewMessageViewModel @Inject constructor(private val context: Context,
 
             override fun showData(show: Boolean, data: List<UIUserChip>) {
                 if (show) {
-                    dataState.set(ChatNewMessageDataState.Data(OptimizedObservableArrayList(data)))
+                    val currentState = dataState.get()
+                    val newDataState =
+                        if (currentState is ChatNewMessageDataState.Data) {
+                            currentState.copy(users = data)
+                        } else {
+                            ChatNewMessageDataState.Data(OptimizedObservableArrayList(data))
+                        }
+                    dataState.set(newDataState)
                 }
             }
         }
@@ -60,6 +69,11 @@ class ChatNewMessageViewModel @Inject constructor(private val context: Context,
     }
 
     fun refresh() = paginator.refresh()
+
+    fun updateList(userText: String) {
+        userSelectionText = userText
+        paginator.forceRefresh(false)
+    }
 
     fun createChat() {
         val currentDataState = dataState.get()
@@ -86,7 +100,7 @@ class ChatNewMessageViewModel @Inject constructor(private val context: Context,
     }
 
     private fun loadNextPage(page: Int): Single<List<UIUserChip>> {
-        return interactor.loadUserWithPrefix()
+        return interactor.loadUserWithPrefix(userSelectionText, page)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {
                 Observable.fromIterable(it)

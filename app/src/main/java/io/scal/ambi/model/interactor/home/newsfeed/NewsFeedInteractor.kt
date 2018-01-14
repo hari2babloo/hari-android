@@ -23,10 +23,10 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
         postsRepository.loadPostsGeneral(dateTime?.millis)
             .onErrorReturn {
                 Timber.d(it, "error during page $page load")
-                generateTestData(User.asStudent("wef",
-                                                IconImageUser("http://www.digitalistmag.com/files/2016/01/1926935_55L0dcb.jpg"),
-                                                "John",
-                                                "Mirror"), page)
+                generateTestData(User.asSimple("wef",
+                                               IconImageUser("http://www.digitalistmag.com/files/2016/01/1926935_55L0dcb.jpg"),
+                                               "John",
+                                               "Mirror"), page)
             }
 
     override fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable {

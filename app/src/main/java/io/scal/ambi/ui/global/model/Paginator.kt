@@ -19,7 +19,7 @@ interface Paginator<in T> {
 
     fun refresh()
 
-    fun forceRefresh()
+    fun forceRefresh(resetState: Boolean = true)
 
     fun loadNewPage()
 

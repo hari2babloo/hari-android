@@ -8,4 +8,6 @@ interface IUserRepository {
     fun extractUserProfileFromData(userJson: String): Single<User>
 
     fun getProfile(userId: String): Single<User>
+
+    fun searchProfiles(searchQuery: String): Single<List<User>>
 }

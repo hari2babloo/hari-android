@@ -6,6 +6,7 @@ import io.scal.ambi.R
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.view.IconImageUser
+import timber.log.Timber
 
 open class ItemUser : Parceble<User> {
 
@@ -40,19 +41,21 @@ open class ItemUser : Parceble<User> {
     protected fun extractId(): String =
         (id ?: _id) ?: throw IllegalStateException("_id or id can not be null")
 
-    protected fun extractType(): Type =
-        (kind ?: type) ?: throw IllegalStateException("type or kind can not be null")
+    protected fun extractType(): Type? =
+        (kind ?: type) /*?: throw IllegalStateException("type or kind can not be null")*/ // todo remove comment
 
     @Suppress("REDUNDANT_ELSE_IN_WHEN")
-    override fun parse(): User =
-        when (extractType()) {
-            Type.Student -> User.asStudent(extractId(),
-                                           profilePicture?.url?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath()),
-                                           firstName.orEmpty(),
-                                           lastName.orEmpty()
+    override fun parse(): User {
+        val avatar = profilePicture?.url?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath())
+        return when (extractType()) {
+            Type.Student -> User.asStudent(extractId(), avatar, firstName.orEmpty(), lastName.orEmpty()
             )
-            else         -> throw IllegalStateException("can not parse user from type: ${extractId()}")
+            else         -> {
+                Timber.w("empty user type field! now skip to unknown data")
+                User.asSimple(extractId(), avatar, firstName.orEmpty(), lastName.orEmpty())
+            }
         }
+    }
 
     enum class Type {
         Student

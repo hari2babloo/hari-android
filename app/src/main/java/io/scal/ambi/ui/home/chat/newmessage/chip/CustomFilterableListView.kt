@@ -1,6 +1,7 @@
 package io.scal.ambi.ui.home.chat.newmessage.chip
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import android.util.TypedValue
@@ -60,6 +61,7 @@ internal class CustomFilterableListView(context: Context) : FilterableListView(c
     override fun fadeIn() {
         if (isEnabled) {
             super.fadeIn()
+            setBackgroundColor(Color.RED)
         }
     }
 
