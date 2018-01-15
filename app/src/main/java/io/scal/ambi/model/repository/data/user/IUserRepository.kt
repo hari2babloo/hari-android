@@ -9,5 +9,7 @@ interface IUserRepository {
 
     fun getProfile(userId: String): Single<User>
 
+    fun getProfileCached(userId: String): Single<User>
+
     fun searchProfiles(searchQuery: String): Single<List<User>>
 }

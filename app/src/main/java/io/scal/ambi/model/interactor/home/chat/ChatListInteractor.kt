@@ -150,7 +150,7 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
     }
 
     private fun getUserProfile(uid: String): Maybe<User> =
-        userRepository.getProfile(uid).toMaybe().onErrorComplete { it is ServerResponseException && it.notFound && it.serverError }
+        userRepository.getProfileCached(uid).toMaybe().onErrorComplete { it is ServerResponseException && it.notFound && it.serverError }
 }
 
 class PageResult(val hasMore: Boolean, val data: List<PreviewChatItem> = emptyList())
