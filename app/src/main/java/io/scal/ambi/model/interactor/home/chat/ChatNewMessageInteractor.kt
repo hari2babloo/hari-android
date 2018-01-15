@@ -1,17 +1,22 @@
 package io.scal.ambi.model.interactor.home.chat
 
-import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
-import io.scal.ambi.entity.chat.PreviewChatItem
+import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
+import io.scal.ambi.extensions.view.IconImage
+import io.scal.ambi.model.repository.data.chat.IChatRepository
 import io.scal.ambi.model.repository.data.user.IUserRepository
+import io.scal.ambi.model.repository.local.ILocalUserDataRepository
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ChatNewMessageInteractor @Inject constructor(private val userRepository: IUserRepository,
+                                                   private val chatRepository: IChatRepository,
+                                                   private val localUserDataRepository: ILocalUserDataRepository,
                                                    private val rxSchedulersAbs: RxSchedulersAbs) : IChatNewMessageInteractor {
 
     private val scheduler = Schedulers.from(Executors.newSingleThreadExecutor())
@@ -36,7 +41,19 @@ class ChatNewMessageInteractor @Inject constructor(private val userRepository: I
             .observeOn(rxSchedulersAbs.computationScheduler)
     }
 
-    override fun createChat(selectedUsers: List<User>): Single<PreviewChatItem> {
-        return Completable.timer(5, TimeUnit.SECONDS).andThen(Single.error(IllegalStateException("not implemented yet")))
+    override fun createChat(selectedUsers: List<User>): Single<ChatChannelDescription> {
+        val currentUser = localUserDataRepository.getCurrentUser()
+            ?: return Single.error(IllegalStateException("not able to create channel without authentication"))
+        return chatRepository
+            .createChat(IChatRepository.ChatCreateInfo.Simple("Awesome new channel", selectedUsers.map { it.uid }), currentUser.uid)
+            .flatMap { chatInfo ->
+                Observable.combineLatest(
+                    generateChatIcon(chatInfo, selectedUsers, localUserDataRepository.getCurrentUser()).toObservable(),
+                    generateChatName(chatInfo, selectedUsers, localUserDataRepository.getCurrentUser()).toObservable(),
+                    BiFunction<IconImage, String, Pair<IconImage, String>> { t1, t2 -> Pair(t1, t2) }
+                )
+                    .firstOrError()
+                    .map { pair -> ChatChannelDescription(chatInfo.uid, pair.second, pair.first, chatInfo.dateTime) }
+            }
     }
 }

@@ -1,9 +1,10 @@
 package io.scal.ambi.ui.home.chat.newmessage.chip
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,13 @@ internal class CustomFilterableListView(context: Context) : FilterableListView(c
         }
     }
 
+    init {
+        FilterableListView::class.java.getDeclaredField("mRecyclerView").let {
+            it.isAccessible = true
+            ((it.get(this) as RecyclerView).itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }
+    }
+
     override fun startAnimation(animation: Animation?) {}
 
     override fun onAttachedToWindow() {
@@ -60,8 +68,10 @@ internal class CustomFilterableListView(context: Context) : FilterableListView(c
 
     override fun fadeIn() {
         if (isEnabled) {
-            super.fadeIn()
-            setBackgroundColor(Color.RED)
+            try {
+                super.fadeIn()
+            } catch (e: Exception) {
+            }
         }
     }
 

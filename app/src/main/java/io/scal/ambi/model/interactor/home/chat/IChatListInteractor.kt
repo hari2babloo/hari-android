@@ -10,4 +10,6 @@ interface IChatListInteractor {
     fun loadCurrentUser(): Observable<User>
 
     fun loadChatListPage(firstPage: Boolean): Single<List<PreviewChatItem>>
+
+    fun observeRuntimeDataChanges(): Observable<PreviewChatItem>
 }

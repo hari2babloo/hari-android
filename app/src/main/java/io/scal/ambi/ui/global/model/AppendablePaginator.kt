@@ -195,7 +195,7 @@ class AppendablePaginator<in T>(
             super.appendNewData(data)
 
             if (data.isNotEmpty()) {
-                currentData.addAll(0, data)
+                appendNewData(currentData, data)
                 viewController.showData(true, currentData)
             }
         }
@@ -254,7 +254,7 @@ class AppendablePaginator<in T>(
             super.appendNewData(data)
 
             if (data.isNotEmpty()) {
-                currentData.addAll(0, data)
+                appendNewData(currentData, data)
                 viewController.showData(true, currentData)
             }
         }
@@ -291,11 +291,27 @@ class AppendablePaginator<in T>(
             super.appendNewData(data)
 
             if (data.isNotEmpty()) {
-                currentData.addAll(0, data)
+                appendNewData(currentData, data)
                 viewController.showData(true, currentData)
             }
         }
     }
 
     private inner class RELEASED : State<T>()
+
+    private fun appendNewData(currentData: MutableList<T>, dataToAdd: List<T>) {
+        val updatedItems = mutableListOf<T>()
+        val newItems = mutableListOf<T>()
+        dataToAdd.forEach { if (currentData.contains(it)) updatedItems.add(it) else newItems.add(it) }
+
+        currentData.addAll(0, newItems)
+
+        updatedItems.forEach {
+            val index = currentData.indexOf(it)
+            if (-1 != index) {
+                currentData.removeAt(index)
+                currentData.add(index, it)
+            }
+        }
+    }
 }

@@ -11,10 +11,11 @@ sealed class PreviewChatItem(open val icon: IconImage,
                              open val hasNewMessages: Boolean) : Serializable {
 
     data class Direct(override val description: ChatChannelDescription,
-                      val otherUser: User,
+                      override val icon: IconImage,
+                      val members: List<User>,
                       override val lastMessage: ChatMessage?,
                       override val hasNewMessages: Boolean) :
-        PreviewChatItem(otherUser.avatar, description, lastMessage, hasNewMessages)
+        PreviewChatItem(icon, description, lastMessage, hasNewMessages)
 
     data class Group(override val description: ChatChannelDescription,
                      val friendlyChannels: List<ChatChannelDescription>,

@@ -63,12 +63,12 @@ object TextViewDataBinder {
             val nowDateTime = DateTime.now()
             val durationBetween = Seconds.secondsBetween(dateTime, nowDateTime).toStandardDuration()
             val resultText = when {
-                durationBetween.standardSeconds < 0  -> FULL_DATE_TIME_FORMATTER.print(dateTime)
-                durationBetween.standardSeconds < 60 -> context.getString(R.string.day_ago_just_now)
-                durationBetween.standardMinutes < 60 -> context.getString(R.string.day_ago_minutes_ago, durationBetween.standardMinutes)
-                durationBetween.standardHours < 24   -> context.getString(R.string.day_ago_hours_ago, durationBetween.standardHours)
-                durationBetween.standardDays < 30    -> context.getString(R.string.day_ago_days_ago, durationBetween.standardDays)
-                else                                 -> FULL_DATE_TIME_FORMATTER.print(dateTime)
+                durationBetween.standardMinutes < -20 -> FULL_DATE_TIME_FORMATTER.print(dateTime)
+                durationBetween.standardSeconds < 60  -> context.getString(R.string.day_ago_just_now)
+                durationBetween.standardMinutes < 60  -> context.getString(R.string.day_ago_minutes_ago, durationBetween.standardMinutes)
+                durationBetween.standardHours < 24    -> context.getString(R.string.day_ago_hours_ago, durationBetween.standardHours)
+                durationBetween.standardDays < 30     -> context.getString(R.string.day_ago_days_ago, durationBetween.standardDays)
+                else                                  -> FULL_DATE_TIME_FORMATTER.print(dateTime)
             }
             textView.text = resultText
         }
@@ -85,11 +85,11 @@ object TextViewDataBinder {
             val nowDateTime = DateTime.now()
             val durationBetween = Seconds.secondsBetween(dateTime, nowDateTime).toStandardDuration()
             val resultText = when {
-                durationBetween.standardSeconds < 0  -> DATE_DATE_TIME_FORMATTER.print(dateTime)
-                durationBetween.standardSeconds < 60 -> context.getString(R.string.day_ago_just_now_small)
-                durationBetween.standardDays == 0L   -> TIME_DATE_TIME_FORMATTER.print(dateTime)
-                durationBetween.standardDays < 7     -> DAY_OF_WEEK_DATE_TIME_FORMATTER.print(dateTime)
-                else                                 -> DATE_DATE_TIME_FORMATTER.print(dateTime)
+                durationBetween.standardMinutes < -20 -> DATE_DATE_TIME_FORMATTER.print(dateTime)
+                durationBetween.standardSeconds < 60  -> context.getString(R.string.day_ago_just_now_small)
+                durationBetween.standardDays == 0L    -> TIME_DATE_TIME_FORMATTER.print(dateTime)
+                durationBetween.standardDays < 7      -> DAY_OF_WEEK_DATE_TIME_FORMATTER.print(dateTime)
+                else                                  -> DATE_DATE_TIME_FORMATTER.print(dateTime)
             }
             textView.text = resultText
         }

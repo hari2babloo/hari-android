@@ -1,4 +1,4 @@
-package io.scal.ambi.model.repository.data.chat
+package io.scal.ambi.model.repository.data.chat.utils
 
 import com.twilio.chat.Channel
 import com.twilio.chat.ChannelListener

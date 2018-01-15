@@ -1,9 +1,7 @@
 package io.scal.ambi.model.repository.data.chat
 
 import android.content.Context
-import com.twilio.chat.CallbackListener
 import com.twilio.chat.ChatClient
-import com.twilio.chat.ErrorInfo
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.Function
@@ -11,6 +9,10 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.data.server.ChatApi
+import io.scal.ambi.model.repository.data.chat.data.AccessInfo
+import io.scal.ambi.model.repository.data.chat.data.ChatClientInfo
+import io.scal.ambi.model.repository.data.chat.utils.TwilioCallbackSingle
+import io.scal.ambi.model.repository.local.ILocalDataRepository
 import io.scal.ambi.model.repository.local.LocalUserDataRepository
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -18,11 +20,12 @@ import javax.inject.Inject
 
 internal class TwilioAuthenticationRepository @Inject constructor(context: Context,
                                                                   private val localUserDataRepository: LocalUserDataRepository,
+                                                                  private val localDateRepository: ILocalDataRepository,
                                                                   private val rxSchedulersAbs: RxSchedulersAbs,
                                                                   private val chatApi: ChatApi) {
 
     private val accessInfoObservable = BehaviorSubject.create<AccessInfo>()
-    private val refreshTokenCommand = PublishSubject.create<Unit>()
+    private val refreshTokenCommand = PublishSubject.create<String>()
 
     private val chatClientInfoSubject = BehaviorSubject.create<ChatClientInfo>()
 
@@ -51,17 +54,17 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
             .retry()
             .map { it.uid }
             .distinctUntilChanged()
-            .subscribe { refreshToken() }
+            .subscribe { refreshToken(it) }
     }
 
-    private fun refreshToken() {
-        refreshTokenCommand.onNext(Unit)
+    private fun refreshToken(userId: String) {
+        refreshTokenCommand.onNext(userId)
     }
 
     private fun observeRefreshTokenCommand() {
         refreshTokenCommand
             .observeOn(rxSchedulersAbs.ioScheduler)
-            .switchMapSingle { chatApi.generateChatAccessToken() }
+            .switchMapSingle { chatApi.generateChatAccessToken(ChatApi.AccessTokenRequest(it, localDateRepository.getDeviceUid()) ) }
             .map { it.parse() }
             .retry()
             .subscribe { accessInfoObservable.onNext(it) }
@@ -71,9 +74,9 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
     private fun observeChatClientCreation(context: Context) {
         accessInfoObservable
             .observeOn(rxSchedulersAbs.ioScheduler)
-            .switchMap {
+            .switchMapSingle {
                 when (it) {
-                    is AccessInfo.Nothing -> Observable.just(ChatClientInfo.Error(IllegalStateException("no data to create chat")))
+                    is AccessInfo.Nothing -> Single.just(ChatClientInfo.Error(IllegalStateException("no data to create chat")))
                     is AccessInfo.Data    ->
                         createChatInstance(context, it.accessToken)
                             .doOnError {
@@ -86,28 +89,18 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
             .subscribe { chatClientInfoSubject.onNext(it) }
     }
 
-    private fun createChatInstance(context: Context, accessToken: String): Observable<ChatClientInfo> =
-        Observable.create<ChatClientInfo> { e ->
+    private fun createChatInstance(context: Context, accessToken: String): Single<ChatClientInfo> =
+        Single.create<ChatClient> { e ->
             val props = ChatClient.Properties.Builder()
                 .createProperties()
 
             ChatClient.create(context.applicationContext,
                               accessToken,
                               props,
-                              object : CallbackListener<ChatClient>() {
-                                  override fun onSuccess(client: ChatClient) {
-                                      if (!e.isDisposed) {
-                                          e.onNext(ChatClientInfo.Data(client))
-                                      }
-                                  }
-
-                                  override fun onError(errorInfo: ErrorInfo) {
-                                      if (!e.isDisposed) {
-                                          e.onError(IllegalStateException("can not create chat. code: ${errorInfo.code}, message: ${errorInfo.message}"))
-                                      }
-                                  }
-                              })
+                              TwilioCallbackSingle<ChatClient>(e, "chatClientCreation")
+            )
         }
+            .map { ChatClientInfo.Data(it) as ChatClientInfo }
             .doOnSubscribe {
                 chatClientInfoSubject.value?.chatClient?.shutdown()
                 chatClientInfoSubject.onNext(ChatClientInfo.Error(IllegalArgumentException("we are creating new chat client now")))

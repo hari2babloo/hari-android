@@ -26,6 +26,10 @@ open class ItemUser : Parceble<User> {
     @Expose
     var lastName: String? = null
 
+    @SerializedName("name")
+    @Expose
+    var name: String? = null
+
     @SerializedName("profilePicture")
     @Expose
     var profilePicture: Picture? = null

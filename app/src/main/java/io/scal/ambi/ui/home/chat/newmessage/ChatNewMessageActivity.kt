@@ -11,11 +11,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityChatNewMessageBinding
-import io.scal.ambi.entity.chat.PreviewChatItem
+import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
+import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.ErrorState
@@ -30,6 +31,8 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
 
     override val layoutId: Int = R.layout.activity_chat_new_message
     override val viewModelClass: KClass<ChatNewMessageViewModel> = ChatNewMessageViewModel::class
+
+    private var hasAnySelectedUser: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +60,8 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
                     is ChatNewMessageProgressState.NoProgress    -> {
                         if (binding.progress.visibility == View.VISIBLE) {
                             binding.progress.visibility = View.GONE
+                            binding.cData.enableCascade(true)
+                            binding.bAction.isEnabled = hasAnySelectedUser
                             binding.chipsInput.showPopup()
                         }
                     }
@@ -64,6 +69,10 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
                         binding.progress.visibility = View.VISIBLE
                         binding.bAction.isEnabled = false
                         binding.chipsInput.hidePopup()
+                    }
+                    is ChatNewMessageProgressState.TotalProgress -> {
+                        binding.progress.visibility = View.VISIBLE
+                        binding.cData.enableCascade(false)
                     }
                 }
             }
@@ -105,7 +114,8 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
                             .flatMapSingle { Observable.fromIterable(it).map { it as UIUserChip }.toList() }
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe { userSelection ->
-                                binding.bAction.isEnabled = userSelection.isNotEmpty()
+                                hasAnySelectedUser = userSelection.isNotEmpty()
+                                binding.bAction.isEnabled = hasAnySelectedUser
                                 it.selectedUsers.replaceElements(userSelection)
                             }
                             .addTo(chipsInputDisposable)
@@ -127,7 +137,7 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
         get() = object : BaseNavigator(this) {
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
-                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(this@ChatNewMessageActivity, data as PreviewChatItem)
+                    NavigateTo.CHAT_DETAILS -> ChatDetailsActivity.createScreen(this@ChatNewMessageActivity, data as ChatChannelDescription)
                     else                    -> super.createActivityIntent(screenKey, data)
                 }
         }

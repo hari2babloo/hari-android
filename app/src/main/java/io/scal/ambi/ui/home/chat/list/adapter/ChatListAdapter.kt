@@ -32,7 +32,7 @@ class ChatListAdapter(viewModel: ChatListViewModel) : RecyclerViewAdapterDelegat
     override fun getItemId(position: Int): Long {
         val item = dataList[position]
         return when (item) {
-            is UIChatList -> item.uid.hashCode().toLong()
+            is UIChatList -> item.hashCode().toLong()
             footerElement -> "footer_0".hashCode().toLong()
             else          -> throw IllegalArgumentException("unknown item: $item")
         }

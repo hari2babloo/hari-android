@@ -83,7 +83,7 @@ class ChatNewMessageViewModel @Inject constructor(private val context: Context,
             interactor.createChat(currentDataState.selectedUsers.map { it.user })
                 .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
                 .subscribe({
-                               router.navigateTo(NavigateTo.CHAT_DETAILS, it)
+                               router.replaceScreen(NavigateTo.CHAT_DETAILS, it)
                            },
                            { t ->
                                handleError(t)

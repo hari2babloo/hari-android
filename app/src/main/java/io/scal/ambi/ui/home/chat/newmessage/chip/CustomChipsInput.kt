@@ -6,9 +6,13 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import com.pchmn.materialchips.ChipsInput
+import com.pchmn.materialchips.ChipsInput.ChipValidator
 import com.pchmn.materialchips.adapter.ChipsAdapter
+import com.pchmn.materialchips.adapter.FilterableAdapter
 import com.pchmn.materialchips.model.ChipInterface
+import com.pchmn.materialchips.util.ActivityUtil
 import com.pchmn.materialchips.views.DetailedChipView
 import com.pchmn.materialchips.views.FilterableListView
 import io.reactivex.Observable
@@ -42,8 +46,10 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
 
         addChipsListener(object : ChipsListener {
             override fun onChipAdded(p0: ChipInterface, p1: Int) {
-                selectedChipList.add(p0)
-                validateViewSize()
+                if (!selectedChipList.contains(p0)) {
+                    selectedChipList.add(p0)
+                    validateViewSize()
+                }
             }
 
             override fun onChipRemoved(p0: ChipInterface, p1: Int) {
@@ -52,6 +58,8 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
 
             override fun onTextChanged(p0: CharSequence?) {}
         })
+
+        chipValidator = ChipValidator { chipInterface1, chipInterface2 -> chipInterface1.id == chipInterface2.id }
     }
 
     fun observeSelectedList(): Observable<List<ChipInterface>> = selectedChipList.toObservable()
@@ -67,6 +75,7 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun setFilterableList(list: MutableList<out ChipInterface>?) {
         chipListField.set(this, list)
 
+        (filterableListViewField.get(this) as? View)?.let { postDelayed({ (it.parent as? ViewGroup)?.removeView(it) }, 100) }
         val filterableListView = CustomFilterableListView(context)
         filterableListView.build(list,
                                  this,
@@ -76,13 +85,15 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
 
         (chipsAdapterField.get(this) as ChipsAdapter).setFilterableListView(filterableListView)
 
+        selectedChipList.forEach { onChipAdded(it, selectedChipList.size) } // we rebuild list and should notify about the changes
+
         (filterableListViewField.get(this) as? CustomFilterableListView)?.filterList(selectedTextSubject.value ?: "")
 
         validateViewSize()
     }
 
     private fun validateViewSize() {
-        requestLayout()
+        ActivityUtil.scanForActivity(context).window.decorView.requestLayout()
         post {
             (filterableListViewField.get(this) as? CustomFilterableListView)?.run {
                 visibility = View.GONE
@@ -114,6 +125,25 @@ class CustomChipsInput @JvmOverloads constructor(context: Context, attrs: Attrib
         super.setEnabled(enabled)
 
         (filterableListViewField.get(this) as? CustomFilterableListView)?.isEnabled = enabled
+    }
+
+    override fun onChipRemoved(chip: ChipInterface?, size: Int) {
+        super.onChipRemoved(chip, size)
+
+        (filterableListViewField.get(this) as? CustomFilterableListView)?.run {
+            val adapter = FilterableListView::class.java.getDeclaredField("mAdapter").let {
+                it.isAccessible = true
+                it.get(this) as? FilterableAdapter
+            }
+            val filterableList = adapter?.javaClass?.getDeclaredField("mFilteredList")?.let {
+                it.isAccessible = true
+                it.get(adapter) as? MutableList<ChipInterface>
+            }
+            filterableList?.remove(chip)
+            adapter?.notifyDataSetChanged()
+
+            filterList(selectedTextSubject.value ?: "")
+        }
     }
 
     override fun addChip(chip: ChipInterface?) {

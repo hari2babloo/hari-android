@@ -1,17 +1,19 @@
-package io.scal.ambi.model.repository.data.chat
+package io.scal.ambi.model.repository.data.chat.utils
 
-import com.twilio.chat.CallbackListener
 import com.twilio.chat.ChannelDescriptor
 import com.twilio.chat.ChatClient
 import com.twilio.chat.Paginator
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
+import io.scal.ambi.model.repository.data.chat.data.ChatChannelInfo
 
 internal class TwilioPublicChannelsPaginator(private val chatClientObservable: Observable<ChatClient>,
                                              private val rxSchedulersAbs: RxSchedulersAbs) {
 
-    private val allChannelPaginator = TwilioPaginator({ createChatChannelPaginator() }, { it.convertToChannelInfo(rxSchedulersAbs) }, rxSchedulersAbs)
+    private val allChannelPaginator = TwilioPaginator({ createChatChannelPaginator() },
+                                                      { it.convertToChannelInfo(rxSchedulersAbs).toObservable() },
+                                                      rxSchedulersAbs)
 
     fun loadNextPage(page: Int): Single<List<ChatChannelInfo>> =
         allChannelPaginator.loadPage(page)
@@ -21,15 +23,8 @@ internal class TwilioPublicChannelsPaginator(private val chatClientObservable: O
             .firstOrError()
             .flatMap { chatClient ->
                 Single.create<Paginator<ChannelDescriptor>> { e ->
-                    val listener = object : CallbackListener<Paginator<ChannelDescriptor>>() {
-                        override fun onSuccess(p0: Paginator<ChannelDescriptor>) {
-                            if (!e.isDisposed) {
-                                e.onSuccess(p0)
-                            }
-                        }
-
-                    }
-                    chatClient.channels.getPublicChannelsList(listener)
+                    chatClient.channels.getPublicChannelsList(TwilioCallbackSingle(e,
+                                                                                   "publicChannelsList"))
                 }
             }
 }

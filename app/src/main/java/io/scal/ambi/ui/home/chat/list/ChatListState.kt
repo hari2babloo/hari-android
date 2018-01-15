@@ -26,5 +26,12 @@ internal sealed class ChatListDataState {
 
     object Empty : ChatListDataState()
 
-    data class Data(val chats: List<UIChatList>) : ChatListDataState()
+    class Data(_chats: List<UIChatList>) : ChatListDataState() {
+
+        val chats: List<UIChatList>
+
+        init {
+            chats = _chats.sortedByDescending { uiChatList -> uiChatList.lastMessageDateTime }
+        }
+    }
 }

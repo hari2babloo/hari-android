@@ -1,4 +1,4 @@
-package io.scal.ambi.model.repository.data.chat
+package io.scal.ambi.model.repository.data.chat.data
 
 import org.joda.time.DateTime
 

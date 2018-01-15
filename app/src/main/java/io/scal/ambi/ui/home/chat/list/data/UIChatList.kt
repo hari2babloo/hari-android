@@ -26,4 +26,13 @@ data class UIChatList constructor(val chatInfo: PreviewChatItem,
              lastMessageDateTime,
              hasNewMessages,
              filterType)
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is UIChatList) return false
+        return other.uid == uid
+    }
+
+    override fun hashCode(): Int {
+        return uid.hashCode()
+    }
 }

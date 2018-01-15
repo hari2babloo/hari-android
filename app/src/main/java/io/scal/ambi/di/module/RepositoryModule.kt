@@ -12,7 +12,9 @@ import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.data.newsfeed.PostsRepository
 import io.scal.ambi.model.repository.data.user.IUserRepository
 import io.scal.ambi.model.repository.data.user.UserRepository
+import io.scal.ambi.model.repository.local.ILocalDataRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
+import io.scal.ambi.model.repository.local.LocalDataRepository
 import io.scal.ambi.model.repository.local.LocalUserDataRepository
 import javax.inject.Singleton
 
@@ -42,5 +44,9 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindLocalRepository(localUserDataRepository: LocalUserDataRepository): ILocalUserDataRepository
+    abstract fun bindLocalUserDataRepository(localUserDataRepository: LocalUserDataRepository): ILocalUserDataRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindLocalDataRepository(localDataRepository: LocalDataRepository): ILocalDataRepository
 }

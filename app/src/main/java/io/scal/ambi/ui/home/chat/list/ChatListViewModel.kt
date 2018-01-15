@@ -16,7 +16,7 @@ import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseUserViewModel
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
-import io.scal.ambi.ui.global.model.createPaginator
+import io.scal.ambi.ui.global.model.createAppendablePaginator
 import io.scal.ambi.ui.home.chat.list.data.UIChatList
 import io.scal.ambi.ui.home.chat.list.data.UIChatListFilter
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
     val filterModel = ChatFilterModel(listOf(UIChatListFilter.AllChats, UIChatListFilter.GroupChats, UIChatListFilter.ClassChats))
 
-    private val paginator = createPaginator(
+    private val paginator = createAppendablePaginator(
         { page -> loadNextPage(page) },
         object : PaginatorStateViewController<UIChatList, ChatListProgressState, ChatListErrorState>(context, progressState, errorState) {
 
@@ -68,6 +68,8 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         initChatTypeFilters()
 
         paginator.refresh()
+
+        observeRuntimeDataChanges()
     }
 
     fun createNewMessage() = router.navigateTo(NavigateTo.CHAT_NEW_MESSAGE)
@@ -84,6 +86,14 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         paginator.release()
 
         super.onCleared()
+    }
+
+    private fun observeRuntimeDataChanges() {
+        interactor.observeRuntimeDataChanges()
+            .compose(rxSchedulersAbs.getIOToMainTransformer())
+            .retry()
+            .subscribe { paginator.appendNewData(listOf(it.toChatListElement(context, currentUser.get()))) }
+            .addTo(disposables)
     }
 
     private fun initChatTypeFilters() {

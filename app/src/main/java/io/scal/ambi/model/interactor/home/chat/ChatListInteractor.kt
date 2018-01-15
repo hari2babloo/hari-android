@@ -1,24 +1,22 @@
 package io.scal.ambi.model.interactor.home.chat
 
-import android.os.SystemClock
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
-import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.data.server.ServerResponseException
-import io.scal.ambi.model.repository.data.chat.ChatChannelInfo
-import io.scal.ambi.model.repository.data.chat.ChatChannelMessage
 import io.scal.ambi.model.repository.data.chat.IChatRepository
+import io.scal.ambi.model.repository.data.chat.data.ChatChannelInfo
+import io.scal.ambi.model.repository.data.chat.data.ChatChannelMessage
+import io.scal.ambi.model.repository.data.chat.data.ChatClientChanged
 import io.scal.ambi.model.repository.data.user.IUserRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
-import java.util.*
 import javax.inject.Inject
 
 class ChatListInteractor @Inject constructor(private val localUserDataRepository: ILocalUserDataRepository,
@@ -36,6 +34,19 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
         } else {
             loadChatListPageWithSkipLogic(currentPage + 1)
         }
+
+    override fun observeRuntimeDataChanges(): Observable<PreviewChatItem> {
+        return chatRepository.observeChatClientChanged()
+            .observeOn(rxSchedulersAbs.ioScheduler)
+            .flatMapMaybe {
+                when (it) {
+                    is ChatClientChanged.ChatAdded   -> generateChatItem(it.channelInfo)
+                    is ChatClientChanged.ChatUpdated -> generateChatItem(it.channelInfo)
+                    else                             -> Maybe.empty()
+                }
+            }
+
+    }
 
     private fun loadChatListPageWithSkipLogic(page: Int): Single<List<PreviewChatItem>> {
         return loadChatListPageInner(page)
@@ -57,75 +68,67 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                     Single.just(PageResult(false))
                 } else {
                     Observable.fromIterable(it)
-                        .flatMapMaybe { chatInfo ->
-                            generateChatUsers(chatInfo)
-                                .flatMapMaybe { users ->
-                                    if (checkChatInfo(chatInfo, users)) {
-                                        Observable
-                                            .combineLatest(
-                                                generateChatIcon(users).toObservable(),
-                                                generateChatMessage(chatInfo.lastMessage).map { it as Any }.toSingle(Unit).toObservable(),
-                                                BiFunction<Any, Any, Array<Any>> { t1, t2 -> arrayOf(t1, t2) }
-                                            )
-                                            .firstOrError()
-                                            .map { array ->
-                                                val icon = array[0] as IconImage
-                                                val lastMessage = array[2] as? ChatMessage
-
-                                                // sometimes twilio has bad chats. so we should filter them
-                                                val name =
-                                                    chatInfo.name ?:
-                                                        users.map { it.name }.fold("", { acc, name -> if (acc.isEmpty()) name else "$acc , $name" })
-
-                                                val description = ChatChannelDescription(chatInfo.uid, name, icon, chatInfo.dateTime)
-                                                val item =
-                                                    when (chatInfo.type) {
-                                                        ChatChannelInfo.Type.DIRECT -> PreviewChatItem.Direct(description,
-                                                                                                              users[0],
-                                                                                                              lastMessage,
-                                                                                                              chatInfo.hasNewMessages)
-                                                        ChatChannelInfo.Type.GROUP  -> PreviewChatItem.Group(description,
-                                                                                                             listOf(description),
-                                                                                                             icon,
-                                                                                                             users,
-                                                                                                             lastMessage,
-                                                                                                             chatInfo.hasNewMessages)
-                                                        ChatChannelInfo.Type.CLASS  -> PreviewChatItem.Group(description,
-                                                                                                             listOf(description),
-                                                                                                             icon,
-                                                                                                             users,
-                                                                                                             lastMessage,
-                                                                                                             chatInfo.hasNewMessages)
-                                                    }
-                                                item
-                                            }
-                                            .toMaybe()
-                                    } else {
-                                        Maybe.empty<PreviewChatItem>()
-                                    }
-                                }
-                        }
+                        .flatMapMaybe { chatInfo -> generateChatItem(chatInfo) }
                         .toList()
                         .map { PageResult(true, it) }
                 }
             }
     }
 
-    private fun checkChatInfo(chatInfo: ChatChannelInfo, users: List<User>): Boolean =
-        when {
-            users.isEmpty()                                                 -> false
-            chatInfo.type == ChatChannelInfo.Type.DIRECT && users.size != 2 -> false
-            else                                                            -> true
-        }
+    private fun generateChatItem(chatInfo: ChatChannelInfo): Maybe<PreviewChatItem>? {
+        return generateChatUsers(chatInfo)
+            .flatMapMaybe { users ->
+                if (checkChatInfo(users)) {
+                    Observable
+                        .combineLatest(
+                            generateChatIcon(chatInfo, users, localUserDataRepository.getCurrentUser()).toObservable(),
+                            generateChatMessage(chatInfo.lastMessage).map { it as Any }.toSingle(Unit).toObservable(),
+                            generateChatName(chatInfo, users, localUserDataRepository.getCurrentUser()).toObservable(),
+                            Function3<Any, Any, Any, Array<Any>> { t1, t2, t3 -> arrayOf(t1, t2, t3) }
+                        )
+                        .firstOrError()
+                        .map { array ->
+                            generateChatItem(chatInfo, users, array[0] as IconImage, array[1] as? ChatMessage, array[2] as String)
+                        }
+                        .toMaybe()
+                } else {
+                    Maybe.empty<PreviewChatItem>()
+                }
+            }
+    }
 
-    private fun generateChatIcon(members: List<User>): Single<IconImage> =
-        if (members.isEmpty()) {
-            Maybe.empty()
-        } else {
-            val member = members[Random(SystemClock.currentThreadTimeMillis()).nextInt(members.size)]
-            Maybe.just(member.avatar as IconImage)
+    private fun generateChatItem(chatInfo: ChatChannelInfo,
+                                 users: List<User>,
+                                 icon: IconImage,
+                                 lastMessage: ChatMessage?,
+                                 name: String): PreviewChatItem {
+        val description = ChatChannelDescription(chatInfo.uid, name, icon, chatInfo.dateTime)
+        return when (chatInfo.type) {
+            ChatChannelInfo.Type.SIMPLE    -> PreviewChatItem.Direct(description,
+                                                                     icon,
+                                                                     users,
+                                                                     lastMessage,
+                                                                     chatInfo.hasNewMessages)
+            ChatChannelInfo.Type.ORG_GROUP -> PreviewChatItem.Group(description,
+                                                                    listOf(description),
+                                                                    icon,
+                                                                    users,
+                                                                    lastMessage,
+                                                                    chatInfo.hasNewMessages)
+            ChatChannelInfo.Type.ORG_CLASS -> PreviewChatItem.Group(description,
+                                                                    listOf(description),
+                                                                    icon,
+                                                                    users,
+                                                                    lastMessage,
+                                                                    chatInfo.hasNewMessages)
         }
-            .toSingle(IconImageUser())
+    }
+
+    private fun checkChatInfo(users: List<User>): Boolean =
+        when {
+            users.isEmpty() -> false
+            else            -> true
+        }
 
     private fun generateChatUsers(chatInfo: ChatChannelInfo): Single<List<User>> =
         Observable.fromIterable(chatInfo.memberUids)

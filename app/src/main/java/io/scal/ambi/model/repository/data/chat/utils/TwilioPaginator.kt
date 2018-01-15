@@ -1,4 +1,4 @@
-package io.scal.ambi.model.repository.data.chat
+package io.scal.ambi.model.repository.data.chat.utils
 
 import com.twilio.chat.CallbackListener
 import com.twilio.chat.Paginator
@@ -15,7 +15,8 @@ internal class TwilioPaginator<T, R>(private val initialPaginatorCreator: () -> 
                                      private val rxSchedulersAbs: RxSchedulersAbs) {
 
     private val executor = Schedulers.from(Executors.newSingleThreadExecutor())
-    private val allChannelPaginatorInformation = BehaviorSubject.createDefault<PaginatorInformation<T>>(PaginatorInformation())
+    private val allChannelPaginatorInformation = BehaviorSubject.createDefault<PaginatorInformation<T>>(
+        PaginatorInformation())
 
     fun loadPage(page: Int): Single<List<R>> {
         return allChannelPaginatorInformation
@@ -38,7 +39,8 @@ internal class TwilioPaginator<T, R>(private val initialPaginatorCreator: () -> 
                 }
             }
             .onErrorResumeNext(createChatChannelPaginator(page))
-            .doOnSuccess { allChannelPaginatorInformation.onNext(PaginatorInformation(it, page)) }
+            .doOnSuccess { allChannelPaginatorInformation.onNext(PaginatorInformation(it,
+                                                                                                                                                    page)) }
             .map { it.paginator?.items ?: emptyList<T>() }
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {

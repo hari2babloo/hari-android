@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.model.data.server.responses.Parceble
-import io.scal.ambi.model.repository.data.chat.AccessInfo
+import io.scal.ambi.model.repository.data.chat.data.AccessInfo
 
 class AccessTokenResponse : Parceble<AccessInfo> {
 
