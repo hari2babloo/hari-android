@@ -19,8 +19,8 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
     override fun loadCurrentUser(): Observable<User> =
         localUserDataRepository.observeCurrentUser()
 
-    override fun loadNewsFeedPage(page: Int, dateTime: DateTime?): Single<List<NewsFeedItem>> =
-        postsRepository.loadPostsGeneral(dateTime?.millis)
+    override fun loadNewsFeedPage(page: Int, filter: String): Single<List<NewsFeedItem>> =
+        postsRepository.loadPostsGeneral(page.toLong() - 1, filter)
             .onErrorReturn {
                 Timber.d(it, "error during page $page load")
                 generateTestData(User.asSimple("wef",
@@ -62,7 +62,7 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                          currentUser,
                          "Is it true?",
                          listOf(PollChoice("1", "Yes", emptyList()),
-                                PollChoice("2", "No", listOf(currentUser))),
+                                PollChoice("2", "No", listOf(currentUser.uid))),
                          DateTime.now(),
                          DateTime.now().plusWeeks(1),
                          listOf(Audience.STAFF),
@@ -74,8 +74,8 @@ private fun generateTestData(currentUser: User, page: Int): List<NewsFeedItem> {
                          false,
                          currentUser,
                          "Is it true?",
-                         listOf(PollChoice("1", "Yes", listOf(currentUser)),
-                                PollChoice("2", "No", listOf(currentUser, currentUser))),
+                         listOf(PollChoice("1", "Yes", listOf(currentUser.uid)),
+                                PollChoice("2", "No", listOf(currentUser.uid, currentUser.uid))),
                          DateTime.now(),
                          DateTime.now().plusDays(16),
                          listOf(Audience.NEWS),

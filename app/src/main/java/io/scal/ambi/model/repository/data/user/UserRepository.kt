@@ -27,7 +27,6 @@ class UserRepository @Inject constructor(private val userApi: UserApi,
         return userApi.getUserProfile(userId)
             .map { it.parse() }
             .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
-//            .onErrorResumeNext { t -> Single.error(IllegalAccessException("todo remove me")) }
     }
 
     override fun getProfileCached(userId: String): Single<User> {

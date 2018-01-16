@@ -251,12 +251,12 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
         internal val EXTRA_CHAT_DESCRIPTION = "EXTRA_CHAT_DESCRIPTION"
         internal val EXTRA_CHAT_INFO = "EXTRA_CHAT_INFO"
 
-        fun createScreen(context: Context, chatDescription: ChatChannelDescription): Intent =
-            Intent(context, ChatDetailsActivity::class.java)
-                .putExtra(EXTRA_CHAT_DESCRIPTION, chatDescription)
-
         fun createScreen(context: Context, previewChatInfo: PreviewChatItem): Intent =
             createScreen(context, previewChatInfo.description)
                 .putExtra(EXTRA_CHAT_INFO, previewChatInfo)
+
+        private fun createScreen(context: Context, chatDescription: ChatChannelDescription): Intent =
+            Intent(context, ChatDetailsActivity::class.java)
+                .putExtra(EXTRA_CHAT_DESCRIPTION, chatDescription)
     }
 }

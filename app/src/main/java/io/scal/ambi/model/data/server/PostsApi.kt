@@ -7,8 +7,8 @@ import retrofit2.http.*
 
 interface PostsApi {
 
-    @GET("v1/posts/general/populate")
-    fun getPostsGeneral(@Query("timeCutoff") lastPostTime: Long?): Single<PostsResponse>
+    @GET("v1/posts/general/populate?timeCutoff=&getPicture=true&populate[]=poster&populate[]=fileContent&populate[]=likes&populate[]=hosts.host&populate[]=comments.commenter")
+    fun getPostsGeneral(@Query("page") page: Long, @Query("filter") filter: String): Single<PostsResponse>
 
 
     @POST("v1/update-posts")

@@ -36,6 +36,6 @@ internal class ItemComment : Parceble<Comment> {
     }
 
     private fun parsePoster(): User {
-        return poster.notNullOrThrow("poster").parse()
+        return poster.notNullOrThrow("commenter").parse()
     }
 }

@@ -35,6 +35,10 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatDescription") privat
         localUserDataRepository.observeCurrentUser().doOnNext { currentUser = it }
 
     override fun loadChatInfo(): Observable<FullChatItem> {
+        return tmpChatInfo()
+    }
+
+    private fun tmpChatInfo(): Observable<FullChatItem> {
         if (SecureRandom().nextBoolean()) {
             return Observable.just(FullChatItem.Direct("fasf",
                                                        ChatChannelDescription("fasf",

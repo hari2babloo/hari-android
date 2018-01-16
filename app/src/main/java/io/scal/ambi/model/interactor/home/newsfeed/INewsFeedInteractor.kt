@@ -14,7 +14,7 @@ interface INewsFeedInteractor {
 
     fun loadCurrentUser(): Observable<User>
 
-    fun loadNewsFeedPage(page: Int, dateTime: DateTime?): Single<List<NewsFeedItem>>
+    fun loadNewsFeedPage(page: Int, filter: String): Single<List<NewsFeedItem>>
 
     fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable
 

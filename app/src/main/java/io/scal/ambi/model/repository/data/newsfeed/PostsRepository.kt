@@ -17,8 +17,8 @@ import javax.inject.Inject
 class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                           private val localUserDataRepository: LocalUserDataRepository) : IPostsRepository {
 
-    override fun loadPostsGeneral(lastPostTime: Long?): Single<List<NewsFeedItem>> {
-        return postsApi.getPostsGeneral(lastPostTime)
+    override fun loadPostsGeneral(page: Long, filter: String): Single<List<NewsFeedItem>> {
+        return postsApi.getPostsGeneral(page, filter)
             .map { it.parse() }
     }
 
@@ -135,12 +135,10 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
 
                 val selectedAnswerVoters = selectedAnswer.get("voters").asJsonArray
                 if (null == selectedAnswerVoters
-                    .map { it as JsonObject }
-                    .firstOrNull { it.getAsJsonPrimitive("id").asString == pair.first.uid }) {
+                    .map { it as JsonPrimitive }
+                    .firstOrNull { it.asString == pair.first.uid }) {
 
-                    val userObj = JsonObject()
-                    userObj.add("id", JsonPrimitive(pair.first.uid))
-                    selectedAnswerVoters.add(userObj)
+                    selectedAnswerVoters.add(pair.first.uid)
                 }
 
                 val postJsonItem = JsonObject()
@@ -149,7 +147,7 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
             }
             .flatMap { pair -> sendPostWithUpdatedInfo(feedItemPoll, pair) }
             .map { user ->
-                val choices = feedItemPoll.choices.map { if (it.uid == pollChoice.uid) it.copy(voters = it.voters.plus(user)) else it }
+                val choices = feedItemPoll.choices.map { if (it.uid == pollChoice.uid) it.copy(voters = it.voters.plus(user.uid)) else it }
                 feedItemPoll.copy(choices = choices)
             }
     }

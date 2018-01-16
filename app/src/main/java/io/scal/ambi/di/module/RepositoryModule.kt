@@ -10,6 +10,8 @@ import io.scal.ambi.model.repository.data.chat.IChatRepository
 import io.scal.ambi.model.repository.data.chat.TwilioChatRepository
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.data.newsfeed.PostsRepository
+import io.scal.ambi.model.repository.data.organization.IOrganizationRepository
+import io.scal.ambi.model.repository.data.organization.OrganizationRepository
 import io.scal.ambi.model.repository.data.user.IUserRepository
 import io.scal.ambi.model.repository.data.user.UserRepository
 import io.scal.ambi.model.repository.local.ILocalDataRepository
@@ -41,6 +43,10 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindCalendarRepository(calendarRepository: CalendarRepository): ICalendarRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindOrganizationRepository(organizationRepository: OrganizationRepository): IOrganizationRepository
 
     @Singleton
     @Binds

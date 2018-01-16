@@ -78,13 +78,6 @@ private fun getChatTypeFromTwilio(attrs: JSONObject, membersCount: Long, friendl
     }
 }
 
-internal fun Channel.getChatNameFromTwilio(): String? =
-    if (attributes.has("purpose")) {
-        attributes.getString("purpose")
-    } else {
-        null
-    }
-
 private val gsonParser = JsonParser()
 
 internal fun Message?.toChatMessage(): ChatChannelMessage? {
@@ -187,7 +180,7 @@ internal fun Channel.convertToChannelInfo(rxSchedulersAbs: RxSchedulersAbs,
                     ChatChannelInfo(
                         channel.sid,
                         chatType,
-                        channel.getChatNameFromTwilio(),
+                        channel.getChatSlugFromTwilio(),
                         lastMessage?.toChatMessage(),
                         DateTime(dateCreatedAsDate.time),
                         tripple.second > tripple.third,
@@ -198,6 +191,13 @@ internal fun Channel.convertToChannelInfo(rxSchedulersAbs: RxSchedulersAbs,
         }
         .onErrorResumeNext(Maybe.empty<ChatChannelInfo>())
 }
+
+private fun Channel.getChatSlugFromTwilio(): String? =
+    if (attributes.has("organizationSlug")) {
+        attributes.getString("organizationSlug")
+    } else {
+        null
+    }
 
 private fun Channel.convertToUnconsumedMessagesCount(): Single<Long> =
     Single.create<Long> { e ->

@@ -5,6 +5,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.scal.ambi.entity.chat.ChatChannelDescription
+import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.extensions.view.IconImage
@@ -41,19 +42,11 @@ class ChatNewMessageInteractor @Inject constructor(private val userRepository: I
             .observeOn(rxSchedulersAbs.computationScheduler)
     }
 
-    override fun createChat(selectedUsers: List<User>): Single<ChatChannelDescription> {
+    override fun createChat(selectedUsers: List<User>): Single<PreviewChatItem> {
         val currentUser = localUserDataRepository.getCurrentUser()
             ?: return Single.error(IllegalStateException("not able to create channel without authentication"))
         return chatRepository
             .createChat(IChatRepository.ChatCreateInfo.Simple("Awesome new channel", selectedUsers.map { it.uid }), currentUser.uid)
-            .flatMap { chatInfo ->
-                Observable.combineLatest(
-                    generateChatIcon(chatInfo, selectedUsers, localUserDataRepository.getCurrentUser()).toObservable(),
-                    generateChatName(chatInfo, selectedUsers, localUserDataRepository.getCurrentUser()).toObservable(),
-                    BiFunction<IconImage, String, Pair<IconImage, String>> { t1, t2 -> Pair(t1, t2) }
-                )
-                    .firstOrError()
-                    .map { pair -> ChatChannelDescription(chatInfo.uid, pair.second, pair.first, chatInfo.dateTime) }
-            }
+            .flatMap { chatInfo -> generateChatItem(chatInfo, localUserDataRepository, userRepository).toSingle() }
     }
 }

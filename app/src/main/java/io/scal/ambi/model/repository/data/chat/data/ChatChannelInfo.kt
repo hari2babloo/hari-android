@@ -4,7 +4,7 @@ import org.joda.time.DateTime
 
 data class ChatChannelInfo(val uid: String,
                            val type: Type,
-                           val name: String?,
+                           val slug: String?,
                            val lastMessage: ChatChannelMessage?,
                            val dateTime: DateTime,
                            val hasNewMessages: Boolean,

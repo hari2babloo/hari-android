@@ -165,7 +165,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
                 val newPollChoices = element
                     .choices
                     .map { it.pollChoice }
-                    .map { if (it.uid == choice.pollChoice.uid) choice.pollChoice.copy(voters = choice.pollChoice.voters.plus(currentUser.get())) else it }
+                    .map { if (it.uid == choice.pollChoice.uid) choice.pollChoice.copy(voters = choice.pollChoice.voters.plus(currentUser.get().uid)) else it }
 
                 currentDataState.newsFeed
                     .replaceElement(element, element.copy(choices = newPollChoices.toPollVotedResult(), userChoice = choice.pollChoice))
@@ -228,7 +228,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
     private fun executeLoadNextPage(page: Int): Single<List<UIModelFeed>> {
         return interactor
-            .loadNewsFeedPage(page, if (1 == page) null else (dataState.get() as? NewsFeedDataState.Data)?.newsFeed?.last()?.createdAtDateTime)
+            .loadNewsFeedPage(page, "Student")
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {
@@ -299,7 +299,7 @@ private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                         null,
                                                         questionText,
                                                         choices.toPollVotedResult(),
-                                                        choices.firstOrNull { null != it.voters.firstOrNull { it.uid == currentUser.uid } },
+                                                        choices.firstOrNull { null != it.voters.firstOrNull { it == currentUser.uid } },
                                                         pollEndsTime,
                                                         UILikes(currentUser, likes),
                                                         UIComments(comments),

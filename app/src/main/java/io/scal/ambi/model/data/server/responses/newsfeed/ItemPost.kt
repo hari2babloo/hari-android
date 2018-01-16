@@ -51,12 +51,9 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     @Expose
     internal var comments: List<ItemComment>? = null
 
-/*
     @SerializedName("likes")
     @Expose
     internal var likes: List<ItemUser>? = null
-    todo remove this
-*/
 
 
     //    poll item
@@ -68,7 +65,6 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     @Expose
     internal var pollEndsTime: String? = null
 
-    //    announcementType
     @SerializedName("announcementType")
     @Expose
     internal var announcementType: String? = null
@@ -99,8 +95,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                          pollEndsTime.toDateTimePollEnds("pollEndsTime"),
                          audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                          comments?.map { it.parse() } ?: emptyList(),
-//                         likes?.map { it.parse() } ?: emptyList()
-                         emptyList()// todo
+                         likes?.map { it.parse() } ?: emptyList()
         )
 
     private fun parseAsUpdate(): NewsFeedItem =
@@ -112,8 +107,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                            createdAt.toDateTime("createdAt"),
                            audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                            comments?.map { it.parse() } ?: emptyList(),
-//                           likes?.map { it.parse() } ?: emptyList()
-                           emptyList()// todo
+                           likes?.map { it.parse() } ?: emptyList()
         )
 
     private fun parseAsAnnouncement(): NewsFeedItem {
@@ -126,8 +120,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                                         audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                                         announcementType.toAnnouncement(),
                                         comments?.map { it.parse() } ?: emptyList(),
-            //                         likes?.map { it.parse() } ?: emptyList()
-                                        emptyList()// todo
+                                        likes?.map { it.parse() } ?: emptyList()
         )
     }
 
