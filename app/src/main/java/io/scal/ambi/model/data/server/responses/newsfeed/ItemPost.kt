@@ -51,9 +51,12 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     @Expose
     internal var comments: List<ItemComment>? = null
 
+/*
     @SerializedName("likes")
     @Expose
     internal var likes: List<ItemUser>? = null
+    todo remove this
+*/
 
 
     //    poll item
@@ -96,7 +99,8 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                          pollEndsTime.toDateTimePollEnds("pollEndsTime"),
                          audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                          comments?.map { it.parse() } ?: emptyList(),
-                         likes?.map { it.parse() } ?: emptyList()
+//                         likes?.map { it.parse() } ?: emptyList()
+                         emptyList()// todo
         )
 
     private fun parseAsUpdate(): NewsFeedItem =
@@ -108,7 +112,8 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                            createdAt.toDateTime("createdAt"),
                            audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                            comments?.map { it.parse() } ?: emptyList(),
-                           likes?.map { it.parse() } ?: emptyList()
+//                           likes?.map { it.parse() } ?: emptyList()
+                           emptyList()// todo
         )
 
     private fun parseAsAnnouncement(): NewsFeedItem {
@@ -121,7 +126,8 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                                         audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                                         announcementType.toAnnouncement(),
                                         comments?.map { it.parse() } ?: emptyList(),
-                                        likes?.map { it.parse() } ?: emptyList()
+            //                         likes?.map { it.parse() } ?: emptyList()
+                                        emptyList()// todo
         )
     }
 
@@ -131,7 +137,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
 }
 
 private fun String?.toAnnouncement(): AnnouncementType =
-    when (this) {
+    when (this?.toLowerCase()) {
         "safety"       -> AnnouncementType.SAFETY
         "good news"    -> AnnouncementType.GOOD_NEWS
         "event update" -> AnnouncementType.EVENT

@@ -7,7 +7,7 @@ import io.scal.ambi.entity.user.User
 
 internal class UIUserChip(val user: User) : ChipInterface {
 
-    override fun getInfo(): String = "unknown TODO!!!"
+    override fun getInfo(): String = ""
 
     override fun getAvatarDrawable(): Drawable? = null
 

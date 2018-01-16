@@ -19,7 +19,7 @@ internal class ItemComment : Parceble<Comment> {
     @Expose
     internal var text: String? = null
 
-    @SerializedName("poster")
+    @SerializedName("commenter")
     @Expose
     internal var poster: ItemUser? = null
 

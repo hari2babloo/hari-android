@@ -65,6 +65,11 @@ android {
 
             buildConfigField "String", "MAIN_SERVER_URL", '"https://sandbox.ambi.work/api/"'
         }
+        life {
+            dimension "api"
+
+            buildConfigField "String", "MAIN_SERVER_URL", '"http://sandbox.ambi.work:4000/api/"'
+        }
         arpit {
             dimension "api"
 
