@@ -2,6 +2,7 @@
 <resources>
 
     <string name="chat_list_filter_all">all chats</string>
+    <string name="chat_list_filter_organization">organization chats</string>
     <string name="chat_list_filter_group">group chats</string>
     <string name="chat_list_filter_class">class chats</string>
 

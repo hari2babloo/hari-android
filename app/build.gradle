@@ -73,7 +73,7 @@ android {
         arpit {
             dimension "api"
 
-            buildConfigField "String", "MAIN_SERVER_URL", '"http://ambi-android-api.ngrok.io/api/"'
+            buildConfigField "String", "MAIN_SERVER_URL", '"http://ambi-api.ngrok.io/api/"'
         }
     }
 
@@ -136,7 +136,6 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     implementation "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
-
 
     // LeakCanary
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakCanaryVersion"

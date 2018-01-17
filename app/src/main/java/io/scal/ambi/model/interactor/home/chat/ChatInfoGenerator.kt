@@ -131,21 +131,21 @@ object ChatInfoGenerator {
                                                                  users,
                                                                  lastMessage,
                                                                  chatInfo.hasNewMessages)
-            OrganizationType.GROUP     -> PreviewChatItem.Group(description,
-                                                                listOf(description),
-                                                                users,
-                                                                lastMessage,
-                                                                chatInfo.hasNewMessages)
-            OrganizationType.CLASS     -> PreviewChatItem.Group(description,
-                                                                listOf(description),
-                                                                users,
-                                                                lastMessage,
-                                                                chatInfo.hasNewMessages)
-            OrganizationType.COMMUNITY -> PreviewChatItem.Group(description,
-                                                                listOf(description),
-                                                                users,
-                                                                lastMessage,
-                                                                chatInfo.hasNewMessages)
+            OrganizationType.GROUP     -> PreviewChatItem.Organization(description,
+                                                                       listOf(description),
+                                                                       users,
+                                                                       lastMessage,
+                                                                       chatInfo.hasNewMessages)
+            OrganizationType.CLASS     -> PreviewChatItem.Organization(description,
+                                                                       listOf(description),
+                                                                       users,
+                                                                       lastMessage,
+                                                                       chatInfo.hasNewMessages)
+            OrganizationType.COMMUNITY -> PreviewChatItem.Organization(description,
+                                                                       listOf(description),
+                                                                       users,
+                                                                       lastMessage,
+                                                                       chatInfo.hasNewMessages)
         }
     }
 

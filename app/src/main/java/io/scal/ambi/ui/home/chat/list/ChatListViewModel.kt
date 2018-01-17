@@ -34,7 +34,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
 
     private val allDataState = ObservableField<ChatListDataState>()
 
-    val filterModel = ChatFilterModel(listOf(UIChatListFilter.AllChats, UIChatListFilter.GroupChats, UIChatListFilter.ClassChats))
+    val filterModel = ChatFilterModel(listOf(UIChatListFilter.AllChats, UIChatListFilter.OrganizationChats))
 
     private val paginator = createAppendablePaginator(
         { page -> loadNextPage(page) },
@@ -176,7 +176,8 @@ private fun PreviewChatItem.toChatListElement(context: Context, currentUser: Use
                       }.trim(),
                       lastMessage?.sendDate ?: description.creationDateTime,
                       hasNewMessages,
-                      UIChatListFilter.AllChats
+                      if (this is PreviewChatItem.Organization) listOf(UIChatListFilter.AllChats, UIChatListFilter.OrganizationChats)
+                      else listOf(UIChatListFilter.AllChats)
     )
 }
 
@@ -188,6 +189,6 @@ private fun ChatMessage.toMessageData(context: Context): String =
         else                                  -> throw IllegalArgumentException("unknown chat message type: $this")
     }
 
-private fun UIChatListFilter?.filterAllData(allChats: List<UIChatList>): List<UIChatList> {
-    return allChats.filter { it.filterType == this }
+private fun UIChatListFilter.filterAllData(allChats: List<UIChatList>): List<UIChatList> {
+    return allChats.filter { it.filterType.contains(this) }
 }

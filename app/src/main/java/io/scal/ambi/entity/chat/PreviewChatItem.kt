@@ -14,11 +14,11 @@ sealed class PreviewChatItem(open val description: ChatChannelDescription,
                       override val hasNewMessages: Boolean) :
         PreviewChatItem(description, lastMessage, hasNewMessages)
 
-    data class Group(override val description: ChatChannelDescription,
-                     val friendlyChannels: List<ChatChannelDescription>,
-                     val members: List<User>,
-                     override val lastMessage: ChatMessage?,
-                     override val hasNewMessages: Boolean) :
+    data class Organization(override val description: ChatChannelDescription,
+                            val friendlyChannels: List<ChatChannelDescription>,
+                            val members: List<User>,
+                            override val lastMessage: ChatMessage?,
+                            override val hasNewMessages: Boolean) :
         PreviewChatItem(description, lastMessage, hasNewMessages) {
 
         init {

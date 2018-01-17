@@ -11,13 +11,13 @@ data class UIChatList constructor(val chatInfo: PreviewChatItem,
                                   val lastMessage: String,
                                   val lastMessageDateTime: DateTime,
                                   val hasNewMessages: Boolean,
-                                  val filterType: UIChatListFilter) {
+                                  val filterType: List<UIChatListFilter>) {
 
     constructor(chatInfo: PreviewChatItem,
                 lastMessage: String,
                 lastMessageDateTime: DateTime,
                 hasNewMessages: Boolean,
-                filterType: UIChatListFilter) :
+                filterType: List<UIChatListFilter>) :
         this(chatInfo,
              chatInfo.description.uid,
              chatInfo.description.iconImage,

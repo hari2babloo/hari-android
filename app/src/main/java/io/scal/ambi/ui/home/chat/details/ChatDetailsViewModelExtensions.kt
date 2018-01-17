@@ -24,7 +24,7 @@ internal fun PreviewChatItem?.toChatInfo(): UIChatInfo? =
     if (null == this) {
         null
     } else {
-        UIChatInfo(description, (this as? PreviewChatItem.Group)?.friendlyChannels, description.iconImage, description.title, "")
+        UIChatInfo(description, (this as? PreviewChatItem.Organization)?.friendlyChannels, description.iconImage, description.title, "")
     }
 
 internal fun FullChatItem.toChatInfo(context: Context, currentUser: User): UIChatInfo {
