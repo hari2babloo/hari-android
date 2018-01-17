@@ -2,6 +2,7 @@ package io.scal.ambi.ui.home.chat.details
 
 import android.content.Context
 import android.databinding.ObservableField
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -31,6 +32,7 @@ import io.scal.ambi.ui.home.chat.details.data.UIChatMessageStatus
 import ru.terrakok.cicerone.result.ResultListener
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -97,6 +99,8 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                  BiFunction<AllMessagesInfo, List<UIChatMessage>, AllMessagesInfo> { t1, t2 ->
                                      AllMessagesInfo(t1.serverMessages.plus(t2), t1.chatInfo)
                                  })
+            .toFlowable(BackpressureStrategy.LATEST)
+            .throttleLast(1, TimeUnit.SECONDS)
             .subscribeOn(rxSchedulersAbs.computationScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .doOnNext { Collections.sort(it.serverMessages, { o1, o2 -> o2.messageDateTime.compareTo(o1.messageDateTime) }) }
@@ -155,7 +159,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                     .compose(rxSchedulersAbs.getIOToMainTransformer())
                     .subscribe({
                                    progressState.set(ChatDetailsProgressState.NoProgress)
-                                   dataState.set(dataState.get().updateInfo(it.toChatInfo(context)))
+                                   dataState.set(dataState.get().updateInfo(it.toChatInfo(context, currentUser.get())))
 
                                    paginator.activate()
                                    paginator.refresh()
@@ -213,7 +217,7 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
     }
 
     private fun loadNextPage(page: Int): Single<List<UIChatMessage>> {
-        return interactor.loadChatPage(page)
+        return interactor.loadChatPage(if (1 == page) null else (dataState.get() as? ChatDetailsDataState.Data)?.messages?.getLastMessage()?.index)
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {

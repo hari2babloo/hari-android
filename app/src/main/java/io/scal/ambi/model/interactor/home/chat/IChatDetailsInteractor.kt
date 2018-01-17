@@ -14,7 +14,7 @@ interface IChatDetailsInteractor {
 
     fun loadChatInfo(): Observable<FullChatItem>
 
-    fun loadChatPage(page: Int): Single<List<ChatMessage>>
+    fun loadChatPage(lastMessageIndex: Long?): Single<List<ChatMessage>>
 
     fun loadTypingInfo(): Observable<ChatTypingInfo>
 

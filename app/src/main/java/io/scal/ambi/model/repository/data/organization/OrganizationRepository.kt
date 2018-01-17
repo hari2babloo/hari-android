@@ -11,8 +11,9 @@ class OrganizationRepository @Inject constructor(private val organizationApi: Or
 
     override fun loadOrganizationBySlug(organizationSmall: ChatChannelInfo.OrganizationSmall): Single<Organization> {
         return when (organizationSmall.type) {
-            OrganizationType.GROUP -> organizationApi.loadGroupOrganizationBySlug(organizationSmall.slug)
-            OrganizationType.CLASS -> organizationApi.loadClassOrganizationBySlug(organizationSmall.slug)
+            OrganizationType.GROUP     -> organizationApi.loadGroupOrganizationBySlug(organizationSmall.slug)
+            OrganizationType.CLASS     -> organizationApi.loadClassOrganizationBySlug(organizationSmall.slug)
+            OrganizationType.COMMUNITY -> organizationApi.loadCommunityOrganizationBySlug(organizationSmall.slug)
         }
             .map { it.parse() }
     }

@@ -10,6 +10,7 @@ import android.widget.ImageView
 import com.facebook.common.util.UriUtil
 import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.view.SimpleDraweeView
+import io.scal.ambi.extensions.view.ColorIconImage
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
 
@@ -37,6 +38,7 @@ object ImageViewDataBinder {
     @JvmStatic
     @BindingAdapter("iconImage")
     fun setImageString(simpleDraweeView: SimpleDraweeView, iconImage: IconImage?) {
+        simpleDraweeView.clearColorFilter()
         if (null == iconImage) {
             simpleDraweeView.setImageDrawable(null)
             return
@@ -51,6 +53,9 @@ object ImageViewDataBinder {
             simpleDraweeView.setImageURI(iconImage.iconPath)
         } else {
             simpleDraweeView.setImageDrawable(iconDrawable)
+        }
+        if (iconImage is ColorIconImage) {
+            simpleDraweeView.setColorFilter(iconImage.color)
         }
     }
 

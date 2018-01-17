@@ -34,6 +34,31 @@ private fun RecyclerView.listenForEndScroll(visibleThreshold: Int, inverse: Bool
             }
         }
     })
+
+    var runnable: Runnable? = null
+    var wayToFinish = false
+    runnable = Runnable {
+        if (isAttachedToWindow) {
+            val tmpLayoutManager = layoutManager
+            if (tmpLayoutManager is LinearLayoutManager) {
+                val firstVisibleItem = tmpLayoutManager.findFirstCompletelyVisibleItemPosition()
+                val lastVisibleItem = tmpLayoutManager.findLastCompletelyVisibleItemPosition()
+                val totalItemCount = tmpLayoutManager.itemCount
+
+                if (totalItemCount - 1 == firstVisibleItem + lastVisibleItem) {
+                    postDelayed(runnable!!, 1000)
+                    subject.onNext(Any())
+                } else {
+                    if (!wayToFinish) {
+                        wayToFinish = true
+                        postDelayed(runnable!!, 1000)
+                    }
+                }
+            }
+        }
+    }
+    postDelayed(runnable, 1000)
+
     return subject
         .toFlowable(BackpressureStrategy.DROP)
         .throttleFirst(3, TimeUnit.SECONDS)

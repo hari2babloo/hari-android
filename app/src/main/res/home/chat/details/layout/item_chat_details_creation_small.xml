@@ -17,6 +17,10 @@
             name="zoomListener"
             type="io.scal.ambi.ui.home.chat.details.MessageCreationZoomListener"/>
 
+        <variable
+            name="showAttach"
+            type="Boolean"/>
+
     </data>
 
     <LinearLayout
@@ -83,7 +87,8 @@
                 android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/ic_chat_action_picture"/>
+                app:srcCompat="@drawable/ic_chat_action_picture"
+                app:visibility="@{showAttach ?? true}"/>
 
             <ImageView
                 android:id="@+id/iv_file"
@@ -95,7 +100,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/iv_picture"
                 app:layout_constraintStart_toEndOf="@+id/iv_picture"
                 app:layout_constraintTop_toTopOf="@+id/iv_picture"
-                app:srcCompat="@drawable/ic_chat_action_file"/>
+                app:srcCompat="@drawable/ic_chat_action_file"
+                app:visibility="@{showAttach ?? true}"/>
 
             <ImageView
                 android:id="@+id/iv_emoji"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="chat_details_info_direct">This is the very beginning of your direct messages with</string>
+    <string name="chat_details_info_direct">This is the very beginning of your messages with</string>
     <string name="chat_details_info_group_middle">created this channel on %s</string>
 
     <string name="chat_details_text_is_typing_this">%s is typing</string>

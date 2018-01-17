@@ -24,10 +24,10 @@ internal fun PreviewChatItem?.toChatInfo(): UIChatInfo? =
     if (null == this) {
         null
     } else {
-        UIChatInfo(description, (this as? PreviewChatItem.Group)?.friendlyChannels, icon, description.title, "")
+        UIChatInfo(description, (this as? PreviewChatItem.Group)?.friendlyChannels, description.iconImage, description.title, "")
     }
 
-internal fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
+internal fun FullChatItem.toChatInfo(context: Context, currentUser: User): UIChatInfo {
     @Suppress("REDUNDANT_ELSE_IN_WHEN")
     val descriptionText =
         when (this) {
@@ -35,7 +35,10 @@ internal fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
                 val description = SpannableStringBuilder()
                 description.append(context.getString(R.string.chat_details_info_direct))
                 description.append(" ")
-                description.appendCustom(otherUser.name, StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val otherUsersAsString = members
+                    .filter { it != currentUser }
+                    .fold("", { acc, user -> if (acc.isEmpty()) user.name else "$acc, ${user.name}" })
+                description.appendCustom(otherUsersAsString, StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 description
             }
             is FullChatItem.Group  -> {
@@ -52,12 +55,13 @@ internal fun FullChatItem.toChatInfo(context: Context): UIChatInfo {
             }
             else                   -> throw IllegalArgumentException("unknown type: ${this.javaClass.simpleName}")
         }
-    return UIChatInfo(description, (this as? FullChatItem.Group)?.friendlyChannels, icon, description.title, descriptionText)
+    return UIChatInfo(description, (this as? FullChatItem.Group)?.friendlyChannels, description.iconImage, description.title, descriptionText)
 }
 
 internal fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMessage> =
     when (this) {
         is ChatMessage.TextMessage       -> listOf(UIChatMessage.TextMessage(uid,
+                                                                             index,
                                                                              sender,
                                                                              myMessageState.toMessageState(),
                                                                              message,
@@ -68,6 +72,7 @@ internal fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMes
                 @Suppress("REDUNDANT_ELSE_IN_WHEN")
                 when (it) {
                     is ChatAttachment.Image -> UIChatMessage.ImageMessage(uid,
+                                                                          index,
                                                                           sender,
                                                                           myMessageState.toMessageState(),
                                                                           (message + "\n" + it.path.getFileName()).trim(),
@@ -75,6 +80,7 @@ internal fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMes
                                                                           sendDate,
                                                                           UIChatLikes(currentUser.uid, likes))
                     is ChatAttachment.File  -> UIChatMessage.AttachmentMessage(uid,
+                                                                               index,
                                                                                sender,
                                                                                myMessageState.toMessageState(),
                                                                                it,

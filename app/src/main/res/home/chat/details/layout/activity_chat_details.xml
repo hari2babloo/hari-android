@@ -70,6 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     bind:pickerListener="@{pickerListener}"
+                    bind:showAttach="@{false}"
                     bind:viewModel="@{viewModel}"
                     bind:zoomListener="@{zoomListener}"/>
 

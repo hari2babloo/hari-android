@@ -44,9 +44,9 @@ class ChatNewMessageInteractor @Inject constructor(private val userRepository: I
         val currentUser = localUserDataRepository.getCurrentUser()
             ?: return Single.error(IllegalStateException("not able to create channel without authentication"))
         return chatRepository
-            .createChat(IChatRepository.ChatCreateInfo(null, "Awesome new channel", selectedUsers.map { it.uid }), currentUser.uid)
+            .createChat(IChatRepository.ChatCreateInfo(null, null, selectedUsers.map { it.uid }), currentUser.uid)
             .flatMap { chatInfo ->
-                ChatItemGenerator.generateChatItem(chatInfo, localUserDataRepository, userRepository, organizationRepository, rxSchedulersAbs)
+                ChatInfoGenerator.generatePreviewChat(chatInfo, localUserDataRepository, userRepository, organizationRepository, rxSchedulersAbs)
                     .toSingle()
             }
     }

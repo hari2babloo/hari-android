@@ -2,6 +2,7 @@ package io.scal.ambi.ui.home.chat.details
 
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.ui.home.chat.details.data.UIChatInfo
+import io.scal.ambi.ui.home.chat.details.data.UIChatMessage
 import io.scal.ambi.ui.home.chat.details.data.UIChatTyping
 
 internal data class MessagesData(private val data: List<Any>,
@@ -12,6 +13,10 @@ internal data class MessagesData(private val data: List<Any>,
         get() = chatTyping.users.isNotEmpty()
     private val hasChatInfo: Boolean
         get() = null != chatInfo
+
+    fun getLastMessage(): UIChatMessage? {
+        return data.findLast { it is UIChatMessage } as? UIChatMessage
+    }
 
     override val size: Int
         get() {

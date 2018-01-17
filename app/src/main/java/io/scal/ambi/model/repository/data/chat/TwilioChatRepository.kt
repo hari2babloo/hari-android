@@ -9,11 +9,9 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
-import io.scal.ambi.model.repository.data.chat.data.ChatChannelChanged
-import io.scal.ambi.model.repository.data.chat.data.ChatChannelInfo
-import io.scal.ambi.model.repository.data.chat.data.ChatClientChanged
-import io.scal.ambi.model.repository.data.chat.data.ChatClientInfo
+import io.scal.ambi.model.repository.data.chat.data.*
 import io.scal.ambi.model.repository.data.chat.utils.*
+import io.scal.ambi.ui.global.picker.FileResource
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -35,6 +33,8 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
             .retry()
             .publish()
             .refCount()
+
+    private val channelMessageHelper = TwilioChannelMessagesPaginator(chatClientObservable)
 
     override fun observeChatClientChanged(): Observable<ChatClientChanged> {
         return chatGlobalEventsObservable
@@ -86,15 +86,20 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
             }
     }
 
+    override fun getChannelInfo(chatUid: String): Single<ChatChannelInfo> {
+        return chatClientObservable
+            .firstOrError()
+            .flatMap { it.getChannelByUid(chatUid) }
+            .flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs) }
+            .toSingle()
+    }
+
     private fun observeChatChangedEventsFromTwilio(chatUids: List<String>): Observable<ChannelEvent> {
         return chatClientObservable
             .switchMapSingle { client ->
                 Observable
                     .fromIterable(chatUids)
-                    .flatMapSingle {
-                        Single.create<Channel> { e -> client.channels.getChannel(it, TwilioCallbackSingle(e, "channel info")) }
-                    }
-                    .flatMapSingle { it.waitForSync() }
+                    .flatMapSingle { client.getChannelByUid(it) }
                     .toList()
             }
             .switchMap {
@@ -129,6 +134,12 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
             }
             .flatMap { it.convertToChannelInfo(rxSchedulersAbs).toSingle() }
     }
+
+    override fun loadChatMessages(chatUid: String, lastMessageIndex: Long?): Single<List<ChatChannelMessage>> =
+        channelMessageHelper.loadNextPage(chatUid, lastMessageIndex)
+
+    override fun sendChatMessage(chatUid: String, message: String, attachments: List<FileResource>?): Single<ChatChannelMessage> =
+        channelMessageHelper.sendChatMessage(chatUid, message) // todo add attachment support
 
     private fun findExistingChatForMembers(channels: Channels, memberUids: List<String>, currentUser: String): Single<Channel> {
         val allMembers = memberUids.plus(currentUser)

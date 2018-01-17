@@ -20,7 +20,7 @@ data class UIChatList constructor(val chatInfo: PreviewChatItem,
                 filterType: UIChatListFilter) :
         this(chatInfo,
              chatInfo.description.uid,
-             chatInfo.icon,
+             chatInfo.description.iconImage,
              chatInfo.description.title,
              lastMessage,
              lastMessageDateTime,

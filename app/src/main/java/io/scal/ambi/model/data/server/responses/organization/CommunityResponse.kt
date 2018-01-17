@@ -7,13 +7,13 @@ import io.scal.ambi.entity.organization.OrganizationType
 import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.model.data.server.responses.BaseResponse
 
-class GroupResponse : BaseResponse<Organization>() {
+class CommunityResponse : BaseResponse<Organization>() {
 
-    @SerializedName("group")
+    @SerializedName("community")
     @Expose
-    internal var groupOrg: ItemOrganization? = null
+    internal var communityOrg: ItemOrganization? = null
 
     override fun parse(): Organization {
-        return groupOrg.notNullOrThrow("group").parse(OrganizationType.GROUP)
+        return communityOrg.notNullOrThrow("community").parse(OrganizationType.COMMUNITY)
     }
 }

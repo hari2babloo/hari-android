@@ -59,9 +59,9 @@ internal class NotifyChannelListener(private val channel: Channel,
     }
 }
 
-sealed class ChannelEvent(val channel: Channel,
-                          val channelInfoChange: Boolean,
-                          val messageChange: Boolean) {
+internal sealed class ChannelEvent(val channel: Channel,
+                                   val channelInfoChange: Boolean,
+                                   val messageChange: Boolean) {
 
     class MessageAdded(channel: Channel, val message: Message) : ChannelEvent(channel, false, true)
     class MessageRemoved(channel: Channel, val message: Message) : ChannelEvent(channel, false, true)

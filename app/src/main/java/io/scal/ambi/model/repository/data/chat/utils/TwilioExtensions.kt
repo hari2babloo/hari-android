@@ -6,6 +6,7 @@ import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import com.twilio.chat.Channel
 import com.twilio.chat.ChannelDescriptor
+import com.twilio.chat.ChatClient
 import com.twilio.chat.Message
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -69,7 +70,7 @@ private fun getChatOrganization(attrs: JSONObject, membersCount: Long, friendlyN
             TwilioChatInfo()
         }
 
-    val organizationType = twilioChatInfo.organizationName.toOrganizationType()
+    val organizationType = twilioChatInfo.conversationType.toOrganizationType()
     return when {
         null == twilioChatInfo.conversationType                                                                        ->
             null
@@ -106,7 +107,7 @@ internal fun Message?.toChatMessage(): ChatChannelMessage? {
                 "PLAINTEXT" -> createChatMessage(messagePayload)
                 else        -> ""
             }
-        return ChatChannelMessage(sid, author, DateTime(timeStampAsDate.time), message, media)
+        return ChatChannelMessage(sid, messageIndex, author, DateTime(timeStampAsDate.time), message, media)
     } catch (e: Exception) {
         val result =
             when (e) {
@@ -173,6 +174,7 @@ internal fun Channel.convertToChannelInfo(rxSchedulersAbs: RxSchedulersAbs): May
 
                     ChatChannelInfo(
                         channel.sid,
+                        channel.createdBy,
                         array[1] as? ChatChannelInfo.OrganizationSmall,
                         lastMessage?.toChatMessage(),
                         DateTime(dateCreatedAsDate.time),
@@ -195,13 +197,20 @@ private fun Channel.convertToMessagesCount(): Single<Long> =
 
 internal fun OrganizationType.toServerName(): String =
     when (this) {
-        OrganizationType.GROUP -> "group"
-        OrganizationType.CLASS -> "class"
+        OrganizationType.GROUP     -> "group"
+        OrganizationType.CLASS     -> "class"
+        OrganizationType.COMMUNITY -> "community"
     }
 
 internal fun String?.toOrganizationType(): OrganizationType? =
-    when (this) {
-        "group" -> OrganizationType.GROUP
-        "class" -> OrganizationType.CLASS
-        else    -> null
+    when (this?.toLowerCase()) {
+        "group"     -> OrganizationType.GROUP
+        "class"     -> OrganizationType.CLASS
+        "community" -> OrganizationType.COMMUNITY
+        else        -> null
     }
+
+internal fun ChatClient.getChannelByUid(uid: String): Single<Channel> {
+    return Single.create<Channel> { e -> channels.getChannel(uid, TwilioCallbackSingle(e, "channel info")) }
+        .flatMap { it.waitForSync() }
+}

@@ -41,7 +41,6 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                     else                             -> Maybe.empty()
                 }
             }
-
     }
 
     private fun loadChatListPageWithSkipLogic(page: Int): Single<List<PreviewChatItem>> {
@@ -72,7 +71,11 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
     }
 
     private fun generateChatItem(chatChannelInfo: ChatChannelInfo): Maybe<PreviewChatItem> {
-        return ChatItemGenerator.generateChatItem(chatChannelInfo, localUserDataRepository, userRepository, organizationRepository, rxSchedulersAbs)
+        return ChatInfoGenerator.generatePreviewChat(chatChannelInfo,
+                                                     localUserDataRepository,
+                                                     userRepository,
+                                                     organizationRepository,
+                                                     rxSchedulersAbs)
     }
 }
 

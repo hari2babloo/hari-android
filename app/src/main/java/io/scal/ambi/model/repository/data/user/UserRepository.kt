@@ -15,7 +15,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi,
                                          private val localDataRepository: ILocalDataRepository) : IUserRepository {
 
     private val gson = Gson()
-    private val maxProfileLifeTime: Long = TimeUnit.MINUTES.toMillis(1)
+    private val maxProfileLifeTime: Long = TimeUnit.MINUTES.toMillis(5)
 
     override fun extractUserProfileFromData(userJson: String): Single<User> {
         return Single
@@ -44,7 +44,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi,
 private fun String.createUser(gson: Gson): ItemUser {
     val generalUser = gson.fromJson(this, ItemUser::class.java)
     return when (generalUser.type) {
-        null                                                                -> throw IllegalArgumentException("can not parse user ($this) because there is no type")
+        null                  -> throw IllegalArgumentException("can not parse user ($this) because there is no type")
         ItemUser.Type.Student -> gson.fromJson(this, UserResponse.BigUser::class.java)
     }
 }

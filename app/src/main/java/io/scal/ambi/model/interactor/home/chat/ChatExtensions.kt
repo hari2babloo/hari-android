@@ -25,6 +25,7 @@ internal fun FileResource.typeName(): String =
 
 internal fun getUserProfile(uid: String, userRepository: IUserRepository): Maybe<User> =
     userRepository.getProfileCached(uid).toMaybe().onErrorComplete { it is ServerResponseException && it.notFound && it.serverError }
+        .onErrorComplete()// todo remove
 
 internal fun generateChatMessage(message: ChatChannelMessage?, userRepository: IUserRepository): Maybe<ChatMessage> {
     if (null == message) {
@@ -33,9 +34,14 @@ internal fun generateChatMessage(message: ChatChannelMessage?, userRepository: I
     return getUserProfile(message.sender, userRepository)
         .map { sender ->
             if (null == message.media) {
-                ChatMessage.TextMessage(message.uid, sender, message.sendDate, message.message)
+                ChatMessage.TextMessage(message.uid, message.index, sender, message.sendDate, message.message)
             } else {
-                ChatMessage.AttachmentMessage(message.uid, sender, message.sendDate, message.message, listOf(message.media.toAttachment()))
+                ChatMessage.AttachmentMessage(message.uid,
+                                              message.index,
+                                              sender,
+                                              message.sendDate,
+                                              message.message,
+                                              listOf(message.media.toAttachment()))
             }
         }
 }

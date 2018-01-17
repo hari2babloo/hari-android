@@ -23,4 +23,17 @@ sealed class Organization(open val id: String,
                      override val description: String,
                      override val bannerPicture: IconImage,
                      override val chatUids: List<String>) : Organization(id, name, slug, description, bannerPicture, chatUids, OrganizationType.GROUP)
+
+    data class Community(override val id: String,
+                         override val name: String,
+                         override val slug: String,
+                         override val description: String,
+                         override val bannerPicture: IconImage,
+                         override val chatUids: List<String>) : Organization(id,
+                                                                             name,
+                                                                             slug,
+                                                                             description,
+                                                                             bannerPicture,
+                                                                             chatUids,
+                                                                             OrganizationType.COMMUNITY)
 }
