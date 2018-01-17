@@ -148,7 +148,8 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
             .flatMapObservable { Observable.fromIterable(it) }
             .flatMapSingle { it.waitForSync() }
             .flatMapMaybe {
-                if (it.members.membersList.map { it.identity } == allMembers) {
+                val channelMembers = it.members.membersList.map { it.identity }
+                if (channelMembers.containsAll(allMembers) && allMembers.containsAll(channelMembers)) {
                     Maybe.just(it)
                 } else {
                     Maybe.empty()

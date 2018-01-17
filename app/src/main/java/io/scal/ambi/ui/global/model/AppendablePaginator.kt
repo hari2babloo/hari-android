@@ -18,6 +18,10 @@ class AppendablePaginator<in T>(
     private val currentData = mutableListOf<T>()
     private var disposable: Disposable? = null
 
+    fun isNotActivated(): Boolean {
+        return currentState is INACTIVE
+    }
+
     override fun activate() {
         currentState.activate()
     }

@@ -24,7 +24,13 @@ internal fun PreviewChatItem?.toChatInfo(): UIChatInfo? =
     if (null == this) {
         null
     } else {
-        UIChatInfo(description, (this as? PreviewChatItem.Organization)?.friendlyChannels, description.iconImage, description.title, "")
+        UIChatInfo(description,
+                   (this as? PreviewChatItem.Organization)?.friendlyChannels,
+                   description.iconImage,
+                   description.title,
+                   "",
+                   members,
+                   this is PreviewChatItem.Direct)
     }
 
 internal fun FullChatItem.toChatInfo(context: Context, currentUser: User): UIChatInfo {
@@ -55,7 +61,13 @@ internal fun FullChatItem.toChatInfo(context: Context, currentUser: User): UICha
             }
             else                   -> throw IllegalArgumentException("unknown type: ${this.javaClass.simpleName}")
         }
-    return UIChatInfo(description, (this as? FullChatItem.Group)?.friendlyChannels, description.iconImage, description.title, descriptionText)
+    return UIChatInfo(description,
+                      (this as? FullChatItem.Group)?.friendlyChannels,
+                      description.iconImage,
+                      description.title,
+                      descriptionText,
+                      members,
+                      this is FullChatItem.Direct)
 }
 
 internal fun ChatMessage.toChatDetailsElement(currentUser: User): List<UIChatMessage> =

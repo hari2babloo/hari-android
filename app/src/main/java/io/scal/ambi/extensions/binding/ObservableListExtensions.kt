@@ -55,7 +55,9 @@ fun <T> MutableList<T>.replaceElement(oldItem: T, newItem: T) {
     }
 }
 
-open class DefaultDiffCallback<T>(private val oldList: List<T>, private val newData: List<T>) : DiffUtil.Callback() {
+open class DefaultDiffCallback<T>(private val oldList: List<T>,
+                                  private val newData: List<T>,
+                                  private val detectByRef: Boolean = false) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int =
         oldList.size
@@ -64,12 +66,14 @@ open class DefaultDiffCallback<T>(private val oldList: List<T>, private val newD
         newData.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return areContentsTheSame(oldItemPosition, newItemPosition)
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newData[newItemPosition]
+        return oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newData[newItemPosition]
-        return oldItem == newItem
+        return if (detectByRef) oldItem === newItem else oldItem == newItem
     }
 }

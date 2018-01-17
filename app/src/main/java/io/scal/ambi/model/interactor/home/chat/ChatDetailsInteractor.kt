@@ -12,6 +12,7 @@ import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.repository.data.chat.IChatRepository
+import io.scal.ambi.model.repository.data.chat.data.ChatChannelChanged
 import io.scal.ambi.model.repository.data.organization.IOrganizationRepository
 import io.scal.ambi.model.repository.data.user.IUserRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
@@ -64,7 +65,14 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatDescription") privat
     override fun loadNewMessages(): Observable<List<ChatMessage>> {
         return chatRepository
             .observeChatChangedEvents(listOf(chatDescription.uid))
-            .flatMapMaybe { Maybe.empty<List<ChatMessage>>() }
+            .flatMapMaybe {
+                when (it) {
+                    is ChatChannelChanged.MessageAdded   -> generateChatMessage(it.message, userRepository)
+                    is ChatChannelChanged.MessageUpdated -> generateChatMessage(it.message, userRepository)
+                    else                                 -> Maybe.empty()
+                }
+                    .map { listOf(it) }
+            }
     }
 
     override fun sendTextMessage(message: String) {

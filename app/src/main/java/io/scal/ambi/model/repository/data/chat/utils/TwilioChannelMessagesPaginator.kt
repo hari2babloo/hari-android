@@ -11,7 +11,7 @@ import org.json.JSONObject
 
 internal class TwilioChannelMessagesPaginator(private val chatClientObservable: Observable<ChatClient>) {
 
-    private val messageCount = 7
+    private val messageCount = 15
 
     fun loadNextPage(channelSid: String, lastMessageIndex: Long?): Single<List<ChatChannelMessage>> {
         return loadPage(chatClientObservable, channelSid, lastMessageIndex)

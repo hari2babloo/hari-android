@@ -12,4 +12,6 @@ interface IChatListInteractor {
     fun loadChatListPage(firstPage: Boolean): Single<List<PreviewChatItem>>
 
     fun observeRuntimeDataChanges(): Observable<PreviewChatItem>
+
+    fun observeRuntimeDataChangesForChats(chatUids: List<String>): Observable<PreviewChatItem>
 }

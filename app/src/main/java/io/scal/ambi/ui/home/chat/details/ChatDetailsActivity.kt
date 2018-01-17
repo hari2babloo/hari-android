@@ -24,6 +24,7 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.extensions.view.listenForEndScrollInverse
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.navigation.NavigateToParamChatAppendUsers
 import io.scal.ambi.navigation.NavigateToParamChatChannelSelection
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.ErrorState
@@ -36,6 +37,7 @@ import io.scal.ambi.ui.global.picker.PickerViewController
 import io.scal.ambi.ui.global.picker.PickerViewModel
 import io.scal.ambi.ui.home.chat.channel.ChatChannelSelectionActivity
 import io.scal.ambi.ui.home.chat.details.adapter.ChatDetailsAdapter
+import io.scal.ambi.ui.home.chat.newmessage.ChatNewMessageActivity
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import ru.terrakok.cicerone.Navigator
@@ -50,6 +52,8 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
     private val adapter by lazy { ChatDetailsAdapter(viewModel) }
     private val emojiPopupHelper by lazy { EmojiPopupHelper() }
 
+    private lateinit var currentToolbar: ToolbarType
+
     private val pickerViewModel: PickerViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(PickerViewModel::class.java)
     }
@@ -57,9 +61,9 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initToolbar()
         initCreationListeners()
         initRecyclerView()
-        initToolbar()
         observeStates()
 
         ViewModelProviders.of(this, viewModelFactory).get(AuthProfileCheckerViewModel::class.java)
@@ -77,8 +81,8 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
     }
 
     private fun initToolbar() {
-        val type = ToolbarType(IconImage(R.drawable.ic_back), Runnable { router.exit() }, ChatDetailsTitleToolbarContent(viewModel), null, null)
-        setToolbarType(type)
+        currentToolbar = ToolbarType(IconImage(R.drawable.ic_back), Runnable { router.exit() }, ChatDetailsTitleToolbarContent(viewModel), null, null)
+        setToolbarType(currentToolbar)
     }
 
     private fun observeStates() {
@@ -133,6 +137,15 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
                     }
                     else                         -> binding.cCreation?.root?.visibility = View.GONE
                 }
+
+                currentToolbar =
+                    if (true == it.chatInfo?.canAddUsers) {
+                        currentToolbar.copy(rightIcon = IconImage(R.drawable.ic_chat_add_user),
+                                            rightIconClickListener = Runnable { viewModel.addOtherUsers() })
+                    } else {
+                        currentToolbar.copy(rightIcon = null, rightIconClickListener = null)
+                    }
+                setToolbarType(currentToolbar)
             }
             .addTo(destroyDisposables)
 
@@ -235,12 +248,16 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
             override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
                 when (screenKey) {
                     NavigateTo.CHAT_CHANNEL_SELECTION -> {
-                        val params = (data as NavigateToParamChatChannelSelection)
+                        data as NavigateToParamChatChannelSelection
                         ChatChannelSelectionActivity.createScreen(this@ChatDetailsActivity,
-                                                                  params.selectedChatDescription,
-                                                                  params.allChatDescriptions)
+                                                                  data.selectedChatDescription,
+                                                                  data.allChatDescriptions)
                     }
                     NavigateTo.CHAT_DETAILS           -> createScreen(this@ChatDetailsActivity, data as ChatChannelDescription)
+                    NavigateTo.CHAT_APPEND_USERS      -> {
+                        data as NavigateToParamChatAppendUsers
+                        ChatNewMessageActivity.createScreenForAppending(this@ChatDetailsActivity, data.chatDescription, data.currentMemebers)
+                    }
                     else                              -> super.createActivityIntent(screenKey, data)
                 }
         }

@@ -117,7 +117,7 @@ object ChatInfoGenerator {
             Maybe.empty()
         } else {
             val membersFiltered = members.filter { it != currentUser }
-            val member = membersFiltered[Random(SystemClock.currentThreadTimeMillis()).nextInt(membersFiltered.size)]
+            val member = membersFiltered[0/*Random(SystemClock.currentThreadTimeMillis()).nextInt(membersFiltered.size)*/]
             Maybe.just(member.avatar as IconImage)
         }
             .toSingle(IconImageUser())

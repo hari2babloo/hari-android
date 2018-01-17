@@ -42,7 +42,7 @@ class ChatListAdapter(viewModel: ChatListViewModel) : RecyclerViewAdapterDelegat
         val oldMessageList = chatList
         chatList = chatList.copy(data = data)
 
-        val diffResult = DiffUtil.calculateDiff(DefaultDiffCallback(oldMessageList, chatList), true)
+        val diffResult = DiffUtil.calculateDiff(DefaultDiffCallback(oldMessageList, chatList, true), true)
         diffResult.dispatchUpdatesTo(this)
     }
 

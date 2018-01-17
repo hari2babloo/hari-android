@@ -19,6 +19,7 @@ import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.home.chat.IChatDetailsInteractor
 import io.scal.ambi.navigation.NavigateTo
+import io.scal.ambi.navigation.NavigateToParamChatAppendUsers
 import io.scal.ambi.navigation.NavigateToParamChatChannelSelection
 import io.scal.ambi.navigation.ResultCodes
 import io.scal.ambi.ui.global.base.BetterRouter
@@ -161,8 +162,10 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                    progressState.set(ChatDetailsProgressState.NoProgress)
                                    dataState.set(dataState.get().updateInfo(it.toChatInfo(context, currentUser.get())))
 
-                                   paginator.activate()
-                                   paginator.refresh()
+                                   if (paginator.isNotActivated()) {
+                                       paginator.activate()
+                                       paginator.refresh()
+                                   }
                                },
                                { t ->
                                    handleError(t)
@@ -202,6 +205,13 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
             interactor.sendTextMessage(message)
 
             messageInputState.set(currentDataState.copy(userInput = ObservableString()))
+        }
+    }
+
+    fun addOtherUsers() {
+        val chatInfo = dataState.get()?.chatInfo
+        if (null != chatInfo) {
+            router.navigateTo(NavigateTo.CHAT_APPEND_USERS, NavigateToParamChatAppendUsers(chatInfo.channelDescription, chatInfo.members))
         }
     }
 

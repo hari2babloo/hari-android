@@ -27,6 +27,12 @@ abstract class ChatNewMessageModule {
 
         @JvmStatic
         @Provides
+        fun provideAppendingData(activity: ChatNewMessageActivity): AppendingData {
+            return activity.intent.getSerializableExtra(ChatNewMessageActivity.EXTRA_APPENDING_DATA) as? AppendingData ?: AppendingData.NOTHING
+        }
+
+        @JvmStatic
+        @Provides
         fun provideLocalNavigation(@Named("rootRouter") router: BetterRouter): BetterRouter {
             return router
         }

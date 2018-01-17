@@ -94,6 +94,16 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
             .retry()
             .subscribe { paginator.appendNewData(listOf(it.toChatListElement(context, currentUser.get()))) }
             .addTo(disposables)
+
+        allDataState
+            .toObservable()
+            .filter { it is ChatListDataState.Data }
+            .map { it as ChatListDataState.Data }
+            .observeOn(rxSchedulersAbs.ioScheduler)
+            .switchMap { interactor.observeRuntimeDataChangesForChats(it.chats.map { it.uid }) }
+            .retry()
+            .subscribe { paginator.appendNewData(listOf(it.toChatListElement(context, currentUser.get()))) }
+            .addTo(disposables)
     }
 
     private fun initChatTypeFilters() {

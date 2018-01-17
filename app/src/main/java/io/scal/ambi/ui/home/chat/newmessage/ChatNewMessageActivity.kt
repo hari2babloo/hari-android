@@ -11,7 +11,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.R
 import io.scal.ambi.databinding.ActivityChatNewMessageBinding
+import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.chat.PreviewChatItem
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.replaceElements
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
@@ -25,6 +27,8 @@ import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.home.chat.details.ChatDetailsActivity
 import ru.terrakok.cicerone.Navigator
+import java.io.Serializable
+import javax.inject.Inject
 import kotlin.reflect.KClass
 
 class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, ActivityChatNewMessageBinding>() {
@@ -33,6 +37,9 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
     override val viewModelClass: KClass<ChatNewMessageViewModel> = ChatNewMessageViewModel::class
 
     private var hasAnySelectedUser: Boolean = false
+
+    @Inject
+    lateinit var appendingData: AppendingData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +51,15 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
     }
 
     private fun initToolbar() {
+        val appendData = appendingData
         setToolbarType(ToolbarType(IconImage(R.drawable.ic_back),
                                    Runnable { router.exit() },
-                                   ToolbarType.TitleContent(getString(R.string.title_chat_new_message)),
+                                   ToolbarType.TitleContent(
+                                       if (appendData is AppendingData.Data)
+                                           getString(R.string.title_chat_append_memebers_to, appendData.chatDescriptor.title)
+                                       else
+                                           getString(R.string.title_chat_new_message)
+                                   ),
                                    null,
                                    null))
     }
@@ -144,8 +157,24 @@ class ChatNewMessageActivity : BaseToolbarActivity<ChatNewMessageViewModel, Acti
 
     companion object {
 
+        internal val EXTRA_APPENDING_DATA = "EXTRA_APPENDING_DATA"
+
         fun createScreen(context: Context): Intent {
             return Intent(context, ChatNewMessageActivity::class.java)
         }
+
+        fun createScreenForAppending(context: Context,
+                                     chatDescriptor: ChatChannelDescription,
+                                     currentMemebers: List<User>): Intent {
+            return Intent(context, ChatNewMessageActivity::class.java)
+                .putExtra(EXTRA_APPENDING_DATA, AppendingData.Data(chatDescriptor, currentMemebers))
+        }
     }
+}
+
+sealed class AppendingData : Serializable {
+
+    object NOTHING : AppendingData()
+
+    data class Data(val chatDescriptor: ChatChannelDescription, val currentMemebers: List<User>) : AppendingData()
 }

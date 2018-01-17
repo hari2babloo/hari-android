@@ -1,6 +1,7 @@
 package io.scal.ambi.navigation
 
 import io.scal.ambi.entity.chat.ChatChannelDescription
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.trueOrThrow
 
 object NavigateTo {
@@ -19,6 +20,7 @@ object NavigateTo {
 
     const val CHAT_DETAILS = "CHAT_DETAILS"
     const val CHAT_NEW_MESSAGE = "CHAT_NEW_MESSAGE"
+    const val CHAT_APPEND_USERS = "CHAT_APPEND_USERS"
     const val CHAT_CHANNEL_SELECTION = "CHAT_CHANNEL_SELECTION"
 
     const val PROFILE_DETAILS = "PROFILE_DETAILS"
@@ -30,3 +32,6 @@ class NavigateToParamChatChannelSelection(val selectedChatDescription: ChatChann
         allChatDescriptions.contains(selectedChatDescription).trueOrThrow("all chat description should contain selected one")
     }
 }
+
+class NavigateToParamChatAppendUsers(val chatDescription: ChatChannelDescription,
+                                     val currentMemebers: List<User>)

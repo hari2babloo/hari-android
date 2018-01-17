@@ -7,6 +7,7 @@ import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.repository.data.chat.IChatRepository
+import io.scal.ambi.model.repository.data.chat.data.ChatChannelChanged
 import io.scal.ambi.model.repository.data.chat.data.ChatChannelInfo
 import io.scal.ambi.model.repository.data.chat.data.ChatClientChanged
 import io.scal.ambi.model.repository.data.organization.IOrganizationRepository
@@ -39,6 +40,21 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
                     is ChatClientChanged.ChatAdded   -> generateChatItem(it.channelInfo)
                     is ChatClientChanged.ChatUpdated -> generateChatItem(it.channelInfo)
                     else                             -> Maybe.empty()
+                }
+            }
+    }
+
+    override fun observeRuntimeDataChangesForChats(chatUids: List<String>): Observable<PreviewChatItem> {
+        return chatRepository.observeChatChangedEvents(chatUids)
+            .observeOn(rxSchedulersAbs.ioScheduler)
+            .flatMapMaybe {
+                when (it) {
+                    is ChatChannelChanged.MessageAdded   -> generateChatItem(it.channelInfo)
+                    is ChatChannelChanged.MessageUpdated -> generateChatItem(it.channelInfo)
+                    is ChatChannelChanged.MessageRemoved -> generateChatItem(it.channelInfo)
+                    is ChatChannelChanged.MemberAdded    -> generateChatItem(it.channelInfo)
+                    is ChatChannelChanged.MemberRemoved  -> generateChatItem(it.channelInfo)
+                    else                                 -> Maybe.empty()
                 }
             }
     }
