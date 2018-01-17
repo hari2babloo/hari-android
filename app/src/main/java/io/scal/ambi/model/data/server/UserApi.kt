@@ -1,8 +1,8 @@
 package io.scal.ambi.model.data.server
 
 import io.reactivex.Single
-import io.scal.ambi.model.data.server.responses.UserResponse
-import io.scal.ambi.model.data.server.responses.UsersResponse
+import io.scal.ambi.model.data.server.responses.user.UserResponse
+import io.scal.ambi.model.data.server.responses.user.UsersResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 

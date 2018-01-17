@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.notNullOrThrow
-import io.scal.ambi.model.data.server.responses.ItemUser
+import io.scal.ambi.model.data.server.responses.user.ItemUser
 import io.scal.ambi.model.data.server.responses.Parceble
 import org.joda.time.DateTime
 

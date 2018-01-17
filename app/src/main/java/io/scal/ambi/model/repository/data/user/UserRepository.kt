@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import io.reactivex.Single
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.model.data.server.UserApi
-import io.scal.ambi.model.data.server.responses.ItemUser
-import io.scal.ambi.model.data.server.responses.UserResponse
+import io.scal.ambi.model.data.server.responses.user.ItemUser
+import io.scal.ambi.model.data.server.responses.user.UserResponse
 import io.scal.ambi.model.repository.local.ILocalDataRepository
 import io.scal.ambi.model.repository.toServerResponseException
 import java.util.concurrent.TimeUnit
@@ -44,7 +44,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi,
 private fun String.createUser(gson: Gson): ItemUser {
     val generalUser = gson.fromJson(this, ItemUser::class.java)
     return when (generalUser.type) {
-        null                  -> throw IllegalArgumentException("can not parse user ($this) because there is no type")
+        null                                                                -> throw IllegalArgumentException("can not parse user ($this) because there is no type")
         ItemUser.Type.Student -> gson.fromJson(this, UserResponse.BigUser::class.java)
     }
 }

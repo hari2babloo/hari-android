@@ -3,10 +3,7 @@ package io.scal.ambi.di.module
 import dagger.Module
 import dagger.Provides
 import io.scal.ambi.BuildConfig
-import io.scal.ambi.model.data.server.AuthApi
-import io.scal.ambi.model.data.server.ChatApi
-import io.scal.ambi.model.data.server.PostsApi
-import io.scal.ambi.model.data.server.UserApi
+import io.scal.ambi.model.data.server.*
 import io.scal.ambi.model.data.server.intercepters.AuthInterceptor
 import io.scal.ambi.model.data.server.intercepters.Http2FixInterceptor
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
@@ -81,4 +78,9 @@ class ApiModule {
     @Singleton
     internal fun provideChatApi(@Named("mainServer") retrofit: Retrofit): ChatApi =
         retrofit.create(ChatApi::class.java)
+
+    @Provides
+    @Singleton
+    internal fun provideOrganizationApi(@Named("mainServer") retrofit: Retrofit): OrganizationApi =
+        retrofit.create(OrganizationApi::class.java)
 }

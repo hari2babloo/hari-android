@@ -1,8 +1,9 @@
-package io.scal.ambi.model.data.server.responses
+package io.scal.ambi.model.data.server.responses.user
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.model.data.server.responses.BaseResponse
 
 class UserResponse : BaseResponse<User>() {
 

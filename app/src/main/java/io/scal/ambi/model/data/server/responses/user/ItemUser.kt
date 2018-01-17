@@ -1,4 +1,4 @@
-package io.scal.ambi.model.data.server.responses
+package io.scal.ambi.model.data.server.responses.user
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -6,6 +6,8 @@ import io.scal.ambi.R
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.view.IconImageUser
+import io.scal.ambi.model.data.server.responses.ItemPicture
+import io.scal.ambi.model.data.server.responses.Parceble
 import timber.log.Timber
 
 open class ItemUser : Parceble<User> {
@@ -32,7 +34,7 @@ open class ItemUser : Parceble<User> {
 
     @SerializedName("profilePicture")
     @Expose
-    var profilePicture: Picture? = null
+    var profilePicture: ItemPicture? = null
 
     @SerializedName("type")
     @Expose
@@ -50,7 +52,7 @@ open class ItemUser : Parceble<User> {
 
     @Suppress("REDUNDANT_ELSE_IN_WHEN")
     override fun parse(): User {
-        val avatar = profilePicture?.url?.let { IconImageUser(it) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath())
+        val avatar = profilePicture?.parse()?.let { IconImageUser(it.iconPath) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath())
         return when (extractType()) {
             Type.Student -> User.asStudent(extractId(), avatar, firstName.orEmpty(), lastName.orEmpty()
             )
@@ -63,16 +65,5 @@ open class ItemUser : Parceble<User> {
 
     enum class Type {
         Student
-    }
-
-    class Picture {
-
-        @SerializedName("_id")
-        @Expose
-        var _id: String? = null
-
-        @SerializedName("url")
-        @Expose
-        var url: String? = null
     }
 }

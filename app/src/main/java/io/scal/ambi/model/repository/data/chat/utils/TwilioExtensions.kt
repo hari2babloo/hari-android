@@ -1,5 +1,6 @@
 package io.scal.ambi.model.repository.data.chat.utils
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
@@ -11,6 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.scal.ambi.R
+import io.scal.ambi.entity.organization.OrganizationType
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.repository.data.chat.data.ChatChannelInfo
@@ -56,25 +58,26 @@ internal fun Channel.getChatLastMessages(count: Int): Single<List<Message>> {
         }
 }
 
-internal fun ChannelDescriptor.getChatTypeFromTwilio(): ChatChannelInfo.Type? =
-    getChatTypeFromTwilio(attributes, membersCount, friendlyName)
+internal fun Channel.getChatOrganization(): ChatChannelInfo.OrganizationSmall? =
+    getChatOrganization(attributes, members.membersList.size.toLong(), friendlyName)
 
-internal fun Channel.getChatTypeFromTwilio(): ChatChannelInfo.Type? =
-    getChatTypeFromTwilio(attributes, members.membersList.size.toLong(), friendlyName)
+private fun getChatOrganization(attrs: JSONObject, membersCount: Long, friendlyName: String): ChatChannelInfo.OrganizationSmall? {
+    val twilioChatInfo =
+        try {
+            Gson().fromJson<TwilioChatInfo>(attrs.toString(), TwilioChatInfo::class.java)
+        } catch (e: Exception) {
+            TwilioChatInfo()
+        }
 
-private fun getChatTypeFromTwilio(attrs: JSONObject, membersCount: Long, friendlyName: String): ChatChannelInfo.Type? {
-    val type = if (attrs.has("conversationType")) {
-        val attrType = attrs.getString("conversationType")
-        ChatChannelInfo.Type.values().firstOrNull { it.serverName == attrType }
-    } else {
-        ChatChannelInfo.Type.SIMPLE
-    }
-
+    val organizationType = twilioChatInfo.organizationName.toOrganizationType()
     return when {
-        type == ChatChannelInfo.Type.SIMPLE                                            -> type
-        type == ChatChannelInfo.Type.ORG_CLASS && "general".equals(friendlyName, true) -> type
-        type == ChatChannelInfo.Type.ORG_GROUP                                         -> type
-        else                                                                           -> null
+        null == twilioChatInfo.conversationType                                                                        ->
+            null
+        null != organizationType && null != twilioChatInfo.organizationName && null != twilioChatInfo.organizationSlug -> {
+            ChatChannelInfo.OrganizationSmall(organizationType, twilioChatInfo.organizationSlug, twilioChatInfo.organizationName)
+        }
+        else                                                                                                           ->
+            throw IllegalStateException("wrong chat information")
     }
 }
 
@@ -143,47 +146,37 @@ internal fun Channel.safeRemoveListener(listener: SimpleChannelListener) {
 }
 
 internal fun ChannelDescriptor.convertToChannelInfo(rxSchedulersAbs: RxSchedulersAbs): Maybe<ChatChannelInfo> {
-    val type = getChatTypeFromTwilio()
-    if (null == type) {
-        Timber.w("can not convert chat descriptor to chat info")
-        return Maybe.empty<ChatChannelInfo>()
-    }
     return convertToChannel()
-        .flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs, type) }
+        .flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs) }
 }
 
-internal fun Channel.convertToChannelInfo(rxSchedulersAbs: RxSchedulersAbs,
-                                          type: ChatChannelInfo.Type?): Maybe<ChatChannelInfo> {
-    val chatType = type ?: getChatTypeFromTwilio()
-
-    if (null == chatType) {
-        Timber.w("can not convert chat descriptor to chat info")
-        return Maybe.empty<ChatChannelInfo>()
-    }
-
+internal fun Channel.convertToChannelInfo(rxSchedulersAbs: RxSchedulersAbs): Maybe<ChatChannelInfo> {
     return waitForSync()
         .flatMapObservable { channel ->
+            val organizationSmall = getChatOrganization()
+
             Observable.combineLatest(
                 channel.convertToUnconsumedMessagesCount().toObservable(),
                 channel.convertToMessagesCount().toObservable(),
-                BiFunction<Long, Long, Triple<Channel, Long, Long>> { t1, t2 -> Triple(channel, t1, t2) }
+                BiFunction<Long, Long, Array<Any?>> { t1, t2 -> arrayOf(channel, organizationSmall, t1, t2) }
             )
         }
         .firstOrError()
         .observeOn(rxSchedulersAbs.computationScheduler)
-        .flatMapMaybe { tripple ->
-            val channel = tripple.first
+        .flatMapMaybe { array ->
+            val unconsumedMessagesCount = array[2] as Long
+            val messagesCount = array[3] as Long
+            val channel = array[0] as Channel
             channel.getChatLastMessages(1)
                 .map { lastMessages ->
                     val lastMessage = lastMessages.lastOrNull()
 
                     ChatChannelInfo(
                         channel.sid,
-                        chatType,
-                        channel.getChatSlugFromTwilio(),
+                        array[1] as? ChatChannelInfo.OrganizationSmall,
                         lastMessage?.toChatMessage(),
                         DateTime(dateCreatedAsDate.time),
-                        tripple.second > tripple.third,
+                        unconsumedMessagesCount > messagesCount,
                         channel.members.membersList.map { it.identity }
                     )
                 }
@@ -192,13 +185,6 @@ internal fun Channel.convertToChannelInfo(rxSchedulersAbs: RxSchedulersAbs,
         .onErrorResumeNext(Maybe.empty<ChatChannelInfo>())
 }
 
-private fun Channel.getChatSlugFromTwilio(): String? =
-    if (attributes.has("organizationSlug")) {
-        attributes.getString("organizationSlug")
-    } else {
-        null
-    }
-
 private fun Channel.convertToUnconsumedMessagesCount(): Single<Long> =
     Single.create<Long> { e ->
         getUnconsumedMessagesCount(TwilioCallbackSingle(e, "unconsumedMessagesCount"))
@@ -206,3 +192,16 @@ private fun Channel.convertToUnconsumedMessagesCount(): Single<Long> =
 
 private fun Channel.convertToMessagesCount(): Single<Long> =
     Single.create<Long> { e -> getMessagesCount(TwilioCallbackSingle(e, "messagesCount")) }
+
+internal fun OrganizationType.toServerName(): String =
+    when (this) {
+        OrganizationType.GROUP -> "group"
+        OrganizationType.CLASS -> "class"
+    }
+
+internal fun String?.toOrganizationType(): OrganizationType? =
+    when (this) {
+        "group" -> OrganizationType.GROUP
+        "class" -> OrganizationType.CLASS
+        else    -> null
+    }

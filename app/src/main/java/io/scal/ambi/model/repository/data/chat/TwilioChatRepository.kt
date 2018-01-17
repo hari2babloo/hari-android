@@ -1,5 +1,6 @@
 package io.scal.ambi.model.repository.data.chat
 
+import com.google.gson.Gson
 import com.twilio.chat.Channel
 import com.twilio.chat.Channels
 import com.twilio.chat.ChatClient
@@ -48,7 +49,7 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
 
                 channel
                     ?.waitForSync()
-                    ?.flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs, null) }
+                    ?.flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs) }
                     ?.map { channelInfo ->
                         when (event) {
                             is ClientEvent.ChannelAdded   -> ChatClientChanged.ChatAdded(channelInfo)
@@ -63,7 +64,7 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
     override fun observeChatChangedEvents(chatUids: List<String>): Observable<ChatChannelChanged> {
         return observeChatChangedEventsFromTwilio(chatUids)
             .flatMapMaybe { event ->
-                event.channel.convertToChannelInfo(rxSchedulersAbs, null)
+                event.channel.convertToChannelInfo(rxSchedulersAbs)
                     .flatMap { channelInfo ->
                         when (event) {
                             is ChannelEvent.MemberAdded    -> Maybe.just(ChatChannelChanged.MemberAdded(channelInfo, event.member.identity))
@@ -111,7 +112,7 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
                     Observable
                         .fromIterable(it)
                         .flatMapSingle { it.waitForSync() }
-                        .flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs, null) }
+                        .flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs) }
                         .toList()
                 }
         } else {
@@ -126,7 +127,7 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
                 findExistingChatForMembers(channels, createInfo.memberUids, currentUser)
                     .onErrorResumeNext { createNewChat(channels, createInfo, currentUser) }
             }
-            .flatMap { it.convertToChannelInfo(rxSchedulersAbs, createInfo.type).toSingle() }
+            .flatMap { it.convertToChannelInfo(rxSchedulersAbs).toSingle() }
     }
 
     private fun findExistingChatForMembers(channels: Channels, memberUids: List<String>, currentUser: String): Single<Channel> {
@@ -147,19 +148,21 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
 
     private fun createNewChat(channels: Channels, createInfo: IChatRepository.ChatCreateInfo, currentUser: String): Single<Channel> {
         return Single.create<Channel> { e ->
-            val attrs = JSONObject()
-            if (createInfo is IChatRepository.ChatCreateInfo.Organization) {
-                attrs.put("conversationType", createInfo.type.serverName)
-                attrs.put("organizationName", createInfo.orgName)
-                attrs.put("organizationSlug", createInfo.orgSlug)
-                attrs.put("origin", createInfo.type.serverName)
-            }
-            attrs.put("purpose", createInfo.name)
+            val chatInfo: TwilioChatInfo =
+                if (null == createInfo.organizationSmall) {
+                    TwilioChatInfo()
+                } else {
+                    TwilioChatInfo(createInfo.organizationSmall.type.toServerName(),
+                                   createInfo.organizationSmall.name,
+                                   createInfo.organizationSmall.slug,
+                                   createInfo.organizationSmall.type.toServerName())
+                }
+            chatInfo.purpose = createInfo.chatTitle
 
             channels.channelBuilder()
-                .withFriendlyName(createInfo.name)
+                .withFriendlyName(createInfo.chatTitle)
                 .withType(Channel.ChannelType.PRIVATE)
-                .withAttributes(attrs)
+                .withAttributes(toJSONObject(chatInfo))
                 .build(TwilioCallbackSingle(e, "channelCreation"))
         }
             .flatMap { it.waitForSync() }
@@ -170,4 +173,12 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
                     .andThen(Single.just(channel))
             }
     }
+
+    private fun toJSONObject(any: Any): JSONObject? =
+        try {
+            val jsonString = Gson().toJson(any)
+            JSONObject(jsonString)
+        } catch (e: Exception) {
+            null
+        }
 }

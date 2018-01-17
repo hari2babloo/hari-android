@@ -71,8 +71,8 @@ class ChatListInteractor @Inject constructor(private val localUserDataRepository
             }
     }
 
-    private fun generateChatItem(chatChannelInfo: ChatChannelInfo): Maybe<PreviewChatItem>? {
-        return generateChatItem(chatChannelInfo, localUserDataRepository, userRepository)
+    private fun generateChatItem(chatChannelInfo: ChatChannelInfo): Maybe<PreviewChatItem> {
+        return ChatItemGenerator.generateChatItem(chatChannelInfo, localUserDataRepository, userRepository, organizationRepository, rxSchedulersAbs)
     }
 }
 
