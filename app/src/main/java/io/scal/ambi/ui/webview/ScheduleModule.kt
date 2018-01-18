@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.home.calendar.list
+package io.scal.ambi.ui.webview
 
 import android.arch.lifecycle.ViewModel
 import dagger.Binds
@@ -9,7 +9,6 @@ import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.extensions.view.getNavigationHolder
 import io.scal.ambi.extensions.view.getRouter
 import io.scal.ambi.ui.global.base.BetterRouter
-import io.scal.ambi.ui.webview.WebViewViewModel
 import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Named
 

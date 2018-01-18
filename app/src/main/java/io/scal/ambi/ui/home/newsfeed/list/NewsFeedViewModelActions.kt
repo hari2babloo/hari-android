@@ -71,7 +71,8 @@ class NewsFeedViewModelActions(private val router: BetterRouter,
                                    val listElement = newsFeed.firstOrNull { item -> item.uid == element.uid }
 
                                    if (null != listElement) {
-                                       val newComments = listElement.comments.comments.plus(it)
+                                       val newComments = listElement.comments.comments.toMutableList()
+                                       newComments.add(0, it)
                                        val updatedElement = listElement.updateComments(UIComments(newComments))
 
                                        newsFeed.replaceElement(listElement, updatedElement)

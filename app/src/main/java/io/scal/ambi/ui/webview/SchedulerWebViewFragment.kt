@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.home.calendar.list
+package io.scal.ambi.ui.webview
 
 import io.scal.ambi.ui.webview.WebViewFragment
 

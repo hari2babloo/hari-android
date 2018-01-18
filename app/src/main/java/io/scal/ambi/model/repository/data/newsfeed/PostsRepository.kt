@@ -93,11 +93,8 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                 val comments = pair.second as JsonArray
 
                 val newComment = JsonObject()
-                val userObj = JsonObject()
-                userObj.add("id", JsonPrimitive(pair.first.uid))
-                newComment.add("user", userObj)
+                newComment.add("commenter", JsonPrimitive(pair.first.uid))
                 newComment.add("text", JsonPrimitive(userCommentText))
-                newComment.add("dateCreated", JsonPrimitive(DateTime.now().millis))
 
                 val newComments = JsonArray()
                 newComments.add(newComment)
@@ -118,12 +115,16 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
 
                 val newLikes = JsonArray()
                 likes
-                    .filter { it.asJsonObject.getAsJsonPrimitive("id").asString != pair.first.uid }
+                    .map {
+                        if (it.isJsonObject)
+                            it.asJsonObject.getAsJsonPrimitive("id").asString
+                        else
+                            it.asString
+                    }
+                    .filter { it != pair.first.uid }
                     .forEach { newLikes.add(it) }
                 if (like) {
-                    val userObj = JsonObject()
-                    userObj.add("id", JsonPrimitive(pair.first.uid))
-                    newLikes.add(userObj)
+                    newLikes.add(JsonPrimitive(pair.first.uid))
                 }
 
                 val postJsonItem = JsonObject()

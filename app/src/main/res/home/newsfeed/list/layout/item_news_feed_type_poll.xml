@@ -214,7 +214,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:comment="@{element.comments.comments.size > 0 ? element.comments.comments.get(0) : null}"
+                app:comment="@{element.comments.comments.size > 2 ? element.comments.comments.get(2) : null}"
                 />
 
             <include
@@ -232,7 +232,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:comment="@{element.comments.comments.size > 2 ? element.comments.comments.get(2) : null}"
+                app:comment="@{element.comments.comments.size > 0 ? element.comments.comments.get(0) : null}"
                 />
 
             <include

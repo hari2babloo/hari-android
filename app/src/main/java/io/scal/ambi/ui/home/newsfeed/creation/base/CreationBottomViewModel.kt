@@ -49,6 +49,14 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
         announcementListVisibility.set(!announcementListVisibility.get())
     }
 
+    fun attachImage() {
+
+    }
+
+    fun attachFile() {
+
+    }
+
     private fun <T> updateListSelectionData(newData: List<T>,
                                             observableList: ObservableArrayList<T>,
                                             selectedItem: ObservableField<T>) {

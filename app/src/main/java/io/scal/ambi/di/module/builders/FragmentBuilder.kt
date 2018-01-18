@@ -4,8 +4,6 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
 import io.scal.ambi.ui.home.calendar.list.CalendarListModule
-import io.scal.ambi.ui.home.calendar.list.ScheduleModule
-import io.scal.ambi.ui.home.calendar.list.SchedulerWebViewFragment
 import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.chat.list.ChatListModule
 import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationFragment
@@ -17,8 +15,7 @@ import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateFragment
 import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateModule
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedModule
-import io.scal.ambi.ui.webview.WebViewFragment
-import io.scal.ambi.ui.webview.WebViewModule
+import io.scal.ambi.ui.webview.*
 
 @Module
 abstract class FragmentBuilder {
@@ -46,4 +43,7 @@ abstract class FragmentBuilder {
 
     @ContributesAndroidInjector(modules = [ScheduleModule::class])
     abstract fun bindSchedulerFragment(): SchedulerWebViewFragment
+
+    @ContributesAndroidInjector(modules = [ResourceModule::class])
+    abstract fun bindResourcesFragment(): ResourceWebViewFragment
 }

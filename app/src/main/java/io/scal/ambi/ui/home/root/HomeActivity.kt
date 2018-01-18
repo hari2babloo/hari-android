@@ -19,9 +19,10 @@ import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
-import io.scal.ambi.ui.home.calendar.list.SchedulerWebViewFragment
 import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
+import io.scal.ambi.ui.webview.ResourceWebViewFragment
+import io.scal.ambi.ui.webview.SchedulerWebViewFragment
 import ru.terrakok.cicerone.Navigator
 import javax.inject.Inject
 import kotlin.reflect.KClass
@@ -84,6 +85,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
                 Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
                 Pair(R.id.tab_chat, ChatListFragment::class),
 //                Pair(R.id.tab_notifications, Fragment::class),
+                Pair(R.id.tab_resources, ResourceWebViewFragment::class),
                 Pair(R.id.tab_more, Fragment::class)
             ))
     }

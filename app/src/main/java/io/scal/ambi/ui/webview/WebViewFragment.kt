@@ -36,7 +36,7 @@ open class WebViewFragment : BaseNavigationFragment<WebViewViewModel, FragmentCa
                 return if (url.startsWith(safeBaseServerUrl) || url.startsWith(notSafeBaseServerUrl)) {
                     view.loadUrl(url)
                     false
-                } else {
+                } else {    
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(url)
                     try {

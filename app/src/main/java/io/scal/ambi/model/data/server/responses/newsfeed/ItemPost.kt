@@ -128,7 +128,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
 
     private fun createComments(): List<Comment> {
         val commentsList = comments?.map { it.parse() } ?: emptyList()
-        Collections.sort(commentsList, { o1, o2 -> o1.dateTime.compareTo(o2.dateTime) })
+        Collections.sort(commentsList, { o1, o2 -> -o1.dateTime.compareTo(o2.dateTime) })
         return commentsList
     }
 

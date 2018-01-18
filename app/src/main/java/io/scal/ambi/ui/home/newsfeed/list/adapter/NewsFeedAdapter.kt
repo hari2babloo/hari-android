@@ -17,7 +17,8 @@ class NewsFeedAdapter(viewModel: INewsFeedViewModel) : RecyclerViewAdapterDelega
 
     private var dataObserver: NewsFeedAdapterDataObserver? = null
 
-    override var dataList: List<Any> = HeaderFooterList(if (viewModel is NewsFeedViewModel) headerElement else null, footerElement, emptyList())
+    private val hasHeader = viewModel is NewsFeedViewModel
+    override var dataList: List<Any> = HeaderFooterList(if (hasHeader) headerElement else null, footerElement, emptyList())
     private var newsFeedList: HeaderFooterList
         get() = dataList as HeaderFooterList
         set(value) {
@@ -25,8 +26,8 @@ class NewsFeedAdapter(viewModel: INewsFeedViewModel) : RecyclerViewAdapterDelega
         }
 
     init {
-        if (viewModel is NewsFeedViewModel) {
-            addDelegate(NewsFeedAdapterHeaderDelegate(headerElement, viewModel))
+        if (hasHeader) {
+            addDelegate(NewsFeedAdapterHeaderDelegate(headerElement, viewModel as NewsFeedViewModel))
         }
         addDelegate(NewsFeedAdapterMessageDelegate(viewModel))
         addDelegate(NewsFeedAdapterPollDelegate(viewModel))
@@ -52,7 +53,7 @@ class NewsFeedAdapter(viewModel: INewsFeedViewModel) : RecyclerViewAdapterDelega
     fun updateData(data: ObservableList<UIModelFeed>) {
         releaseData()
         newsFeedList = newsFeedList.copy(data = data)
-        dataObserver = NewsFeedAdapterDataObserver(data, this)
+        dataObserver = NewsFeedAdapterDataObserver(data, this, hasHeader)
         notifyDataSetChanged()
     }
 
@@ -67,19 +68,19 @@ class NewsFeedAdapter(viewModel: INewsFeedViewModel) : RecyclerViewAdapterDelega
         newsFeedList.updateFooterVisibility(show, this)
     }
 
-    private class NewsFeedAdapterDataObserver(data: ObservableList<UIModelFeed>, adapter: RecyclerView.Adapter<*>) :
+    private class NewsFeedAdapterDataObserver(data: ObservableList<UIModelFeed>, adapter: RecyclerView.Adapter<*>, private val hasHeader: Boolean) :
         DataObserverForAdapter<UIModelFeed>(data, adapter) {
 
         override fun notifyItemRangeChanged(adapter: RecyclerView.Adapter<*>, positionStart: Int, itemCount: Int) {
-            super.notifyItemRangeChanged(adapter, positionStart + 1, itemCount)
+            super.notifyItemRangeChanged(adapter, positionStart + (if (hasHeader) 1 else 0), itemCount)
         }
 
         override fun notifyItemRangeInserted(adapter: RecyclerView.Adapter<*>, toPosition: Int, itemCount: Int) {
-            super.notifyItemRangeInserted(adapter, toPosition + 1, itemCount)
+            super.notifyItemRangeInserted(adapter, toPosition + (if (hasHeader) 1 else 0), itemCount)
         }
 
         override fun notifyItemRangeRemoved(adapter: RecyclerView.Adapter<*>, fromPosition: Int, itemCount: Int) {
-            super.notifyItemRangeRemoved(adapter, fromPosition + 1, itemCount)
+            super.notifyItemRangeRemoved(adapter, fromPosition + (if (hasHeader) 1 else 0), itemCount)
         }
     }
 }

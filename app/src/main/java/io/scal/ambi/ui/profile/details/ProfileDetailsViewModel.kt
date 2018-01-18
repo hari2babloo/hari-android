@@ -8,6 +8,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
+import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.profile.IProfileDetailsInteractor
 import io.scal.ambi.navigation.NavigateTo
@@ -20,7 +21,9 @@ import io.scal.ambi.ui.global.model.createPaginator
 import io.scal.ambi.ui.global.picker.FileResource
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModelActions
 import io.scal.ambi.ui.home.newsfeed.list.adapter.INewsFeedViewModel
+import io.scal.ambi.ui.home.newsfeed.list.changeLikes
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
+import io.scal.ambi.ui.home.newsfeed.list.setupLike
 import io.scal.ambi.ui.home.newsfeed.list.toNewsFeedElement
 import javax.inject.Inject
 
@@ -228,6 +231,22 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
         paginator.activate()
 
         paginator.refresh()
+
+        userActions
+            .observeLikes()
+            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+            .subscribe {
+                val currentDataState = dataState.get()
+                if (currentDataState is ProfileDetailsDataState.DataNewsFeed) {
+                    val element = currentDataState.newsFeed.firstOrNull { item -> item.uid == it.first.uid }
+
+                    if (null != element) {
+                        val newLikes = element.likes.setupLike(currentUser.get(), it.second == DynamicUserChoicer.Action.LIKE)
+                        currentDataState.newsFeed.replaceElement(element, element.changeLikes(newLikes))
+                    }
+                }
+            }
+            .addTo(disposables)
     }
 }
 
