@@ -99,8 +99,6 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
                               props,
                               TwilioCallbackSingle<ChatClient>(e, "chatClientCreation")
             )
-
-            e.setCancellable { chatClientInfoSubject.value?.chatClient?.shutdown() }
         }
             .map { ChatClientInfo.Data(it) as ChatClientInfo }
             .doOnSubscribe {

@@ -16,10 +16,12 @@
         id="@+id/tab_chat"
         title="@string/title_bottom_chat"/>
 
+<!--
     <tab
         icon="@drawable/ic_tab_notification_icon"
         id="@+id/tab_notifications"
         title="@string/title_bottom_notifications"/>
+-->
 
     <tab
         icon="@drawable/ic_tab_more_icon"

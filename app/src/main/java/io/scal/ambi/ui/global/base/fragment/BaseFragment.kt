@@ -11,12 +11,12 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ambi.work.BR
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
-import com.ambi.work.BR
 import io.scal.ambi.extensions.ContextLeakHelper
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import ru.terrakok.cicerone.Navigator
@@ -98,7 +98,7 @@ abstract class BaseFragment<IViewModel : BaseViewModel, Binding : ViewDataBindin
         super.onDestroy()
     }
 
-    fun onBackPressed(): Boolean =
+    open fun onBackPressed(): Boolean =
         if (null == view) {
             false
         } else {

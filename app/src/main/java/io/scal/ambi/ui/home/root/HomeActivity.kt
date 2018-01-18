@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityHomeBinding
 import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.generic.RoundingParams
 import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.rxkotlin.addTo
-import com.ambi.work.R
-import com.ambi.work.databinding.ActivityHomeBinding
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.extensions.view.ToolbarType
@@ -19,7 +19,7 @@ import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
-import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
+import io.scal.ambi.ui.home.calendar.list.CalendarListWebViewFragment
 import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import ru.terrakok.cicerone.Navigator
@@ -76,9 +76,10 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
             binding.bottomBar!!.bottomBar,
             hashMapOf(
                 Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
-                Pair(R.id.tab_calendar, CalendarListFragment::class),
+//                Pair(R.id.tab_calendar, CalendarListFragment::class),
+                Pair(R.id.tab_calendar, CalendarListWebViewFragment::class),
                 Pair(R.id.tab_chat, ChatListFragment::class),
-                Pair(R.id.tab_notifications, Fragment::class),
+//                Pair(R.id.tab_notifications, Fragment::class),
                 Pair(R.id.tab_more, Fragment::class)
             ))
     }

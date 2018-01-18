@@ -73,7 +73,7 @@ android {
         life {
             dimension "api"
 
-            buildConfigField "String", "MAIN_SERVER_URL", '"http://www.ambi.work/api/"'
+            buildConfigField "String", "MAIN_SERVER_URL", '"https://www.ambi.work/api/"'
         }
         arpit {
             dimension "api"
