@@ -2,6 +2,7 @@ package io.scal.ambi.ui.profile.details
 
 import android.content.Context
 import android.databinding.ObservableField
+import com.ambi.work.R
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
@@ -16,6 +17,7 @@ import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.DynamicUserChoicer
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createPaginator
+import io.scal.ambi.ui.global.picker.FileResource
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModelActions
 import io.scal.ambi.ui.home.newsfeed.list.adapter.INewsFeedViewModel
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
@@ -178,6 +180,35 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
         // todo
     }
 
+    fun attachAvatar(fileResource: FileResource) {
+        attachNewImage(fileResource, { interactor.attachAvatarImage(it) })
+    }
+
+    fun attachBanner(fileResource: FileResource) {
+        attachNewImage(fileResource, { interactor.attachBannerImage(it) })
+    }
+
+    private fun attachNewImage(fileResource: FileResource, function: (FileResource) -> Single<User>) {
+        if (profileUidToShowIsCurrent) {
+            function.invoke(fileResource)
+                .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                .doOnDispose { fileResource.cleanUp() }
+                .subscribe({
+                               currentUser.set(it)
+                               dataState.set(dataState.get().copyProfileInfo(it.toUIProfile(context, profileUidToShowIsCurrent)))
+                           },
+                           {
+                               handleError(it)
+
+                               errorState.set(ProfileDetailsErrorState.NonFatalErrorState(
+                                   it.toGoodUserMessage(context))
+                               )
+                               errorState.set(ProfileDetailsErrorState.NoErrorState)
+                           })
+                .addTo(disposables)
+        }
+    }
+
     private fun executeLoadNextPage(page: Int): Single<List<UIModelFeed>> {
         return interactor
             .loadNewsFeedPage(profileUidToShowIsCurrent, profileUidToShow, page)
@@ -192,7 +223,7 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
     }
 
     private fun onInit(user: User) {
-        dataState.set(ProfileDetailsDataState.DataInfoOnly(user.toUIProfile()))
+        dataState.set(ProfileDetailsDataState.DataInfoOnly(user.toUIProfile(context, profileUidToShowIsCurrent)))
 
         paginator.activate()
 
@@ -200,10 +231,13 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
     }
 }
 
-private fun User.toUIProfile(): UIProfile {
+private fun User.toUIProfile(context: Context, showSettings: Boolean): UIProfile {
+    val workAt = workExperience?.lastOrNull()
     return UIProfile(name,
                      avatar,
-                     "TODO",
-                     "TODO"
+                     banner,
+                     workAt?.let { "${it.title} at ${it.description}" },
+                     liveAt?.let { context.getString(R.string.profile_details_life_at, it) },
+                     showSettings
     )
 }

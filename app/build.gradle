@@ -181,13 +181,15 @@ dependencies {
     implementation 'com.hannesdorfmann:adapterdelegates3:3.0.1' // for news feed recycler view with different view types
     implementation 'com.vanniktech:emoji-google:0.5.1'
     implementation 'com.github.pchmn:MaterialChipsInput:1.0.8' // for new chat creation screen. it is customized a lot. including reflection
+    implementation 'com.caverock:androidsvg:1.2.1'     // for fresco svg
 
     // push notifications
     implementation 'com.google.firebase:firebase-messaging:11.8.0'
     implementation 'com.google.android.gms:play-services-base:11.8.0'
 
-    // for fresco svg
-    implementation 'com.caverock:androidsvg:1.2.1'
+    // for file storage in s3
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.6.13'
+    implementation 'com.amazonaws:aws-android-sdk-core:2.6.13'
 }
 
 apply plugin: 'com.google.gms.google-services'

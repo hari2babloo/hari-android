@@ -3,6 +3,7 @@ package io.scal.ambi.model.repository.data.user
 import com.google.gson.Gson
 import io.reactivex.Single
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.model.data.server.UpdateRequest
 import io.scal.ambi.model.data.server.UserApi
 import io.scal.ambi.model.data.server.responses.user.ItemUser
 import io.scal.ambi.model.data.server.responses.user.UserResponse
@@ -27,17 +28,28 @@ class UserRepository @Inject constructor(private val userApi: UserApi,
         return userApi.getUserProfile(userId)
             .map { it.parse() }
             .onErrorResumeNext { t -> Single.error(t.toServerResponseException()) }
+            .doOnSuccess { localDataRepository.putUserProfile(it) }
     }
 
     override fun getProfileCached(userId: String): Single<User> {
         return localDataRepository
             .getUserProfile(userId, maxProfileLifeTime)
-            .onErrorResumeNext(getProfile(userId).doOnSuccess { localDataRepository.putUserProfile(it) })
+            .onErrorResumeNext(getProfile(userId))
     }
 
     override fun searchProfiles(searchQuery: String): Single<List<User>> {
         return userApi.searchProfiles(searchQuery)
             .map { it.parse() }
+    }
+
+    override fun saveProfileAvatar(userId: String, fileId: String): Single<User> {
+        return userApi.updateProfile(userId, UpdateRequest(profilePicture = fileId))
+            .andThen(getProfile(userId))
+    }
+
+    override fun saveProfileBanner(userId: String, fileId: String): Single<User> {
+        return userApi.updateProfile(userId, UpdateRequest(bannerPicture = fileId))
+            .andThen(getProfile(userId))
     }
 }
 

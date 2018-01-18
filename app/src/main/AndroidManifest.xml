@@ -84,7 +84,7 @@
         <!-- For camera picker -->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="io.scal.ambi.fileprovider"
+            android:authorities="com.ambi.work.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -112,6 +112,11 @@
             android:name="io.scal.ambi.model.repository.data.chat.push.RegistrationIntentService"
             android:exported="false">
         </service>
+
+        <!-- for s3 storage -->
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true"/>
 
     </application>
 </manifest>

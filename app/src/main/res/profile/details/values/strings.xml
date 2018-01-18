@@ -3,4 +3,6 @@
 
     <string name="profile_details_edit_resume">Edit Resume</string>
 
+    <string name="profile_details_life_at">lives in %s</string>
+
 </resources>

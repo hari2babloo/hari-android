@@ -12,4 +12,8 @@ interface IUserRepository {
     fun getProfileCached(userId: String): Single<User>
 
     fun searchProfiles(searchQuery: String): Single<List<User>>
+
+    fun saveProfileAvatar(userId: String, fileId: String): Single<User>
+
+    fun saveProfileBanner(userId: String, fileId: String): Single<User>
 }

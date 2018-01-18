@@ -1,6 +1,10 @@
 package io.scal.ambi.di.module
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 import android.support.annotation.Nullable
@@ -105,7 +109,7 @@ class FrescoSvgDecoder {
     /**
      * SVG drawable factory that creates [PictureDrawable]s for SVG images.
      */
-    class SvgDrawableFactory : DrawableFactory {
+    class SvgDrawableFactory(private val context: Context) : DrawableFactory {
 
         override fun supportsImageType(image: CloseableImage): Boolean {
             return image is CloseableSvgImage
@@ -113,7 +117,20 @@ class FrescoSvgDecoder {
 
         @Nullable
         override fun createDrawable(image: CloseableImage): Drawable? {
-            return SvgPictureDrawable((image as CloseableSvgImage).svg)
+            val drawable = SvgPictureDrawable((image as CloseableSvgImage).svg)
+            return try {
+                BitmapDrawable(context.resources, pictureDrawable2Bitmap(drawable))
+            } catch (e: Exception) {
+                drawable
+            }
+        }
+
+        private fun pictureDrawable2Bitmap(pd: SvgPictureDrawable): Bitmap {
+            val bitmap = Bitmap.createBitmap(pd.minimumWidth, pd.minimumHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            pd.onBoundsChange(Rect(0, 0, pd.minimumWidth, pd.minimumHeight))
+            canvas.drawPicture(pd.picture)
+            return bitmap
         }
     }
 
@@ -127,7 +144,7 @@ class FrescoSvgDecoder {
             return mSvg.documentHeight.toInt()
         }
 
-        protected override fun onBoundsChange(bounds: Rect) {
+        public override fun onBoundsChange(bounds: Rect) {
             super.onBoundsChange(bounds)
             picture = mSvg.renderToPicture(bounds.width(), bounds.height())
         }

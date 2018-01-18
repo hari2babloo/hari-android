@@ -158,9 +158,11 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
                 interactor.loadChatInfo()
                     .compose(rxSchedulersAbs.getIOToMainTransformer())
+                    .map { it.toChatInfo(context, currentUser.get()) }
+                    .distinctUntilChanged()
                     .subscribe({
                                    progressState.set(ChatDetailsProgressState.NoProgress)
-                                   dataState.set(dataState.get().updateInfo(it.toChatInfo(context, currentUser.get())))
+                                   dataState.set(dataState.get().updateInfo(it))
 
                                    if (paginator.isNotActivated()) {
                                        paginator.activate()

@@ -78,13 +78,20 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
                                           },
                                           destroyViewDisposables)
 
+        var expandFirstTime = true
         viewModel.dataState
             .toObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 when (it) {
                     is NewsFeedDataState.Empty -> adapter.releaseData()
-                    is NewsFeedDataState.Data  -> adapter.updateData(it.newsFeed)
+                    is NewsFeedDataState.Data  -> {
+                        adapter.updateData(it.newsFeed)
+                        if (expandFirstTime) {
+                            binding.vFocus.requestFocus()
+                            expandFirstTime = false
+                        }
+                    }
                 }
             }
             .addTo(destroyViewDisposables)

@@ -55,6 +55,6 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [ChatChannelSelectionModule::class, AuthProfileModule::class])
     abstract fun bindChatChannelSelectionActivity(): ChatChannelSelectionActivity
 
-    @ContributesAndroidInjector(modules = [ProfileDetailsModule::class, AuthProfileModule::class])
+    @ContributesAndroidInjector(modules = [ProfileDetailsModule::class, AuthProfileModule::class, PickerModule::class])
     abstract fun bindProfileDetailsActivity(): ProfileDetailsActivity
 }

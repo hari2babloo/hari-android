@@ -11,5 +11,6 @@ internal abstract class NewsFeedAdapterDelegateBase<in Binding : ViewDataBinding
     @CallSuper
     override fun onBindViewHolder(items: List<Any>, position: Int, binding: Binding, payloads: MutableList<Any>) {
         binding.setVariable(BR.viewModel, viewModel)
+        binding.executePendingBindings()
     }
 }

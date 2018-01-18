@@ -42,7 +42,7 @@ class AppModule(private val context: App) {
         configPipline.setImageDecoderConfig(config.build())
 
         val draweeConfig = DraweeConfig.newBuilder()
-        draweeConfig.addCustomDrawableFactory(FrescoSvgDecoder.SvgDrawableFactory())
+        draweeConfig.addCustomDrawableFactory(FrescoSvgDecoder.SvgDrawableFactory(context))
 
         Fresco.initialize(context, configPipline.build(), draweeConfig.build())
     }

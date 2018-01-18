@@ -14,6 +14,10 @@
             name="viewModel"
             type="io.scal.ambi.ui.profile.details.ProfileDetailsViewModel"/>
 
+        <variable
+            name="attachListener"
+            type="io.scal.ambi.ui.profile.details.AttachListener"/>
+
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -43,6 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="186dp"
                     android:layout_marginTop="?actionBarSize"
+                    app:attachListener="@{viewModel.dataState.profileInfo.currentUser ? attachListener : null}"
                     bind:profile="@{viewModel.dataState.profileInfo}"
                     />
 
@@ -53,6 +58,11 @@
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
+
+        <io.scal.ambi.ui.global.view.FocusableDummyView
+            android:id="@+id/v_focus"
+            android:layout_width="1dp"
+            android:layout_height="1dp"/>
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/srl"

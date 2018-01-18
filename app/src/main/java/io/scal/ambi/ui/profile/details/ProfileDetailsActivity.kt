@@ -1,13 +1,17 @@
 package io.scal.ambi.ui.profile.details
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.ambi.work.R
 import com.ambi.work.databinding.ActivityProfileDetailsBinding
+import com.azoft.injectorlib.InjectSavedState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.extensions.binding.toObservable
@@ -22,21 +26,46 @@ import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.global.base.asProgressStateSrl
+import io.scal.ambi.ui.global.picker.FileResource
+import io.scal.ambi.ui.global.picker.PickerViewController
+import io.scal.ambi.ui.global.picker.PickerViewModel
 import io.scal.ambi.ui.global.search.SearchToolbarContent
 import io.scal.ambi.ui.home.newsfeed.list.adapter.NewsFeedAdapter
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.RuntimePermissions
 import ru.terrakok.cicerone.Navigator
 import kotlin.reflect.KClass
 
-class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, ActivityProfileDetailsBinding>() {
+@RuntimePermissions
+class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, ActivityProfileDetailsBinding>(), PickerViewController {
 
     override val layoutId: Int = R.layout.activity_profile_details
     override val viewModelClass: KClass<ProfileDetailsViewModel> = ProfileDetailsViewModel::class
 
+    private lateinit var defaultToolbar: ToolbarType
     private val adapter by lazy { NewsFeedAdapter(viewModel) }
+
+    private val pickerViewModel: PickerViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory).get(PickerViewModel::class.java)
+    }
+
+    @InjectSavedState
+    internal var attachAvatar = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding.attachListener = object : AttachListener {
+            override fun attachAvatarIcon() {
+                attachAvatar = true
+                pickerViewModel.pickAnImage(this@ProfileDetailsActivity, this@ProfileDetailsActivity)
+            }
+
+            override fun attachBannerIcon() {
+                attachAvatar = true
+                pickerViewModel.pickAnImage(this@ProfileDetailsActivity, this@ProfileDetailsActivity)
+            }
+        }
         initToolbar()
         initRecyclerView()
         observeStates()
@@ -45,12 +74,12 @@ class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, Acti
     }
 
     private fun initToolbar() {
-        val toolbar = ToolbarType(IconImage(R.drawable.ic_back), Runnable { viewModel.onBackPressed() },
-                                  SearchToolbarContent(viewModel.searchViewModel),
-                                  IconImageUser(),
-                                  Runnable { viewModel.openProfile() })
-        toolbar.makePin()
-        setToolbarType(toolbar)
+        defaultToolbar = ToolbarType(IconImage(R.drawable.ic_back), Runnable { viewModel.onBackPressed() },
+                                     SearchToolbarContent(viewModel.searchViewModel),
+                                     IconImageUser(),
+                                     Runnable { viewModel.openProfile() })
+        defaultToolbar.makePin()
+        setToolbarType(defaultToolbar)
     }
 
     private fun initRecyclerView() {
@@ -105,6 +134,7 @@ class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, Acti
                         adapter.updateData(it.newsFeed)
                         if (expandFirstTime) {
                             binding.appBarLayout.setExpanded(true, false)
+                            binding.vFocus.requestFocus()
                             expandFirstTime = false
                         }
                     }
@@ -113,6 +143,48 @@ class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, Acti
                 }
             }
             .addTo(destroyDisposables)
+
+        viewModel
+            .currentUser
+            .toObservable()
+            .subscribe {
+                val newToolbarType = defaultToolbar.copy(rightIcon = it.avatar)
+                compareAndSetToolbarType(defaultToolbar, newToolbarType)
+                defaultToolbar = newToolbarType
+            }
+            .addTo(destroyDisposables)
+    }
+
+    override fun setPickedFile(fileResource: FileResource, image: Boolean) {
+        if (image) {
+            if (attachAvatar) {
+                viewModel.attachAvatar(fileResource)
+            } else {
+                viewModel.attachBanner(fileResource)
+            }
+        }
+    }
+
+    override fun showPickerDialogFragment(dialogFragment: DialogFragment) {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.add(dialogFragment, null)
+        ft.commitAllowingStateLoss()
+    }
+
+    override fun askForReadExternalStoragePermission() = notifyPickerViewModelAboutPermissionWithPermissionCheck()
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    internal fun notifyPickerViewModelAboutPermission() = pickerViewModel.onReadExternalStoragePermissionGranted(this)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        pickerViewModel.onActivityResult(this, requestCode, resultCode, data)
+    }
+
+    @SuppressLint("NeedOnRequestPermissionsResult")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        onRequestPermissionsResult(requestCode, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override val navigator: Navigator
@@ -128,4 +200,11 @@ class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, Acti
             Intent(context, ProfileDetailsActivity::class.java)
                 .putExtra(EXTRA_PROFILE_UID, profileUid)
     }
+}
+
+interface AttachListener {
+
+    fun attachAvatarIcon()
+
+    fun attachBannerIcon()
 }

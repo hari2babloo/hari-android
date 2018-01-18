@@ -83,4 +83,9 @@ class ApiModule {
     @Singleton
     internal fun provideOrganizationApi(@Named("mainServer") retrofit: Retrofit): OrganizationApi =
         retrofit.create(OrganizationApi::class.java)
+
+    @Provides
+    @Singleton
+    internal fun provideFilesApi(@Named("mainServer") retrofit: Retrofit): FilesApi =
+        retrofit.create(FilesApi::class.java)
 }

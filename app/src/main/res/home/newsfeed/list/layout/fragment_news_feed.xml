@@ -49,6 +49,11 @@
 
         </LinearLayout>
 
+        <io.scal.ambi.ui.global.view.FocusableDummyView
+            android:id="@+id/v_focus"
+            android:layout_width="1dp"
+            android:layout_height="1dp"/>
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/srl"
             android:layout_width="0dp"

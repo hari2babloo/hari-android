@@ -1,14 +1,18 @@
 package io.scal.ambi.entity.user
 
+import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import java.io.Serializable
 
-class User private constructor(val uid: String,
-                               val type: UserType,
-                               val avatar: IconImageUser,
-                               val email: String,
-                               firstName: String,
-                               lastName: String) : Serializable {
+data class User constructor(val uid: String,
+                            val type: UserType,
+                            val avatar: IconImageUser,
+                            val email: String,
+                            val firstName: String,
+                            val lastName: String,
+                            val banner: IconImage? = null,
+                            val workExperience: List<WorkExperience>? = null,
+                            val liveAt: String? = null) : Serializable {
 
     val name: String = "$firstName $lastName".trim()
 

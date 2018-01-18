@@ -30,9 +30,13 @@ class NewsFeedViewModelActions(private val router: BetterRouter,
 
 
     fun openAuthorOf(element: UIModelFeed) {
-        if (element is UIModelFeed.Message) {
-            router.navigateTo(NavigateTo.PROFILE_DETAILS, element.author.uid)
-        }
+        val userId =
+            when (element) {
+                is UIModelFeed.Message -> element.author.uid
+                is UIModelFeed.Poll    -> element.author.uid
+                is UIModelFeed.Link    -> element.actor.uid
+            }
+        router.navigateTo(NavigateTo.PROFILE_DETAILS, userId)
     }
 
     fun openCommentsOf(element: UIModelFeed) {

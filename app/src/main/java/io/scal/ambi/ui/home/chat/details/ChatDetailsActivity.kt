@@ -13,10 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
 import com.ambi.work.R
 import com.ambi.work.databinding.ActivityChatDetailsBinding
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.extensions.binding.toObservable
@@ -128,7 +128,9 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
             .toObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.chatInfo = it.chatInfo
+                if (binding.chatInfo != it.chatInfo) {
+                    binding.chatInfo = it.chatInfo
+                }
 
                 when (it) {
                     is ChatDetailsDataState.Data -> {
@@ -138,14 +140,19 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
                     else                         -> binding.cCreation?.root?.visibility = View.GONE
                 }
 
-                currentToolbar =
-                    if (true == it.chatInfo?.canAddUsers) {
-                        currentToolbar.copy(rightIcon = IconImage(R.drawable.ic_chat_add_user),
-                                            rightIconClickListener = Runnable { viewModel.addOtherUsers() })
-                    } else {
-                        currentToolbar.copy(rightIcon = null, rightIconClickListener = null)
+                val newCurrentToolbar =
+                    when {
+                        true == it.chatInfo?.canAddUsers && currentToolbar.rightIcon == null  ->
+                            currentToolbar.copy(rightIcon = IconImage(R.drawable.ic_chat_add_user),
+                                                rightIconClickListener = Runnable { viewModel.addOtherUsers() })
+                        false == it.chatInfo?.canAddUsers && currentToolbar.rightIcon != null ->
+                            currentToolbar.copy(rightIcon = null, rightIconClickListener = null)
+                        else                                                                  -> null
                     }
-                setToolbarType(currentToolbar)
+                if (newCurrentToolbar != null) {
+                    currentToolbar = newCurrentToolbar
+                    setToolbarType(currentToolbar)
+                }
             }
             .addTo(destroyDisposables)
 

@@ -8,14 +8,17 @@ import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollChoice
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.model.interactor.base.IFileUploadInteractor
 import io.scal.ambi.model.repository.data.newsfeed.IPostsRepository
 import io.scal.ambi.model.repository.data.user.IUserRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
+import io.scal.ambi.ui.global.picker.FileResource
 import javax.inject.Inject
 
 class ProfileDetailsInteractor @Inject constructor(private val postsRepository: IPostsRepository,
                                                    private val localUserDataRepository: ILocalUserDataRepository,
-                                                   private val userRepository: IUserRepository) : IProfileDetailsInteractor {
+                                                   private val userRepository: IUserRepository,
+                                                   private val fileUploadInteractor: IFileUploadInteractor) : IProfileDetailsInteractor {
 
     override fun loadCurrentUser(): Observable<User> =
         localUserDataRepository.observeCurrentUser()
@@ -40,5 +43,23 @@ class ProfileDetailsInteractor @Inject constructor(private val postsRepository: 
 
     override fun sendUserCommentToPost(newsFeedItem: NewsFeedItem, userCommentText: String): Single<Comment> {
         return postsRepository.sendUserCommentToPost(newsFeedItem, userCommentText)
+    }
+
+    override fun attachAvatarImage(fileResource: FileResource): Single<User> {
+        return localUserDataRepository.observeCurrentUser()
+            .firstOrError()
+            .flatMap { currentUser ->
+                fileUploadInteractor.uploadFile(fileResource, currentUser)
+                    .flatMap { userRepository.saveProfileAvatar(currentUser.uid, it.id) }
+            }
+    }
+
+    override fun attachBannerImage(fileResource: FileResource): Single<User> {
+        return localUserDataRepository.observeCurrentUser()
+            .firstOrError()
+            .flatMap { currentUser ->
+                fileUploadInteractor.uploadFile(fileResource, currentUser, null)
+                    .flatMap { userRepository.saveProfileBanner(currentUser.uid, it.id) }
+            }
     }
 }

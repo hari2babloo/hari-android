@@ -25,11 +25,18 @@ internal sealed class ProfileDetailsErrorState {
     class NonFatalErrorState(val error: String) : ProfileDetailsErrorState()
 }
 
-sealed class ProfileDetailsDataState(val profileInfo: UIProfile?) {
+sealed class ProfileDetailsDataState(open val profileInfo: UIProfile?) {
 
-    class DataInfoOnly(profileInfo: UIProfile) : ProfileDetailsDataState(profileInfo)
+    data class DataInfoOnly(override val profileInfo: UIProfile) : ProfileDetailsDataState(profileInfo)
 
-    class DataNewsFeedEmpty(profileInfo: UIProfile?) : ProfileDetailsDataState(profileInfo)
+    data class DataNewsFeedEmpty(override val profileInfo: UIProfile?) : ProfileDetailsDataState(profileInfo)
 
-    class DataNewsFeed(profileInfo: UIProfile?, val newsFeed: ObservableList<UIModelFeed>) : ProfileDetailsDataState(profileInfo)
+    data class DataNewsFeed(override val profileInfo: UIProfile?, val newsFeed: ObservableList<UIModelFeed>) : ProfileDetailsDataState(profileInfo)
+
+    fun copyProfileInfo(uiProfile: UIProfile): ProfileDetailsDataState =
+        when (this) {
+            is DataInfoOnly      -> copy(profileInfo = uiProfile)
+            is DataNewsFeedEmpty -> copy(profileInfo = uiProfile)
+            is DataNewsFeed      -> copy(profileInfo = uiProfile)
+        }
 }
