@@ -110,7 +110,7 @@ dependencies {
     // Core
     implementation "com.azoft.injector:injector:0.9.3"
     implementation "com.jakewharton.timber:timber:4.5.1"
-    implementation "com.facebook.fresco:fresco:1.5.0"
+    implementation "com.facebook.fresco:fresco:1.7.1"
 
     // data binding
     kapt "com.android.databinding:compiler:$rootProject.androidPluginVersion"

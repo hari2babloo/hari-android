@@ -12,6 +12,9 @@ import android.view.View
 import com.ambi.work.R
 import com.ambi.work.databinding.ActivityProfileDetailsBinding
 import com.azoft.injectorlib.InjectSavedState
+import com.facebook.drawee.drawable.ScalingUtils
+import com.facebook.drawee.generic.RoundingParams
+import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.extensions.binding.toObservable
@@ -62,7 +65,7 @@ class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, Acti
             }
 
             override fun attachBannerIcon() {
-                attachAvatar = true
+                attachAvatar = false
                 pickerViewModel.pickAnImage(this@ProfileDetailsActivity, this@ProfileDetailsActivity)
             }
         }
@@ -79,6 +82,14 @@ class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, Acti
                                      IconImageUser(),
                                      Runnable { viewModel.openProfile() })
         defaultToolbar.makePin()
+        defaultToolbar.rightIconCustomization = object : ToolbarType.IconCustomization {
+            override fun applyNewStyle(simpleDraweeView: SimpleDraweeView) {
+                simpleDraweeView.hierarchy.apply {
+                    actualImageScaleType = ScalingUtils.ScaleType.CENTER_CROP
+                    roundingParams = RoundingParams.asCircle()
+                }
+            }
+        }
         setToolbarType(defaultToolbar)
     }
 
