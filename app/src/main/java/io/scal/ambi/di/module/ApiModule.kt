@@ -1,8 +1,8 @@
 package io.scal.ambi.di.module
 
+import com.ambi.work.BuildConfig
 import dagger.Module
 import dagger.Provides
-import io.scal.ambi.BuildConfig
 import io.scal.ambi.model.data.server.*
 import io.scal.ambi.model.data.server.intercepters.AuthInterceptor
 import io.scal.ambi.model.data.server.intercepters.Http2FixInterceptor

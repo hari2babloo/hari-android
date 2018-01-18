@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.drawee.view.SimpleDraweeView
 import de.hdodenhof.circleimageview.CircleImageView
-import io.scal.ambi.R
+import com.ambi.work.R
 
 class FrescoCircleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0)
     : CircleImageView(context, attrs, defStyle) {

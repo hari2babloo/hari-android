@@ -16,7 +16,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
-import io.scal.ambi.BR
+import com.ambi.work.BR
 import io.scal.ambi.extensions.ContextLeakHelper
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import ru.terrakok.cicerone.Navigator

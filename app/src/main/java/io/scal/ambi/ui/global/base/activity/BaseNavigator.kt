@@ -4,9 +4,9 @@ import android.content.Intent
 import android.support.annotation.CallSuper
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import com.ambi.work.BuildConfig
+import com.ambi.work.R
 import com.crashlytics.android.Crashlytics
-import io.scal.ambi.BuildConfig
-import io.scal.ambi.R
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.login.LoginActivity
 import ru.terrakok.cicerone.android.SupportAppNavigator

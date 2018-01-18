@@ -10,6 +10,8 @@ import io.scal.ambi.ui.global.picker.FileResource
 
 interface IChatRepository {
 
+    fun listenForPushToken()
+
     fun observeChatClientChanged(): Observable<ChatClientChanged>
 
     fun observeChatChangedEvents(chatUids: List<String>): Observable<ChatChannelChanged>

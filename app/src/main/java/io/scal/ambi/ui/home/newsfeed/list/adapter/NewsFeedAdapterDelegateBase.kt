@@ -2,7 +2,7 @@ package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import android.databinding.ViewDataBinding
 import android.support.annotation.CallSuper
-import io.scal.ambi.BR
+import com.ambi.work.BR
 import io.scal.ambi.ui.global.base.adapter.AdapterDelegateBase
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 

@@ -1,6 +1,6 @@
 package io.scal.ambi.entity.feed
 
-import io.scal.ambi.R
+import com.ambi.work.R
 
 enum class Audience(val titleId: Int, val iconId: Int) {
 

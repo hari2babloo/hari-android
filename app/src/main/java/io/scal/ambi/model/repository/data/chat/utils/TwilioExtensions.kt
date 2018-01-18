@@ -1,5 +1,6 @@
 package io.scal.ambi.model.repository.data.chat.utils
 
+import com.ambi.work.R
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -12,7 +13,6 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.scal.ambi.R
 import io.scal.ambi.entity.organization.OrganizationType
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -72,12 +72,14 @@ private fun getChatOrganization(attrs: JSONObject, membersCount: Long, friendlyN
 
     val organizationType = twilioChatInfo.conversationType.toOrganizationType()
     return when {
-        null == twilioChatInfo.conversationType                                                                        ->
+        null == twilioChatInfo.conversationType  ->
             null
-        null != organizationType && null != twilioChatInfo.organizationName && null != twilioChatInfo.organizationSlug -> {
+        null != organizationType &&
+            null != twilioChatInfo.organizationName &&
+            null != twilioChatInfo.organizationSlug &&
+            "general".equals(friendlyName, true) ->
             ChatChannelInfo.OrganizationSmall(organizationType, twilioChatInfo.organizationSlug, twilioChatInfo.organizationName)
-        }
-        else                                                                                                           ->
+        else                                     ->
             throw IllegalStateException("wrong chat information")
     }
 }

@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.FragmentChatListBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.FragmentChatListBinding
 import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.listenForEndScroll

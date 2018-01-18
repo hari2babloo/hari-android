@@ -4,7 +4,7 @@ import android.databinding.ObservableField
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import com.android.databinding.library.baseAdapters.BR
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 import io.scal.ambi.extensions.view.ToolbarType
 

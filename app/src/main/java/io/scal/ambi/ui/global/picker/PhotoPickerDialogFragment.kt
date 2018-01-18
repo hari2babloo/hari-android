@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AlertDialog
 import com.azoft.injectorlib.InjectSavedState
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.ui.global.base.fragment.BaseDialogFragment
 
 class PhotoPickerDialogFragment : BaseDialogFragment() {

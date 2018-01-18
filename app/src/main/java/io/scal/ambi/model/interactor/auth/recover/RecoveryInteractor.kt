@@ -3,7 +3,7 @@ package io.scal.ambi.model.interactor.auth.recover
 import android.content.Context
 import android.support.v4.util.PatternsCompat
 import io.reactivex.Completable
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.model.repository.auth.IAuthRepository
 import javax.inject.Inject

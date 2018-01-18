@@ -8,14 +8,18 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.repository.data.chat.data.*
 import io.scal.ambi.model.repository.data.chat.utils.*
+import io.scal.ambi.model.repository.local.ILocalDataRepository
 import io.scal.ambi.ui.global.picker.FileResource
 import org.json.JSONObject
+import java.util.*
 import javax.inject.Inject
 
 class TwilioChatRepository @Inject internal constructor(authenticationRepository: TwilioAuthenticationRepository,
+                                                        private val localDataRepository: ILocalDataRepository,
                                                         private val rxSchedulersAbs: RxSchedulersAbs) : IChatRepository {
 
     private val chatClientObservable: Observable<ChatClient> =
@@ -35,6 +39,20 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
             .refCount()
 
     private val channelMessageHelper = TwilioChannelMessagesPaginator(chatClientObservable)
+
+    override fun listenForPushToken() {
+        Observable.combineLatest(chatClientObservable,
+                                 localDataRepository.observeFirebaseToken(),
+                                 BiFunction<ChatClient, String, Pair<ChatClient, String>> { t1, t2 -> Pair(t1, t2) }
+        )
+            .filter { it.second.isNotEmpty() }
+            .firstOrError()
+            .flatMapCompletable {
+                Completable.create { e -> it.first.registerFCMToken(it.second, TwilioCallbackCompletable(e, "fcm update")) }
+            }
+            .retry()
+            .subscribe()
+    }
 
     override fun observeChatClientChanged(): Observable<ChatClientChanged> {
         return chatGlobalEventsObservable
@@ -128,6 +146,7 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
         return chatClientObservable
             .firstOrError()
             .map { it.channels }
+            .observeOn(rxSchedulersAbs.ioScheduler)
             .flatMap { channels ->
                 findExistingChatForMembers(channels, createInfo.memberUids, currentUser)
                     .onErrorResumeNext { createNewChat(channels, createInfo, currentUser) }
@@ -147,6 +166,7 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
         return Single.just(channels.subscribedChannels)
             .flatMapObservable { Observable.fromIterable(it) }
             .flatMapSingle { it.waitForSync() }
+            .observeOn(rxSchedulersAbs.ioScheduler)
             .flatMapMaybe {
                 val channelMembers = it.members.membersList.map { it.identity }
                 if (channelMembers.containsAll(allMembers) && allMembers.containsAll(channelMembers)) {
@@ -169,10 +189,10 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
                                    createInfo.organizationSmall.slug,
                                    createInfo.organizationSmall.type.toServerName())
                 }
-            chatInfo.purpose = createInfo.chatTitle
 
             channels.channelBuilder()
-                .withFriendlyName(createInfo.chatTitle)
+                .withUniqueName(UUID.randomUUID().toString())
+                .withFriendlyName(currentUser)
                 .withType(Channel.ChannelType.PRIVATE)
                 .withAttributes(toJSONObject(chatInfo))
                 .build(TwilioCallbackSingle(e, "channelCreation"))

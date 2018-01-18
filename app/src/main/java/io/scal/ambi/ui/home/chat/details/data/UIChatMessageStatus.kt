@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.chat.details.data
 
-import io.scal.ambi.R
+import com.ambi.work.R
 
 enum class UIChatMessageStatus(val chatTitleId: Int) {
 

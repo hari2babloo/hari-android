@@ -2,7 +2,7 @@ package io.scal.ambi.ui.global.search
 
 import android.content.Context
 import android.databinding.ObservableBoolean
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel

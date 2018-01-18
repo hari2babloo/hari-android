@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityAudienceSelectionBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityAudienceSelectionBinding
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType

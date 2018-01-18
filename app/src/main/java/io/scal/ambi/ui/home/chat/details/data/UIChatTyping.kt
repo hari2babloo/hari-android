@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.chat.details.data
 
 import android.content.Context
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.generateNamesText
 

@@ -8,7 +8,7 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.extensions.binding.toObservable
 
 fun <T> ObservableField<T>.asErrorState(rootView: View, refreshFatal: () -> Unit, errorState: (T) -> ErrorState, disposables: CompositeDisposable) {

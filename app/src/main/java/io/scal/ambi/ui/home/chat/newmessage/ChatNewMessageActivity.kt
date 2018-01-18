@@ -9,8 +9,8 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityChatNewMessageBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityChatNewMessageBinding
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User

@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ItemCalendarDayWithNameBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ItemCalendarDayWithNameBinding
 import org.joda.time.LocalDate
 
 class CalendarWeekMonthView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :

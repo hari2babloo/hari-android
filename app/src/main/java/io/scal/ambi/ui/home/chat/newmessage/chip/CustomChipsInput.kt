@@ -17,7 +17,7 @@ import com.pchmn.materialchips.views.DetailedChipView
 import com.pchmn.materialchips.views.FilterableListView
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.toObservable
 import java.lang.reflect.Field

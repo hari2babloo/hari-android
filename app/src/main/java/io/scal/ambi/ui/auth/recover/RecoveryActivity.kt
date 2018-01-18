@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityRecoveryBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityRecoveryBinding
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
 import io.scal.ambi.ui.global.AlertDialogShower

@@ -5,7 +5,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.extensions.view.IconImage

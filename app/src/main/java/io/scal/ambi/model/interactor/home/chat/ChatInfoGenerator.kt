@@ -5,7 +5,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.FullChatItem

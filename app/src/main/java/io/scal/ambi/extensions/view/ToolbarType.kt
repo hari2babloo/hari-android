@@ -5,7 +5,7 @@ import android.support.annotation.LayoutRes
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import com.facebook.drawee.view.SimpleDraweeView
-import io.scal.ambi.R
+import com.ambi.work.R
 
 data class ToolbarType constructor(val leftIcon: IconImage?,
                                    val leftIconClickListener: Runnable?,

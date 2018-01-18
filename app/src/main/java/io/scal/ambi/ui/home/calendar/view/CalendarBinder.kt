@@ -6,7 +6,7 @@ import android.support.v7.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import io.scal.ambi.R
+import com.ambi.work.R
 import org.joda.time.LocalDate
 import org.joda.time.YearMonth
 import org.joda.time.format.DateTimeFormat

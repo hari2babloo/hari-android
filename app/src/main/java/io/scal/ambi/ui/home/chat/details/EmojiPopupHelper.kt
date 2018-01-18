@@ -4,7 +4,7 @@ import com.vanniktech.emoji.EmojiEditText
 import com.vanniktech.emoji.EmojiPopup
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.EmojiKeyboardState
 import java.util.concurrent.atomic.AtomicReference
 

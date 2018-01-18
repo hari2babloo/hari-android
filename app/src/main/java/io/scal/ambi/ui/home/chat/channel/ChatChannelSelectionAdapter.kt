@@ -2,8 +2,8 @@ package io.scal.ambi.ui.home.chat.channel
 
 import android.databinding.ViewDataBinding
 import android.view.ViewGroup
-import io.scal.ambi.BR
-import io.scal.ambi.R
+import com.ambi.work.BR
+import com.ambi.work.R
 import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterBase
 
 internal class ChatChannelSelectionAdapter(private val viewModel: ChatChannelSelectionViewModel,

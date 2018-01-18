@@ -7,9 +7,9 @@ import android.databinding.ViewDataBinding
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.RelativeLayout
-import io.scal.ambi.BR
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ItemLikeUserNamesBinding
+import com.ambi.work.BR
+import com.ambi.work.R
+import com.ambi.work.databinding.ItemLikeUserNamesBinding
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.generateNamesText
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes

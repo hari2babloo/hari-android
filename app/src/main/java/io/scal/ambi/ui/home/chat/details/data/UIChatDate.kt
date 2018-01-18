@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.chat.details.data
 
 import android.content.Context
-import io.scal.ambi.R
+import com.ambi.work.R
 import org.joda.time.Duration
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat

@@ -7,7 +7,7 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.feed.PollEndsTime
 import org.joda.time.DateTime
 import org.joda.time.Duration

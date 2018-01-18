@@ -8,8 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityChatChannelSelectionBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityChatChannelSelectionBinding
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage

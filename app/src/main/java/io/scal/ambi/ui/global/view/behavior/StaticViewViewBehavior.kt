@@ -6,7 +6,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import io.scal.ambi.R
+import com.ambi.work.R
 
 @Suppress("unused")
 class StaticViewViewBehavior : CoordinatorLayout.Behavior<ViewGroup>, ParentTransitionBehavior {

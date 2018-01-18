@@ -8,7 +8,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.chat.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.appendCustom

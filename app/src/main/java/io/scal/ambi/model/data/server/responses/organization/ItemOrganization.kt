@@ -3,7 +3,7 @@ package io.scal.ambi.model.data.server.responses.organization
 import android.graphics.Color
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.organization.Organization
 import io.scal.ambi.entity.organization.OrganizationType
 import io.scal.ambi.extensions.notNullOrThrow

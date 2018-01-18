@@ -1,12 +1,14 @@
 package io.scal.ambi.model.repository.local
 
 import android.content.Context
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.entity.user.User
 import java.util.*
 import javax.inject.Inject
 
 private const val DEVICE_UID = "deviceUid"
+private const val PUSH_TOKEN = "pushToken"
 
 class LocalDataRepository @Inject constructor(context: Context) : ILocalDataRepository {
 
@@ -24,6 +26,14 @@ class LocalDataRepository @Inject constructor(context: Context) : ILocalDataRepo
             }
             return value
         }
+    }
+
+    override fun putFirebaseToken(token: String) {
+        prefs.put(PUSH_TOKEN, token)
+    }
+
+    override fun observeFirebaseToken(): Observable<String> {
+        return prefs.getAndObserve(PUSH_TOKEN, String::class.java, "")
     }
 
     override fun getUserProfile(userUid: String, maxProfileLifeTimeMillis: Long): Single<User> {

@@ -9,8 +9,8 @@ import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.generic.RoundingParams
 import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityHomeBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityHomeBinding
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.extensions.view.ToolbarType

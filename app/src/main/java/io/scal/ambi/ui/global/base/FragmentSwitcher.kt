@@ -2,7 +2,7 @@ package io.scal.ambi.ui.global.base
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.ui.global.KeyboardUtils
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
 import kotlin.reflect.KClass

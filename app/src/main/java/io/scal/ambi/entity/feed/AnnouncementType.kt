@@ -1,6 +1,6 @@
 package io.scal.ambi.entity.feed
 
-import io.scal.ambi.R
+import com.ambi.work.R
 
 enum class AnnouncementType(val titleId: Int, val titleSmallId: Int, val iconId: Int, val colorId: Int) {
 

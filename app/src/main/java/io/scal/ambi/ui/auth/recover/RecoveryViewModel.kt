@@ -2,7 +2,7 @@ package io.scal.ambi.ui.auth.recover
 
 import android.content.Context
 import android.databinding.ObservableField
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.auth.recover.IRecoveryInteractor

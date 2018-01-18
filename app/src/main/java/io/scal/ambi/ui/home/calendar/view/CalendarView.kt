@@ -13,7 +13,7 @@ import android.widget.LinearLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.databinding.ElementCalendarViewBinding
+import com.ambi.work.databinding.ElementCalendarViewBinding
 import org.joda.time.LocalDate
 import org.joda.time.YearMonth
 

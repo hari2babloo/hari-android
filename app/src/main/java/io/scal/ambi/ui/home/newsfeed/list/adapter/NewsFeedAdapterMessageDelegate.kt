@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.newsfeed.list.adapter
 
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ItemNewsFeedTypeMessageBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ItemNewsFeedTypeMessageBinding
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 

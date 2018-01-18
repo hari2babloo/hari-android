@@ -7,8 +7,8 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.FragmentCalendarListBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.FragmentCalendarListBinding
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import io.scal.ambi.ui.home.calendar.view.CalendarMainAdapter
 import kotlin.reflect.KClass

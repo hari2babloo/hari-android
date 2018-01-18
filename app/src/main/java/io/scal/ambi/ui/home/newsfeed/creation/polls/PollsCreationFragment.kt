@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.AdapterView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.FragmentPollsCreationBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.FragmentPollsCreationBinding
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.toObservable

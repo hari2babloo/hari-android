@@ -5,7 +5,7 @@ import android.databinding.ObservableField
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User

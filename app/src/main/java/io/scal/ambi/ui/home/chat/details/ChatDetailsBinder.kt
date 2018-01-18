@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.EmojiUtils
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.extensions.binding.binders.ImageViewDataBinder
 import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.view.IconImage

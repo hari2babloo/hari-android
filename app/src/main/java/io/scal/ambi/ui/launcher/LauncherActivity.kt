@@ -1,8 +1,8 @@
 package io.scal.ambi.ui.launcher
 
 import android.content.Intent
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityLauncherBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityLauncherBinding
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.global.base.activity.BaseActivity

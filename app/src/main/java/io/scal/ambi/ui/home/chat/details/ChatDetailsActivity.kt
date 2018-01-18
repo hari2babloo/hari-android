@@ -15,8 +15,8 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityChatDetailsBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityChatDetailsBinding
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.extensions.binding.toObservable

@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegatesManager
-import io.scal.ambi.BR
+import com.ambi.work.BR
 
 abstract class RecyclerViewAdapterDelegated<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

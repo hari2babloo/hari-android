@@ -11,7 +11,7 @@ android {
     buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        applicationId "io.scal.ambi"
+        applicationId "com.ambi.work"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
@@ -69,6 +69,11 @@ android {
             dimension "api"
 
             buildConfigField "String", "MAIN_SERVER_URL", '"http://sandbox.ambi.work:4000/api/"'
+        }
+        life {
+            dimension "api"
+
+            buildConfigField "String", "MAIN_SERVER_URL", '"http://www.ambi.work/api/"'
         }
         arpit {
             dimension "api"
@@ -171,4 +176,10 @@ dependencies {
     implementation 'com.hannesdorfmann:adapterdelegates3:3.0.1' // for news feed recycler view with different view types
     implementation 'com.vanniktech:emoji-google:0.5.1'
     implementation 'com.github.pchmn:MaterialChipsInput:1.0.8' // for new chat creation screen. it is customized a lot. including reflection
+
+    // push notifications
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
+    compile 'com.google.android.gms:play-services-base:11.8.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

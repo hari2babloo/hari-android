@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.chat.details.adapter
 
 import android.support.v7.util.DiffUtil
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.extensions.binding.DefaultDiffCallback
 import io.scal.ambi.ui.global.base.adapter.AdapterDelegateStaticView
 import io.scal.ambi.ui.global.base.adapter.HeaderFooterList

@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.chat.list.adapter
 
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ItemChatListItemBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ItemChatListItemBinding
 import io.scal.ambi.ui.global.base.adapter.AdapterDelegateBase
 import io.scal.ambi.ui.home.chat.list.ChatListViewModel
 import io.scal.ambi.ui.home.chat.list.data.UIChatList

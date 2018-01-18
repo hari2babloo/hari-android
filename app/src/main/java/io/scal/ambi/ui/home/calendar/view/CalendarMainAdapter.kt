@@ -4,7 +4,7 @@ import android.databinding.ObservableList
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.ui.global.base.adapter.DataObserverForAdapter
 import org.joda.time.LocalDate
 

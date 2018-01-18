@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import io.scal.ambi.BR
+import com.ambi.work.BR
 
 abstract class SpinnerAdapterBase<T>(private var data: List<T> = emptyList()) : BaseAdapter() {
 

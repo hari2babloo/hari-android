@@ -1,6 +1,6 @@
 package io.scal.ambi.ui.home.chat.list.data
 
-import io.scal.ambi.R
+import com.ambi.work.R
 
 sealed class UIChatListFilter(val titleId: Int,
                               val iconId: Int) {

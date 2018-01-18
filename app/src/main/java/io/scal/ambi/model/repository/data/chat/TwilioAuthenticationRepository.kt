@@ -64,7 +64,7 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
     private fun observeRefreshTokenCommand() {
         refreshTokenCommand
             .observeOn(rxSchedulersAbs.ioScheduler)
-            .switchMapSingle { chatApi.generateChatAccessToken(ChatApi.AccessTokenRequest(it, localDateRepository.getDeviceUid()) ) }
+            .switchMapSingle { chatApi.generateChatAccessToken(ChatApi.AccessTokenRequest(it, localDateRepository.getDeviceUid())) }
             .map { it.parse() }
             .retry()
             .subscribe { accessInfoObservable.onNext(it) }
@@ -99,6 +99,8 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
                               props,
                               TwilioCallbackSingle<ChatClient>(e, "chatClientCreation")
             )
+
+            e.setCancellable { chatClientInfoSubject.value?.chatClient?.shutdown() }
         }
             .map { ChatClientInfo.Data(it) as ChatClientInfo }
             .doOnSubscribe {

@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.FragmentNewsFeedBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.FragmentNewsFeedBinding
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.listenForEndScroll

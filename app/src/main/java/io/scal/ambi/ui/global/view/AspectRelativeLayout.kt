@@ -3,7 +3,7 @@ package io.scal.ambi.ui.global.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.RelativeLayout
-import io.scal.ambi.R
+import com.ambi.work.R
 
 class AspectRelativeLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     RelativeLayout(context, attrs, defStyleAttr) {

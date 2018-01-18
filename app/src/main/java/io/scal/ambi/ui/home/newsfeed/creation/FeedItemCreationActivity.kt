@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.widget.TextView
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ActivityFeedItemCreationBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ActivityFeedItemCreationBinding
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser

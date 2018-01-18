@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.chat.details
 
 import io.reactivex.Observable
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.extensions.binding.observable.ObservableFromOtherField
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.ToolbarType

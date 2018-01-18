@@ -1,7 +1,7 @@
 package io.scal.ambi.ui.home.chat.details.adapter
 
-import io.scal.ambi.R
-import io.scal.ambi.databinding.ItemChatDetailsMessageAttachmentBinding
+import com.ambi.work.R
+import com.ambi.work.databinding.ItemChatDetailsMessageAttachmentBinding
 import io.scal.ambi.ui.global.base.adapter.AdapterDelegateBase
 import io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel
 import io.scal.ambi.ui.home.chat.details.data.UIChatMessage

@@ -6,8 +6,8 @@ import android.databinding.ViewDataBinding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.scal.ambi.BR
-import io.scal.ambi.R
+import com.ambi.work.BR
+import com.ambi.work.R
 
 object ViewGroupBinder {
 

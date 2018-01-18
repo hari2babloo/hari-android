@@ -2,7 +2,7 @@ package io.scal.ambi.ui.home.newsfeed.list.adapter
 
 import android.databinding.ObservableList
 import android.support.v7.widget.RecyclerView
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.ui.global.base.adapter.AdapterDelegateStaticView
 import io.scal.ambi.ui.global.base.adapter.DataObserverForAdapter
 import io.scal.ambi.ui.global.base.adapter.HeaderFooterList

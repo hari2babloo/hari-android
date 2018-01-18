@@ -3,7 +3,7 @@ package io.scal.ambi.ui.global.base.viewmodel
 import android.arch.lifecycle.ViewModel
 import android.content.Context
 import io.reactivex.disposables.CompositeDisposable
-import io.scal.ambi.R
+import com.ambi.work.R
 import io.scal.ambi.model.data.server.ServerResponseException
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.global.base.BetterRouter
