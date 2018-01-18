@@ -6,6 +6,7 @@ import java.io.Serializable
 class User private constructor(val uid: String,
                                val type: UserType,
                                val avatar: IconImageUser,
+                               val email: String,
                                firstName: String,
                                lastName: String) : Serializable {
 
@@ -25,13 +26,15 @@ class User private constructor(val uid: String,
 
         fun asStudent(uid: String,
                       avatar: IconImageUser,
+                      email: String,
                       firstName: String,
-                      lastName: String) = User(uid, UserType.STUDENT, avatar, firstName, lastName)
+                      lastName: String) = User(uid, UserType.STUDENT, avatar, email, firstName, lastName)
 
         // todo remove this
         fun asSimple(uid: String,
                      avatar: IconImageUser,
+                     email: String,
                      firstName: String,
-                     lastName: String) = User(uid, UserType.UNKNOWN, avatar, firstName, lastName)
+                     lastName: String) = User(uid, UserType.UNKNOWN, avatar, email, firstName, lastName)
     }
 }

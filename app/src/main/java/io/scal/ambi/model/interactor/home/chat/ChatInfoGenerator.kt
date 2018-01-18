@@ -1,11 +1,10 @@
 package io.scal.ambi.model.interactor.home.chat
 
-import android.os.SystemClock
+import com.ambi.work.R
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import com.ambi.work.R
 import io.scal.ambi.entity.chat.ChatChannelDescription
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.FullChatItem
@@ -19,7 +18,6 @@ import io.scal.ambi.model.repository.data.chat.data.ChatChannelInfo
 import io.scal.ambi.model.repository.data.organization.IOrganizationRepository
 import io.scal.ambi.model.repository.data.user.IUserRepository
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
-import java.util.*
 
 object ChatInfoGenerator {
 
@@ -28,7 +26,7 @@ object ChatInfoGenerator {
                                      userRepository: IUserRepository,
                                      organizationRepository: IOrganizationRepository,
                                      rxSchedulersAbs: RxSchedulersAbs): Maybe<PreviewChatItem> {
-        return generateChatUsers(chatInfo, userRepository)
+        return generateChatUsers(chatInfo, userRepository, rxSchedulersAbs)
             .flatMapMaybe { users ->
                 if (checkChatInfo(users)) {
                     Observable
@@ -51,7 +49,7 @@ object ChatInfoGenerator {
                                   userRepository: IUserRepository,
                                   organizationRepository: IOrganizationRepository,
                                   rxSchedulersAbs: RxSchedulersAbs): Maybe<FullChatItem> {
-        return generateChatUsers(chatInfo, userRepository)
+        return generateChatUsers(chatInfo, userRepository, rxSchedulersAbs)
             .flatMapMaybe { users ->
                 if (checkChatInfo(users)) {
                     generateChatDescription(chatInfo, users, localUserDataRepository, organizationRepository, rxSchedulersAbs)
@@ -149,8 +147,9 @@ object ChatInfoGenerator {
         }
     }
 
-    private fun generateChatUsers(chatInfo: ChatChannelInfo, userRepository: IUserRepository): Single<List<User>> =
+    private fun generateChatUsers(chatInfo: ChatChannelInfo, userRepository: IUserRepository, rxSchedulersAbs: RxSchedulersAbs): Single<List<User>> =
         Observable.fromIterable(chatInfo.memberUids)
+            .observeOn(rxSchedulersAbs.ioScheduler)
             .flatMapMaybe { getUserProfile(it, userRepository) }
             .toList()
 

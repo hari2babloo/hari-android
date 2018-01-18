@@ -1,6 +1,7 @@
 package io.scal.ambi.model.interactor.auth.profile
 
 import android.os.SystemClock
+import com.crashlytics.android.Crashlytics
 import io.reactivex.Observable
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.model.data.server.ServerResponseException
@@ -21,6 +22,10 @@ class AuthProfileCheckerInteractor @Inject constructor(private val localUserData
     }
 
     private fun doUserProfileUpdate(user: User) {
+        Crashlytics.setUserEmail(user.email)
+        Crashlytics.setUserIdentifier(user.email)
+        Crashlytics.setUserName(user.name)
+
         if (SystemClock.elapsedRealtime() - lastUpdateTime > TimeUnit.MINUTES.toMillis(1)) {
             userRepository.getProfile(user.uid)
                 .subscribe(

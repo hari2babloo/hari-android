@@ -77,6 +77,10 @@
             android:name="io.scal.ambi.ui.home.chat.channel.ChatChannelSelectionActivity"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
 
+        <activity
+            android:name="io.scal.ambi.ui.profile.details.ProfileDetailsActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
+
         <!-- For camera picker -->
         <provider
             android:name="android.support.v4.content.FileProvider"

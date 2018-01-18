@@ -19,7 +19,7 @@ import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
-import io.scal.ambi.ui.home.calendar.list.CalendarListWebViewFragment
+import io.scal.ambi.ui.home.calendar.list.SchedulerWebViewFragment
 import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import ru.terrakok.cicerone.Navigator
@@ -48,7 +48,11 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
     }
 
     private fun initToolbar() {
-        defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_ambi_logo_small), SearchToolbarContent(searchViewModel), IconImageUser())
+        defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_ambi_logo_small),
+                                         null,
+                                         SearchToolbarContent(searchViewModel),
+                                         IconImageUser(),
+                                         Runnable { viewModel.openProfile() })
         defaultToolbarType!!.makeScrolling()
         defaultToolbarType!!.rightIconCustomization = object : ToolbarType.IconCustomization {
             override fun applyNewStyle(simpleDraweeView: SimpleDraweeView) {
@@ -77,7 +81,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
             hashMapOf(
                 Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
 //                Pair(R.id.tab_calendar, CalendarListFragment::class),
-                Pair(R.id.tab_calendar, CalendarListWebViewFragment::class),
+                Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
                 Pair(R.id.tab_chat, ChatListFragment::class),
 //                Pair(R.id.tab_notifications, Fragment::class),
                 Pair(R.id.tab_more, Fragment::class)
@@ -90,7 +94,11 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
         }
     }
 
-    override val navigator: Navigator by lazy { BaseNavigator(this) }
+    override val navigator: Navigator by lazy {
+        object : BaseNavigator(this) {
+
+        }
+    }
 
     companion object {
 

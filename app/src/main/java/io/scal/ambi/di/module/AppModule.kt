@@ -3,7 +3,10 @@ package io.scal.ambi.di.module
 import android.content.Context
 import android.support.v7.app.AppCompatDelegate
 import com.crashlytics.android.Crashlytics
+import com.facebook.drawee.backends.pipeline.DraweeConfig
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.core.ImagePipelineConfig
+import com.facebook.imagepipeline.decoder.ImageDecoderConfig
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.Module
@@ -15,6 +18,7 @@ import io.scal.ambi.extensions.ImageUtils
 import io.scal.ambi.extensions.rx.general.RxSchedulers
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import javax.inject.Singleton
+
 
 @Module
 class AppModule(private val context: App) {
@@ -32,7 +36,15 @@ class AppModule(private val context: App) {
         Fabric.with(context, Crashlytics())
 
         // image loader
-        Fresco.initialize(context)
+        val config = ImageDecoderConfig.newBuilder()
+        config.addDecodingCapability(FrescoSvgDecoder.SVG_FORMAT, FrescoSvgDecoder.SvgFormatChecker(), FrescoSvgDecoder.SvgDecoder())
+        val configPipline = ImagePipelineConfig.newBuilder(context)
+        configPipline.setImageDecoderConfig(config.build())
+
+        val draweeConfig = DraweeConfig.newBuilder()
+        draweeConfig.addCustomDrawableFactory(FrescoSvgDecoder.SvgDrawableFactory())
+
+        Fresco.initialize(context, configPipline.build(), draweeConfig.build())
     }
 
     @Singleton

@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.LinearLayout
 import android.widget.Spinner
+import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.DrawablesUtils
+import io.scal.ambi.ui.profile.details.ProfileDetailsActivity
 
 /**
  * Binder for databinding
@@ -92,6 +94,26 @@ object ViewDataBinder {
             view.setBackgroundColor(Color.TRANSPARENT)
         } else {
             view.setBackgroundResource(colorId)
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("profileOpening")
+    fun setupProfileOpening(view: View, profileUid: String?) {
+        if (null != profileUid) {
+            view.setOnClickListener {
+                view.context.startActivity(ProfileDetailsActivity.createScreen(view.context, profileUid))
+            }
+        } else {
+            view.setOnClickListener(null)
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("profileOpening")
+    fun setupProfileOpening(view: View, user: User?) {
+        if (null != user) {
+            setupProfileOpening(view, user.uid)
         }
     }
 }

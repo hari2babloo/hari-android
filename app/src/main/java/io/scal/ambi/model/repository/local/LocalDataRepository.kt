@@ -4,6 +4,7 @@ import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.entity.user.User
+import java.io.Serializable
 import java.util.*
 import javax.inject.Inject
 
@@ -37,12 +38,22 @@ class LocalDataRepository @Inject constructor(context: Context) : ILocalDataRepo
     }
 
     override fun getUserProfile(userUid: String, maxProfileLifeTimeMillis: Long): Single<User> {
-        return Single.fromCallable {
-            userPrefs.get(userUid, User::class.java, null) ?: throw IllegalStateException("user not found")
-        }
+        return Single
+            .fromCallable {
+                userPrefs.get(userUid, UserHolder::class.java, null) ?: throw IllegalStateException("user not found")
+            }
+            .map {
+                if (it.createTime + maxProfileLifeTimeMillis > Date().time) {
+                    it.user
+                } else {
+                    throw IllegalStateException("user cache time ends")
+                }
+            }
     }
 
     override fun putUserProfile(user: User) {
-        userPrefs.put(user.uid, user)
+        userPrefs.put(user.uid, UserHolder(user))
     }
+
+    private class UserHolder(val user: User, val createTime: Long = Date().time) : Serializable
 }

@@ -2,13 +2,11 @@ package io.scal.ambi.ui.home.newsfeed.list
 
 import android.content.Context
 import android.databinding.ObservableField
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
-import io.scal.ambi.entity.feed.*
+import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.user.User
-import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
 import io.scal.ambi.extensions.binding.toObservable
@@ -22,8 +20,7 @@ import io.scal.ambi.ui.global.base.viewmodel.toGoodUserMessage
 import io.scal.ambi.ui.global.model.DynamicUserChoicer
 import io.scal.ambi.ui.global.model.PaginatorStateViewController
 import io.scal.ambi.ui.global.model.createPaginator
-import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
-import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
+import io.scal.ambi.ui.home.newsfeed.list.adapter.INewsFeedViewModel
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 import ru.terrakok.cicerone.result.ResultListener
 import javax.inject.Inject
@@ -32,13 +29,14 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
                                             router: BetterRouter,
                                             private val interactor: INewsFeedInteractor,
                                             rxSchedulersAbs: RxSchedulersAbs) :
-    BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs) {
+    BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs),
+    INewsFeedViewModel {
 
     internal val progressState = ObservableField<NewsFeedProgressState>()
     internal val errorState = ObservableField<NewsFeedErrorState>()
     internal val dataState = ObservableField<NewsFeedDataState>()
 
-    val selectedAudience = ObservableField<Audience>(Audience.COLLEGE_UPDATE)
+    val selectedAudience = ObservableField<Audience>(Audience.STUDENTS)
 
     private val audienceSelectionListener = ResultListener { audience ->
         if (audience is Audience) {
@@ -73,9 +71,38 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
         true
     )
 
-    private val userLikeChoicer = DynamicUserChoicer<UIModelFeed>(rxSchedulersAbs,
-                                                                  { uiModelFeed, action -> executeLikeAction(uiModelFeed, action) },
-                                                                  { uiModelFeed -> uiModelFeed.uid })
+    private val userActions = NewsFeedViewModelActions(router,
+                                                       { uiModelFeed, action ->
+                                                           interactor
+                                                               .changeUserLikeForPost(uiModelFeed.feedItem, action == DynamicUserChoicer.Action.LIKE)
+                                                       },
+                                                       { uiModelFeed, commentTet ->
+                                                           interactor.sendUserCommentToPost(uiModelFeed.feedItem, commentTet)
+                                                               .doOnError {
+                                                                   handleError(it)
+
+                                                                   errorState.set(NewsFeedErrorState.NonFatalErrorState(it.toGoodUserMessage(context)))
+                                                                   errorState.set(NewsFeedErrorState.NoErrorState)
+                                                               }
+                                                       },
+                                                       { uiModelFeed, pollChoiceResult ->
+                                                           interactor.answerForPoll(uiModelFeed.feedItem, pollChoiceResult.pollChoice)
+                                                               .doOnError {
+                                                                   handleError(it)
+
+                                                                   errorState.set(NewsFeedErrorState.NonFatalErrorState(it.toGoodUserMessage(context)))
+                                                                   errorState.set(NewsFeedErrorState.NoErrorState)
+                                                               }
+                                                       },
+                                                       {
+                                                           val currentState = dataState.get()
+                                                           if (currentState is NewsFeedDataState.Data) {
+                                                               currentState.newsFeed
+                                                           } else {
+                                                               null
+                                                           }
+                                                       },
+                                                       rxSchedulersAbs)
 
     override fun onCurrentUserFetched(user: User) {
         super.onCurrentUserFetched(user)
@@ -99,108 +126,29 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
         router.navigateTo(NavigateTo.CREATE_POLL)
     }
 
-    fun openAuthorOf(element: UIModelFeed) {
-        if (element is UIModelFeed.Message) {
-//            router.navigateTo(NavigateTo.PROFILE_DETAILS, element.author)
-        }
+    override fun openAuthorOf(element: UIModelFeed) {
+        userActions.openAuthorOf(element)
     }
 
-    fun changeUserLikeOf(element: UIModelFeed) {
+    override fun openCommentsOf(element: UIModelFeed) {
+        userActions.openCommentsOf(element)
+    }
+
+    override fun changeUserLikeOf(element: UIModelFeed) {
         val currentDataState = dataState.get()
         if (currentDataState is NewsFeedDataState.Data) {
-            if (currentDataState.newsFeed.contains(element)) {
-                val newLikes =
-                    if (element.likes.currentUserLiked) {
-                        userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.NONE, DynamicUserChoicer.Action.LIKE)
-                        element.likes.setupLike(currentUser.get(), false)
-                    } else {
-                        userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.LIKE, DynamicUserChoicer.Action.NONE)
-                        element.likes.setupLike(currentUser.get(), true)
-                    }
-
-                currentDataState.newsFeed.replaceElement(element, element.changeLikes(newLikes))
-            }
+            userActions.changeUserLikeOf(currentDataState.newsFeed, element, currentUser.get())
         }
     }
 
-    fun openCommentsOf(element: UIModelFeed) {
-//        router.navigateTo(NavigateTo.ALL_COMMENTS_OF, element)
+    override fun sendCommentForElement(element: UIModelFeed) {
+        userActions.sendCommentForElement(element)
     }
 
-    fun sendCommentForElement(element: UIModelFeed) {
-        val userCommentText = element.userCommentText.data.get().orEmpty().trim()
-        if (userCommentText.isNotEmpty()) {
-            element.userCommentText.enabled.set(false)
-
-            interactor.sendUserCommentToPost(element.feedItem, userCommentText)
-                .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
-                .subscribe({
-                               val upToDateDataState = dataState.get()
-                               if (upToDateDataState is NewsFeedDataState.Data) {
-                                   val listElement = upToDateDataState.newsFeed.firstOrNull { item -> item.uid == element.uid }
-
-                                   if (null != listElement) {
-                                       val newComments = listElement.comments.comments.plus(it)
-                                       val updatedElement = listElement.updateComments(UIComments(newComments))
-
-                                       upToDateDataState.newsFeed.replaceElement(listElement, updatedElement)
-
-                                       listElement.userCommentText.enabled.set(true)
-                                       listElement.userCommentText.data.set("")
-                                   }
-                               }
-                           },
-                           { t ->
-                               handleError(t)
-
-                               element.userCommentText.enabled.set(true)
-                           })
-        }
-    }
-
-    fun selectPollChoice(element: UIModelFeed.Poll, choice: UIModelFeed.Poll.PollChoiceResult) {
+    override fun selectPollChoice(element: UIModelFeed.Poll, choice: UIModelFeed.Poll.PollChoiceResult) {
         val currentDataState = dataState.get()
         if (currentDataState is NewsFeedDataState.Data) {
-            if (currentDataState.newsFeed.contains(element)) {
-                val newPollChoices = element
-                    .choices
-                    .map { it.pollChoice }
-                    .map { if (it.uid == choice.pollChoice.uid) choice.pollChoice.copy(voters = choice.pollChoice.voters.plus(currentUser.get().uid)) else it }
-
-                currentDataState.newsFeed
-                    .replaceElement(element, element.copy(choices = newPollChoices.toPollVotedResult(), userChoice = choice.pollChoice))
-
-                interactor.answerForPoll(element.feedItem, choice.pollChoice)
-                    .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
-                    .subscribe({ updatedElement ->
-                                   val upToDateDataState = dataState.get()
-                                   if (upToDateDataState is NewsFeedDataState.Data) {
-                                       val listElement = upToDateDataState.newsFeed.firstOrNull { item -> item.uid == element.uid }
-
-                                       if (null != listElement) {
-                                           upToDateDataState.newsFeed.replaceElement(listElement, updatedElement.toNewsFeedElement(currentUser.get()))
-                                       }
-                                   }
-                               },
-                               { t ->
-                                   handleError(t)
-
-                                   val upToDateDataState = dataState.get()
-                                   if (upToDateDataState is NewsFeedDataState.Data) {
-                                       val listElement = upToDateDataState.newsFeed.firstOrNull { item -> item.uid == element.uid } as? UIModelFeed.Poll
-
-                                       if (null != listElement) {
-                                           val oldPollChoices = element.choices.map { it.pollChoice }.toPollVotedResult()
-
-                                           upToDateDataState.newsFeed.replaceElement(listElement,
-                                                                                     listElement.copy(choices = oldPollChoices, userChoice = null))
-                                           errorState.set(NewsFeedErrorState.NonFatalErrorState(t.toGoodUserMessage(context)))
-                                           errorState.set(NewsFeedErrorState.NoErrorState)
-                                       }
-                                   }
-                               })
-                    .addTo(disposables)
-            }
+            userActions.selectPollChoice(currentDataState.newsFeed, element, choice, currentUser.get())
         }
     }
 
@@ -216,6 +164,8 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
         router.setResultListener(ResultCodes.AUDIENCE_SELECTION, audienceSelectionListener)
         router.setResultListener(ResultCodes.NEWS_FEED_ITEM_CREATED, newsFeedItemCreationListener)
 
+        paginator.activate()
+
         selectedAudience
             .toObservable()
             .distinctUntilChanged()
@@ -228,7 +178,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
     private fun executeLoadNextPage(page: Int): Single<List<UIModelFeed>> {
         return interactor
-            .loadNewsFeedPage(page, "Student")
+            .loadNewsFeedPage(page, selectedAudience.get())
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {
@@ -239,15 +189,9 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
     }
 
-    private fun executeLikeAction(uiModelFeed: UIModelFeed, action: DynamicUserChoicer.Action): Completable {
-        return interactor
-            .changeUserLikeForPost(uiModelFeed.feedItem, action == DynamicUserChoicer.Action.LIKE)
-            .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
-    }
-
     private fun observeLikeActions() {
-        userLikeChoicer
-            .activate()
+        userActions
+            .observeLikes()
             .observeOn(rxSchedulersAbs.mainThreadScheduler)
             .subscribe {
                 val currentDataState = dataState.get()
@@ -270,77 +214,4 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
 
         super.onCleared()
     }
-}
-
-private fun UILikes.setupLike(currentUser: User, like: Boolean): UILikes =
-    if (like) {
-        UILikes(currentUser, allUsersLiked.filter { it.uid != currentUser.uid }.plus(currentUser))
-    } else {
-        UILikes(currentUser, allUsersLiked.filter { it.uid != currentUser.uid })
-    }
-
-@Suppress("REDUNDANT_ELSE_IN_WHEN")
-private fun UIModelFeed.changeLikes(newLikes: UILikes): UIModelFeed =
-    when (this) {
-        is UIModelFeed.Message -> copy(likes = newLikes)
-        is UIModelFeed.Poll    -> copy(likes = newLikes)
-        is UIModelFeed.Link    -> copy(likes = newLikes)
-        else                   -> throw IllegalStateException("unknown element")
-    }
-
-private fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
-    when (this) {
-        is NewsFeedItemPoll         -> UIModelFeed.Poll(uid,
-                                                        this,
-                                                        user,
-                                                        pollCreatedAt,
-                                                        locked,
-                                                        pinned,
-                                                        null,
-                                                        questionText,
-                                                        choices.toPollVotedResult(),
-                                                        choices.firstOrNull { null != it.voters.firstOrNull { it == currentUser.uid } },
-                                                        pollEndsTime,
-                                                        UILikes(currentUser, likes),
-                                                        UIComments(comments),
-                                                        ObservableString())
-        is NewsFeedItemUpdate       -> UIModelFeed.Message(uid,
-                                                           this,
-                                                           user,
-                                                           messageCreatedAt,
-                                                           locked,
-                                                           pinned,
-                                                           null,
-                                                           messageText,
-                                                           UILikes(currentUser, likes),
-                                                           UIComments(comments),
-                                                           ObservableString())
-        is NewsFeedItemAnnouncement -> UIModelFeed.Message(uid,
-                                                           this,
-                                                           user,
-                                                           messageCreatedAt,
-                                                           locked,
-                                                           pinned,
-                                                           announcementType,
-                                                           messageText,
-                                                           UILikes(currentUser, likes),
-                                                           UIComments(comments),
-                                                           ObservableString())
-        else                        -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
-    }
-
-private fun List<PollChoice>.toPollVotedResult(): List<UIModelFeed.Poll.PollChoiceResult> {
-    val totalVotes = fold(0, { acc, pollChoice -> acc + pollChoice.voters.size })
-    val mostVoted = fold(mutableListOf(), { acc: MutableList<PollChoice>, pollChoice ->
-        when {
-            acc.isEmpty()                                -> acc.add(pollChoice)
-            acc[0].voters.size < pollChoice.voters.size  -> {
-                acc.clear()
-                acc.add(pollChoice)
-            }
-            acc[0].voters.size == pollChoice.voters.size -> acc.add(pollChoice)
-        }
-        acc
-    })
-    return map { UIModelFeed.Poll.PollChoiceResult(it, totalVotes, mostVoted.contains(it)) }
 }

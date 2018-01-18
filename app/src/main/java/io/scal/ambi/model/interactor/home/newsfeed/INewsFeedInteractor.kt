@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.entity.actions.Comment
+import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.entity.feed.NewsFeedItem
 import io.scal.ambi.entity.feed.NewsFeedItemPoll
 import io.scal.ambi.entity.feed.PollChoice
@@ -14,7 +15,7 @@ interface INewsFeedInteractor {
 
     fun loadCurrentUser(): Observable<User>
 
-    fun loadNewsFeedPage(page: Int, filter: String): Single<List<NewsFeedItem>>
+    fun loadNewsFeedPage(page: Int, audience: Audience): Single<List<NewsFeedItem>>
 
     fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable
 

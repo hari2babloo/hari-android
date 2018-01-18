@@ -22,6 +22,8 @@ import io.scal.ambi.ui.home.root.HomeActivity
 import io.scal.ambi.ui.home.root.HomeModule
 import io.scal.ambi.ui.launcher.LauncherActivity
 import io.scal.ambi.ui.launcher.LauncherModule
+import io.scal.ambi.ui.profile.details.ProfileDetailsActivity
+import io.scal.ambi.ui.profile.details.ProfileDetailsModule
 
 @Module
 abstract class ActivityBuilder {
@@ -52,4 +54,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [ChatChannelSelectionModule::class, AuthProfileModule::class])
     abstract fun bindChatChannelSelectionActivity(): ChatChannelSelectionActivity
+
+    @ContributesAndroidInjector(modules = [ProfileDetailsModule::class, AuthProfileModule::class])
+    abstract fun bindProfileDetailsActivity(): ProfileDetailsActivity
 }

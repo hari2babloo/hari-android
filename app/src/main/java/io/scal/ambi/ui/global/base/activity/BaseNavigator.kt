@@ -9,6 +9,8 @@ import com.ambi.work.R
 import com.crashlytics.android.Crashlytics
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.login.LoginActivity
+import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
+import io.scal.ambi.ui.profile.details.ProfileDetailsActivity
 import ru.terrakok.cicerone.android.SupportAppNavigator
 import ru.terrakok.cicerone.commands.Command
 import timber.log.Timber
@@ -16,6 +18,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNavigator(activity, R.id.container) {
+
+    constructor(fragmentActivity: BaseNavigationFragment<*, *>) : this(fragmentActivity.activity!!)
 
     override fun applyCommand(command: Command) {
         try {
@@ -32,13 +36,18 @@ open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNav
     @CallSuper
     override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
         when (screenKey) {
-            NavigateTo.LOGIN -> LoginActivity.createScreen(activity)
-            else             -> null
+            NavigateTo.LOGIN           -> LoginActivity.createScreen(activity)
+            NavigateTo.PROFILE_DETAILS ->
+                if (data is String) ProfileDetailsActivity.createScreen(activity, data)
+                else ProfileDetailsActivity.createScreen(activity)
+            else                       -> null
         }
 
     override fun createFragment(screenKey: String, data: Any?): Fragment? = null
 
     override fun unknownScreen(command: Command) {
+        activity
+
         val sw = StringWriter()
         val pw = PrintWriter(sw)
         Throwable().printStackTrace(pw)

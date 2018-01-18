@@ -15,7 +15,7 @@ class UserRepository @Inject constructor(private val userApi: UserApi,
                                          private val localDataRepository: ILocalDataRepository) : IUserRepository {
 
     private val gson = Gson()
-    private val maxProfileLifeTime: Long = TimeUnit.MINUTES.toMillis(5)
+    private val maxProfileLifeTime: Long = TimeUnit.MINUTES.toMillis(1)
 
     override fun extractUserProfileFromData(userJson: String): Single<User> {
         return Single

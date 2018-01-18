@@ -8,7 +8,8 @@ import timber.log.Timber
 class AppendablePaginator<in T>(
     private val requestFactory: (Int) -> Single<List<T>>,
     private val viewController: Paginator.ViewController<T>,
-    inactive: Boolean = false
+    inactive: Boolean = false,
+    private val finishIfPageExists: Boolean = false
 ) : Paginator<T> {
 
     private val firstPage = 1
@@ -90,6 +91,8 @@ class AppendablePaginator<in T>(
     }
 
     private inner class INACTIVE : State<T>() {
+
+        override fun forceRefresh(resetState: Boolean) {}
 
         override fun activate() {
             super.activate()
@@ -242,11 +245,18 @@ class AppendablePaginator<in T>(
             super.newData(data)
 
             if (data.isNotEmpty()) {
-                currentState = DATA()
-                currentData.addAll(data)
-                currentPage++
-                viewController.showPageProgress(false)
-                viewController.showData(true, currentData)
+                if (finishIfPageExists && currentData.containsAll(data)) {
+                    // all items are the same. so nothing to add
+                    currentState = ALL_DATA()
+                    viewController.showPageProgress(false)
+                    viewController.showNoMoreData(true, currentData)
+                } else {
+                    currentState = DATA()
+                    currentData.addAll(data)
+                    currentPage++
+                    viewController.showPageProgress(false)
+                    viewController.showData(true, currentData)
+                }
             } else {
                 currentState = ALL_DATA()
                 viewController.showPageProgress(false)

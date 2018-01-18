@@ -11,14 +11,9 @@ class AudienceSelectionViewModel @Inject constructor(router: BetterRouter,
                                                      @Named("selectedAudience") val selectedAudience: Audience) :
     BaseViewModel(router) {
 
-    val audienceList = listOf(Audience.COLLEGE_UPDATE,
-                              Audience.STUDENTS,
+    val audienceList = listOf(Audience.STUDENTS,
                               Audience.FACULTY,
-                              Audience.STAFF,
-                              Audience.GROUPS,
-                              Audience.CLASSES,
-                              Audience.COMMUNITIES,
-                              Audience.NEWS)
+                              Audience.STAFF)
 
     fun selectAudience(audience: Audience) {
         if (selectedAudience == audience) {

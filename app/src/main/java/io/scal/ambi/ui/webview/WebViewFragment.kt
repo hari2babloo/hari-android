@@ -1,4 +1,4 @@
-package io.scal.ambi.ui.home.calendar.list
+package io.scal.ambi.ui.webview
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -14,17 +14,26 @@ import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
 import kotlin.reflect.KClass
 
 
-class CalendarListWebViewFragment : BaseNavigationFragment<CalendarListWebViewViewModel, FragmentCalendarListWebViewBinding>() {
+open class WebViewFragment : BaseNavigationFragment<WebViewViewModel, FragmentCalendarListWebViewBinding>() {
 
     override val layoutId: Int = R.layout.fragment_calendar_list_web_view
-    override val viewModelClass: KClass<CalendarListWebViewViewModel> = CalendarListWebViewViewModel::class
+    override val viewModelClass: KClass<WebViewViewModel> = WebViewViewModel::class
+
+    private val safeBaseServerUrl = "https://jinn.tech/"
+    private val notSafeBaseServerUrl = "http://jinn.tech/"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val scheduleUrl = getStartUrl()
+        binding.webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            setSupportZoom(true)
+        }
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                return if (true || url.contains("ambi.work")) {
+                return if (url.startsWith(safeBaseServerUrl) || url.startsWith(notSafeBaseServerUrl)) {
                     view.loadUrl(url)
                     false
                 } else {
@@ -49,7 +58,11 @@ class CalendarListWebViewFragment : BaseNavigationFragment<CalendarListWebViewVi
                 super.onPageFinished(view, url)
             }
         }
-        binding.webView.loadUrl("https://google.com")
+        binding.webView.loadUrl(scheduleUrl)
+    }
+
+    open fun getStartUrl(): String {
+        return arguments?.getString("url") ?: safeBaseServerUrl
     }
 
     override fun onBackPressed(): Boolean =
@@ -59,4 +72,15 @@ class CalendarListWebViewFragment : BaseNavigationFragment<CalendarListWebViewVi
         } else {
             super.onBackPressed()
         }
+
+    companion object {
+
+        fun createScreen(url: String): WebViewFragment {
+            val fragment = WebViewFragment()
+            val args = Bundle()
+            args.putString("url", url)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

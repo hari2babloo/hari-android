@@ -17,8 +17,18 @@ import javax.inject.Inject
 class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                           private val localUserDataRepository: LocalUserDataRepository) : IPostsRepository {
 
-    override fun loadPostsGeneral(page: Long, filter: String): Single<List<NewsFeedItem>> {
-        return postsApi.getPostsGeneral(page, filter)
+    override fun loadPostsGeneral(page: Long, audience: Audience): Single<List<NewsFeedItem>> {
+        return postsApi.getPostsGeneral(page, audience.toServerName())
+            .map { it.parse() }
+    }
+
+    override fun loadPostsPersonal(page: Long): Single<List<NewsFeedItem>> {
+        return postsApi.getPostsPersonal(page)
+            .map { it.parse() }
+    }
+
+    override fun loadPostsForUser(profileUid: String, page: Long): Single<List<NewsFeedItem>> {
+        return postsApi.getPostsForUser(profileUid, page)
             .map { it.parse() }
     }
 

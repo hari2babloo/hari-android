@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel"/>
+            type="io.scal.ambi.ui.home.newsfeed.list.adapter.INewsFeedViewModel"/>
 
         <variable
             name="element"

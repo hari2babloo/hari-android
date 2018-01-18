@@ -10,6 +10,12 @@ interface PostsApi {
     @GET("v1/posts/general?timeCutoff=&getPicture=true&populate[]=poster&populate[]=fileContent&populate[]=likes&populate[]=hosts.host&populate[]=comments.commenter")
     fun getPostsGeneral(@Query("page") page: Long, @Query("filter") filter: String): Single<PostsResponse>
 
+    @GET("v1/posts/personal?timeCutoff=&getPicture=true&populate[]=poster&populate[]=fileContent&populate[]=likes&populate[]=hosts.host&populate[]=comments.commenter")
+    fun getPostsPersonal(@Query("page") page: Long): Single<PostsResponse>
+
+    @GET("v1/posts/entity/{userId}?timeCutoff=&getPicture=true&populate[]=poster&populate[]=fileContent&populate[]=likes&populate[]=hosts.host&populate[]=comments.commenter")
+    fun getPostsForUser(@Path("userId") userId: String, @Query("page") page: Long): Single<PostsResponse>
+
 
     @POST("v1/update-posts")
     fun postNewStatus(@Body body: StatusCreationRequest): Completable

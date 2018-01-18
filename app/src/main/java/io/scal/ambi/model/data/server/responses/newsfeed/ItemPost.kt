@@ -2,13 +2,15 @@ package io.scal.ambi.model.data.server.responses.newsfeed
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.notNullOrThrow
-import io.scal.ambi.model.data.server.responses.user.ItemUser
 import io.scal.ambi.model.data.server.responses.Parceble
+import io.scal.ambi.model.data.server.responses.user.ItemUser
 import org.joda.time.DateTime
 import timber.log.Timber
+import java.util.*
 
 internal class ItemPost : Parceble<NewsFeedItem?> {
 
@@ -94,7 +96,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                          createdAt.toDateTime("createdAt"),
                          pollEndsTime.toDateTimePollEnds("pollEndsTime"),
                          audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
-                         comments?.map { it.parse() } ?: emptyList(),
+                         createComments(),
                          likes?.map { it.parse() } ?: emptyList()
         )
 
@@ -106,7 +108,7 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                            textContent.orEmpty(),
                            createdAt.toDateTime("createdAt"),
                            audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
-                           comments?.map { it.parse() } ?: emptyList(),
+                           createComments(),
                            likes?.map { it.parse() } ?: emptyList()
         )
 
@@ -119,9 +121,15 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                                         createdAt.toDateTime("createdAt"),
                                         audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                                         announcementType.toAnnouncement(),
-                                        comments?.map { it.parse() } ?: emptyList(),
+                                        createComments(),
                                         likes?.map { it.parse() } ?: emptyList()
         )
+    }
+
+    private fun createComments(): List<Comment> {
+        val commentsList = comments?.map { it.parse() } ?: emptyList()
+        Collections.sort(commentsList, { o1, o2 -> o1.dateTime.compareTo(o2.dateTime) })
+        return commentsList
     }
 
     private fun parsePosterUser(): User {

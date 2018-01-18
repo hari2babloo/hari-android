@@ -31,6 +31,7 @@
             app:iconImage="@{element.sender.avatar}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:profileOpening="@{element.sender}"
             app:roundAsCircle="true"/>
 
         <TextView
@@ -48,6 +49,7 @@
             app:customFontName="@{@string/font_pantra_bold}"
             app:layout_constraintStart_toEndOf="@+id/iv_icon"
             app:layout_constraintTop_toTopOf="parent"
+            app:profileOpening="@{element.sender}"
             tools:text="Maria Semenovna"/>
 
         <TextView

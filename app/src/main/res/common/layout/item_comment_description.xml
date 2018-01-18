@@ -25,6 +25,7 @@
             app:iconImage="@{comment.user.avatar}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:profileOpening="@{comment.user}"
             app:roundAsCircle="true"
             />
 
@@ -36,7 +37,7 @@
             android:ellipsize="end"
             android:lineSpacingExtra="4sp"
             android:singleLine="true"
-            android:text="@{comment.user.name}"
+            android:text="@{comment.user.uid}"
             android:textColor="@color/dark"
             android:textSize="14sp"
             android:textStyle="bold"

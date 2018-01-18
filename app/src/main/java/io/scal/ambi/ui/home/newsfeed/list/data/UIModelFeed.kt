@@ -11,7 +11,7 @@ import org.joda.time.DateTime
 
 sealed class UIModelFeed(open val uid: String,
                          open val feedItem: NewsFeedItem,
-                         open val actor: String,
+                         open val actor: User,
                          open val icon: IconImage,
                          open val createdAtDateTime: DateTime,
                          open val locked: Boolean,
@@ -34,7 +34,7 @@ sealed class UIModelFeed(open val uid: String,
                        override val userCommentText: ObservableString) :
         UIModelFeed(uid,
                     feedItem,
-                    author.name,
+                    author,
                     author.avatar,
                     createdAtDateTime,
                     locked,
@@ -45,6 +45,14 @@ sealed class UIModelFeed(open val uid: String,
                     userCommentText) {
 
         override fun updateComments(uiComments: UIComments): UIModelFeed = copy(comments = uiComments)
+
+        override fun equals(other: Any?): Boolean {
+            return super.equals(other)
+        }
+
+        override fun hashCode(): Int {
+            return super.hashCode()
+        }
     }
 
     data class Poll(override val uid: String,
@@ -63,7 +71,7 @@ sealed class UIModelFeed(open val uid: String,
                     override val userCommentText: ObservableString) :
         UIModelFeed(uid,
                     feedItem,
-                    author.name,
+                    author,
                     author.avatar,
                     createdAtDateTime,
                     locked,
@@ -81,13 +89,20 @@ sealed class UIModelFeed(open val uid: String,
 
         override fun updateComments(uiComments: UIComments): UIModelFeed = copy(comments = uiComments)
 
+        override fun equals(other: Any?): Boolean {
+            return super.equals(other)
+        }
+
+        override fun hashCode(): Int {
+            return super.hashCode()
+        }
+
         data class PollChoiceResult(val pollChoice: PollChoice, val totalVotes: Int, val mostVoted: Boolean)
     }
 
     data class Link(override val uid: String,
                     override val feedItem: NewsFeedItem,
-                    override val actor: String,
-                    override val icon: IconImage,
+                    override val actor: User,
                     override val createdAtDateTime: DateTime,
                     override val locked: Boolean,
                     override val pinned: Boolean,
@@ -99,10 +114,31 @@ sealed class UIModelFeed(open val uid: String,
                     override val likes: UILikes,
                     override val comments: UIComments,
                     override val userCommentText: ObservableString) :
-        UIModelFeed(uid, feedItem, actor, icon, createdAtDateTime, locked, pinned, announcementType, likes, comments, userCommentText) {
+        UIModelFeed(uid, feedItem, actor, actor.avatar, createdAtDateTime, locked, pinned, announcementType, likes, comments, userCommentText) {
 
         override fun updateComments(uiComments: UIComments): UIModelFeed = copy(comments = uiComments)
+
+        override fun equals(other: Any?): Boolean {
+            return super.equals(other)
+        }
+
+        override fun hashCode(): Int {
+            return super.hashCode()
+        }
     }
 
     abstract fun updateComments(uiComments: UIComments): UIModelFeed
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is UIModelFeed) return false
+
+        if (uid != other.uid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return uid.hashCode()
+    }
 }

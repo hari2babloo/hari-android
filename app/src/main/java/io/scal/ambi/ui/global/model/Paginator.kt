@@ -28,10 +28,12 @@ interface Paginator<in T> {
 
 fun <T> createPaginator(requestFactory: (Int) -> Single<List<T>>,
                         viewController: Paginator.ViewController<T>,
-                        inactive: Boolean = false): Paginator<T> =
-    createAppendablePaginator(requestFactory, viewController, inactive)
+                        inactive: Boolean = false,
+                        finishIfPageExtits: Boolean = false): Paginator<T> =
+    createAppendablePaginator(requestFactory, viewController, inactive, finishIfPageExtits)
 
 fun <T> createAppendablePaginator(requestFactory: (Int) -> Single<List<T>>,
                                   viewController: Paginator.ViewController<T>,
-                                  inactive: Boolean = false) =
-    AppendablePaginator(requestFactory, viewController, inactive)
+                                  inactive: Boolean = false,
+                                  finishIfPageExtits: Boolean = false) =
+    AppendablePaginator(requestFactory, viewController, inactive, finishIfPageExtits)

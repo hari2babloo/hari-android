@@ -8,7 +8,11 @@ import org.joda.time.DateTime
 
 interface IPostsRepository {
 
-    fun loadPostsGeneral(page: Long, filter: String): Single<List<NewsFeedItem>>
+    fun loadPostsGeneral(page: Long, audience: Audience): Single<List<NewsFeedItem>>
+
+    fun loadPostsPersonal(page: Long): Single<List<NewsFeedItem>>
+
+    fun loadPostsForUser(profileUid: String, page: Long): Single<List<NewsFeedItem>>
 
     fun postNewStatus(pinned: Boolean,
                       locked: Boolean,

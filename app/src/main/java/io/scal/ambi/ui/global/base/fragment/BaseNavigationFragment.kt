@@ -29,5 +29,5 @@ abstract class BaseNavigationFragment<IViewModel : BaseViewModel, Binding : View
         localCiceroneViewModel.getRouter(tag, router)
 
     override val navigator: Navigator?
-        get() = BaseNavigator(activity!!)
+        get() = BaseNavigator(this)
 }

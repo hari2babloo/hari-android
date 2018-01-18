@@ -5,5 +5,5 @@ import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 
 class IconImageUser(iconPath: String) : IconImage(iconPath, R.drawable.ic_profile) {
 
-    constructor() : this(R.drawable.ic_profile.toFrescoImagePath())
+    constructor() : this(R.drawable.ic_profile.let { it.toFrescoImagePath() })
 }

@@ -9,16 +9,17 @@ import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.extensions.view.getNavigationHolder
 import io.scal.ambi.extensions.view.getRouter
 import io.scal.ambi.ui.global.base.BetterRouter
+import io.scal.ambi.ui.webview.WebViewViewModel
 import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Named
 
 @Module
-abstract class CalendarListWebModule {
+abstract class ScheduleModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CalendarListWebViewViewModel::class)
-    abstract fun bindWebViewViewModel(viewModel: CalendarListWebViewViewModel): ViewModel
+    @ViewModelKey(WebViewViewModel::class)
+    abstract fun bindWebViewViewModel(viewModel: WebViewViewModel): ViewModel
 
     @Module
     companion object {
@@ -26,12 +27,12 @@ abstract class CalendarListWebModule {
         @JvmStatic
         @Provides
         @Named("localNavigationHolder")
-        fun provideLocalNavigation(fragment: CalendarListWebViewFragment): NavigatorHolder =
+        fun provideLocalNavigation(fragment: SchedulerWebViewFragment): NavigatorHolder =
             fragment.getNavigationHolder()
 
         @JvmStatic
         @Provides
-        fun provideRouter(fragment: CalendarListWebViewFragment): BetterRouter =
+        fun provideRouter(fragment: SchedulerWebViewFragment): BetterRouter =
             fragment.getRouter()
     }
 

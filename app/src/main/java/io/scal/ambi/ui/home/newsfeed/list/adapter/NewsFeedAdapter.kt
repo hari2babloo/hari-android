@@ -10,14 +10,14 @@ import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterDelegated
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedViewModel
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
 
-class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerViewAdapterDelegated<Any>() {
+class NewsFeedAdapter(viewModel: INewsFeedViewModel) : RecyclerViewAdapterDelegated<Any>() {
 
     private val headerElement = Any()
     private val footerElement = Any()
 
     private var dataObserver: NewsFeedAdapterDataObserver? = null
 
-    override var dataList: List<Any> = HeaderFooterList(headerElement, footerElement, emptyList())
+    override var dataList: List<Any> = HeaderFooterList(if (viewModel is NewsFeedViewModel) headerElement else null, footerElement, emptyList())
     private var newsFeedList: HeaderFooterList
         get() = dataList as HeaderFooterList
         set(value) {
@@ -25,7 +25,9 @@ class NewsFeedAdapter(viewModel: NewsFeedViewModel) : RecyclerViewAdapterDelegat
         }
 
     init {
-        addDelegate(NewsFeedAdapterHeaderDelegate(headerElement, viewModel))
+        if (viewModel is NewsFeedViewModel) {
+            addDelegate(NewsFeedAdapterHeaderDelegate(headerElement, viewModel))
+        }
         addDelegate(NewsFeedAdapterMessageDelegate(viewModel))
         addDelegate(NewsFeedAdapterPollDelegate(viewModel))
         addDelegate(NewsFeedAdapterLinkDelegate(viewModel))

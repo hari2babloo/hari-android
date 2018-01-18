@@ -18,7 +18,7 @@
 
         <variable
             name="actor"
-            type="String"/>
+            type="io.scal.ambi.entity.user.User"/>
 
         <variable
             name="dateTime"
@@ -28,7 +28,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="34dp">
+        android:layout_height="34dp"
+        app:profileOpening="@{actor}">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_icon"
@@ -58,7 +59,7 @@
                 android:ellipsize="end"
                 android:lineSpacingExtra="0sp"
                 android:singleLine="true"
-                android:text="@{actor}"
+                android:text="@{actor.name}"
                 android:textColor="@color/dark"
                 android:textSize="16sp"
                 android:textStyle="bold"

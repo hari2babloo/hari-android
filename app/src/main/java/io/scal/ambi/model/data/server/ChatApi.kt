@@ -10,5 +10,5 @@ interface ChatApi {
     @POST("v1/twilio/token/generate")
     fun generateChatAccessToken(@Body request: AccessTokenRequest): Single<AccessTokenResponse>
 
-    class AccessTokenRequest(val identity: String, val deviceId: String)
+    class AccessTokenRequest(val identity: String, val deviceId: String, val device: String = "android")
 }
