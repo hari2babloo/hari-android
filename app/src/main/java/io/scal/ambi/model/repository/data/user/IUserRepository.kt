@@ -2,6 +2,7 @@ package io.scal.ambi.model.repository.data.user
 
 import io.reactivex.Single
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.entity.user.UserResume
 
 interface IUserRepository {
 
@@ -16,4 +17,6 @@ interface IUserRepository {
     fun saveProfileAvatar(userId: String, fileId: String): Single<User>
 
     fun saveProfileBanner(userId: String, fileId: String): Single<User>
+
+    fun loadUserResume(userUid: String): Single<UserResume>
 }

@@ -15,7 +15,8 @@ android {
                     "src/main/res/home/chat/new",
                     "src/main/res/home/chat/channelselection",
                     "src/main/res/home/calendar/list",
-                    "src/main/res/profile/details"
+                    "src/main/res/profile/details",
+                    "src/main/res/profile/resume"
             ]
         }
     }

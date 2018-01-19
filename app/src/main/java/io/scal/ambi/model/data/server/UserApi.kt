@@ -11,7 +11,7 @@ import retrofit2.http.Path
 
 interface UserApi {
 
-    @GET("v1/users/{userId}?populate[]=profilePicture&populate[]=bannerPicture")
+    @GET("v1/users/{userId}?populate[]=profilePicture&populate[]=bannerPicture&populate[]=workExperience")
     fun getUserProfile(@Path("userId") userId: String): Single<UserResponse>
 
     @GET("v1/users/find/{query}")

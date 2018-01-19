@@ -24,6 +24,8 @@ import io.scal.ambi.ui.launcher.LauncherActivity
 import io.scal.ambi.ui.launcher.LauncherModule
 import io.scal.ambi.ui.profile.details.ProfileDetailsActivity
 import io.scal.ambi.ui.profile.details.ProfileDetailsModule
+import io.scal.ambi.ui.profile.resume.ProfileResumeActivity
+import io.scal.ambi.ui.profile.resume.ProfileResumeModule
 
 @Module
 abstract class ActivityBuilder {
@@ -57,4 +59,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [ProfileDetailsModule::class, AuthProfileModule::class, PickerModule::class])
     abstract fun bindProfileDetailsActivity(): ProfileDetailsActivity
+
+    @ContributesAndroidInjector(modules = [ProfileResumeModule::class, AuthProfileModule::class])
+    abstract fun bindProfileResumeActivity(): ProfileResumeActivity
 }

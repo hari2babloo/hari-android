@@ -33,6 +33,10 @@
             name="doneClickListener"
             type="io.scal.ambi.extensions.binding.models.TextViewDataBinder.DoneActionClickListener"/>
 
+        <variable
+            name="visibility"
+            type="Boolean"/>
+
     </data>
 
     <RelativeLayout
@@ -42,7 +46,8 @@
         android:paddingBottom="4dp"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
-        android:paddingTop="4dp">
+        android:paddingTop="4dp"
+        app:visibility="@{visibility ?? true}">
 
         <ImageView
             android:id="@+id/iv_icon"

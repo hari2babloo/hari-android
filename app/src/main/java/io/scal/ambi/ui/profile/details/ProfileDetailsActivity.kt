@@ -22,6 +22,7 @@ import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.extensions.view.listenForEndScroll
+import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.ProgressState
@@ -34,6 +35,7 @@ import io.scal.ambi.ui.global.picker.PickerViewController
 import io.scal.ambi.ui.global.picker.PickerViewModel
 import io.scal.ambi.ui.global.search.SearchToolbarContent
 import io.scal.ambi.ui.home.newsfeed.list.adapter.NewsFeedAdapter
+import io.scal.ambi.ui.profile.resume.ProfileResumeActivity
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import ru.terrakok.cicerone.Navigator
@@ -199,7 +201,19 @@ class ProfileDetailsActivity : BaseToolbarActivity<ProfileDetailsViewModel, Acti
     }
 
     override val navigator: Navigator
-        get() = object : BaseNavigator(this) {}
+        get() = object : BaseNavigator(this) {
+            override fun createActivityIntent(screenKey: String, data: Any?): Intent? =
+                when (screenKey) {
+                    NavigateTo.PROFILE_PASSWORD_CHANGE -> null
+                    NavigateTo.PROFILE_RESUME          -> ProfileResumeActivity.createScreen(this@ProfileDetailsActivity)
+                    NavigateTo.PROFILE_DETAILS         ->
+                        if ((viewModel.profileUidToShowIsCurrent && data == null) || (viewModel.profileUid == data))
+                            null
+                        else
+                            super.createActivityIntent(screenKey, data)
+                    else                               -> super.createActivityIntent(screenKey, data)
+                }
+        }
 
     companion object {
         internal val EXTRA_PROFILE_UID = "EXTRA_PROFILE_UID"

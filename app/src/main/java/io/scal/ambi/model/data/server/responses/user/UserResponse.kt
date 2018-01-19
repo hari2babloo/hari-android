@@ -3,7 +3,9 @@ package io.scal.ambi.model.data.server.responses.user
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.entity.user.UserResume
 import io.scal.ambi.entity.user.WorkExperience
+import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.model.data.server.responses.BaseResponse
 import io.scal.ambi.model.data.server.responses.ItemPicture
@@ -16,7 +18,12 @@ class UserResponse : BaseResponse<User>() {
     internal var user: BigUser? = null
 
     override fun parse(): User {
-        return user!!.parse()
+        return user.notNullOrThrow("user").parse()
+    }
+
+    fun parseAsResume(): UserResume {
+        val goodUser = user.notNullOrThrow("user")
+        return UserResume(goodUser.pitch.orEmpty())
     }
 
     class BigUser : ItemUser() {
@@ -36,6 +43,10 @@ class UserResponse : BaseResponse<User>() {
         @SerializedName("workExperience")
         @Expose
         var workExperience: List<ItemWorkExperience>? = null
+
+        @SerializedName("pitch")
+        @Expose
+        var pitch: String? = null
 
         override fun parse(): User {
             val user = super.parse()

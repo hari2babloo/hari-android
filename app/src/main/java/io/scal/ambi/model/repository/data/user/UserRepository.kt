@@ -3,6 +3,7 @@ package io.scal.ambi.model.repository.data.user
 import com.google.gson.Gson
 import io.reactivex.Single
 import io.scal.ambi.entity.user.User
+import io.scal.ambi.entity.user.UserResume
 import io.scal.ambi.model.data.server.UpdateRequest
 import io.scal.ambi.model.data.server.UserApi
 import io.scal.ambi.model.data.server.responses.user.ItemUser
@@ -50,6 +51,11 @@ class UserRepository @Inject constructor(private val userApi: UserApi,
     override fun saveProfileBanner(userId: String, fileId: String): Single<User> {
         return userApi.updateProfile(userId, UpdateRequest(bannerPicture = fileId))
             .andThen(getProfile(userId))
+    }
+
+    override fun loadUserResume(userUid: String): Single<UserResume> {
+        return userApi.getUserProfile(userUid)
+            .map { it.parseAsResume() }
     }
 }
 

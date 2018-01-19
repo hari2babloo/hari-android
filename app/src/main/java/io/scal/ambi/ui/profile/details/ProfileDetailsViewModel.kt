@@ -37,7 +37,7 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
     INewsFeedViewModel {
 
     private lateinit var profileUidToShow: String
-    private var profileUidToShowIsCurrent: Boolean = false
+    var profileUidToShowIsCurrent: Boolean = false
 
     internal val progressState = ObservableField<ProfileDetailsProgressState>(ProfileDetailsProgressState.TotalProgress)
     internal val errorState = ObservableField<ProfileDetailsErrorState>()
@@ -176,11 +176,11 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
     }
 
     fun openResumeEdit() {
-        // todo
+        router.navigateTo(NavigateTo.PROFILE_RESUME)
     }
 
     fun openSettings() {
-        // todo
+        router.navigateTo(NavigateTo.PROFILE_PASSWORD_CHANGE)
     }
 
     fun attachAvatar(fileResource: FileResource) {

@@ -116,4 +116,10 @@ object ViewDataBinder {
             setupProfileOpening(view, user.uid)
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("android:onClick")
+    fun setupClickListener(view: View, clickListener: View.OnClickListener?) {
+        view.setOnClickListener(clickListener)
+    }
 }
