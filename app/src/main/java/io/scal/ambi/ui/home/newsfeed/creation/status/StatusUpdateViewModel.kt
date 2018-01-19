@@ -77,7 +77,7 @@ class StatusUpdateViewModel @Inject constructor(router: BetterRouter,
                                                     currentState.selectedAsUser,
                                                     currentState.statusText.get(),
                                                     bottomViewModel.selectedAudience.get(),
-                                                    bottomViewModel.selectedAttachemnts)
+                                                    bottomViewModel.selectedAttachment.get()?.let { listOf(it) } ?: emptyList())
 
                     interactor.updateStatus(pollToCreate)
                         .compose(rxSchedulersAbs.ioToMainTransformerCompletable)

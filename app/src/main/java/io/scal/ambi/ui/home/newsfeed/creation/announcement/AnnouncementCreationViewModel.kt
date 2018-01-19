@@ -80,7 +80,7 @@ class AnnouncementCreationViewModel @Inject constructor(router: BetterRouter,
                                                             currentState.announcementText.get(),
                                                             bottomViewModel.selectedAnnouncementType.get(),
                                                             bottomViewModel.selectedAudience.get(),
-                                                            bottomViewModel.selectedAttachemnts)
+                                                            bottomViewModel.selectedAttachment.get()?.let { listOf(it) } ?: emptyList())
 
                     interactor.createAnnouncement(pollToCreate)
                         .compose(rxSchedulersAbs.ioToMainTransformerCompletable)

@@ -111,9 +111,21 @@
                     android:text="@={viewModel.dataStateModel.announcementText.data}"
                     android:textColor="#8a333333"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_attachment_preview"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/c_as_user_selection"/>
+                    app:layout_constraintTop_toBottomOf="@+id/c_as_user_selection"
+                    />
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/iv_attachment_preview"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="20dp"
+                    app:actualImageScaleType="centerCrop"
+                    app:imageUrl="@{viewModel.bottomViewModel.selectedAttachment.pathAsString}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/et_question"
+                    app:visibility="@{null != viewModel.bottomViewModel.selectedAttachment.pathAsString}"/>
 
             </android.support.constraint.ConstraintLayout>
 

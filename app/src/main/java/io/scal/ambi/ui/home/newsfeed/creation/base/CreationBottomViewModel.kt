@@ -34,8 +34,7 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
     val audienceList = ObservableArrayList<Audience>()
     val selectedAudience = ObservableField<Audience>()
 
-    private val selectedAttachmentsInner = mutableListOf<ChatAttachment>()
-    val selectedAttachemnts: List<ChatAttachment> = selectedAttachmentsInner
+    var selectedAttachment = ObservableField<ChatAttachment>()
 
     val postEnable = ObservableBoolean(false)
 
@@ -112,7 +111,7 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
 
     fun setPickedFile(fileResource: FileResource, image: Boolean) {
         clearAttachments()
-        selectedAttachmentsInner.add(if (image) ChatAttachment.LocalImage(fileResource) else ChatAttachment.LocalFile(fileResource))
+        selectedAttachment.set(if (image) ChatAttachment.LocalImage(fileResource) else ChatAttachment.LocalFile(fileResource))
     }
 
     public override fun onCleared() {
@@ -121,13 +120,14 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
     }
 
     private fun clearAttachments() {
-        selectedAttachmentsInner.forEach {
-            when (it) {
-                is ChatAttachment.LocalImage -> it.imageFile.cleanUp()
-                is ChatAttachment.LocalFile  -> it.fileFile.cleanUp()
+        selectedAttachment.get()?.
+            apply {
+                when (this) {
+                    is ChatAttachment.LocalImage -> imageFile.cleanUp()
+                    is ChatAttachment.LocalFile  -> fileFile.cleanUp()
+                }
             }
-        }
-        selectedAttachmentsInner.clear()
+        selectedAttachment.set(null)
     }
 
     private fun <T> updateListSelectionData(newData: List<T>,

@@ -44,6 +44,7 @@
             android:layout_height="21dp"
             android:layout_marginStart="9dp"
             android:onClick="@{(view) -> viewModel.attachFile()}"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_image"
             app:layout_constraintTop_toTopOf="parent"

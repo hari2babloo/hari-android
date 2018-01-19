@@ -14,7 +14,7 @@ data class User constructor(val uid: String,
                             val workExperience: List<WorkExperience>? = null,
                             val liveAt: String? = null) : Serializable {
 
-    val name: String = "$firstName $lastName".trim()
+    val name: String = "${firstName.toCapsLetter()} ${lastName.toCapsLetter()}".trim()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -42,3 +42,10 @@ data class User constructor(val uid: String,
                      lastName: String) = User(uid, UserType.UNKNOWN, avatar, email, firstName, lastName)
     }
 }
+
+private fun String.toCapsLetter(): String =
+    if (this.length > 1) {
+        substring(0, 1).toUpperCase() + substring(1)
+    } else {
+        this
+    }
