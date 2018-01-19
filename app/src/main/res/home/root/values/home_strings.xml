@@ -6,6 +6,6 @@
     <string name="title_bottom_chat">chat</string>
     <string name="title_bottom_notifications">notifications</string>
     <string name="title_bottom_resources">resources</string>
-    <string name="title_bottom_more">more</string>
+    <!--<string name="title_bottom_more">more</string>-->
 
 </resources>
