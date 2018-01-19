@@ -4,7 +4,6 @@ import android.content.Intent
 import android.support.annotation.CallSuper
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import com.ambi.work.BuildConfig
 import com.ambi.work.R
 import com.crashlytics.android.Crashlytics
 import io.scal.ambi.navigation.NavigateTo
@@ -25,11 +24,7 @@ open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNav
         try {
             super.applyCommand(command)
         } catch (exception: Exception) {
-            if (BuildConfig.DEBUG) {
-                throw exception
-            } else {
-                Timber.e(exception, "error in navigation! we can not execute $command")
-            }
+            Timber.e(exception, "error in navigation! we can not execute $command")
         }
     }
 

@@ -27,11 +27,11 @@ class ApiModule {
     internal fun provideOkHttpClient(localUserDataRepository: ILocalUserDataRepository): OkHttpClient {
         val okHttpReference = AtomicReference<OkHttpClient>()
         val okHttpClientBuilder = OkHttpClient.Builder()
+        okHttpClientBuilder.addInterceptor(AuthInterceptor(localUserDataRepository))
         if (BuildConfig.DEBUG) {
-            okHttpClientBuilder.addInterceptor(AuthInterceptor(localUserDataRepository))
             okHttpClientBuilder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            okHttpClientBuilder.addInterceptor(Http2FixInterceptor(okHttpReference))
         }
+        okHttpClientBuilder.addInterceptor(Http2FixInterceptor(okHttpReference))
         okHttpClientBuilder.connectTimeout(10, TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(60, TimeUnit.SECONDS)
         okHttpClientBuilder.writeTimeout(60, TimeUnit.SECONDS)

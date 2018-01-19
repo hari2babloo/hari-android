@@ -154,9 +154,6 @@ object TextViewDataBinder {
     @BindingAdapter("inputType")
     fun bindInputType(editText: EditText, inputType: Int?) {
         if (null == inputType || -1 == inputType) {
-            editText.isFocusable = false
-            editText.isFocusableInTouchMode = false
-            editText.isCursorVisible = false
         } else {
             editText.inputType = inputType
 
