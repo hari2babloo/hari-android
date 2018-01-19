@@ -101,13 +101,14 @@
             android:textSize="11sp"
             app:layout_constraintStart_toStartOf="@+id/tv_actor"
             app:layout_constraintTop_toBottomOf="@+id/tv_actor"
+            app:visibility="@{profile.currentUser}"
             />
 
         <ImageView
             android:id="@+id/iv_work_at"
             android:layout_width="6dp"
             android:layout_height="6dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="22dp"
             app:layout_constraintStart_toStartOf="@+id/tv_actor"
             app:layout_constraintTop_toBottomOf="@+id/b_edit_resume"
             app:srcCompat="@drawable/ic_profile_details_work_at"

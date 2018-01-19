@@ -32,6 +32,10 @@ open class FragmentSwitcher(private val fragmentManager: FragmentManager,
         activeTab.activity?.run { KeyboardUtils.hideSoftKeyboard(this) }
     }
 
+    fun getCurrentTabFragment(): BaseFragment<*, *>? {
+        return fragmentManager.findFragmentById(R.id.container) as? BaseFragment<*, *>
+    }
+
     private fun getTabFragmentTag(tabId: Int): String =
         "tab_$tabId"
 

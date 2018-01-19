@@ -24,7 +24,7 @@
     -->
 
     <tab
-        icon="@drawable/ic_tab_calendar_icon"
+        icon="@drawable/ic_tab_resources_icon"
         id="@+id/tab_resources"
         title="@string/title_bottom_resources"/>
 

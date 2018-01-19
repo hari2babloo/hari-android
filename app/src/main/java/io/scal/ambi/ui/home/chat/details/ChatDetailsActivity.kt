@@ -2,6 +2,7 @@ package io.scal.ambi.ui.home.chat.details
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationManager
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
@@ -67,6 +68,19 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
         observeStates()
 
         ViewModelProviders.of(this, viewModelFactory).get(AuthProfileCheckerViewModel::class.java)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(0)
+        RUNNING_CHAT = viewModel.chatUid
+    }
+
+    override fun onPause() {
+        RUNNING_CHAT = null
+
+        super.onPause()
     }
 
     private fun initRecyclerView() {
@@ -275,11 +289,13 @@ class ChatDetailsActivity : BaseToolbarActivity<ChatDetailsViewModel, ActivityCh
         internal val EXTRA_CHAT_DESCRIPTION = "EXTRA_CHAT_DESCRIPTION"
         internal val EXTRA_CHAT_INFO = "EXTRA_CHAT_INFO"
 
+        var RUNNING_CHAT: String? = null
+
         fun createScreen(context: Context, previewChatInfo: PreviewChatItem): Intent =
             createScreen(context, previewChatInfo.description)
                 .putExtra(EXTRA_CHAT_INFO, previewChatInfo)
 
-        private fun createScreen(context: Context, chatDescription: ChatChannelDescription): Intent =
+        fun createScreen(context: Context, chatDescription: ChatChannelDescription): Intent =
             Intent(context, ChatDetailsActivity::class.java)
                 .putExtra(EXTRA_CHAT_DESCRIPTION, chatDescription)
     }

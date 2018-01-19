@@ -54,19 +54,35 @@ class AmazonFileUploadInteractor @Inject constructor(private val context: Contex
                 .build()
         }
 
-    override fun uploadFile(fileResource: FileResource, maxFileSizeInPx: Int?): Single<ServerFile> {
+    override fun uploadFile(fileResource: FileResource): Single<ServerFile> {
         return localUserDataRepository
             .observeCurrentUser()
             .firstOrError()
-            .flatMap { uploadFile(fileResource, it, maxFileSizeInPx) }
+            .flatMap { uploadFile(fileResource, it) }
     }
 
-    override fun uploadFile(fileResource: FileResource, creatorUser: User, maxFileSizeInPx: Int?): Single<ServerFile> {
+    override fun uploadFile(fileResource: FileResource, creatorUser: User): Single<ServerFile> {
+        return uploadFileInner(fileResource, false, null)
+    }
+
+    override fun uploadImage(fileResource: FileResource, maxFileSizeInPx: Int?): Single<ServerFile> {
+        return localUserDataRepository
+            .observeCurrentUser()
+            .firstOrError()
+            .flatMap { uploadImage(fileResource, it, maxFileSizeInPx) }
+    }
+
+    override fun uploadImage(fileResource: FileResource, creatorUser: User, maxFileSizeInPx: Int?): Single<ServerFile> {
+        return uploadFileInner(fileResource, true, maxFileSizeInPx)
+    }
+
+    private fun uploadFileInner(fileResource: FileResource, image: Boolean, maxFileSizeInPx: Int?): Single<ServerFile> {
         val fileKey = UUID.randomUUID().toString() + "." + fileResource.file.extension
+        val fileType = if (image) "jpg" else fileResource.file.extension
         return Single.create<Pair<Int, Long>> { e ->
             val objectMetaData = ObjectMetadata()
-            objectMetaData.contentType = "image/jpeg"
-            val compressedFile = if (null == maxFileSizeInPx) fileResource.file else createCompressedFile(fileResource, maxFileSizeInPx)
+            objectMetaData.contentType = if (image) "image/$fileType" else "application/$fileType"
+            val compressedFile = if (image && null != maxFileSizeInPx) createCompressedFile(fileResource, maxFileSizeInPx) else fileResource.file
 
             transferUtility.upload(fileKey, compressedFile, objectMetaData, CannedAccessControlList.PublicRead, object : TransferListener {
 
@@ -104,7 +120,7 @@ class AmazonFileUploadInteractor @Inject constructor(private val context: Contex
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.ioScheduler)
             .map { S3ServerFile(fileResource.file.nameWithoutExtension, "https://s3.amazonaws.com/$s3Bucket/$fileKey", it.second) }
-            .flatMap { filesApi.createFile(FilesApi.FileCreationRequest(it.name, it.url, "jpg")) }
+            .flatMap { filesApi.createFile(FilesApi.FileCreationRequest(it.name, it.url, fileType)) }
             .map { it.parse() }
     }
 

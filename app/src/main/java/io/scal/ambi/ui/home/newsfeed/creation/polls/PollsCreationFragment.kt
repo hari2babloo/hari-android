@@ -4,10 +4,10 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
 import com.ambi.work.R
 import com.ambi.work.databinding.FragmentPollsCreationBinding
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.feed.PollEndsTime
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.toObservable
@@ -16,11 +16,15 @@ import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
 import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
+import io.scal.ambi.ui.global.picker.FileResource
+import io.scal.ambi.ui.global.picker.PickerViewController
+import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
+import io.scal.ambi.ui.home.newsfeed.creation.ICreationFragment
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import kotlin.reflect.KClass
 
-class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPollsCreationBinding>() {
+class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPollsCreationBinding>(), ICreationFragment {
 
     override val layoutId: Int = R.layout.fragment_polls_creation
     override val viewModelClass: KClass<PollsCreationViewModel> = PollsCreationViewModel::class
@@ -31,6 +35,7 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
         initStateModel()
         initAsUserSpinner()
         initPollEndsSpinner()
+        initBottomActions()
     }
 
     private fun initAsUserSpinner() {
@@ -57,6 +62,18 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
             .addTo(destroyViewDisposables)
     }
 
+    private fun initBottomActions() {
+        viewModel.bottomViewModel
+            .initBottomActions(binding.etQuestion, (activity as FeedItemCreationActivity).pickerViewModel, (activity as PickerViewController))
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+            .addTo(destroyViewDisposables)
+    }
+
+    override fun setPickedFile(fileResource: FileResource, image: Boolean) {
+        viewModel.bottomViewModel.setPickedFile(fileResource, image)
+    }
+
     private fun initPollEndsSpinner() {
         val pollEndsAdapter = SpinnerAdapterSimple<PollEndsTime>(R.layout.item_poll_ends_spinner, R.layout.item_poll_ends_spinner_dropdown)
 
@@ -67,7 +84,9 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val pollEndsTime = parent.getItemAtPosition(position) as PollEndsTime
                 if (pollEndsTime is PollEndsTime.UserCustomDefault) {
-                    onCustomDurationSelected()
+                    onCustomDurationSelected(pollEndsTime.duration)
+                } else if (pollEndsTime is PollEndsTime.UserCustom) {
+                    onCustomDurationSelected(pollEndsTime.duration)
                 } else {
                     viewModel.selectPollEnds(pollEndsTime)
                 }
@@ -86,8 +105,9 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
             .addTo(destroyViewDisposables)
     }
 
-    private fun onCustomDurationSelected() {
-        val minDate = DateTime.now().plusDays(1)
+    private fun onCustomDurationSelected(initDuration: Duration) {
+        val initMinDate = DateTime.now().plus(1)
+        val initSelectedDate = initMinDate.plus(initDuration)
         val picker = DatePickerDialog(activity,
                                       DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                                           val nowDate = DateTime.now()
@@ -95,10 +115,10 @@ class PollsCreationFragment : BaseFragment<PollsCreationViewModel, FragmentPolls
                                           val duration = Duration(nowDate, selectedDate)
                                           viewModel.selectPollEnds(PollEndsTime.UserCustom(duration))
                                       },
-                                      minDate.year,
-                                      minDate.monthOfYear - 1,
-                                      minDate.dayOfMonth)
-        picker.datePicker.minDate = minDate.toDate().time
+                                      initSelectedDate.year,
+                                      initSelectedDate.monthOfYear - 1,
+                                      initSelectedDate.dayOfMonth)
+        picker.datePicker.minDate = initMinDate.toDate().time
         picker.show()
     }
 

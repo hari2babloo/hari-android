@@ -3,13 +3,24 @@ package io.scal.ambi.ui.home.newsfeed.creation.base
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
+import com.vanniktech.emoji.EmojiEditText
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import io.scal.ambi.entity.EmojiKeyboardState
+import io.scal.ambi.entity.chat.ChatAttachment
 import io.scal.ambi.entity.feed.AnnouncementType
 import io.scal.ambi.entity.feed.Audience
 import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
+import io.scal.ambi.ui.global.picker.FileResource
+import io.scal.ambi.ui.global.picker.PickerViewController
+import io.scal.ambi.ui.global.picker.PickerViewModel
+import io.scal.ambi.ui.home.chat.details.EmojiPopupHelper
 import javax.inject.Inject
 
 class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseViewModel(router) {
@@ -23,9 +34,15 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
     val audienceList = ObservableArrayList<Audience>()
     val selectedAudience = ObservableField<Audience>()
 
+    private val selectedAttachmentsInner = mutableListOf<ChatAttachment>()
+    val selectedAttachemnts: List<ChatAttachment> = selectedAttachmentsInner
+
     val postEnable = ObservableBoolean(false)
 
     val postAction: Observable<Any> = PublishSubject.create()
+
+    private val actionAttach = PublishSubject.create<Boolean>()
+    private val actionKeyboardType = PublishSubject.create<Boolean>()
 
     fun post() {
         (postAction as Subject).onNext(Any())
@@ -50,11 +67,67 @@ class CreationBottomViewModel @Inject constructor(router: BetterRouter) : BaseVi
     }
 
     fun attachImage() {
-
+        actionAttach.onNext(true)
     }
 
     fun attachFile() {
+        actionAttach.onNext(false)
+    }
 
+    fun showEmoji() {
+        actionKeyboardType.onNext(true)
+    }
+
+    fun showKeyboard() {
+        actionKeyboardType.onNext(false)
+    }
+
+    fun initBottomActions(emojiEditText: EmojiEditText,
+                          pickerViewModel: PickerViewModel,
+                          pickerViewController: PickerViewController): Completable {
+        val keyboardState = PublishSubject.create<EmojiKeyboardState>()
+        val popupSubscription =
+            EmojiPopupHelper()
+                .activate(emojiEditText,
+                          keyboardState
+                              .observeOn(AndroidSchedulers.mainThread())
+                )
+                .doOnNext { actionKeyboardType.onNext(it == EmojiKeyboardState.EMOJI) }
+        val compositeDisposable = CompositeDisposable()
+
+        return Completable.ambArray(
+            actionAttach
+                .doOnNext {
+                    if (it) pickerViewModel.pickAnImage(pickerViewController, emojiEditText.context)
+                    else pickerViewModel.pickFile(pickerViewController)
+                }
+                .ignoreElements(),
+            actionKeyboardType
+                .doOnSubscribe { popupSubscription.subscribe().addTo(compositeDisposable) }
+                .doOnDispose { compositeDisposable.dispose() }
+                .doOnNext { if (it) keyboardState.onNext(EmojiKeyboardState.EMOJI) else keyboardState.onNext(EmojiKeyboardState.UNKNOWN) }
+                .ignoreElements()
+        )
+    }
+
+    fun setPickedFile(fileResource: FileResource, image: Boolean) {
+        clearAttachments()
+        selectedAttachmentsInner.add(if (image) ChatAttachment.LocalImage(fileResource) else ChatAttachment.LocalFile(fileResource))
+    }
+
+    public override fun onCleared() {
+        super.onCleared()
+        clearAttachments()
+    }
+
+    private fun clearAttachments() {
+        selectedAttachmentsInner.forEach {
+            when (it) {
+                is ChatAttachment.LocalImage -> it.imageFile.cleanUp()
+                is ChatAttachment.LocalFile  -> it.fileFile.cleanUp()
+            }
+        }
+        selectedAttachmentsInner.clear()
     }
 
     private fun <T> updateListSelectionData(newData: List<T>,

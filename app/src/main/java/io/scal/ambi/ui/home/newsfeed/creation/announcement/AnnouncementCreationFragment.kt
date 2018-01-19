@@ -14,9 +14,13 @@ import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
 import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
+import io.scal.ambi.ui.global.picker.FileResource
+import io.scal.ambi.ui.global.picker.PickerViewController
+import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
+import io.scal.ambi.ui.home.newsfeed.creation.ICreationFragment
 import kotlin.reflect.KClass
 
-class AnnouncementCreationFragment : BaseFragment<AnnouncementCreationViewModel, FragmentAnnouncementCreationBinding>() {
+class AnnouncementCreationFragment : BaseFragment<AnnouncementCreationViewModel, FragmentAnnouncementCreationBinding>(), ICreationFragment {
 
     override val layoutId: Int = R.layout.fragment_announcement_creation
     override val viewModelClass: KClass<AnnouncementCreationViewModel> = AnnouncementCreationViewModel::class
@@ -26,6 +30,7 @@ class AnnouncementCreationFragment : BaseFragment<AnnouncementCreationViewModel,
 
         initStateModel()
         initAsUserSpinner()
+        initBottomActions()
     }
 
     private fun initAsUserSpinner() {
@@ -50,6 +55,18 @@ class AnnouncementCreationFragment : BaseFragment<AnnouncementCreationViewModel,
                 binding.sAsUser.setSelection(it.asUsers.indexOf(it.selectedAsUser))
             }
             .addTo(destroyViewDisposables)
+    }
+
+    private fun initBottomActions() {
+        viewModel.bottomViewModel
+            .initBottomActions(binding.etQuestion, (activity as FeedItemCreationActivity).pickerViewModel, (activity as PickerViewController))
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+            .addTo(destroyViewDisposables)
+    }
+
+    override fun setPickedFile(fileResource: FileResource, image: Boolean) {
+        viewModel.bottomViewModel.setPickedFile(fileResource, image)
     }
 
     private fun initStateModel() {

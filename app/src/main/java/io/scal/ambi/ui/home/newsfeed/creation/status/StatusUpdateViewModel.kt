@@ -76,7 +76,8 @@ class StatusUpdateViewModel @Inject constructor(router: BetterRouter,
                                                     currentState.locked,
                                                     currentState.selectedAsUser,
                                                     currentState.statusText.get(),
-                                                    bottomViewModel.selectedAudience.get())
+                                                    bottomViewModel.selectedAudience.get(),
+                                                    bottomViewModel.selectedAttachemnts)
 
                     interactor.updateStatus(pollToCreate)
                         .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
@@ -132,5 +133,11 @@ class StatusUpdateViewModel @Inject constructor(router: BetterRouter,
                     errorStateModel.set(StatusUpdateErrorState.ErrorFatal(t.message!!))
                 })
             .addTo(disposables)
+    }
+
+
+    override fun onCleared() {
+        super.onCleared()
+        bottomViewModel.onCleared()
     }
 }

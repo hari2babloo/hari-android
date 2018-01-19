@@ -40,6 +40,7 @@ import javax.inject.Named
 class ChatDetailsViewModel @Inject constructor(private val context: Context,
                                                router: BetterRouter,
                                                @Named("chatInfo") previewChatItem: PreviewChatItem?,
+                                               @Named("chatDescription") chatDescription: ChatChannelDescription,
                                                private val interactor: IChatDetailsInteractor,
                                                rxSchedulersAbs: RxSchedulersAbs) :
     BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs) {
@@ -51,6 +52,8 @@ class ChatDetailsViewModel @Inject constructor(private val context: Context,
 
     private val serverDataListSubject = PublishSubject.create<AllMessagesInfo>()
     private val pendingMessagesSubject = BehaviorSubject.createDefault(emptyList<UIChatMessage>())
+
+    val chatUid = chatDescription.uid
 
     private val channelSelectionListener = ResultListener { resultData ->
         if (resultData is ChatChannelDescription) {

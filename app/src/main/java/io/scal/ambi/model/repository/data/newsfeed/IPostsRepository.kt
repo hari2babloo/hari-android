@@ -18,14 +18,16 @@ interface IPostsRepository {
                       locked: Boolean,
                       asUserUid: String,
                       statusText: String,
-                      audiences: List<Audience>): Completable
+                      audiences: List<Audience>,
+                      fileId: String?): Completable
 
     fun postNewAnnouncement(pinned: Boolean,
                             locked: Boolean,
                             asUserUid: String,
                             statusText: String,
                             announcementType: AnnouncementType,
-                            audiences: List<Audience>): Completable
+                            audiences: List<Audience>,
+                            fileId: String?): Completable
 
     fun postNewPoll(pinned: Boolean,
                     locked: Boolean,

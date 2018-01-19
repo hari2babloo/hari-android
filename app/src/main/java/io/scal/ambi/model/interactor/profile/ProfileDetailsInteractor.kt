@@ -49,7 +49,7 @@ class ProfileDetailsInteractor @Inject constructor(private val postsRepository: 
         return localUserDataRepository.observeCurrentUser()
             .firstOrError()
             .flatMap { currentUser ->
-                fileUploadInteractor.uploadFile(fileResource, currentUser)
+                fileUploadInteractor.uploadImage(fileResource, currentUser)
                     .flatMap { userRepository.saveProfileAvatar(currentUser.uid, it.id) }
             }
     }
@@ -58,7 +58,7 @@ class ProfileDetailsInteractor @Inject constructor(private val postsRepository: 
         return localUserDataRepository.observeCurrentUser()
             .firstOrError()
             .flatMap { currentUser ->
-                fileUploadInteractor.uploadFile(fileResource, currentUser, null)
+                fileUploadInteractor.uploadImage(fileResource, currentUser, null)
                     .flatMap { userRepository.saveProfileBanner(currentUser.uid, it.id) }
             }
     }

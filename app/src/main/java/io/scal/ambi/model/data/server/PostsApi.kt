@@ -52,7 +52,8 @@ class StatusCreationRequest(val poster: String,
                             val isLocked: Boolean,
                             val textContent: String,
                             val hosts: List<Host>,
-                            val audience: List<String>)
+                            val audience: List<String>,
+                            val fileContent: List<String>?)
 
 class AnnouncementCreationRequest(val poster: String,
                                   val isPinned: Boolean,
@@ -60,7 +61,8 @@ class AnnouncementCreationRequest(val poster: String,
                                   val textContent: String,
                                   val hosts: List<Host>,
                                   val announcementType: String,
-                                  val audience: List<String>)
+                                  val audience: List<String>,
+                                  val fileContent: List<String>?)
 
 class PollCreationRequest(val poster: String,
                           val isPinned: Boolean,

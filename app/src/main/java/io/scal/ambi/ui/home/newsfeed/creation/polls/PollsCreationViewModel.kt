@@ -187,4 +187,10 @@ class PollsCreationViewModel @Inject constructor(private val context: Context,
                 })
             .addTo(disposables)
     }
+
+
+    override fun onCleared() {
+        super.onCleared()
+        bottomViewModel.onCleared()
+    }
 }

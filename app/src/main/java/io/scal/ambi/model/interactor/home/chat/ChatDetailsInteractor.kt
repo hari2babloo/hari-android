@@ -119,11 +119,7 @@ class ChatDetailsInteractor @Inject constructor(@Named("chatDescription") privat
                                                   this,
                                                   DateTime.now(),
                                                   "",
-                                                  listOf(
-                                                      ChatAttachment.LocalFile(fileResource,
-                                                                               fileResource.typeName(),
-                                                                               fileResource.file.length())
-                                                  ),
+                                                  listOf(ChatAttachment.LocalFile(fileResource)),
                                                   emptyList(),
                                                   ChatMyMessageState.PENDING),
                     null

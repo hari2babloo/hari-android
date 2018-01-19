@@ -1,31 +1,44 @@
 package io.scal.ambi.model.repository.data.chat.push
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.NotificationCompat
+import com.ambi.work.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.twilio.chat.NotificationPayload
+import io.scal.ambi.App
+import io.scal.ambi.entity.chat.ChatChannelDescription
+import io.scal.ambi.extensions.view.IconImage
+import io.scal.ambi.ui.home.chat.details.ChatDetailsActivity
+import io.scal.ambi.ui.home.root.HomeActivity
+import org.joda.time.DateTime
 import org.json.JSONObject
 import timber.log.Timber
 
 
 class FCMListenerService : FirebaseMessagingService() {
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         // If the application is in the foreground handle both data and notification messages here.
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
 
+        if (null == remoteMessage) return
+
         Timber.e("!!!!!!!!!!!!!!!!")
 
-/*
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            logger.d("Data Message Body: " + remoteMessage.getData())
 
-            val obj = JSONObject(remoteMessage.getData())
+        // Check if message contains a data payload.
+        if (remoteMessage.data.isNotEmpty()) {
+            val obj = JSONObject(remoteMessage.data)
+
             val data = Bundle()
             data.putString("channel_id", obj.optString("channel_id"))
             data.putString("message_id", obj.optString("message_id"))
@@ -40,39 +53,42 @@ class FCMListenerService : FirebaseMessagingService() {
 
             val payload = NotificationPayload(data)
 
-            val client = TwilioApplication.get().getBasicClient().getChatClient()
-            if (client != null) {
-                client!!.handleNotification(payload)
-            }
+            val chatRepository = (applicationContext as App).chatRepository
+            chatRepository.handleNotification(payload)
 
             val type = payload.type
 
             if (type == NotificationPayload.Type.UNKNOWN) return  // Ignore everything we don't support
 
-            var title = "Twilio Notification"
+            var title = "Notification"
 
             if (type == NotificationPayload.Type.NEW_MESSAGE)
-                title = "Twilio: New Message"
+                title = "New Message"
             if (type == NotificationPayload.Type.ADDED_TO_CHANNEL)
-                title = "Twilio: Added to Channel"
+                title = "Added to Channel"
             if (type == NotificationPayload.Type.INVITED_TO_CHANNEL)
-                title = "Twilio: Invited to Channel"
+                title = "Invited to Channel"
             if (type == NotificationPayload.Type.REMOVED_FROM_CHANNEL)
-                title = "Twilio: Removed from Channel"
+                title = "Removed from Channel"
 
             // Set up action Intent
-            val intent = Intent(this, MessageActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
             val cSid = payload.channelSid
-            if (!"".contentEquals(cSid)) {
-                intent.putExtra(Constants.EXTRA_CHANNEL_SID, cSid)
+            if (ChatDetailsActivity.RUNNING_CHAT == cSid) {
+                return
             }
+
+            val intent =
+                if ("".contentEquals(cSid)) {
+                    HomeActivity.createScreen(this)
+                } else {
+                    ChatDetailsActivity.createScreen(this, ChatChannelDescription(cSid, "", IconImage(R.drawable.ic_profile), DateTime.now()))
+                }
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
             val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
             val notification = NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_ambi_logo)
                 .setContentTitle(title)
                 .setContentText(payload.body)
                 .setAutoCancel(true)
@@ -81,14 +97,12 @@ class FCMListenerService : FirebaseMessagingService() {
                 .build()
 
             val soundFileName = payload.sound
-            if (getResources().getIdentifier(soundFileName, "raw", getPackageName()) !== 0) {
-                val sound = Uri.parse("android.resource://" + getPackageName() + "/raw/" + soundFileName)
+            if (resources.getIdentifier(soundFileName, "raw", packageName) != 0) {
+                val sound = Uri.parse("android.resource://$packageName/raw/$soundFileName")
                 notification.defaults = notification.defaults and Notification.DEFAULT_SOUND.inv()
                 notification.sound = sound
-                logger.d("Playing specified sound " + soundFileName)
             } else {
                 notification.defaults = notification.defaults or Notification.DEFAULT_SOUND
-                logger.d("Playing default sound")
             }
 
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -97,9 +111,8 @@ class FCMListenerService : FirebaseMessagingService() {
         }
 
         // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            logger.d("Notification Message Body: " + remoteMessage.getNotification().getBody())
-            logger.e("We do not parse notification body - leave it to system")
-        }*/
+        if (remoteMessage.notification != null) {
+            Timber.d("Notification Message Body: " + remoteMessage.notification!!.body)
+        }
     }
 }

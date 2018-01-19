@@ -6,6 +6,7 @@ import io.scal.ambi.entity.actions.Comment
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.notNullOrThrow
+import io.scal.ambi.model.data.server.responses.FileResponse
 import io.scal.ambi.model.data.server.responses.Parceble
 import io.scal.ambi.model.data.server.responses.user.ItemUser
 import org.joda.time.DateTime
@@ -57,6 +58,9 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
     @Expose
     internal var likes: List<ItemUser>? = null
 
+    @SerializedName("fileContent")
+    @Expose
+    internal var files: List<FileResponse.ItemFile>? = null
 
     //    poll item
     @SerializedName("answerChoices")

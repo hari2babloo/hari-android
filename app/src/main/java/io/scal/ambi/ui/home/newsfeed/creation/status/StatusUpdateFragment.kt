@@ -3,10 +3,10 @@ package io.scal.ambi.ui.home.newsfeed.creation.status
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
 import com.ambi.work.R
 import com.ambi.work.databinding.FragmentStatusUpdateBinding
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.enableCascade
@@ -14,9 +14,13 @@ import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.adapter.SpinnerAdapterSimple
 import io.scal.ambi.ui.global.base.asErrorState
 import io.scal.ambi.ui.global.base.fragment.BaseFragment
+import io.scal.ambi.ui.global.picker.FileResource
+import io.scal.ambi.ui.global.picker.PickerViewController
+import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
+import io.scal.ambi.ui.home.newsfeed.creation.ICreationFragment
 import kotlin.reflect.KClass
 
-class StatusUpdateFragment : BaseFragment<StatusUpdateViewModel, FragmentStatusUpdateBinding>() {
+class StatusUpdateFragment : BaseFragment<StatusUpdateViewModel, FragmentStatusUpdateBinding>(), ICreationFragment {
 
     override val layoutId: Int = R.layout.fragment_status_update
     override val viewModelClass: KClass<StatusUpdateViewModel> = StatusUpdateViewModel::class
@@ -26,6 +30,7 @@ class StatusUpdateFragment : BaseFragment<StatusUpdateViewModel, FragmentStatusU
 
         initStateModel()
         initAsUserSpinner()
+        initBottomActions()
     }
 
     private fun initAsUserSpinner() {
@@ -50,6 +55,18 @@ class StatusUpdateFragment : BaseFragment<StatusUpdateViewModel, FragmentStatusU
                 binding.sAsUser.setSelection(it.asUsers.indexOf(it.selectedAsUser))
             }
             .addTo(destroyViewDisposables)
+    }
+
+    private fun initBottomActions() {
+        viewModel.bottomViewModel
+            .initBottomActions(binding.etQuestion, (activity as FeedItemCreationActivity).pickerViewModel, (activity as PickerViewController))
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+            .addTo(destroyViewDisposables)
+    }
+
+    override fun setPickedFile(fileResource: FileResource, image: Boolean) {
+        viewModel.bottomViewModel.setPickedFile(fileResource, image)
     }
 
     private fun initStateModel() {

@@ -36,7 +36,8 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                locked: Boolean,
                                asUserUid: String,
                                statusText: String,
-                               audiences: List<Audience>): Completable {
+                               audiences: List<Audience>,
+                               fileId: String?): Completable {
         return postsApi
             .postNewStatus(
                 StatusCreationRequest(asUserUid,
@@ -44,7 +45,8 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                       locked,
                                       statusText,
                                       listOf(Host(PostHostKind.USER.toServerName(), asUserUid)),
-                                      audiences.map { it.toServerName() }
+                                      audiences.map { it.toServerName() },
+                                      fileId?.let { listOf(fileId) }
                 )
             )
     }
@@ -54,7 +56,8 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                      asUserUid: String,
                                      statusText: String,
                                      announcementType: AnnouncementType,
-                                     audiences: List<Audience>): Completable {
+                                     audiences: List<Audience>,
+                                     fileId: String?): Completable {
         return postsApi
             .postNewAnnouncement(
                 AnnouncementCreationRequest(asUserUid,
@@ -63,7 +66,8 @@ class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                             statusText,
                                             listOf(Host(PostHostKind.USER.toServerName(), asUserUid)),
                                             announcementType.toServerName(),
-                                            audiences.map { it.toServerName() }
+                                            audiences.map { it.toServerName() },
+                                            fileId?.let { listOf(fileId) }
                 )
             )
     }

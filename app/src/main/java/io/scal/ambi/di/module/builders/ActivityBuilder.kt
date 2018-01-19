@@ -43,7 +43,7 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [AudienceSelectionModule::class])
     abstract fun bindAudienceSelectionActivity(): AudienceSelectionActivity
 
-    @ContributesAndroidInjector(modules = [FeedItemCreationModule::class, AuthProfileModule::class])
+    @ContributesAndroidInjector(modules = [FeedItemCreationModule::class, AuthProfileModule::class, PickerModule::class])
     abstract fun bindFeedItemCreationActivity(): FeedItemCreationActivity
 
     @ContributesAndroidInjector(modules = [ChatDetailsModule::class, AuthProfileModule::class, PickerModule::class])

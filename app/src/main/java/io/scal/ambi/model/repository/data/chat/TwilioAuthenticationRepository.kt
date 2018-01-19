@@ -2,6 +2,7 @@ package io.scal.ambi.model.repository.data.chat
 
 import android.content.Context
 import com.twilio.chat.ChatClient
+import com.twilio.chat.NotificationPayload
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.Function
@@ -35,8 +36,14 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
         observeChatClientCreation(context)
     }
 
-    internal fun getChatClientInfo(): Observable<ChatClientInfo> = chatClientInfoSubject
-        .distinctUntilChanged()
+    internal fun getChatClientInfo(): Observable<ChatClientInfo> =
+        chatClientInfoSubject.distinctUntilChanged()
+
+    internal fun handleNotification(payload: NotificationPayload) {
+        val chatSubject = chatClientInfoSubject.value
+        val chatClient = chatSubject?.chatClient
+        chatClient?.handleNotification(payload)
+    }
 
     private fun observeCurrentUserChange() {
         localUserDataRepository.observeCurrentUser()
@@ -68,7 +75,6 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
             .map { it.parse() }
             .retry()
             .subscribe { accessInfoObservable.onNext(it) }
-
     }
 
     private fun observeChatClientCreation(context: Context) {
@@ -102,7 +108,6 @@ internal class TwilioAuthenticationRepository @Inject constructor(context: Conte
         }
             .map { ChatClientInfo.Data(it) as ChatClientInfo }
             .doOnSubscribe {
-                chatClientInfoSubject.value?.chatClient?.shutdown()
                 chatClientInfoSubject.onNext(ChatClientInfo.Error(IllegalArgumentException("we are creating new chat client now")))
             }
 }

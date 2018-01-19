@@ -28,7 +28,7 @@ sealed class PollEndsTime {
 
     open class UserCustom(duration: Duration) : TimeDuration(duration)
 
-    object UserCustomDefault : UserCustom(Duration.standardDays(0))
+    object UserCustomDefault : UserCustom(Duration.standardDays(1))
 
     object Never : PollEndsTime()
 }

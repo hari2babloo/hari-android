@@ -25,5 +25,8 @@ sealed class ChatAttachment(open val pathAsString: String) : Serializable {
 
     class LocalFile(val fileFile: FileResource,
                     typeName: String,
-                    size: Long) : File(Uri.fromFile(fileFile.file), typeName, size)
+                    size: Long) : File(Uri.fromFile(fileFile.file), typeName, size) {
+
+        constructor(file: FileResource) : this(file, file.file.extension.toLowerCase(), file.file.length())
+    }
 }

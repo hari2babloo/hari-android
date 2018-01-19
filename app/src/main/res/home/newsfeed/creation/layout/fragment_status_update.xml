@@ -94,7 +94,7 @@
                     app:layout_constraintTop_toTopOf="@+id/c_as_user_selection"
                     app:srcCompat="@drawable/ic_creation_locked"/>
 
-                <EditText
+                <com.vanniktech.emoji.EmojiEditText
                     android:id="@+id/et_question"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

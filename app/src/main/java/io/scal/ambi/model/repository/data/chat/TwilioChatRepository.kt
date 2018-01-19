@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.twilio.chat.Channel
 import com.twilio.chat.Channels
 import com.twilio.chat.ChatClient
+import com.twilio.chat.NotificationPayload
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -18,7 +19,7 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 
-class TwilioChatRepository @Inject internal constructor(authenticationRepository: TwilioAuthenticationRepository,
+class TwilioChatRepository @Inject internal constructor(private val authenticationRepository: TwilioAuthenticationRepository,
                                                         private val localDataRepository: ILocalDataRepository,
                                                         private val rxSchedulersAbs: RxSchedulersAbs) : IChatRepository {
 
@@ -110,6 +111,10 @@ class TwilioChatRepository @Inject internal constructor(authenticationRepository
             .flatMap { it.getChannelByUid(chatUid) }
             .flatMapMaybe { it.convertToChannelInfo(rxSchedulersAbs) }
             .toSingle()
+    }
+
+    override fun handleNotification(payload: NotificationPayload) {
+        authenticationRepository.handleNotification(payload)
     }
 
     private fun observeChatChangedEventsFromTwilio(chatUids: List<String>): Observable<ChannelEvent> {

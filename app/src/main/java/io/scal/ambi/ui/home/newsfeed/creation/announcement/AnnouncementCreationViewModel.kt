@@ -79,7 +79,8 @@ class AnnouncementCreationViewModel @Inject constructor(router: BetterRouter,
                                                             currentState.selectedAsUser,
                                                             currentState.announcementText.get(),
                                                             bottomViewModel.selectedAnnouncementType.get(),
-                                                            bottomViewModel.selectedAudience.get())
+                                                            bottomViewModel.selectedAudience.get(),
+                                                            bottomViewModel.selectedAttachemnts)
 
                     interactor.createAnnouncement(pollToCreate)
                         .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
@@ -135,5 +136,10 @@ class AnnouncementCreationViewModel @Inject constructor(router: BetterRouter,
                     errorStateModel.set(AnnouncementCreationErrorState.ErrorFatal(t.message!!))
                 })
             .addTo(disposables)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        bottomViewModel.onCleared()
     }
 }

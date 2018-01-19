@@ -7,7 +7,6 @@ import io.scal.ambi.entity.user.User
 import io.scal.ambi.model.data.server.ServerResponseException
 import io.scal.ambi.model.repository.data.chat.data.ChatChannelMessage
 import io.scal.ambi.model.repository.data.user.IUserRepository
-import io.scal.ambi.ui.global.picker.FileResource
 import java.io.File
 
 internal fun ChatChannelMessage.Media.toAttachment(): ChatAttachment =
@@ -19,9 +18,6 @@ internal fun ChatChannelMessage.Media.toAttachment(): ChatAttachment =
 
 private fun String.typeName(): String =
     File(this).extension.toLowerCase()
-
-internal fun FileResource.typeName(): String =
-    file.extension.toLowerCase()
 
 internal fun getUserProfile(uid: String, userRepository: IUserRepository): Maybe<User> =
     userRepository.getProfileCached(uid).toMaybe().onErrorComplete { it is ServerResponseException && it.notFound && it.serverError }

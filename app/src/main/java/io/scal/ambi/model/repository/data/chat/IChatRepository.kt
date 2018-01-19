@@ -1,5 +1,6 @@
 package io.scal.ambi.model.repository.data.chat
 
+import com.twilio.chat.NotificationPayload
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.model.repository.data.chat.data.ChatChannelChanged
@@ -29,4 +30,6 @@ interface IChatRepository {
                          val memberUids: List<String>)
 
     fun sendChatMessage(chatUid: String, message: String, attachments: List<FileResource>?): Single<ChatChannelMessage>
+
+    fun handleNotification(payload: NotificationPayload)
 }

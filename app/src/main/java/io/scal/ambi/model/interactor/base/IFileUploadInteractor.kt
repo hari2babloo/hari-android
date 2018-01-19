@@ -9,7 +9,11 @@ private const val MAX_FILE_SIZE_IN_PX: Int = 300
 
 interface IFileUploadInteractor {
 
-    fun uploadFile(fileResource: FileResource, maxFileSizeInPx: Int? = MAX_FILE_SIZE_IN_PX): Single<ServerFile>
+    fun uploadFile(fileResource: FileResource): Single<ServerFile>
 
-    fun uploadFile(fileResource: FileResource, creatorUser: User, maxFileSizeInPx: Int? = MAX_FILE_SIZE_IN_PX): Single<ServerFile>
+    fun uploadFile(fileResource: FileResource, creatorUser: User): Single<ServerFile>
+
+    fun uploadImage(fileResource: FileResource, maxFileSizeInPx: Int? = MAX_FILE_SIZE_IN_PX): Single<ServerFile>
+
+    fun uploadImage(fileResource: FileResource, creatorUser: User, maxFileSizeInPx: Int? = MAX_FILE_SIZE_IN_PX): Single<ServerFile>
 }
