@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/container"
+                android:layout_width="300dp"
+                android:layout_height="100dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
+
+    <!-- content -->
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_chip_view_opened"
+        android:clickable="true"
+        android:elevation="6dp">
+
+        <!-- avatar icon -->
+        <RelativeLayout
+            android:id="@+id/c_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp">
+
+            <io.scal.ambi.ui.home.chat.newmessage.chip.FrescoCircleImageView
+                android:id="@+id/avatar_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/avatar"
+                android:visibility="visible"/>
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/avatar_fresco"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/avatar"
+                android:visibility="gone"
+                app:actualImageScaleType="centerInside"
+                app:roundAsCircle="true"/>
+
+        </RelativeLayout>
+
+        <!-- info -->
+        <LinearLayout
+            android:id="@+id/info_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/delete_button"
+            android:layout_toRightOf="@+id/c_avatar"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp">
+
+            <!-- name -->
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:text="Contact name sdfdsfdsfdgs"
+                android:textSize="16sp"/>
+
+            <!-- info -->
+            <TextView
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:text="paul@gmail.comdfdgdgsdggdgdgdgdsgdgdgdg"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <!-- delete button -->
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_cancel_white_24dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

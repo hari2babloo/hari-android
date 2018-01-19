@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="chat_details_info_direct">This is the very beginning of your messages with</string>
+    <string name="chat_details_info_group_middle">created this channel on %s</string>
+
+    <string name="chat_details_text_is_typing_this">%s is typing</string>
+    <string name="chat_details_text_are_typing_this">%s are typing</string>
+
+    <string name="chat_details_today">Today</string>
+    <string name="chat_details_yesterday">Yesterday</string>
+
+    <string name="chat_details_creation_hint">type your message here</string>
+
+    <string name="chat_details_status_other"/>
+    <string name="chat_details_status_pending">&#9716;</string>
+    <string name="chat_details_status_send">&#10003;</string>
+    <string name="chat_details_status_send_failed">&#9888;</string>
+    <string name="chat_details_status_delivered">&#10003;&#10003;</string>
+    <string name="chat_details_status_read">&#10003;&#10003;</string>
+
+</resources>

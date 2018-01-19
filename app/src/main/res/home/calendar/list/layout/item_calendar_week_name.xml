@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="day"
+            type="org.joda.time.LocalDate"/>
+
+        <variable
+            name="visibility"
+            type="Boolean"/>
+
+    </data>
+
+    <io.scal.ambi.ui.global.view.AspectRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:aspect_height="39"
+        app:aspect_width="50"
+        app:visibility="@{visibility ?? false}">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="#97a3b3"
+            android:textSize="14sp"
+            app:calendarWeekDayName="@{day}"
+            tools:text="W"
+            />
+
+    </io.scal.ambi.ui.global.view.AspectRelativeLayout>
+
+</layout>

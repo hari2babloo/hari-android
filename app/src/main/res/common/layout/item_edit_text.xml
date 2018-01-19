@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.inputmethod.EditorInfo"/>
+
+        <import type="android.text.InputType"/>
+
+        <variable
+            name="imeOption"
+            type="Integer"/>
+
+        <variable
+            name="icon"
+            type="android.graphics.drawable.Drawable"/>
+
+        <variable
+            name="hint"
+            type="String"/>
+
+        <variable
+            name="inputType"
+            type="Integer"/>
+
+        <variable
+            name="textField"
+            type="io.scal.ambi.extensions.binding.observable.ObservableString"/>
+
+        <variable
+            name="doneClickListener"
+            type="io.scal.ambi.extensions.binding.models.TextViewDataBinder.DoneActionClickListener"/>
+
+        <variable
+            name="visibility"
+            type="Boolean"/>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_edit_text"
+        android:paddingBottom="4dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        app:visibility="@{visibility ?? true}">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@{icon}"
+            app:visibility="@{null != icon}"/>
+
+        <EditText
+            android:id="@+id/et_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/iv_icon"
+            android:background="@null"
+            android:enabled="@{textField.enabled}"
+            android:hint="@{hint}"
+            android:imeOptions="@{imeOption ?? EditorInfo.IME_NULL}"
+            android:singleLine="true"
+            android:text="@={textField.data}"
+            android:textSize="14sp"
+            app:imeDoneClickListener="@{doneClickListener}"
+            app:inputType="@{inputType ?? -1}"
+            tools:text="asfsdf"/>
+
+    </RelativeLayout>
+
+</layout>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.text.InputType"/>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.auth.login.LoginViewModel"/>
+
+    </data>
+
+    <ScrollView
+        android:id="@+id/root_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <io.scal.ambi.ui.global.view.AuthHeightImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="11dp"
+                android:layout_marginStart="11dp"
+                android:layout_marginTop="100dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_75"
+                app:layout_constraintStart_toEndOf="@+id/guideline_25"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_ambi_logo"/>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.214"/>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_75"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.786"/>
+
+            <include
+                android:id="@+id/et_name"
+                layout="@layout/item_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                app:hint="@{@string/auth_hint_name}"
+                app:icon="@{@drawable/ic_user}"
+                app:inputType="@{InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS}"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_75"
+                app:layout_constraintStart_toEndOf="@+id/guideline_25"
+                app:layout_constraintTop_toBottomOf="@+id/iv_logo"
+                app:textField="@{viewModel.stateModel.email}"/>
+
+            <include
+                android:id="@+id/et_password"
+                layout="@layout/item_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:hint="@{@string/auth_hint_password}"
+                app:icon="@{@drawable/ic_password}"
+                app:inputType="@{InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD}"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_75"
+                app:layout_constraintStart_toEndOf="@+id/guideline_25"
+                app:layout_constraintTop_toBottomOf="@+id/et_name"
+                app:textField="@{viewModel.stateModel.password}"/>
+
+            <TextView
+                android:id="@+id/tv_error"
+                style="@style/TextView.Error"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="@{viewModel.stateModel.errorMessage}"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_75"
+                app:layout_constraintStart_toEndOf="@+id/guideline_25"
+                app:layout_constraintTop_toBottomOf="@+id/et_password"
+                app:visibility="@{null != viewModel.stateModel.errorMessage}"/>
+
+            <Space
+                android:id="@+id/guideline_center_button"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="50dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_error"/>
+
+            <Button
+                android:id="@+id/b_sign_in"
+                style="@style/Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="@{view -> viewModel.login()}"
+                android:text="@string/auth_sign_in"
+                app:layout_constraintBottom_toBottomOf="@+id/guideline_center_button"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_75"
+                app:layout_constraintStart_toEndOf="@+id/guideline_25"
+                app:layout_constraintTop_toTopOf="@+id/guideline_center_button"/>
+
+            <TextView
+                android:id="@+id/tv_sign_up"
+                style="@style/TextView.Link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:onClick="@{view -> viewModel.goToRegister()}"
+                android:text="@string/auth_link_sign_up"
+                android:textColor="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/b_sign_in"/>
+
+            <TextView
+                style="@style/TextView.Link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="12dp"
+                android:onClick="@{view -> viewModel.goToForgotPassword()}"
+                android:text="@string/auth_link_forgot_password"
+                android:textColor="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sign_up"/>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:visibility="@{viewModel.stateModel.progress}"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

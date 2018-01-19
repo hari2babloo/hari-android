@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.newsfeed.list.adapter.INewsFeedViewModel"/>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed.Link"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

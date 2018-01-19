@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_bottom_newsfeed">newsfeed</string>
+    <string name="title_bottom_calendar">schedule</string>
+    <string name="title_bottom_chat">chat</string>
+    <string name="title_bottom_notifications">notifications</string>
+    <string name="title_bottom_resources">resources</string>
+    <string name="title_bottom_more">more</string>
+
+</resources>

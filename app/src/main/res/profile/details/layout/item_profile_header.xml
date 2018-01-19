@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.profile.details.ProfileDetailsViewModel"/>
+
+        <variable
+            name="profile"
+            type="io.scal.ambi.ui.profile.details.UIProfile"/>
+
+        <variable
+            name="attachListener"
+            type="io.scal.ambi.ui.profile.details.AttachListener"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="256dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/v_background_top"
+            android:layout_width="0dp"
+            android:layout_height="127dp"
+            android:onClick="@{(view) -> attachListener.attachBannerIcon()}"
+            app:actualImageScaleType="centerCrop"
+            app:iconImage="@{profile.banner}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/v_background_top"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:onClick="@{(view) -> viewModel.openSettings()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_profile_details_setting"
+            app:visibility="@{false &amp;&amp; profile.currentUser}"
+            />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="72dp"
+            android:onClick="@{(view) -> attachListener.attachAvatarIcon()}"
+            app:actualImageScaleType="centerCrop"
+            app:backgroundImage="@color/white"
+            app:iconImage="@{profile.avatar}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundedCornerRadius="10dp"
+            app:roundingBorderColor="@color/white"
+            app:roundingBorderWidth="2dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_actor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@{profile.name}"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toTopOf="@+id/iv_icon"
+            tools:text="User name"
+            />
+
+        <TextView
+            android:id="@+id/b_edit_resume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/bg_profile_details_button"
+            android:onClick="@{(veiw) -> viewModel.openResumeEdit()}"
+            android:text="@string/profile_details_edit_resume"
+            android:textColor="#222222"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_actor"
+            app:layout_constraintTop_toBottomOf="@+id/tv_actor"
+            app:visibility="@{false &amp;&amp; profile.currentUser}"
+            />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_actor"
+            app:layout_constraintTop_toBottomOf="@+id/b_edit_resume"
+            app:layout_goneMarginTop="40dp">
+
+            <ImageView
+                android:id="@+id/iv_work_at"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_marginTop="6dp"
+                app:srcCompat="@drawable/ic_profile_details_work_at"
+                app:visibility="@{profile.workAt != null}"/>
+
+            <TextView
+                android:id="@+id/tv_work_at"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@+id/iv_work_at"
+                android:ellipsize="end"
+                android:lineSpacingExtra="3.7sp"
+                android:text="@{profile.workAt}"
+                android:textColor="#9f9f9f"
+                android:textSize="12sp"
+                app:visibility="@{profile.workAt != null}"
+                tools:text="Junior Developer at Google"
+                />
+
+            <ImageView
+                android:id="@+id/iv_live_at"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_below="@+id/tv_work_at"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/ic_profile_details_live_at"
+                app:visibility="@{profile.livesAt != null}"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_work_at"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_toEndOf="@+id/iv_live_at"
+                android:ellipsize="end"
+                android:lineSpacingExtra="3.7sp"
+                android:text="@{profile.livesAt}"
+                android:textColor="#9f9f9f"
+                android:textSize="12sp"
+                app:visibility="@{profile.livesAt != null}"
+                tools:text="lives in San Francsico, CA"
+                />
+
+        </RelativeLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

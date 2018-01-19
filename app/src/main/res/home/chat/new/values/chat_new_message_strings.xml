@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_chat_append_memebers_to">Add members to: %s</string>
+    <string name="title_chat_new_message">New Message</string>
+
+    <string name="chat_new_message_hint_title">to:</string>
+    <string name="chat_new_message_hint"/>
+    <string name="chat_new_message_create">create</string>
+
+</resources>

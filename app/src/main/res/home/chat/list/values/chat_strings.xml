@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="chat_list_filter_all">all chats</string>
+    <string name="chat_list_filter_organization">organization chats</string>
+    <string name="chat_list_filter_group">group chats</string>
+    <string name="chat_list_filter_class">class chats</string>
+
+    <string name="chat_list_message_sender_you">You</string>
+
+    <string name="chat_list_message_empty">no messages yet…</string>
+    <string name="chat_list_message_text">%1$s %2$s</string>
+
+    <string name="chat_list_message_send_text">send a message</string>
+    <string name="chat_list_message_send_attachment">send an attachment</string>
+
+</resources>

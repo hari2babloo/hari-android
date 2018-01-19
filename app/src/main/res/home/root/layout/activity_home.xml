@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.text.InputType"/>
+
+        <variable
+            name="toolbarType"
+            type="android.databinding.ObservableField&lt;io.scal.ambi.extensions.view.ToolbarType&gt;"/>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.root.HomeViewModel"/>
+
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:theme="@style/AppBarLayout">
+
+            <include
+                layout="@layout/toolbar"
+                bind:toolbarType="@{toolbarType}"/>
+
+            <include
+                android:id="@+id/bottomBar"
+                layout="@layout/item_bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_height"
+                app:layout_scrollFlags="snap"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E9EBEE"
+            app:layout_behavior="io.scal.ambi.ui.global.view.behavior.AppBarScrollingTransitionBehavior"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</layout>

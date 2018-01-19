@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.chat.list.ChatFilterElementViewModel"/>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:background="@{viewModel.selected ? @color/blue : @color/whiteDark}"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="7dp"
+            android:src="@{viewModel.elementChatListFilter.iconId}"
+            android:tint="@{viewModel.selected ? @color/whiteDark : @color/grayUnselectedWhite}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="7dp"
+            android:ellipsize="end"
+            android:paddingEnd="3dp"
+            android:paddingStart="3dp"
+            android:singleLine="true"
+            android:text="@{viewModel.elementChatListFilter.titleId}"
+            android:textColor="@{viewModel.selected ? @color/whiteDark : @color/grayUnselectedWhite}"/>
+
+    </RelativeLayout>
+
+</layout>

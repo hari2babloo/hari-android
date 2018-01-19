@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="likes"
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UILikes"/>
+
+        <variable
+            name="comments"
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UIComments"/>
+
+        <variable
+            name="currentUser"
+            type="io.scal.ambi.entity.user.User"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        app:visibility="@{comments.comments.size != 0 || likes.allUsersLiked.size != 0}">
+
+        <ImageView
+            android:id="@+id/iv_current_user"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_action_like_filled"
+            app:visibility="@{likes.currentUserLiked}"/>
+
+        <TextView
+            android:id="@+id/tv_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:text="@{String.valueOf(comments.comments.size)}"
+            android:textColor="@color/blue"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibility="@{comments.comments.size != 0}"
+            tools:text="1"/>
+
+        <ImageView
+            android:id="@+id/iv_comments"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_comments"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_action_comment_filled"
+            app:visibility="@{comments.comments.size != 0}"/>
+
+        <RelativeLayout
+            android:id="@+id/c_user_likes"
+            android:layout_width="0dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="4dp"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_comments"
+            app:layout_constraintStart_toEndOf="@+id/iv_current_user"
+            app:layout_constraintTop_toTopOf="parent"
+            app:likesDescription="@{likes}"
+            app:likesDescriptionCurrentUser="@{currentUser}"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

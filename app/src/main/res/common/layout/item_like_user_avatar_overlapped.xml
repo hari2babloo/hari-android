@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="user"
+            type="io.scal.ambi.entity.user.User"/>
+
+    </data>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="-4dp"
+        app:actualImageScaleType="centerInside"
+        app:iconImage="@{user.avatar}"
+        />
+
+</layout>

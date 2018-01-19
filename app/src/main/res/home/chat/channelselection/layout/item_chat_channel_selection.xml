@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.chat.channel.UIChatChannelDescription"/>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.chat.channel.ChatChannelSelectionViewModel"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:onClick="@{(view) -> viewModel.selectChannel(element)}">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="18dp"
+            app:actualImageScaleType="centerInside"
+            app:iconImage="@{element.icon}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="@{element.title}"
+            android:textColor="@color/gray"
+            android:textSize="16sp"
+            app:customFontName="@{element.selected ? @string/font_pantra_bold : @string/font_pantra_regular}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="15dp"
+            android:background="#c8c7cc"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

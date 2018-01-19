@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed.Poll.PollChoiceResult"/>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button_white_bordered"
+        android:clickable="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="@{(float) viewModel.pollChoice.voters.size()}"
+                android:background="@{viewModel.mostVoted ? @drawable/bg_poll_result_most_voted : @drawable/bg_poll_result_simple}"
+                />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="@{(float)(viewModel.totalVotes - viewModel.pollChoice.voters.size())}"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="14dp"
+            android:layout_toStartOf="@+id/tv_result"
+            android:text="@{viewModel.pollChoice.text}"
+            android:textColor="@{viewModel.mostVoted ? @color/news_feed_poll_most_voted : @color/news_feed_poll_simple}"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="9dp"
+            android:text="@{viewModel.totalVotes == 0 ? @string/news_feed_poll_result_percent_zero : @string/news_feed_poll_result_percent(100 * viewModel.pollChoice.voters.size() / viewModel.totalVotes)}"
+            android:textColor="@color/news_feed_poll_simple"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+
+</layout>

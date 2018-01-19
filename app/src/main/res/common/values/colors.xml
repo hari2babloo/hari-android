@@ -2,5 +2,25 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">@color/blue</color>
+
+    <color name="white">@android:color/white</color>
+    <color name="blueLight">#93deff</color>
+    <color name="blue">#00A6F0</color>
+    <color name="blueDark">#303F9F</color>
+    <color name="dark">#1D2129</color>
+    <color name="gray">#222222</color>
+    <color name="grayLight">#C1C1C1</color>
+    <color name="red">#f00</color>
+    <color name="pink">#ED1E7A</color>
+    <color name="redLight">#eb4d5c</color>
+
+    <color name="graySearch">#BEBFBF</color>
+    <color name="grayActions">#828890</color>
+    <color name="whiteDark">#F2F2F5</color>
+    <color name="grayUnselectedWhite">#9B9B9B</color>
+
+    <color name="blueHref">#00a6ef</color>
+    <color name="grayBBB">#bbbbbb</color>
+
 </resources>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <import type="io.scal.ambi.ui.home.chat.details.data.UIChatMessageStatus"/>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel"/>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.chat.details.data.UIChatMessage"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:actualImageScaleType="centerCrop"
+            app:iconImage="@{element.sender.avatar}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:profileOpening="@{element.sender}"
+            app:roundAsCircle="true"/>
+
+        <TextView
+            android:id="@+id/tv_sender_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:maxWidth="@dimen/chat_direct_max_name_size"
+            android:singleLine="true"
+            android:text="@{element.sender.name}"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            app:customFontName="@{@string/font_pantra_bold}"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:profileOpening="@{element.sender}"
+            tools:text="Maria Semenovna"/>
+
+        <TextView
+            android:id="@+id/tv_send_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/grayBBB"
+            android:textSize="13sp"
+            app:datePassedSmall="@{element.messageDateTime}"
+            app:layout_constraintStart_toEndOf="@+id/tv_sender_name"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="10:04PM"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="end|center_vertical"
+            android:textSize="24sp"
+            app:chatDetailsState="@{element.state}"
+            app:layout_constraintEnd_toStartOf="@+id/c_user_likes"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="0dp"
+            tools:text="&#9716;"
+            />
+
+        <RelativeLayout
+            android:id="@+id/c_user_likes"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="6dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_likes"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_centerInParent="true"
+                android:src="@{0 == element.likes.allUsersLiked.size() ? @drawable/ic_like_empty : @drawable/ic_like_filled}"
+                android:tint="@{element.likes.currentUserLiked ? @color/redLight : @color/grayBBB}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_horizontal"
+                android:text="@{String.valueOf(element.likes.allUsersLiked.size())}"
+                android:textColor="@color/grayBBB"
+                android:textSize="10sp"
+                app:visibility="@{0 != element.likes.allUsersLiked.size()}"
+                tools:text="1"
+                />
+
+        </RelativeLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

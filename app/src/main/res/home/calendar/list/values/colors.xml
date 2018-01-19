@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="calendar_high_light">#334561</color>
+
+    <color name="calendar_day_simple">@color/calendar_high_light</color>
+    <color name="calendar_day_high_lighted">@color/white</color>
+
+</resources>

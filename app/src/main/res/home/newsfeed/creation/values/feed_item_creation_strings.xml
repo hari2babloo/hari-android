@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_creation_post">Post</string>
+
+    <string name="creation_poll_question_hint">What poll question do you want to ask?</string>
+    <string name="creation_polls_ends">poll ends</string>
+    <string name="creation_add_choice_hint">choice %d</string>
+    <string name="creation_add_choice">+ add choice</string>
+
+    <string name="creation_poll_ends_duration_1_day">1 day</string>
+    <string name="creation_poll_ends_duration_1_week">1 week</string>
+    <string name="creation_poll_ends_duration_never">never</string>
+    <string name="creation_poll_ends_duration_custom">%s</string>
+    <string name="creation_poll_ends_duration_custom_title">custom</string>
+
+    <string name="creation_post">post</string>
+
+    <string name="status_update_text_hint">share something interesting…</string>
+
+</resources>

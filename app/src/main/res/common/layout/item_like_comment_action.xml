@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <import type="android.view.Gravity"/>
+
+        <variable
+            name="likeGravity"
+            type="Integer"/>
+
+        <variable
+            name="liked"
+            type="Boolean"/>
+
+        <variable
+            name="commentGravity"
+            type="Integer"/>
+
+        <variable
+            name="likeClickListener"
+            type="android.view.View.OnClickListener"/>
+
+        <variable
+            name="commentClickListener"
+            type="android.view.View.OnClickListener"/>
+
+        <variable
+            name="visibility"
+            type="Boolean"/>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:visibility="@{visibility}">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="@{likeGravity ?? Gravity.CENTER}"
+            android:onClick="@{likeClickListener}"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerInside"
+                android:tint="@{liked ? @color/pink : @color/grayActions}"
+                app:srcCompat="@drawable/ic_action_like_default"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
+                android:gravity="center_vertical"
+                android:text="@{liked ? @string/action_like_selected : @string/action_like_default}"
+                android:textColor="@{liked ? @color/pink : @color/grayActions}"
+                android:textSize="14sp"
+                app:customFontName="@{@string/font_pantra_bold}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="@{commentGravity ?? Gravity.CENTER}"
+            android:onClick="@{commentClickListener}"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_action_comment_default"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginStart="2dp"
+                android:gravity="center_vertical"
+                android:text="@string/action_comment"
+                android:textColor="@color/grayActions"
+                android:textSize="14sp"
+                app:customFontName="@{@string/font_pantra_bold}"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

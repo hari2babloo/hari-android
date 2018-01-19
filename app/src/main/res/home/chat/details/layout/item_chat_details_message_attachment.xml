@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.chat.details.ChatDetailsViewModel"/>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.chat.details.data.UIChatMessage.AttachmentMessage"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:onClick="@{(view) -> viewModel.onMessageClick(element)}"
+        android:paddingBottom="8dp"
+        android:paddingEnd="18dp"
+        android:paddingStart="18dp"
+        android:paddingTop="8dp">
+
+        <include
+            android:id="@+id/c_header"
+            layout="@layout/item_chat_details_message_item_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:element="@{element}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bg_item_attachment"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:actualImageScaleType="centerInside"
+                app:chatDetailsAttachmentTypeIcon="@{element.attachment.typeName}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:roundAsCircle="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <com.vanniktech.emoji.EmojiTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@{element.message}"
+                    android:textColor="#222222"
+                    android:textSize="14sp"
+                    app:customFontName="@{@string/font_pantra_bold}"
+                    tools:text="inside-message - Group data"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@{element.description}"
+                    android:textColor="@color/grayBBB"
+                    android:textSize="13sp"
+                    tools:text="1.7 MB PDF"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

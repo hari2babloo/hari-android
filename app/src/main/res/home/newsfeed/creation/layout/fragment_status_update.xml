@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateViewModel"/>
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/root_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/c_actions"
+            layout="@layout/item_creation_bottom_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:viewModel="@{viewModel.bottomViewModel}"
+            />
+
+        <View
+            android:id="@+id/v_space"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/c_actions"
+            android:background="#e9e9e9"/>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/v_space">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp">
+
+                <LinearLayout
+                    android:id="@+id/c_as_user_selection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Spinner
+                        android:id="@+id/s_as_user"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@null"
+                        />
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        app:srcCompat="@drawable/ic_creation_spinner_dropdown"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_pinned"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:onClick="@{(view) -> viewModel.changePinStatus()}"
+                    android:scaleType="centerInside"
+                    android:tint="@{viewModel.dataStateModel.pinned ? @color/blue : @color/grayUnselectedWhite}"
+                    app:layout_constraintBottom_toBottomOf="@+id/c_as_user_selection"
+                    app:layout_constraintEnd_toStartOf="@+id/c_as_user_selection"
+                    app:layout_constraintTop_toTopOf="@+id/c_as_user_selection"
+                    app:srcCompat="@drawable/ic_creation_pinned"/>
+
+                <ImageView
+                    android:id="@+id/iv_locked"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:onClick="@{(view) -> viewModel.changeLockStatus()}"
+                    android:scaleType="centerInside"
+                    android:tint="@{viewModel.dataStateModel.locked ? @color/blue : @color/grayUnselectedWhite}"
+                    app:layout_constraintBottom_toBottomOf="@+id/c_as_user_selection"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_pinned"
+                    app:layout_constraintTop_toTopOf="@+id/c_as_user_selection"
+                    app:srcCompat="@drawable/ic_creation_locked"/>
+
+                <com.vanniktech.emoji.EmojiEditText
+                    android:id="@+id/et_question"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@null"
+                    android:gravity="top|start"
+                    android:hint="@string/status_update_text_hint"
+                    android:inputType="textAutoComplete|textAutoCorrect|textCapSentences|textMultiLine|textLongMessage"
+                    android:lineSpacingExtra="4sp"
+                    android:minLines="4"
+                    android:singleLine="false"
+                    android:text="@={viewModel.dataStateModel.statusText.data}"
+                    android:textColor="#8a333333"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_attachment_preview"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/c_as_user_selection"
+                    />
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/iv_attachment_preview"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="20dp"
+                    app:actualImageScaleType="centerCrop"
+                    app:imageUrl="@{viewModel.bottomViewModel.selectedAttachment.pathAsString}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/et_question"
+                    app:visibility="@{null != viewModel.bottomViewModel.selectedAttachment.pathAsString}"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:visibility="@{viewModel.progressStateModel.progress}"/>
+
+    </RelativeLayout>
+
+</layout>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "537351350730",
+    "firebase_url": "https://ambi-mobile.firebaseio.com",
+    "project_id": "ambi-mobile",
+    "storage_bucket": "ambi-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537351350730:android:743dabb39ff84143",
+        "android_client_info": {
+          "package_name": "com.ambi.work"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537351350730-8lror1djrhfof7kj64ed2hiau9u61q0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3lWK6oYjSVmWoiI9Ud3j8CxTzMYxEVmg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

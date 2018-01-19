@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="toolbarType"
+            type="android.databinding.ObservableField&lt;io.scal.ambi.extensions.view.ToolbarType&gt;"/>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationViewModel"/>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:theme="@style/AppBarLayout">
+
+            <include
+                layout="@layout/toolbar"
+                app:toolbarType="@{toolbarType}"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/c_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline_33"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.33"/>
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline_66"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.66"/>
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline_tab_height"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="@dimen/news_need_header_tab_height"/>
+
+                <TextView
+                    android:id="@+id/tv_status_update"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="@color/white"
+                    android:foreground="?selectableItemBackground"
+                    android:gravity="center"
+                    android:onClick="@{view -> viewModel.createStatus()}"
+                    android:text="@string/news_feed_status_update"
+                    android:textColor="@color/blue"
+                    android:textSize="12sp"
+                    app:customFontName="@{@string/font_pantra_bold}"
+                    app:layout_constraintBottom_toBottomOf="@+id/guideline_tab_height"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_33"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tv_announcement"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginStart="1dp"
+                    android:background="@color/whiteDark"
+                    android:foreground="?selectableItemBackground"
+                    android:gravity="center"
+                    android:onClick="@{view -> viewModel.createAnnouncement()}"
+                    android:text="@string/news_feed_announcements"
+                    android:textColor="@color/grayUnselectedWhite"
+                    android:textSize="12sp"
+                    app:customFontName="@{@string/font_pantra_bold}"
+                    app:layout_constraintBottom_toBottomOf="@+id/guideline_tab_height"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_66"
+                    app:layout_constraintStart_toEndOf="@+id/guideline_33"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tv_poll"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="1dp"
+                    android:background="@color/whiteDark"
+                    android:foreground="?selectableItemBackground"
+                    android:gravity="center"
+                    android:onClick="@{view -> viewModel.createPoll()}"
+                    android:text="@string/news_feed_polls"
+                    android:textColor="@color/grayUnselectedWhite"
+                    android:textSize="12sp"
+                    app:customFontName="@{@string/font_pantra_bold}"
+                    app:layout_constraintBottom_toBottomOf="@+id/guideline_tab_height"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guideline_66"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+</layout>

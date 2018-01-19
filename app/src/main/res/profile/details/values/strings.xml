@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="profile_details_edit_resume">Edit Resume</string>
+
+    <string name="profile_details_life_at">lives in %s</string>
+
+</resources>

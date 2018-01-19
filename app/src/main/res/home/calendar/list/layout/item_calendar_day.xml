@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+
+        <variable
+            name="calendarDay"
+            type="io.scal.ambi.ui.home.calendar.view.UICalendarDay"/>
+
+        <variable
+            name="calendarDayEvents"
+            type="io.scal.ambi.ui.home.calendar.view.UICalendarEvents"/>
+
+        <variable
+            name="highLighted"
+            type="Boolean"/>
+
+        <variable
+            name="disabled"
+            type="Boolean"/>
+    </data>
+
+    <io.scal.ambi.ui.global.view.AspectRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="@{disabled ? 0.56f : 1f}"
+        app:aspect_height="56"
+        app:aspect_width="50">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(calendarDay.date.dayOfMonth)}"
+                android:textColor="@{highLighted ? @color/calendar_day_high_lighted : @color/calendar_day_simple}"
+                android:textSize="16sp"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="6dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                app:calendarDayEvents="@{calendarDayEvents}"/>
+
+        </LinearLayout>
+
+    </io.scal.ambi.ui.global.view.AspectRelativeLayout>
+
+</layout>

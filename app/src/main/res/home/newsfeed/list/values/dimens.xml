@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="news_need_padding">22dp</dimen>
+
+    <dimen name="news_need_header_tab_height">28dp</dimen>
+
+</resources>

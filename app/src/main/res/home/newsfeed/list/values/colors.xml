@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="news_feed_data">#61000000</color>
+
+    <color name="news_feed_audience_selected">#2C2D30</color>
+
+    <color name="news_feed_announcement_event">#00e68d</color>
+    <color name="news_feed_announcement_good_news">#b800e6</color>
+    <color name="news_feed_announcement_general">#009fe6</color>
+    <color name="news_feed_announcement_safety">#e60000</color>
+    <color name="news_feed_announcement_tragedy">#e67a00</color>
+
+    <color name="news_feed_poll_most_voted">#00a6ef</color>
+    <color name="news_feed_poll_simple">#565656</color>
+
+</resources>

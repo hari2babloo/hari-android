@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.chat.details.data.UIChatTyping"/>
+
+    </data>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:background="#f7f7f7"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lineSpacingExtra="7sp"
+        android:paddingEnd="17dp"
+        android:paddingStart="17dp"
+        android:singleLine="true"
+        android:text="@{element.getTypingUsers(context)}"
+        android:textColor="#9f9f9f"
+        android:textSize="11sp"
+        tools:text="Maria is typing"
+        />
+
+</layout>
