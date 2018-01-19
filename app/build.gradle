@@ -31,6 +31,15 @@ android {
             v1SigningEnabled true
             v2SigningEnabled true
         }
+        release {
+            keyAlias 'ambi'
+            keyPassword 'aandroidAMBI2018'
+            storePassword 'androidAMBI2018'
+            storeFile file('ambi.jks')
+
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
     }
 
     buildTypes {
@@ -38,7 +47,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
         debug {
             debuggable true

@@ -2,8 +2,8 @@ package io.scal.ambi.ui.auth.login
 
 import android.content.Context
 import android.databinding.ObservableField
-import io.reactivex.rxkotlin.addTo
 import com.ambi.work.R
+import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.exceptions.GoodMessageException
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
 import io.scal.ambi.model.interactor.auth.login.ILoginInteractor
@@ -20,10 +20,9 @@ class LoginViewModel @Inject constructor(private val context: Context,
     val stateModel = ObservableField<LoginStateModel>(LoginStateModel.DataInputStateModel(null, null))
 
     init {
-        if (true) {
+        if (false) {
             stateModel.set(LoginStateModel.DataInputStateModel("asdasd@babson.edu", "q1w2e3r4t5"))
             stateModel.set(LoginStateModel.DataInputStateModel("Genevieve@ambi.work", "q1w2e3r4t5y6"))
-        } else {
             stateModel.set(LoginStateModel.DataInputStateModel("abhatnagar2@babson.edu", "password"))
         }
     }
