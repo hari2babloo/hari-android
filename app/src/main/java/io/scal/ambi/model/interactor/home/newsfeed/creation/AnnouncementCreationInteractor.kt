@@ -31,13 +31,13 @@ class AnnouncementCreationInteractor @Inject constructor(localUserDataRepository
                 listOf(announcementCreation.audiences)
             }
 
-        val attachment = announcementCreation.attachments.firstOrNull { it is ChatAttachment.LocalFile || it is ChatAttachment.LocalFile }
+        val attachment = announcementCreation.attachments.firstOrNull { it is ChatAttachment.LocalFile || it is ChatAttachment.LocalImage }
         return if (null == attachment) {
             sendFeedItem(announcementCreation, audiences, null)
         } else {
             when (attachment) {
                 is ChatAttachment.LocalFile  -> fileUploadInteractor.uploadFile(attachment.fileFile)
-                is ChatAttachment.LocalImage -> fileUploadInteractor.uploadImage(attachment.imageFile)
+                is ChatAttachment.LocalImage -> fileUploadInteractor.uploadImage(attachment.imageFile, null)
                 else                         -> throw IllegalArgumentException("wrong attachment type")
             }
                 .flatMapCompletable { sendFeedItem(announcementCreation, audiences, it.id) }

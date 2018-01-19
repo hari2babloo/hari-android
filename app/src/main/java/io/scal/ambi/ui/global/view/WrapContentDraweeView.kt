@@ -10,6 +10,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.image.ImageInfo
 
+
 class WrapContentDraweeView : SimpleDraweeView {
 
     // we set a listener and update the view's aspect ratio depending on the loaded image

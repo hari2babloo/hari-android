@@ -50,7 +50,7 @@ object TextViewDataBinder {
     private val FULL_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy/MM/dd").withLocale(Locale.ENGLISH)
     private val TIME_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("HH:mma").withLocale(Locale.ENGLISH)
     private val DAY_OF_WEEK_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("EEEE").withLocale(Locale.ENGLISH)
-    private val DATE_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("MM/dd").withLocale(Locale.ENGLISH)
+    private val DATE_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("MMM dd").withLocale(Locale.ENGLISH)
 
     @JvmStatic
     @BindingAdapter("datePassed")
@@ -87,21 +87,12 @@ object TextViewDataBinder {
             val resultText = when {
                 durationBetween.standardMinutes < -20 -> DATE_DATE_TIME_FORMATTER.print(dateTime)
                 durationBetween.standardSeconds < 60  -> context.getString(R.string.day_ago_just_now_small)
-                durationBetween.standardDays == 0L    -> TIME_DATE_TIME_FORMATTER.print(dateTime)
+                durationBetween.standardMinutes < 60  -> context.getString(R.string.day_ago_minutes_ago, durationBetween.standardMinutes)
+                durationBetween.standardHours < 24    -> context.getString(R.string.day_ago_hours_ago, durationBetween.standardHours)
                 durationBetween.standardDays < 7      -> DAY_OF_WEEK_DATE_TIME_FORMATTER.print(dateTime)
                 else                                  -> DATE_DATE_TIME_FORMATTER.print(dateTime)
             }
             textView.text = resultText
-        }
-    }
-
-    @JvmStatic
-    @BindingAdapter("timeValue")
-    fun bindTimeValue(textView: TextView, dateTime: DateTime?) {
-        if (null == dateTime) {
-            textView.text = null
-        } else {
-            textView.text = TIME_DATE_TIME_FORMATTER.print(dateTime)
         }
     }
 

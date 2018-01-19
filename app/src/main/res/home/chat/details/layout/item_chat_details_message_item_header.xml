@@ -60,9 +60,9 @@
             android:layout_marginTop="6dp"
             android:textColor="@color/grayBBB"
             android:textSize="13sp"
+            app:datePassedSmall="@{element.messageDateTime}"
             app:layout_constraintStart_toEndOf="@+id/tv_sender_name"
             app:layout_constraintTop_toTopOf="parent"
-            app:timeValue="@{element.messageDateTime}"
             tools:text="10:04PM"
             />
 

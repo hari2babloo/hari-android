@@ -31,7 +31,7 @@ class StatusUpdateInteractor @Inject constructor(localUserDataRepository: ILocal
         } else {
             when (attachment) {
                 is ChatAttachment.LocalFile  -> fileUploadInteractor.uploadFile(attachment.fileFile)
-                is ChatAttachment.LocalImage -> fileUploadInteractor.uploadImage(attachment.imageFile)
+                is ChatAttachment.LocalImage -> fileUploadInteractor.uploadImage(attachment.imageFile, null)
                 else                         -> throw IllegalArgumentException("wrong attachment type")
             }
                 .flatMapCompletable { sendFeedItem(statusUpdate, audiences, it.id) }

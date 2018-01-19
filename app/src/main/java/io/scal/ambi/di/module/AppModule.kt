@@ -40,6 +40,7 @@ class AppModule(private val context: App) {
         config.addDecodingCapability(FrescoSvgDecoder.SVG_FORMAT, FrescoSvgDecoder.SvgFormatChecker(), FrescoSvgDecoder.SvgDecoder())
         val configPipline = ImagePipelineConfig.newBuilder(context)
         configPipline.setImageDecoderConfig(config.build())
+        configPipline.isDownsampleEnabled = true
 
         val draweeConfig = DraweeConfig.newBuilder()
         draweeConfig.addCustomDrawableFactory(FrescoSvgDecoder.SvgDrawableFactory(context))

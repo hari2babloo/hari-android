@@ -3,6 +3,7 @@ package io.scal.ambi.model.data.server.responses.newsfeed
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.actions.Comment
+import io.scal.ambi.entity.chat.ChatAttachment
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.notNullOrThrow
@@ -113,7 +114,8 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                            createdAt.toDateTime("createdAt"),
                            audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                            createComments(),
-                           likes?.map { it.parse() } ?: emptyList()
+                           likes?.map { it.parse() } ?: emptyList(),
+                           parseFileAttachments()
         )
 
     private fun parseAsAnnouncement(): NewsFeedItem {
@@ -126,7 +128,8 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
                                         audiences.notNullOrThrow("audiences").mapNotNull { it.toAudience() },
                                         announcementType.toAnnouncement(),
                                         createComments(),
-                                        likes?.map { it.parse() } ?: emptyList()
+                                        likes?.map { it.parse() } ?: emptyList(),
+                                        parseFileAttachments()
         )
     }
 
@@ -138,6 +141,13 @@ internal class ItemPost : Parceble<NewsFeedItem?> {
 
     private fun parsePosterUser(): User {
         return poster.notNullOrThrow("poster").parse()
+    }
+
+    private fun parseFileAttachments(): List<ChatAttachment> {
+        return files
+            ?.map { it.parse() }
+            ?.map { if (it.isImage) ChatAttachment.Image(it.url) else ChatAttachment.File(it.url, it.fileType, it.fileSize) }
+            ?: emptyList()
     }
 }
 

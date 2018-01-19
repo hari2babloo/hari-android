@@ -21,8 +21,8 @@ class LoginViewModel @Inject constructor(private val context: Context,
 
     init {
         if (true) {
-            stateModel.set(LoginStateModel.DataInputStateModel("Genevieve@ambi.work", "q1w2e3r4t5y6"))
             stateModel.set(LoginStateModel.DataInputStateModel("asdasd@babson.edu", "q1w2e3r4t5"))
+            stateModel.set(LoginStateModel.DataInputStateModel("Genevieve@ambi.work", "q1w2e3r4t5y6"))
         } else {
             stateModel.set(LoginStateModel.DataInputStateModel("abhatnagar2@babson.edu", "password"))
         }

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import io.scal.ambi.entity.base.ServerFile
 import io.scal.ambi.extensions.notNullOrThrow
+import java.io.File
 
 class FileResponse : BaseResponse<ServerFile>() {
 
@@ -33,14 +34,22 @@ class FileResponse : BaseResponse<ServerFile>() {
         @Expose
         var fileType: String? = null
 
+        @SerializedName("fileSize")
+        @Expose
+        var fileSize: Long? = null
+
         @SerializedName("createdAt")
         @Expose
         var createdAt: String? = null
 
         override fun parse(): ServerFile {
             return ServerFile(id.notNullOrThrow("id"),
-                              url.notNullOrThrow("url")
+                              url.notNullOrThrow("url"),
+                              fileType ?: extractFromUrl(url.notNullOrThrow("url")),
+                              fileSize ?: 0
             )
         }
+
+        private fun extractFromUrl(url: String): String = File(url).extension
     }
 }

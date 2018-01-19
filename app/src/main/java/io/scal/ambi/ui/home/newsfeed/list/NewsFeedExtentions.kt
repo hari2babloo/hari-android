@@ -1,8 +1,10 @@
 package io.scal.ambi.ui.home.newsfeed.list
 
+import io.scal.ambi.entity.chat.ChatAttachment
 import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.ObservableString
+import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.ui.home.newsfeed.list.data.UIComments
 import io.scal.ambi.ui.home.newsfeed.list.data.UILikes
 import io.scal.ambi.ui.home.newsfeed.list.data.UIModelFeed
@@ -33,7 +35,12 @@ fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                            messageText,
                                                            UILikes(currentUser, likes),
                                                            UIComments(comments),
-                                                           ObservableString())
+                                                           ObservableString(),
+                                                           attachments
+                                                               .firstOrNull { it is ChatAttachment.LocalImage || it is ChatAttachment.Image }
+                                                               ?.pathAsString
+                                                               ?.let { IconImage(it) }
+        )
         is NewsFeedItemAnnouncement -> UIModelFeed.Message(uid,
                                                            this,
                                                            user,
@@ -44,7 +51,12 @@ fun NewsFeedItem.toNewsFeedElement(currentUser: User): UIModelFeed =
                                                            messageText,
                                                            UILikes(currentUser, likes),
                                                            UIComments(comments),
-                                                           ObservableString())
+                                                           ObservableString(),
+                                                           attachments
+                                                               .firstOrNull { it is ChatAttachment.LocalImage || it is ChatAttachment.Image }
+                                                               ?.pathAsString
+                                                               ?.let { IconImage(it) }
+        )
         else                        -> throw IllegalArgumentException("unknown NewsFeedItem: $this")
     }
 

@@ -31,7 +31,8 @@ sealed class UIModelFeed(open val uid: String,
                        val message: String,
                        override val likes: UILikes,
                        override val comments: UIComments,
-                       override val userCommentText: ObservableString) :
+                       override val userCommentText: ObservableString,
+                       val image: IconImage?) :
         UIModelFeed(uid,
                     feedItem,
                     author,
