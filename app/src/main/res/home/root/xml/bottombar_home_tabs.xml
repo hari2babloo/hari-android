@@ -28,9 +28,9 @@
         id="@+id/tab_resources"
         title="@string/title_bottom_resources"/>
 
-    <tab
-        icon="@drawable/ic_tab_more_icon"
-        id="@+id/tab_more"
-        title="@string/title_bottom_more"/>
+    <!--<tab-->
+        <!--icon="@drawable/ic_tab_more_icon"-->
+        <!--id="@+id/tab_more"-->
+        <!--title="@string/title_bottom_more"/>-->
 
 </tabs>

@@ -20,6 +20,8 @@
         android:fillViewport="true">
 
         <android.support.constraint.ConstraintLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

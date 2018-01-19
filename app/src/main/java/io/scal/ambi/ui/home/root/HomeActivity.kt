@@ -4,7 +4,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import com.ambi.work.R
 import com.ambi.work.databinding.ActivityHomeBinding
 import com.facebook.drawee.drawable.ScalingUtils
@@ -85,8 +84,8 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
                 Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
                 Pair(R.id.tab_chat, ChatListFragment::class),
 //                Pair(R.id.tab_notifications, Fragment::class),
-                Pair(R.id.tab_resources, ResourceWebViewFragment::class),
-                Pair(R.id.tab_more, Fragment::class)
+                Pair(R.id.tab_resources, ResourceWebViewFragment::class)
+//                Pair(R.id.tab_more, Fragment::class)
             ))
     }
 
