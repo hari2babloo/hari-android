@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:background="@color/white"
+                android:id="@+id/tvDummyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="abc"
+                android:visibility="invisible"
+                android:textColor="@color/news_feed_audience_selected"
+                android:textSize="14sp"
+                app:customFontName="@{@string/font_pantra_bold}"/>
+
+
+
+            <View
+                android:visibility="gone"
+                android:id="@+id/tvSeperator"
+                android:layout_alignRight="@+id/tvTabName"
+                android:layout_alignLeft="@+id/tvTabName"
+                android:layout_below="@+id/tvDummyText"
+                android:layout_width="wrap_content"
+                android:layout_height="4dp"
+                android:layout_alignBaseline="@+id/tvTabName"
+                android:background="@drawable/text_underline_selected" />
+
+            <TextView
+                android:id="@+id/tvTabName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@drawable/tab_bar_selector"
+                android:textSize="14sp"
+                app:customFontName="@{@string/font_pantra_bold}"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</layout>

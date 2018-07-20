@@ -3,19 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.roughike.bottombar.BottomBar
+    <io.scal.ambi.extensions.view.BottomBarType
+        android:background="@color/white"
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_bar_height"
-        android:background="@color/white"
-        app:bb_activeTabAlpha="1"
-        app:bb_activeTabColor="@color/blue"
-        app:bb_badgesHideWhenActive="true"
-        app:bb_inActiveTabAlpha="1"
-        app:bb_inActiveTabColor="@color/grayLight"
-        app:bb_showShadow="false"
         app:bb_tabXmlResource="@xml/bottombar_home_tabs"
-        app:bb_tabletMode="false"
-        app:bb_titleTextAppearance="@style/TextView.BottomBarItem"/>
+        app:bb_tabItemLayout="@layout/bottom_bar_tabitem"
+        />
 
 </layout>

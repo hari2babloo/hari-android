@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <View
+                android:visibility="invisible"
+                android:id="@+id/tvSeperator"
+                android:layout_alignRight="@+id/tvTabIcon"
+                android:layout_alignLeft="@+id/tvTabIcon"
+                android:layout_below="@+id/tvTabIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="4dp"
+                android:layout_alignBaseline="@+id/tvTabIcon"
+                android:background="@drawable/text_underline_selected" />
+
+            <ImageView
+                android:id="@+id/tvTabIcon"
+                app:srcCompat="@drawable/ic_tab_newsfeed_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@drawable/bottom_nav_colors"
+                />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</layout>

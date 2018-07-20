@@ -6,12 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.ambi.work.R
 import com.ambi.work.databinding.ActivityHomeBinding
-import com.facebook.drawee.drawable.ScalingUtils
-import com.facebook.drawee.generic.RoundingParams
-import com.facebook.drawee.view.SimpleDraweeView
-import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.extensions.view.IconImage
-import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.ui.auth.profile.AuthProfileCheckerViewModel
 import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
@@ -44,49 +39,36 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
         super.onCreate(savedInstanceState)
 
         initToolbar()
-        initNavigation()
+        initBottombar()
     }
 
     private fun initToolbar() {
-        defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_ambi_logo_small),
-                                         null,
-                                         SearchToolbarContent(searchViewModel),
-                                         IconImageUser(),
-                                         Runnable { viewModel.openProfile() })
+
+        defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_tab_notification_icon),
+                Runnable { viewModel.openProfile() },
+                SearchToolbarContent(searchViewModel),
+                IconImage(R.drawable.ic_tab_chat_icon),
+                Runnable { viewModel.openProfile() })
+
         defaultToolbarType!!.makeScrolling()
-        defaultToolbarType!!.rightIconCustomization = object : ToolbarType.IconCustomization {
-            override fun applyNewStyle(simpleDraweeView: SimpleDraweeView) {
-                simpleDraweeView.hierarchy.apply {
-                    actualImageScaleType = ScalingUtils.ScaleType.CENTER_CROP
-                    roundingParams = RoundingParams.asCircle()
-                }
-            }
-        }
+
         setToolbarType(defaultToolbarType)
 
-        authProfileCheckerViewModel
-            .userProfile
-            .subscribe {
-                val newToolbarType = defaultToolbarType?.copy(rightIcon = it.avatar)
-                compareAndSetToolbarType(defaultToolbarType, newToolbarType)
-                defaultToolbarType = newToolbarType
-            }
-            .addTo(destroyDisposables)
     }
 
-    private fun initNavigation() {
+
+
+    private fun initBottombar() {
         bottomBarFragmentSwitcher = BottomBarFragmentSwitcher(
-            supportFragmentManager,
-            binding.bottomBar!!.bottomBar,
-            hashMapOf(
-                Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
-//                Pair(R.id.tab_calendar, CalendarListFragment::class),
-                Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
-                Pair(R.id.tab_chat, ChatListFragment::class),
-//                Pair(R.id.tab_notifications, Fragment::class),
-                Pair(R.id.tab_resources, ResourceWebViewFragment::class)
-//                Pair(R.id.tab_more, Fragment::class)
-            ))
+                supportFragmentManager,
+                binding.bottomBar!!.bottomBar,
+                hashMapOf(
+                        Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
+                        Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
+                        Pair(R.id.tab_chat, ChatListFragment::class),
+                        Pair(R.id.tab_resources, ResourceWebViewFragment::class)
+                ))
+        bottomBarFragmentSwitcher.showTab(R.id.tab_newsfeed)
     }
 
     override fun onBackPressed() {
@@ -107,3 +89,4 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
             Intent(context, HomeActivity::class.java)
     }
 }
+

@@ -13,139 +13,45 @@
     </data>
 
     <android.support.constraint.ConstraintLayout
+        android:background="@drawable/header_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3.5dp"
-        android:background="@color/white">
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        >
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline_33"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.33"/>
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline_66"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.66"/>
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline_tab_height"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="@dimen/news_need_header_tab_height"/>
-
-        <TextView
-            android:id="@+id/tv_status_update"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="1dp"
-            android:background="@color/white"
-            android:gravity="center"
-            android:onClick="@{view -> viewModel.createStatus()}"
-            android:text="@string/news_feed_status_update"
-            android:textColor="@color/blue"
-            android:textSize="12sp"
-            app:customFontName="@{@string/font_pantra_bold}"
-            app:layout_constraintBottom_toBottomOf="@+id/guideline_tab_height"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_33"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginStart="1dp"
-            android:background="#F2F2F5"
-            android:foreground="?selectableItemBackground"
-            android:gravity="center"
-            android:onClick="@{view -> viewModel.createAnnouncement()}"
-            android:text="@string/news_feed_announcements"
-            android:textColor="#9B9B9B"
-            android:textSize="12sp"
-            app:customFontName="@{@string/font_pantra_bold}"
-            app:layout_constraintBottom_toBottomOf="@+id/guideline_tab_height"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_66"
-            app:layout_constraintStart_toEndOf="@+id/guideline_33"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="1dp"
-            android:background="#F2F2F5"
-            android:foreground="?selectableItemBackground"
-            android:gravity="center"
-            android:onClick="@{view -> viewModel.createPoll()}"
-            android:text="@string/news_feed_polls"
-            android:textColor="#9B9B9B"
-            android:textSize="12sp"
-            app:customFontName="@{@string/font_pantra_bold}"
-            app:layout_constraintBottom_toBottomOf="@+id/guideline_tab_height"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/guideline_66"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline_padding"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/news_need_padding"/>
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/iv_icon"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginTop="11dp"
-            app:actualImageScaleType="centerCrop"
-            app:iconImage="@{viewModel.currentUser.avatar}"
-            app:layout_constraintStart_toStartOf="@+id/guideline_padding"
-            app:layout_constraintTop_toTopOf="@+id/guideline_tab_height"
-            app:roundAsCircle="true"
-            />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="0dp"
-            android:layout_height="66dp"
-            android:layout_marginStart="8dp"
+        <LinearLayout
             android:gravity="center_vertical"
-            android:onClick="@{view -> viewModel.createStatus()}"
-            android:text="@string/news_feed_status_update_description"
-            android:textColor="#9B9B9B"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_icon"
-            app:layout_constraintTop_toTopOf="@+id/iv_icon"/>
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <View
-            android:id="@+id/v_space"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="11dp"
-            android:background="#E9E9E9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_icon"/>
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/iv_icon"
+                android:layout_width="44dp"
+                android:layout_marginLeft="20dp"
+                android:layout_height="44dp"
+                app:actualImageScaleType="centerCrop"
+                app:iconImage="@{viewModel.currentUser.avatar}"
+                app:roundAsCircle="true"
+                />
 
-        <include
-            layout="@layout/item_comment_actions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline_padding"
-            app:layout_constraintTop_toBottomOf="@+id/v_space"
-            />
-
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="66dp"
+                android:layout_marginStart="20dp"
+                android:gravity="center_vertical"
+                android:onClick="@{view -> viewModel.createStatus()}"
+                android:text="@string/news_feed_status_update_description"
+                android:textColor="#9B9B9B"
+                app:customFontName="@{@string/font_pantra_medium}"
+                android:textSize="12sp"
+                />
+        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 
 </layout>

@@ -23,7 +23,9 @@ import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreation
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
 import io.scal.ambi.ui.home.newsfeed.list.adapter.NewsFeedAdapter
 import ru.terrakok.cicerone.Navigator
+import java.util.*
 import kotlin.reflect.KClass
+
 
 class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsFeedBinding>() {
 
@@ -31,6 +33,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
     override val viewModelClass: KClass<NewsFeedViewModel> = NewsFeedViewModel::class
 
     private val adapter by lazy { NewsFeedAdapter(viewModel) }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,6 +43,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
     }
 
     private fun initRecyclerView() {
+
         binding.rvCollegeUpdates.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvCollegeUpdates.adapter = adapter
 

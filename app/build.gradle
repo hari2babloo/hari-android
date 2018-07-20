@@ -65,8 +65,11 @@ android {
         aws {
             dimension "api"
 
-            buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/"'
-            buildConfigField "String", "MAIN_IMAGES_URL", '"https://www.ambi.work/"'
+//            buildConfigField "String", "MAIN_SERVER_URL", '"http://ec2-184-72-69-125.compute-1.amazonaws.com:4000/api/"'
+//            buildConfigField "String", "MAIN_IMAGES_URL", '"https://www.ambi.work/"'
+
+            buildConfigField "String", "MAIN_SERVER_URL", '"https://demo1.ambi.work:4000/api/"'
+            buildConfigField "String", "MAIN_IMAGES_URL", '"https://demo1.ambi.work/"'
         }
         sandbox {
             dimension "api"
@@ -88,9 +91,10 @@ android {
         }
         arpit {
             dimension "api"
-
-            buildConfigField "String", "MAIN_SERVER_URL", '"http://ambi-api.ngrok.io/api/"'
-            buildConfigField "String", "MAIN_IMAGES_URL", '"https://www.ambi.work/"'
+            //buildConfigField "String", "MAIN_SERVER_URL", '"http://ambi-api.ngrok.io/api/"'
+            //buildConfigField "String", "MAIN_IMAGES_URL", '"https://www.ambi.work/"'
+            buildConfigField "String", "MAIN_SERVER_URL", '"https://demo1.ambi.work:4000/api/"'
+            buildConfigField "String", "MAIN_IMAGES_URL", '"https://demo1.ambi.work/"'
         }
     }
 
@@ -184,7 +188,7 @@ dependencies {
     implementation 'com.twilio:chat-android:2.0.4'
 
     // ui
-    implementation "com.roughike:bottom-bar:2.3.1"
+    //implementation "com.roughike:bottom-bar:2.3.1"
     implementation 'com.hannesdorfmann:adapterdelegates3:3.0.1' // for news feed recycler view with different view types
     implementation 'com.vanniktech:emoji-google:0.5.1'
     implementation 'com.github.pchmn:MaterialChipsInput:1.0.8' // for new chat creation screen. it is customized a lot. including reflection

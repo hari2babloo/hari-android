@@ -6,4 +6,10 @@
         <attr name="aspect_height" format="integer"/>
     </declare-styleable>
 
+    <declare-styleable name="BottomBarType">
+        <attr name="bb_tabXmlResource" format="reference" />
+        <attr name="bb_tabItemLayout" format="reference" />
+    </declare-styleable>
+
+
 </resources>

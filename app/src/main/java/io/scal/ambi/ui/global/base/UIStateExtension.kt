@@ -22,7 +22,7 @@ fun <T> ObservableField<T>.asErrorState(rootView: View, refreshFatal: () -> Unit
             when (convertedState) {
                 is ErrorState.NoError       -> snackBar = null
                 is ErrorState.FatalError    -> {
-                    snackBar = Snackbar.make(rootView, convertedState.error, Snackbar.LENGTH_INDEFINITE)
+                    snackBar = Snackbar.make(rootView, convertedState.error, Snackbar.LENGTH_SHORT)
                     snackBar!!.setAction(R.string.text_retry, { refreshFatal() })
                     snackBar!!.show()
                 }
