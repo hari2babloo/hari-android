@@ -13,10 +13,10 @@ import io.scal.ambi.ui.global.base.BottomBarFragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
-import io.scal.ambi.ui.home.chat.list.ChatListFragment
+import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
+import io.scal.ambi.ui.home.more.MoreFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import io.scal.ambi.ui.webview.ResourceWebViewFragment
-import io.scal.ambi.ui.webview.SchedulerWebViewFragment
 import ru.terrakok.cicerone.Navigator
 import javax.inject.Inject
 import kotlin.reflect.KClass
@@ -43,17 +43,16 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
     }
 
     private fun initToolbar() {
-
+        searchViewModel.hint = getString(R.string.hint_search_ambi)
         defaultToolbarType = ToolbarType(IconImage(R.drawable.ic_tab_notification_icon),
-                Runnable { viewModel.openProfile() },
+                Runnable { viewModel.openNotifications() },
                 SearchToolbarContent(searchViewModel),
                 IconImage(R.drawable.ic_tab_chat_icon),
-                Runnable { viewModel.openProfile() })
+                Runnable { viewModel.openChat() })
 
         defaultToolbarType!!.makeScrolling()
 
         setToolbarType(defaultToolbarType)
-
     }
 
 
@@ -64,9 +63,13 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
                 binding.bottomBar!!.bottomBar,
                 hashMapOf(
                         Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
-                        Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
-                        Pair(R.id.tab_chat, ChatListFragment::class),
-                        Pair(R.id.tab_resources, ResourceWebViewFragment::class)
+                        //Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
+                        Pair(R.id.tab_calendar, CalendarListFragment::class),
+                        //Pair(R.id.tab_chat, ChatListFragment::class),
+                        //Pair(R.id.tab_chat, Fragment::class),
+                        //Pair(R.id.tab_chat, ChatListFragment::class),
+                        Pair(R.id.tab_resources, ResourceWebViewFragment::class),
+                        Pair(R.id.tab_more, MoreFragment::class)
                 ))
         bottomBarFragmentSwitcher.showTab(R.id.tab_newsfeed)
     }
@@ -84,9 +87,8 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
     }
 
     companion object {
-
         fun createScreen(context: Context) =
-            Intent(context, HomeActivity::class.java)
+                Intent(context, HomeActivity::class.java)
     }
 }
 

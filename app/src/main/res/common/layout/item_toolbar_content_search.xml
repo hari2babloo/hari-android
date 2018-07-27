@@ -28,8 +28,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_centerInParent="true"
+            android:layout_height="30dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -54,6 +53,7 @@
                 android:textColor="@color/graySearch"
                 android:textColorHint="@color/graySearch"
                 android:textSize="12sp"
+                app:customFontName="@{@string/font_pantra_bold}"
                 app:toolbarContentExpand="@{viewModel.expandView}"/>
 
         </LinearLayout>

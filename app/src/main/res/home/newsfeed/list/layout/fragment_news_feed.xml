@@ -50,18 +50,32 @@
 
         </LinearLayout>
 
-        <io.scal.ambi.extensions.view.BottomBarType
+
+        <LinearLayout
+            android:orientation="vertical"
             android:background="@color/white"
+            android:id="@+id/top_bar"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/tab_layout"
-            app:bb_tabXmlResource="@xml/news_feed_menu"
-            app:bb_tabItemLayout="@layout/tab_item"
             android:layout_width="match_parent"
-            android:layout_height="40dp"/>
+            android:layout_height="wrap_content">
+
+            <io.scal.ambi.extensions.view.BottomBarType
+                android:id="@+id/tab_layout"
+                app:bb_tabXmlResource="@xml/news_feed_menu"
+                app:bb_tabItemLayout="@layout/tab_item"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+
+            <View
+                android:background="@color/grayLight"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
+        </LinearLayout>
 
         <io.scal.ambi.ui.global.view.FocusableDummyView
             android:id="@+id/v_focus"
@@ -75,7 +89,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tab_layout"
+            app:layout_constraintTop_toBottomOf="@+id/top_bar"
             app:onSwipeToRefresh="@{() -> viewModel.refresh()}">
 
             <io.scal.ambi.ui.global.view.AutoScrollRecyclerView

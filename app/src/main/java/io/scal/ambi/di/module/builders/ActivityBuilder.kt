@@ -18,6 +18,8 @@ import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionModule
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationModule
+import io.scal.ambi.ui.home.notifications.NotificationsActivity
+import io.scal.ambi.ui.home.notifications.NotificationsModule
 import io.scal.ambi.ui.home.root.HomeActivity
 import io.scal.ambi.ui.home.root.HomeModule
 import io.scal.ambi.ui.launcher.LauncherActivity
@@ -62,4 +64,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [ProfileResumeModule::class, AuthProfileModule::class])
     abstract fun bindProfileResumeActivity(): ProfileResumeActivity
+
+    @ContributesAndroidInjector(modules = [NotificationsModule::class])
+    abstract fun bindNotificationsActivity(): NotificationsActivity
 }

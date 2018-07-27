@@ -39,7 +39,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerView()
-        observeStates()
+        //observeStates()
     }
 
     private fun initRecyclerView() {

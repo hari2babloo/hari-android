@@ -1,6 +1,7 @@
 package io.scal.ambi.extensions.view
 
 import android.content.Context
+import android.databinding.DataBindingUtil
 import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat

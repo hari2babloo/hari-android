@@ -6,15 +6,13 @@
 
     <data>
 
-        <import type="android.text.InputType"/>
-
         <variable
             name="toolbarType"
             type="android.databinding.ObservableField&lt;io.scal.ambi.extensions.view.ToolbarType&gt;"/>
 
         <variable
             name="viewModel"
-            type="io.scal.ambi.ui.home.chat.list.ChatListViewModel"/>
+            type="io.scal.ambi.ui.home.notifications.NotificationsViewModel"/>
 
     </data>
 
@@ -67,44 +65,17 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/top_bar"
-                android:id="@+id/iv_new_message"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                android:onClick="@{(view) -> viewModel.createNewMessage()}"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_chat_new_message"/>
-
-            <include
-                android:layout_marginTop="16dp"
-                android:id="@+id/c_search"
-                layout="@layout/item_toolbar_content_search"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="18dp"
-                app:layout_constraintTop_toBottomOf="@+id/top_bar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:viewModel="@{viewModel.searchViewModel}"/>
-
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/srl"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginBottom="60dp"
                 android:layout_marginTop="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/c_search"
-                app:onSwipeToRefresh="@{() -> viewModel.refresh()}">
+                app:layout_constraintTop_toBottomOf="@+id/top_bar"
+                >
+                <!--app:onSwipeToRefresh="@{() -> viewModel.refresh()}"-->
 
 
                 <io.scal.ambi.ui.global.view.AutoScrollRecyclerView

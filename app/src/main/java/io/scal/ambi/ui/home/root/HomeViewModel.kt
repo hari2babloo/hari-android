@@ -10,4 +10,12 @@ class HomeViewModel @Inject constructor(router: BetterRouter) : BaseViewModel(ro
     fun openProfile() {
         router.navigateTo(NavigateTo.PROFILE_DETAILS)
     }
+
+    fun openChat(){
+        router.navigateTo(NavigateTo.CHAT)
+    }
+
+    fun openNotifications(){
+        router.navigateTo(NavigateTo.NOTIFICATIONS)
+    }
 }

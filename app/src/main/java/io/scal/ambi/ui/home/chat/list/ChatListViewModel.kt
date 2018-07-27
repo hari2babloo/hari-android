@@ -1,11 +1,10 @@
 package io.scal.ambi.ui.home.chat.list
-
 import android.content.Context
 import android.databinding.ObservableField
+import com.ambi.work.R
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
-import com.ambi.work.R
 import io.scal.ambi.entity.chat.ChatMessage
 import io.scal.ambi.entity.chat.PreviewChatItem
 import io.scal.ambi.entity.user.User
@@ -64,8 +63,6 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         super.onCurrentUserFetched(user)
 
         paginator.activate()
-
-        initChatTypeFilters()
 
         paginator.refresh()
 

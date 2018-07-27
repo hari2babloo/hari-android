@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_my_feed"
+        title="all" />
+    <tab
+        id="@+id/tab_school_feed"
+        title="classes" />
+    <tab
+        id="@+id/tab_latest_news_feed"
+        title="group" />
+</tabs>
+

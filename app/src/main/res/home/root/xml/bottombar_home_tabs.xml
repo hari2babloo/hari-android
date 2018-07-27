@@ -4,17 +4,17 @@
     <tab
         icon="@drawable/ic_tab_newsfeed_icon"
         id="@+id/tab_newsfeed"
-        title="@string/title_bottom_newsfeed"/>
+        />
 
     <tab
         icon="@drawable/ic_tab_calendar_icon"
         id="@+id/tab_calendar"
-        title="@string/title_bottom_calendar"/>
+        />
 
     <tab
         icon="@drawable/ic_tab_chat_icon"
         id="@+id/tab_chat"
-        title="@string/title_bottom_chat"/>
+        />
 
     <!--
         <tab
@@ -26,11 +26,11 @@
     <tab
         icon="@drawable/ic_tab_resources_icon"
         id="@+id/tab_resources"
-        title="@string/title_bottom_resources"/>
+        />
 
-    <!--<tab-->
-        <!--icon="@drawable/ic_tab_more_icon"-->
-        <!--id="@+id/tab_more"-->
-        <!--title="@string/title_bottom_more"/>-->
+    <tab
+        icon="@drawable/ic_tab_more_icon"
+        id="@+id/tab_more"
+        />
 
 </tabs>

@@ -6,12 +6,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
-import io.scal.ambi.extensions.view.getNavigationHolder
-import io.scal.ambi.extensions.view.getRouter
 import io.scal.ambi.model.interactor.home.chat.ChatListInteractor
 import io.scal.ambi.model.interactor.home.chat.IChatListInteractor
 import io.scal.ambi.ui.global.base.BetterRouter
-import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Named
 
 @Module
@@ -30,13 +27,15 @@ abstract class ChatListModule {
 
         @JvmStatic
         @Provides
-        @Named("localNavigationHolder")
-        fun provideLocalNavigation(fragment: ChatListFragment): NavigatorHolder =
-            fragment.getNavigationHolder()
+        fun provideAppendingData(activity: ChatListFragment): String {
+            return activity.intent.getSerializableExtra(ChatListFragment.EXTRA_PROFILE_UID) as? String ?: ""
+        }
 
         @JvmStatic
         @Provides
-        fun provideRouter(fragment: ChatListFragment): BetterRouter =
-            fragment.getRouter()
+        fun provideLocalNavigation(@Named("rootRouter") router: BetterRouter): BetterRouter {
+            return router
+        }
     }
+
 }

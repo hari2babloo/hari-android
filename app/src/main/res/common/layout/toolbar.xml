@@ -1,7 +1,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:bind="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -15,59 +15,85 @@
 
     </data>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tb"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        app:layout_collapseMode="@{toolbarType.collapsingFlags}"
-        app:layout_scrollFlags="@{toolbarType.scrollFlags}"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/Toolbar"
-        bind:visibility="@{null != toolbarType}">
+        android:layout_height="?attr/actionBarSize">
 
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tb"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:layout_collapseMode="@{toolbarType.collapsingFlags}"
+            app:layout_scrollFlags="@{toolbarType.scrollFlags}"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/Toolbar"
+            bind:visibility="@{null != toolbarType}">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="26dp"
+                    android:gravity="center_vertical"
+                    android:minWidth="24dp"
+                    android:onClick="@{(view) -> toolbarType.leftIconClickListener.run()}"
+                    app:actualImageScaleType="centerInside"
+                    bind:draweeViewCustomization="@{toolbarType.leftIconCustomization}"
+                    bind:iconImage="@{toolbarType.leftIcon}"
+                    bind:visibility="@{null != toolbarType.leftIcon}"
+                    tools:ignore="ContentDescription"/>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    />
+
+                <io.scal.ambi.ui.global.view.WrapContentDraweeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="26dp"
+                    android:gravity="center_vertical"
+                    android:minWidth="24dp"
+                    android:onClick="@{(view) -> toolbarType.rightIconClickListener.run()}"
+                    app:actualImageScaleType="centerCrop"
+                    bind:draweeViewCustomization="@{toolbarType.rightIconCustomization}"
+                    bind:iconImage="@{toolbarType.rightIcon}"
+                    bind:visibility="@{null != toolbarType.rightIcon}"
+                    tools:ignore="ContentDescription"/>
+
+                <io.scal.ambi.ui.global.view.WrapContentDraweeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="26dp"
+                    android:gravity="center_vertical"
+                    android:minWidth="24dp"
+                    android:paddingLeft="16dp"
+                    android:onClick="@{(view) -> toolbarType.rightIconClickListener2.run()}"
+                    app:actualImageScaleType="centerCrop"
+                    bind:draweeViewCustomization="@{toolbarType.rightIconCustomization2}"
+                    bind:iconImage="@{toolbarType.rightIcon2}"
+                    bind:visibility="@{null != toolbarType.rightIcon2}"
+                    tools:ignore="ContentDescription"/>
+
+            </LinearLayout>
+
+
+
+        </android.support.v7.widget.Toolbar>
+
+        <FrameLayout
+            android:layout_marginEnd="56dp"
+            android:layout_marginStart="56dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
+            app:toolbarContent="@{toolbarType.content}"/>
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:layout_width="wrap_content"
-                android:layout_height="26dp"
-                android:gravity="center_vertical"
-                android:minWidth="24dp"
-                android:onClick="@{(view) -> toolbarType.leftIconClickListener.run()}"
-                app:actualImageScaleType="centerInside"
-                bind:draweeViewCustomization="@{toolbarType.leftIconCustomization}"
-                bind:iconImage="@{toolbarType.leftIcon}"
-                bind:visibility="@{null != toolbarType.leftIcon}"
-                tools:ignore="ContentDescription"/>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="21dp"
-                android:layout_marginStart="21dp"
-                android:layout_weight="1"
-                app:toolbarContent="@{toolbarType.content}"/>
-
-            <io.scal.ambi.ui.global.view.WrapContentDraweeView
-                android:layout_width="wrap_content"
-                android:layout_height="26dp"
-                android:gravity="center_vertical"
-                android:minWidth="24dp"
-                android:onClick="@{(view) -> toolbarType.rightIconClickListener.run()}"
-                app:actualImageScaleType="centerCrop"
-                bind:draweeViewCustomization="@{toolbarType.rightIconCustomization}"
-                bind:iconImage="@{toolbarType.rightIcon}"
-                bind:visibility="@{null != toolbarType.rightIcon}"
-                tools:ignore="ContentDescription"/>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
 
 </layout>

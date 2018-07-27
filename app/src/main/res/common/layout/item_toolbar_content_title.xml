@@ -15,10 +15,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="start|center_vertical"
+        android:gravity="center_horizontal|center_vertical"
         android:text="@{viewModel}"
         android:textColor="@color/gray"
-        android:textSize="16sp"
+        android:textSize="22sp"
         bind:customFontName="@{@string/font_pantra_bold}"
         tools:text="post"/>
 

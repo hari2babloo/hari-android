@@ -4,8 +4,8 @@
     <string name="error_unknown">unknown error</string>
 
     <string name="dialog_ok">OK</string>
-    <string name="hint_search">search</string>
-
+    <string name="hint_search">Search ...</string>
+    <string name="hint_search_ambi">Search Ambi ...</string>
     <string name="text_retry">Retry</string>
 
     <string name="day_ago_just_now">Just now</string>

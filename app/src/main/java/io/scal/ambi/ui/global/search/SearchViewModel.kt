@@ -7,7 +7,7 @@ import io.scal.ambi.extensions.binding.observable.ObservableString
 import io.scal.ambi.ui.global.base.BetterRouter
 import io.scal.ambi.ui.global.base.viewmodel.BaseViewModel
 
-abstract class SearchViewModel(val hint: String, router: BetterRouter) : BaseViewModel(router) {
+abstract class SearchViewModel(var hint: String, router: BetterRouter) : BaseViewModel(router) {
 
     constructor(context: Context, router: BetterRouter) : this(context.getString(R.string.hint_search), router)
 
