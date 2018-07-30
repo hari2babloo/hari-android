@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    >
 
     <data>
 
@@ -15,13 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <io.scal.ambi.ui.global.view.FocusableDummyView
-            android:id="@+id/v_focus"
-            android:layout_width="1dp"
-            android:layout_height="1dp"/>
-
         <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
-            android:id="@+id/tv_menu"
+            android:id="@+id/rv_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />

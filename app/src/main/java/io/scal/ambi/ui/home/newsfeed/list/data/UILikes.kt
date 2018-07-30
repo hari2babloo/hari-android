@@ -14,4 +14,5 @@ data class UILikes(private val currentUser: User,
 
     val currentUserLiked: Boolean
         get() = null != allUsersLiked.firstOrNull { it.uid == currentUser.uid }
+
 }

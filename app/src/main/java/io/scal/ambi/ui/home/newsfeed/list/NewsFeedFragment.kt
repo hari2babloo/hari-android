@@ -2,6 +2,7 @@ package io.scal.ambi.ui.home.newsfeed.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.ambi.work.R
@@ -9,6 +10,7 @@ import com.ambi.work.databinding.FragmentNewsFeedBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.feed.Audience
+import io.scal.ambi.entity.feed.FeedType
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.navigation.NavigateTo
@@ -23,7 +25,6 @@ import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreation
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
 import io.scal.ambi.ui.home.newsfeed.list.adapter.NewsFeedAdapter
 import ru.terrakok.cicerone.Navigator
-import java.util.*
 import kotlin.reflect.KClass
 
 
@@ -38,12 +39,42 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.entityType = FeedType.MY_FEED.feedType
+
         initRecyclerView()
-        //observeStates()
+        observeStates()
+        initTabbarListener()
+    }
+
+    private fun initTabbarListener(){
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+
+                if(tab.position == 0){
+                    viewModel.entityType = FeedType.MY_FEED.feedType
+                }else if(tab.position == 1){
+                    viewModel.entityType = FeedType.SCHOOL.feedType
+                }else{
+                    viewModel.entityType = FeedType.OTHERS.feedType
+                }
+
+                adapter.releaseData()
+                viewModel.refresh()
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+
+            }
+        })
     }
 
     private fun initRecyclerView() {
-
         binding.rvCollegeUpdates.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvCollegeUpdates.adapter = adapter
 
@@ -116,4 +147,15 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
             private fun goToCreationScreen(feedItemCreation: FeedItemCreation): Intent =
                 FeedItemCreationActivity.createScreen(activity!!, feedItemCreation)
         }
+
+    companion object {
+
+        fun createScreen(url: String): NewsFeedFragment {
+            val fragment = NewsFeedFragment()
+            val args = Bundle()
+            args.putString("entityType", url)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

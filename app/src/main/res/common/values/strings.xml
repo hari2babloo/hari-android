@@ -9,7 +9,10 @@
     <string name="text_retry">Retry</string>
 
     <string name="day_ago_just_now">Just now</string>
-    <string name="day_ago_minutes_ago">%d min ago</string>
+
+    <string name="day_ago_minutes_ago">%d mins ago</string>
+    <string name="day_ago_minute_ago">%d min ago</string>
+
     <string name="day_ago_hours_ago">%d hours ago</string>
     <string name="day_ago_days_ago">%d days ago</string>
 
@@ -24,7 +27,7 @@
     <string name="text_likes_this">%s likes this</string>
     <string name="text_like_this">%s like this</string>
 
-    <string name="comment_hint_post">write a comment…</string>
+    <string name="comment_hint_post">Add a comment…</string>
 
     <string-array name="items_photo_picker">
         <item>Camera</item>

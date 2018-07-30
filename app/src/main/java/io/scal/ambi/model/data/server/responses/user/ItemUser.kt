@@ -58,8 +58,8 @@ open class ItemUser : Parceble<User> {
     override fun parse(): User {
         val avatar = parseAvatar()
         return when (extractType()) {
-            Type.Student -> User.asStudent(extractId(), avatar, email.orEmpty(), firstName.orEmpty(), lastName.orEmpty()
-            )
+            Type.Student -> User.asStudent(extractId(), avatar, email.orEmpty(), firstName.orEmpty(), lastName.orEmpty())
+            Type.Faculty -> User.asFaculty(extractId(), avatar, email.orEmpty(), firstName.orEmpty(), lastName.orEmpty())
             else         -> {
                 Timber.w("empty user type field = ${extractType()}! now skip to unknown data")
                 User.asSimple(extractId(), avatar, email.orEmpty(), firstName.orEmpty(), lastName.orEmpty())
@@ -72,6 +72,7 @@ open class ItemUser : Parceble<User> {
     }
 
     enum class Type {
-        Student
+        Student,
+        Faculty
     }
 }

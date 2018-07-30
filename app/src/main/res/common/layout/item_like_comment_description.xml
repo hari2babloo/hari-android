@@ -27,7 +27,8 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        app:visibility="@{comments.comments.size != 0 || likes.allUsersLiked.size != 0}">
+        android:visibility="gone"
+        >
 
         <ImageView
             android:id="@+id/iv_current_user"

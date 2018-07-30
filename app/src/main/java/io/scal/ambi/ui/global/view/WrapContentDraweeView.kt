@@ -1,6 +1,7 @@
 package io.scal.ambi.ui.global.view
 
 import android.content.Context
+import android.graphics.*
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.util.AttributeSet
@@ -45,4 +46,5 @@ class WrapContentDraweeView : SimpleDraweeView {
             aspectRatio = imageInfo.width.toFloat() / imageInfo.height
         }
     }
+
 }

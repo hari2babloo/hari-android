@@ -65,7 +65,8 @@ object TextViewDataBinder {
             val resultText = when {
                 durationBetween.standardMinutes < -20 -> FULL_DATE_TIME_FORMATTER.print(dateTime)
                 durationBetween.standardSeconds < 60  -> context.getString(R.string.day_ago_just_now)
-                durationBetween.standardMinutes < 60  -> context.getString(R.string.day_ago_minutes_ago, durationBetween.standardMinutes)
+                durationBetween.standardMinutes in 2..59 -> context.getString(R.string.day_ago_minutes_ago, durationBetween.standardMinutes)
+                durationBetween.standardMinutes in 1..1 -> context.getString(R.string.day_ago_minute_ago, durationBetween.standardMinutes)
                 durationBetween.standardHours < 24    -> context.getString(R.string.day_ago_hours_ago, durationBetween.standardHours)
                 durationBetween.standardDays < 30     -> context.getString(R.string.day_ago_days_ago, durationBetween.standardDays)
                 else                                  -> FULL_DATE_TIME_FORMATTER.print(dateTime)

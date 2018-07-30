@@ -12,5 +12,6 @@ enum class Audience(val titleId: Int, val iconId: Int) {
     GROUPS(R.string.news_feed_audience_groups, R.drawable.ic_audience_groups),
     CLASSES(R.string.news_feed_audience_classes, R.drawable.ic_audience_classes),
     COMMUNITIES(R.string.news_feed_audience_communities, R.drawable.ic_audience_communities),
-    NEWS(R.string.news_feed_audience_news, R.drawable.ic_audience_news)
+    NEWS(R.string.news_feed_audience_news, R.drawable.ic_audience_news),
+    NONE(R.string.news_feed_audience_news, R.drawable.ic_audience_news)
 }

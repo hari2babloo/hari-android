@@ -17,8 +17,8 @@ import javax.inject.Inject
 class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                           private val localUserDataRepository: LocalUserDataRepository) : IPostsRepository {
 
-    override fun loadPostsGeneral(page: Long, audience: Audience): Single<List<NewsFeedItem>> {
-        return postsApi.getPostsGeneral(page, audience.toServerName())
+    override fun loadPostsGeneral(entityType: String, page: Long, audience: Audience): Single<List<NewsFeedItem>> {
+        return postsApi.getPostsGeneral(entityType,page, audience.toServerName())
             .map { it.parse() }
     }
 
@@ -220,6 +220,7 @@ private fun Audience.toServerName(): String =
         Audience.STUDENTS -> "Student"
         Audience.FACULTY  -> "Faculty"
         Audience.STAFF    -> "Staff"
+        Audience.NONE     -> ""
         else              -> throw IllegalArgumentException("$this is not listed in server requests names")
     }
 

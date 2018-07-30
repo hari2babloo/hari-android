@@ -39,4 +39,9 @@
     <string name="news_feed_poll_result_percent">%d %%</string>
     <string name="news_feed_poll_result_percent_zero"/>
 
+    <string name="news_feed_likes">%d Likes</string>
+    <string name="news_feed_comments">%d Comments</string>
+    <string name="news_feed_like">Like</string>
+    <string name="news_feed_comment">Comment</string>
+
 </resources>

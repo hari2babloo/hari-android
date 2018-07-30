@@ -93,6 +93,8 @@ android {
             dimension "api"
             //buildConfigField "String", "MAIN_SERVER_URL", '"http://ambi-api.ngrok.io/api/"'
             //buildConfigField "String", "MAIN_IMAGES_URL", '"https://www.ambi.work/"'
+//            buildConfigField "String", "MAIN_SERVER_URL", '"http://172.16.2.203:4000/api/"'
+//            buildConfigField "String", "MAIN_IMAGES_URL", '"http://172.16.2.203:4000/"'
             buildConfigField "String", "MAIN_SERVER_URL", '"https://demo1.ambi.work:4000/api/"'
             buildConfigField "String", "MAIN_IMAGES_URL", '"https://demo1.ambi.work/"'
         }

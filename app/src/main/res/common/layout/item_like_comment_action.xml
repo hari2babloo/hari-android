@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <data>
@@ -31,65 +32,75 @@
             name="visibility"
             type="Boolean"/>
 
+        <variable
+            name="comments"
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UIComments"/>
+
+        <variable
+            name="likes"
+            type="io.scal.ambi.ui.home.newsfeed.list.data.UILikes"/>
+
+
     </data>
 
     <LinearLayout
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:layout_width="match_parent"
-        android:layout_height="26dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:visibility="@{visibility}">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="@{likeGravity ?? Gravity.CENTER}"
             android:onClick="@{likeClickListener}"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:scaleType="centerInside"
                 android:tint="@{liked ? @color/pink : @color/grayActions}"
                 app:srcCompat="@drawable/ic_action_like_default"/>
 
             <TextView
+                android:paddingLeft="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:layout_marginStart="2dp"
+                android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="@{liked ? @string/action_like_selected : @string/action_like_default}"
-                android:textColor="@{liked ? @color/pink : @color/grayActions}"
+                android:text="@{likes.allUsersLiked.size == 0? @string/news_feed_like: @string/news_feed_likes(likes.allUsersLiked.size)}"
                 android:textSize="14sp"
+                tools:text="like"
                 app:customFontName="@{@string/font_pantra_bold}"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:paddingLeft="23dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="@{commentGravity ?? Gravity.CENTER}"
             android:onClick="@{commentClickListener}"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_action_comment_default"/>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:layout_marginBottom="1dp"
-                android:layout_marginStart="2dp"
+                android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="@string/action_comment"
+                android:paddingLeft="8dp"
+                android:text="@{comments.comments.size == 0? @string/news_feed_comment: @string/news_feed_comments(comments.comments.size)}"
                 android:textColor="@color/grayActions"
                 android:textSize="14sp"
+                tools:text="comment"
                 app:customFontName="@{@string/font_pantra_bold}"/>
 
         </LinearLayout>

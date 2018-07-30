@@ -7,8 +7,8 @@ import retrofit2.http.*
 
 interface PostsApi {
 
-    @GET("v1/posts/general?timeCutoff=&getPicture=true&populate[]=poster&populate[]=fileContent&populate[]=likes&populate[]=hosts.host&populate[]=comments.commenter")
-    fun getPostsGeneral(@Query("page") page: Long, @Query("filter") filter: String): Single<PostsResponse>
+    @GET("v1/posts?timeCutoff=&getPicture=true&populate[]=poster&populate[]=fileContent&populate[]=likes&populate[]=hosts.host&populate[]=comments.commenter")
+    fun getPostsGeneral(@Query("entityType") entityType: String, @Query("page") page: Long, @Query("my_category") filter: String): Single<PostsResponse>
 
     @GET("v1/posts/personal?timeCutoff=&getPicture=true&populate[]=poster&populate[]=fileContent&populate[]=likes&populate[]=hosts.host&populate[]=comments.commenter")
     fun getPostsPersonal(@Query("page") page: Long): Single<PostsResponse>

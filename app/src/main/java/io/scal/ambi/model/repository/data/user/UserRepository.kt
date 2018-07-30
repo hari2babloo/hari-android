@@ -64,5 +64,6 @@ private fun String.createUser(gson: Gson): ItemUser {
     return when (generalUser.type) {
         null                  -> throw IllegalArgumentException("can not parse user ($this) because there is no type")
         ItemUser.Type.Student -> gson.fromJson(this, UserResponse.BigUser::class.java)
+        ItemUser.Type.Faculty -> gson.fromJson(this, UserResponse.BigUser::class.java)
     }
 }

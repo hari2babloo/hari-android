@@ -28,19 +28,20 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="wrap_content"
         app:profileOpening="@{actor}">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_icon"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:onClick="@{iconClickListener}"
             app:actualImageScaleType="centerInside"
             app:iconImage="@{iconImage}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:roundAsCircle="true"/>
+            app:roundAsCircle="true"
+            />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -66,18 +67,49 @@
                 tools:text="Author name"
                 />
 
-            <TextView
-                android:id="@+id/tv_date"
+            <LinearLayout
+                android:paddingTop="4dp"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:lineSpacingExtra="4sp"
-                android:singleLine="true"
-                android:textColor="@color/news_feed_data"
-                android:textSize="12sp"
-                app:datePassed="@{dateTime}"
-                tools:text="5 minutes ago"
-                />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_actor_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="4sp"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_gravity="center_vertical"
+                    android:text="@{actor.userType}"
+                    tools:text="Category"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    app:colorResId="@{actor.type.colorId}"
+                    tools:background="@drawable/news_feed_actor_category_bg"
+                    />
+
+
+                <TextView
+                    android:paddingLeft="12dp"
+                    android:id="@+id/tv_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:layout_gravity="bottom"
+                    android:lineSpacingExtra="4sp"
+                    android:singleLine="true"
+                    android:textColor="@color/news_feed_data"
+                    android:textSize="11sp"
+                    app:datePassed="@{dateTime}"
+                    tools:text="5 minutes ago"
+                    />
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

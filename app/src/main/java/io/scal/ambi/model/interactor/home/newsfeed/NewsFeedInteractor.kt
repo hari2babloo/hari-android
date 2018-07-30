@@ -17,10 +17,10 @@ class NewsFeedInteractor @Inject constructor(private val postsRepository: IPosts
                                              private val localUserDataRepository: ILocalUserDataRepository) : INewsFeedInteractor {
 
     override fun loadCurrentUser(): Observable<User> =
-        localUserDataRepository.observeCurrentUser()
+            localUserDataRepository.observeCurrentUser()
 
-    override fun loadNewsFeedPage(page: Int, audience: Audience): Single<List<NewsFeedItem>> =
-        postsRepository.loadPostsGeneral(page.toLong() - 1, audience)
+    override fun loadNewsFeedPage(entityType: String, page: Int, audience: Audience): Single<List<NewsFeedItem>> =
+            postsRepository.loadPostsGeneral(entityType,page.toLong() - 1, audience)
 
     override fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable {
         return postsRepository.changeUserLikeForPost(feedItem, like)

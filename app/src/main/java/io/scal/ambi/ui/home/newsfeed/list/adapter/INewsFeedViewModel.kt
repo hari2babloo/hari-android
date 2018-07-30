@@ -17,4 +17,7 @@ interface INewsFeedViewModel {
     fun sendCommentForElement(element: UIModelFeed)
 
     fun selectPollChoice(element: UIModelFeed.Poll, choice: UIModelFeed.Poll.PollChoiceResult)
+
+    fun showEmoji(element: UIModelFeed)
+
 }

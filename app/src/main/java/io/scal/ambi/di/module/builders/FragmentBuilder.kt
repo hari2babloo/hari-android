@@ -6,8 +6,6 @@ import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
 import io.scal.ambi.ui.home.calendar.list.CalendarListModule
 import io.scal.ambi.ui.home.chat.list.ChatListFragment
 import io.scal.ambi.ui.home.chat.list.ChatListModule
-import io.scal.ambi.ui.home.more.MoreFragment
-import io.scal.ambi.ui.home.more.MoreModule
 import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationFragment
 import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationModule
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomModule
@@ -49,6 +47,6 @@ abstract class FragmentBuilder {
     @ContributesAndroidInjector(modules = [ResourceModule::class])
     abstract fun bindResourcesFragment(): ResourceWebViewFragment
 
-    @ContributesAndroidInjector(modules = [MoreModule::class])
-    abstract fun bindMoreFragment(): MoreFragment
+//    @ContributesAndroidInjector(modules = [MoreModule::class])
+//    abstract fun bindMoreFragment(): MoreFragment
 }

@@ -15,6 +15,7 @@ data class User constructor(val uid: String,
                             val liveAt: String? = null) : Serializable {
 
     val name: String = "${firstName.toCapsLetter()} ${lastName.toCapsLetter()}".trim()
+    val userType: String = type.name.toLowerCase()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -34,6 +35,12 @@ data class User constructor(val uid: String,
                       firstName: String,
                       lastName: String) = User(uid, UserType.STUDENT, avatar, email, firstName, lastName)
 
+        fun asFaculty(uid: String,
+                      avatar: IconImageUser,
+                      email: String,
+                      firstName: String,
+                      lastName: String) = User(uid, UserType.FACULTY, avatar, email, firstName, lastName)
+
         // todo remove this
         fun asSimple(uid: String,
                      avatar: IconImageUser,
@@ -49,3 +56,4 @@ private fun String.toCapsLetter(): String =
     } else {
         this
     }
+

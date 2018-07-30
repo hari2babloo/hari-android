@@ -6,6 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.entity.feed.Audience
+import io.scal.ambi.entity.feed.FeedType
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
@@ -29,12 +30,14 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
                                             router: BetterRouter,
                                             private val interactor: INewsFeedInteractor,
                                             rxSchedulersAbs: RxSchedulersAbs) :
-    BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs),
-    INewsFeedViewModel {
+        BaseUserViewModel(router, { interactor.loadCurrentUser() }, rxSchedulersAbs),
+        INewsFeedViewModel {
 
     internal val progressState = ObservableField<NewsFeedProgressState>()
     internal val errorState = ObservableField<NewsFeedErrorState>()
     internal val dataState = ObservableField<NewsFeedDataState>()
+
+    var entityType = FeedType.MY_FEED.feedType;
 
     val selectedAudience = ObservableField<Audience>(Audience.STUDENTS)
 
@@ -46,63 +49,63 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
     private val newsFeedItemCreationListener = ResultListener { paginator.forceRefresh() }
 
     private val paginator = createPaginator(
-        { page -> executeLoadNextPage(page) },
-        object : PaginatorStateViewController<UIModelFeed, NewsFeedProgressState, NewsFeedErrorState>(context, progressState, errorState) {
+            { page -> executeLoadNextPage(page) },
+            object : PaginatorStateViewController<UIModelFeed, NewsFeedProgressState, NewsFeedErrorState>(context, progressState, errorState) {
 
-            override fun generateProgressEmptyState() = NewsFeedProgressState.EmptyProgress
-            override fun generateProgressNoState() = NewsFeedProgressState.NoProgress
-            override fun generateProgressRefreshState() = NewsFeedProgressState.RefreshProgress
-            override fun generateProgressPageState() = NewsFeedProgressState.PageProgress
+                override fun generateProgressEmptyState() = NewsFeedProgressState.EmptyProgress
+                override fun generateProgressNoState() = NewsFeedProgressState.NoProgress
+                override fun generateProgressRefreshState() = NewsFeedProgressState.RefreshProgress
+                override fun generateProgressPageState() = NewsFeedProgressState.PageProgress
 
-            override fun generateErrorFatal(message: String) = NewsFeedErrorState.FatalErrorState(message)
-            override fun generateErrorNonFatal(message: String) = NewsFeedErrorState.NonFatalErrorState(message)
-            override fun generateErrorNo() = NewsFeedErrorState.NoErrorState
+                override fun generateErrorFatal(message: String) = NewsFeedErrorState.FatalErrorState(message)
+                override fun generateErrorNonFatal(message: String) = NewsFeedErrorState.NonFatalErrorState(message)
+                override fun generateErrorNo() = NewsFeedErrorState.NoErrorState
 
-            override fun showEmptyView(show: Boolean) {
-                if (show) dataState.set(NewsFeedDataState.Empty)
-            }
-
-            override fun showData(show: Boolean, data: List<UIModelFeed>) {
-                if (show) {
-                    dataState.set(NewsFeedDataState.Data(OptimizedObservableArrayList(data)))
+                override fun showEmptyView(show: Boolean) {
+                    if (show) dataState.set(NewsFeedDataState.Empty)
                 }
-            }
-        },
-        true
+
+                override fun showData(show: Boolean, data: List<UIModelFeed>) {
+                    if (show) {
+                        dataState.set(NewsFeedDataState.Data(OptimizedObservableArrayList(data)))
+                    }
+                }
+            },
+            true
     )
 
     private val userActions = NewsFeedViewModelActions(router,
-                                                       { uiModelFeed, action ->
-                                                           interactor
-                                                               .changeUserLikeForPost(uiModelFeed.feedItem, action == DynamicUserChoicer.Action.LIKE)
-                                                       },
-                                                       { uiModelFeed, commentTet ->
-                                                           interactor.sendUserCommentToPost(uiModelFeed.feedItem, commentTet)
-                                                               .doOnError {
-                                                                   handleError(it)
+            { uiModelFeed, action ->
+                interactor
+                        .changeUserLikeForPost(uiModelFeed.feedItem, action == DynamicUserChoicer.Action.LIKE)
+            },
+            { uiModelFeed, commentTet ->
+                interactor.sendUserCommentToPost(uiModelFeed.feedItem, commentTet)
+                        .doOnError {
+                            handleError(it)
 
-                                                                   errorState.set(NewsFeedErrorState.NonFatalErrorState(it.toGoodUserMessage(context)))
-                                                                   errorState.set(NewsFeedErrorState.NoErrorState)
-                                                               }
-                                                       },
-                                                       { uiModelFeed, pollChoiceResult ->
-                                                           interactor.answerForPoll(uiModelFeed.feedItem, pollChoiceResult.pollChoice)
-                                                               .doOnError {
-                                                                   handleError(it)
+                            errorState.set(NewsFeedErrorState.NonFatalErrorState(it.toGoodUserMessage(context)))
+                            errorState.set(NewsFeedErrorState.NoErrorState)
+                        }
+            },
+            { uiModelFeed, pollChoiceResult ->
+                interactor.answerForPoll(uiModelFeed.feedItem, pollChoiceResult.pollChoice)
+                        .doOnError {
+                            handleError(it)
 
-                                                                   errorState.set(NewsFeedErrorState.NonFatalErrorState(it.toGoodUserMessage(context)))
-                                                                   errorState.set(NewsFeedErrorState.NoErrorState)
-                                                               }
-                                                       },
-                                                       {
-                                                           val currentState = dataState.get()
-                                                           if (currentState is NewsFeedDataState.Data) {
-                                                               currentState.newsFeed
-                                                           } else {
-                                                               null
-                                                           }
-                                                       },
-                                                       rxSchedulersAbs)
+                            errorState.set(NewsFeedErrorState.NonFatalErrorState(it.toGoodUserMessage(context)))
+                            errorState.set(NewsFeedErrorState.NoErrorState)
+                        }
+            },
+            {
+                val currentState = dataState.get()
+                if (currentState is NewsFeedDataState.Data) {
+                    currentState.newsFeed
+                } else {
+                    null
+                }
+            },
+            rxSchedulersAbs)
 
     override fun onCurrentUserFetched(user: User) {
         super.onCurrentUserFetched(user)
@@ -167,44 +170,44 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
         paginator.activate()
 
         selectedAudience
-            .toObservable()
-            .distinctUntilChanged()
-            .observeOn(rxSchedulersAbs.mainThreadScheduler)
-            .subscribe { paginator.forceRefresh() }
-            .addTo(disposables)
+                .toObservable()
+                .distinctUntilChanged()
+                .observeOn(rxSchedulersAbs.mainThreadScheduler)
+                .subscribe { paginator.forceRefresh() }
+                .addTo(disposables)
 
         observeLikeActions()
     }
 
     private fun executeLoadNextPage(page: Int): Single<List<UIModelFeed>> {
         return interactor
-            .loadNewsFeedPage(page, selectedAudience.get())
-            .subscribeOn(rxSchedulersAbs.ioScheduler)
-            .observeOn(rxSchedulersAbs.computationScheduler)
-            .flatMap {
-                Observable.fromIterable(it)
-                    .map<UIModelFeed> { it.toNewsFeedElement(currentUser.get()) }
-                    .toList()
-            }
-            .observeOn(rxSchedulersAbs.mainThreadScheduler)
+                .loadNewsFeedPage(entityType,page, selectedAudience.get())
+                .subscribeOn(rxSchedulersAbs.ioScheduler)
+                .observeOn(rxSchedulersAbs.computationScheduler)
+                .flatMap {
+                    Observable.fromIterable(it)
+                            .map<UIModelFeed> { it.toNewsFeedElement(currentUser.get()) }
+                            .toList()
+                }
+                .observeOn(rxSchedulersAbs.mainThreadScheduler)
     }
 
     private fun observeLikeActions() {
         userActions
-            .observeLikes()
-            .observeOn(rxSchedulersAbs.mainThreadScheduler)
-            .subscribe {
-                val currentDataState = dataState.get()
-                if (currentDataState is NewsFeedDataState.Data) {
-                    val element = currentDataState.newsFeed.firstOrNull { item -> item.uid == it.first.uid }
+                .observeLikes()
+                .observeOn(rxSchedulersAbs.mainThreadScheduler)
+                .subscribe {
+                    val currentDataState = dataState.get()
+                    if (currentDataState is NewsFeedDataState.Data) {
+                        val element = currentDataState.newsFeed.firstOrNull { item -> item.uid == it.first.uid }
 
-                    if (null != element) {
-                        val newLikes = element.likes.setupLike(currentUser.get(), it.second == DynamicUserChoicer.Action.LIKE)
-                        currentDataState.newsFeed.replaceElement(element, element.changeLikes(newLikes))
+                        if (null != element) {
+                            val newLikes = element.likes.setupLike(currentUser.get(), it.second == DynamicUserChoicer.Action.LIKE)
+                            currentDataState.newsFeed.replaceElement(element, element.changeLikes(newLikes))
+                        }
                     }
                 }
-            }
-            .addTo(disposables)
+                .addTo(disposables)
     }
 
     override fun onCleared() {

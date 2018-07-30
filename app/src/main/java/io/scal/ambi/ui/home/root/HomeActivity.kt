@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import com.ambi.work.R
 import com.ambi.work.databinding.ActivityHomeBinding
 import io.scal.ambi.extensions.view.IconImage
@@ -14,7 +15,6 @@ import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
 import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
-import io.scal.ambi.ui.home.more.MoreFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import io.scal.ambi.ui.webview.ResourceWebViewFragment
 import ru.terrakok.cicerone.Navigator
@@ -65,11 +65,9 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
                         Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
                         //Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
                         Pair(R.id.tab_calendar, CalendarListFragment::class),
-                        //Pair(R.id.tab_chat, ChatListFragment::class),
-                        //Pair(R.id.tab_chat, Fragment::class),
-                        //Pair(R.id.tab_chat, ChatListFragment::class),
+                        Pair(R.id.tab_chat, Fragment::class),
                         Pair(R.id.tab_resources, ResourceWebViewFragment::class),
-                        Pair(R.id.tab_more, MoreFragment::class)
+                        Pair(R.id.tab_more, Fragment::class)
                 ))
         bottomBarFragmentSwitcher.showTab(R.id.tab_newsfeed)
     }
