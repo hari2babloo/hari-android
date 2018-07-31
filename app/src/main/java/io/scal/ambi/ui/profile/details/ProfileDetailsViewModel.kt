@@ -6,6 +6,7 @@ import com.ambi.work.R
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
+import io.scal.ambi.entity.feed.FeedType
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
 import io.scal.ambi.extensions.binding.replaceElement
@@ -38,6 +39,7 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
 
     private lateinit var profileUidToShow: String
     var profileUidToShowIsCurrent: Boolean = false
+    var entityType = FeedType.PERSONAL.feedType;
 
     internal val progressState = ObservableField<ProfileDetailsProgressState>(ProfileDetailsProgressState.TotalProgress)
     internal val errorState = ObservableField<ProfileDetailsErrorState>()
@@ -214,7 +216,7 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
 
     private fun executeLoadNextPage(page: Int): Single<List<UIModelFeed>> {
         return interactor
-            .loadNewsFeedPage(profileUidToShowIsCurrent, profileUidToShow, page)
+            .loadNewsFeedPage(entityType,profileUidToShowIsCurrent, profileUidToShow, page)
             .subscribeOn(rxSchedulersAbs.ioScheduler)
             .observeOn(rxSchedulersAbs.computationScheduler)
             .flatMap {

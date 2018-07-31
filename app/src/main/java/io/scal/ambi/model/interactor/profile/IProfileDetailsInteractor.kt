@@ -16,7 +16,7 @@ interface IProfileDetailsInteractor {
 
     fun loadUser(profileUid: String): Observable<User>
 
-    fun loadNewsFeedPage(currentUser: Boolean, profileUid: String, page: Int): Single<List<NewsFeedItem>>
+    fun loadNewsFeedPage(entityType: String,currentUser: Boolean, profileUid: String, page: Int): Single<List<NewsFeedItem>>
 
     fun changeUserLikeForPost(feedItem: NewsFeedItem, like: Boolean): Completable
 

@@ -26,9 +26,9 @@ class ProfileDetailsInteractor @Inject constructor(private val postsRepository: 
     override fun loadUser(profileUid: String): Observable<User> =
         userRepository.getProfile(profileUid).toObservable()
 
-    override fun loadNewsFeedPage(currentUser: Boolean, profileUid: String, page: Int): Single<List<NewsFeedItem>> =
+    override fun loadNewsFeedPage(entityType: String,currentUser: Boolean, profileUid: String, page: Int): Single<List<NewsFeedItem>> =
         if (currentUser) {
-            postsRepository.loadPostsPersonal(page.toLong() - 1)
+            postsRepository.loadPostsPersonal(entityType,page.toLong() - 1)
         } else {
             postsRepository.loadPostsForUser(profileUid, page.toLong() - 1)
         }

@@ -16,6 +16,9 @@ import javax.inject.Inject
 class NewsFeedInteractor @Inject constructor(private val postsRepository: IPostsRepository,
                                              private val localUserDataRepository: ILocalUserDataRepository) : INewsFeedInteractor {
 
+    override fun loadLatestNews(): Single<List<NewsFeedItem>> =
+            postsRepository.loadLatestNews()
+
     override fun loadCurrentUser(): Observable<User> =
             localUserDataRepository.observeCurrentUser()
 

@@ -8,8 +8,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import io.scal.ambi.di.ViewModelKey
 import io.scal.ambi.ui.global.base.BetterRouter
-import io.scal.ambi.ui.home.root.HomeActivity
-import io.scal.ambi.ui.home.root.HomeViewModel
 import javax.inject.Named
 
 @Module
@@ -22,6 +20,9 @@ internal abstract class NotificationsModule {
     @IntoMap
     @ViewModelKey(NotificationsViewModel::class)
     abstract fun bindViewModel(viewModel: NotificationsViewModel): ViewModel
+
+    @Binds
+    abstract fun bindInteractor(interactor: NotificationInteractor): INotificationsInteractor
 
     @Module
     companion object {

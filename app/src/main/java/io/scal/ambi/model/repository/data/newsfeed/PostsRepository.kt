@@ -10,6 +10,7 @@ import io.scal.ambi.entity.feed.*
 import io.scal.ambi.entity.user.User
 import io.scal.ambi.model.data.server.*
 import io.scal.ambi.model.repository.local.LocalUserDataRepository
+import io.scal.ambi.ui.home.notifications.NotificationData
 import org.joda.time.DateTime
 import java.util.*
 import javax.inject.Inject
@@ -17,19 +18,29 @@ import javax.inject.Inject
 class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                           private val localUserDataRepository: LocalUserDataRepository) : IPostsRepository {
 
+    override fun loadNotification(page: Int): Single<List<NotificationData>> {
+        return postsApi.loadNotification(5)
+                .map { it.parse() }
+    }
+
     override fun loadPostsGeneral(entityType: String, page: Long, audience: Audience): Single<List<NewsFeedItem>> {
         return postsApi.getPostsGeneral(entityType,page, audience.toServerName())
             .map { it.parse() }
     }
 
-    override fun loadPostsPersonal(page: Long): Single<List<NewsFeedItem>> {
-        return postsApi.getPostsPersonal(page)
+    override fun loadPostsPersonal(entityType: String,page: Long): Single<List<NewsFeedItem>> {
+        return postsApi.getPostsPersonal(entityType,page)
             .map { it.parse() }
     }
 
     override fun loadPostsForUser(profileUid: String, page: Long): Single<List<NewsFeedItem>> {
         return postsApi.getPostsForUser(profileUid, page)
             .map { it.parse() }
+    }
+
+    override fun loadLatestNews(): Single<List<NewsFeedItem>> {
+        return postsApi.getLatestNews()
+                .map { it.parse() }
     }
 
     override fun postNewStatus(pinned: Boolean,

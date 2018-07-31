@@ -18,6 +18,4 @@ interface INewsFeedViewModel {
 
     fun selectPollChoice(element: UIModelFeed.Poll, choice: UIModelFeed.Poll.PollChoiceResult)
 
-    fun showEmoji(element: UIModelFeed)
-
 }

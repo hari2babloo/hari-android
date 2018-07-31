@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -38,25 +37,16 @@
             type="Boolean"/>
 
     </data>
-
     <RelativeLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_edit_text_comment_field"
+        android:gravity="center"
         android:paddingBottom="10dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
+        android:background="@drawable/bg_edit_text_comment_field"
         android:paddingTop="10dp"
-        app:visibility="@{visibility ?? true}">
-
-        <ImageView
-            android:id="@+id/iv_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:src="@{icon}"
-            app:visibility="@{null != icon}"/>
+        android:layout_height="wrap_content">
 
         <com.vanniktech.emoji.EmojiEditText
             android:id="@+id/et_data"
@@ -76,7 +66,17 @@
             app:inputType="@{inputType ?? -1}"
             tools:text="asfsdf" />
 
+        <ImageView
+            android:id="@+id/ic_smile"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_marginStart="9dp"
+            android:layout_alignParentRight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ic_attachment"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_action_smile"
+            />
 
     </RelativeLayout>
-
 </layout>

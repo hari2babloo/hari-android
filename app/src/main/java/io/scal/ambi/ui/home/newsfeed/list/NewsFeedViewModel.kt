@@ -180,16 +180,29 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
     }
 
     private fun executeLoadNextPage(page: Int): Single<List<UIModelFeed>> {
-        return interactor
-                .loadNewsFeedPage(entityType,page, selectedAudience.get())
-                .subscribeOn(rxSchedulersAbs.ioScheduler)
-                .observeOn(rxSchedulersAbs.computationScheduler)
-                .flatMap {
-                    Observable.fromIterable(it)
-                            .map<UIModelFeed> { it.toNewsFeedElement(currentUser.get()) }
-                            .toList()
-                }
-                .observeOn(rxSchedulersAbs.mainThreadScheduler)
+        if(entityType.equals(FeedType.OTHERS.feedType)){
+            return interactor
+                    .loadLatestNews()
+                    .subscribeOn(rxSchedulersAbs.ioScheduler)
+                    .observeOn(rxSchedulersAbs.computationScheduler)
+                    .flatMap {
+                        Observable.fromIterable(it)
+                                .map<UIModelFeed> { it.toNewsFeedElement(currentUser.get()) }
+                                .toList()
+                    }
+                    .observeOn(rxSchedulersAbs.mainThreadScheduler)
+        }else{
+            return interactor
+                    .loadNewsFeedPage(entityType,page, selectedAudience.get())
+                    .subscribeOn(rxSchedulersAbs.ioScheduler)
+                    .observeOn(rxSchedulersAbs.computationScheduler)
+                    .flatMap {
+                        Observable.fromIterable(it)
+                                .map<UIModelFeed> { it.toNewsFeedElement(currentUser.get()) }
+                                .toList()
+                    }
+                    .observeOn(rxSchedulersAbs.mainThreadScheduler)
+        }
     }
 
     private fun observeLikeActions() {

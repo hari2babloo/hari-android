@@ -3,11 +3,21 @@ package io.scal.ambi.ui.home.notifications
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.ambi.work.R
 import com.ambi.work.databinding.ActivityNotificationsBinding
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
+import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
+import io.scal.ambi.extensions.view.listenForEndScroll
+import io.scal.ambi.ui.global.base.ErrorState
+import io.scal.ambi.ui.global.base.ProgressState
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
+import io.scal.ambi.ui.global.base.asErrorState
+import io.scal.ambi.ui.global.base.asProgressStateSrl
 import kotlin.reflect.KClass
 
 /**
@@ -19,12 +29,16 @@ class NotificationsActivity : BaseToolbarActivity<NotificationsViewModel, Activi
 
     override val layoutId: Int = R.layout.activity_notifications
     override val viewModelClass: KClass<NotificationsViewModel> = NotificationsViewModel::class
+    private val adapter by lazy { NotificationAdapter(viewModel) }
 
     private var defaultToolbarType: ToolbarType? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initToolbar();
+        initToolbar()
+        initRecyclerView()
+        viewModel.init()
+        observeStates()
     }
 
     private fun initToolbar() {
@@ -47,6 +61,67 @@ class NotificationsActivity : BaseToolbarActivity<NotificationsViewModel, Activi
         fun createScreen(context: Context) =
                 Intent(context, NotificationsActivity::class.java)
 
+    }
+
+    private fun initRecyclerView() {
+        binding.rvChats.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.rvChats.adapter = adapter
+
+        binding.rvChats.setItemViewCacheSize(30)
+        binding.rvChats.isDrawingCacheEnabled = true
+        binding.rvChats.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+
+        binding.rvChats.listenForEndScroll(1)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { viewModel.loadNextPage() }
+                .addTo(destroyDisposables)
+    }
+
+    private fun observeStates() {
+        viewModel.progressState.asProgressStateSrl(binding.srl,
+                { adapter.showPageProgress(it) },
+                {
+                    when (it) {
+                        is NotificationState.TotalProgress   -> ProgressState.NoProgress
+                        is NotificationState.EmptyProgress   -> ProgressState.EmptyProgress
+                        is NotificationState.PageProgress    -> ProgressState.PageProgress
+                        is NotificationState.RefreshProgress -> ProgressState.RefreshProgress
+                        is NotificationState.NoProgress      -> ProgressState.NoProgress
+                    }
+                },
+                destroyDisposables)
+
+        viewModel.errorState.asErrorState(binding.srl,
+                { viewModel.retry() },
+                {
+                    when (it) {
+                        is NotificationErrorState.NoErrorState       -> ErrorState.NoError
+                        is NotificationErrorState.NonFatalErrorState -> ErrorState.NonFatalError(it.error)
+                        is NotificationErrorState.FatalErrorState    -> ErrorState.FatalError(it.error)
+                    }
+                },
+                destroyDisposables)
+
+        var expandFirstTime = true
+        viewModel.dataState
+                .toObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    when (it) {
+                        is NotificationDataState.NotificationFeed -> {
+                            adapter.updateData(it.newsFeed)
+                            if (expandFirstTime) {
+                                binding.appBarLayout.setExpanded(true, false)
+                                //binding.vFocus.requestFocus()
+                                expandFirstTime = false
+                            }
+                        }
+                        else                                    -> adapter.releaseData()
+
+                    }
+                }
+                .addTo(destroyDisposables)
     }
 
 }

@@ -22,8 +22,6 @@
             name="doneClickListener"
             type="io.scal.ambi.extensions.binding.models.TextViewDataBinder.DoneActionClickListener"/>
 
-
-
     </data>
 
     <android.support.constraint.ConstraintLayout

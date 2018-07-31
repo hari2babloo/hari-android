@@ -13,6 +13,8 @@ import org.joda.time.DateTime
 
 interface INewsFeedInteractor {
 
+    fun loadLatestNews(): Single<List<NewsFeedItem>>
+
     fun loadCurrentUser(): Observable<User>
 
     fun loadNewsFeedPage(entityType: String, page: Int, audience: Audience): Single<List<NewsFeedItem>>
