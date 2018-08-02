@@ -11,12 +11,9 @@ class NotificationResponse : BaseResponse<List<NotificationData>>() {
     @Expose
     internal var posts1: List<ItemNotification>? = null
 
-    @SerializedName("notification")
-    @Expose
-    internal var posts2: List<ItemNotification>? = null
 
     private val posts: List<ItemNotification>?
-        get() = posts1 ?: posts2
+        get() = posts1
 
     override fun parse(): List<NotificationData> {
         return posts.notNullOrThrow("notifications").mapNotNull { it.parse() }

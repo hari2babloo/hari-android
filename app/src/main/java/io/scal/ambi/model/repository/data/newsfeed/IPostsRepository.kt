@@ -45,5 +45,7 @@ interface IPostsRepository {
 
     fun answerForPoll(feedItemPoll: NewsFeedItemPoll, pollChoice: PollChoice): Single<NewsFeedItem>
 
-    fun loadNotification(page: Int): Single<List<NotificationData>>
+    //fun loadNotification(page: Int, category: String): Single<List<NotificationData>>
+
+    fun loadNotification(): Single<List<NotificationData>>
 }

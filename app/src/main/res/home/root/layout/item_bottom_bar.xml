@@ -7,7 +7,7 @@
         android:background="@color/white"
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_bar_height"
+        android:layout_height="wrap_content"
         app:bb_tabXmlResource="@xml/bottombar_home_tabs"
         app:bb_tabItemLayout="@layout/bottom_bar_tabitem"
         />

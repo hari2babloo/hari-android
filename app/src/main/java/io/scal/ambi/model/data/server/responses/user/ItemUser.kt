@@ -8,6 +8,7 @@ import io.scal.ambi.extensions.binding.binders.toFrescoImagePath
 import io.scal.ambi.extensions.view.IconImageUser
 import io.scal.ambi.model.data.server.responses.ItemPicture
 import io.scal.ambi.model.data.server.responses.Parceble
+import org.joda.time.DateTime
 import timber.log.Timber
 
 open class ItemUser : Parceble<User> {
@@ -67,7 +68,7 @@ open class ItemUser : Parceble<User> {
         }
     }
 
-    private fun parseAvatar(): IconImageUser {
+    open fun parseAvatar(): IconImageUser {
         return profilePicture?.parse()?.let { IconImageUser(it.iconPath) } ?: IconImageUser(R.drawable.ic_profile.toFrescoImagePath())
     }
 

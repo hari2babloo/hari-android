@@ -3,6 +3,7 @@ package io.scal.ambi.ui.home.notifications
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.ambi.work.R
@@ -12,7 +13,6 @@ import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
 import io.scal.ambi.extensions.view.ToolbarType
-import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.ui.global.base.ErrorState
 import io.scal.ambi.ui.global.base.ProgressState
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
@@ -37,6 +37,7 @@ class NotificationsActivity : BaseToolbarActivity<NotificationsViewModel, Activi
         super.onCreate(savedInstanceState)
         initToolbar()
         initRecyclerView()
+        initTabbarListener();
         viewModel.init()
         observeStates()
     }
@@ -63,19 +64,41 @@ class NotificationsActivity : BaseToolbarActivity<NotificationsViewModel, Activi
 
     }
 
+    private fun initTabbarListener(){
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+
+                if(tab.position == 0){
+                    viewModel.notificationCategory = NotificationData.Category.individual.notificationCategory
+                }else if(tab.position == 1){
+                    viewModel.notificationCategory = NotificationData.Category.classes.notificationCategory
+                }else{
+                    viewModel.notificationCategory = NotificationData.Category.group.notificationCategory
+                }
+
+                adapter.releaseData()
+                viewModel.refresh()
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+
+            }
+        })
+    }
+
     private fun initRecyclerView() {
         binding.rvChats.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.rvChats.adapter = adapter
-
         binding.rvChats.setItemViewCacheSize(30)
         binding.rvChats.isDrawingCacheEnabled = true
         binding.rvChats.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
-
-        binding.rvChats.listenForEndScroll(1)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { viewModel.loadNextPage() }
-                .addTo(destroyDisposables)
     }
 
     private fun observeStates() {
@@ -110,6 +133,7 @@ class NotificationsActivity : BaseToolbarActivity<NotificationsViewModel, Activi
                 .subscribe {
                     when (it) {
                         is NotificationDataState.NotificationFeed -> {
+                            it.newsFeed.reverse()
                             adapter.updateData(it.newsFeed)
                             if (expandFirstTime) {
                                 binding.appBarLayout.setExpanded(true, false)
@@ -123,5 +147,7 @@ class NotificationsActivity : BaseToolbarActivity<NotificationsViewModel, Activi
                 }
                 .addTo(destroyDisposables)
     }
+
+
 
 }

@@ -18,10 +18,15 @@ import javax.inject.Inject
 class PostsRepository @Inject constructor(private val postsApi: PostsApi,
                                           private val localUserDataRepository: LocalUserDataRepository) : IPostsRepository {
 
-    override fun loadNotification(page: Int): Single<List<NotificationData>> {
-        return postsApi.loadNotification(5)
+    override fun loadNotification(): Single<List<NotificationData>> {
+        return postsApi.loadNotification()
                 .map { it.parse() }
     }
+
+    /*override fun loadNotification(page: Int,category: String): Single<List<NotificationData>> {
+        return postsApi.loadNotification(page,category)
+                .map { it.parse() }
+    }*/
 
     override fun loadPostsGeneral(entityType: String, page: Long, audience: Audience): Single<List<NewsFeedItem>> {
         return postsApi.getPostsGeneral(entityType,page, audience.toServerName())

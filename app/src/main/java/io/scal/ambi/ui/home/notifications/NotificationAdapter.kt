@@ -10,7 +10,7 @@ import io.scal.ambi.ui.global.base.adapter.RecyclerViewAdapterDelegated
  * Created by chandra on 30-07-2018.
  */
 
-class NotificationAdapter(viewModel: INotificationViewModel) : RecyclerViewAdapterDelegated<Any>() {
+class NotificationAdapter(viewModel: INotificationViewModel) : RecyclerViewAdapterDelegated<Any>(){
 
     private val headerElement = Any()
     private val footerElement = Any()

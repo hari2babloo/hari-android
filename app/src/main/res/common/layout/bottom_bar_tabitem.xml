@@ -12,8 +12,7 @@
             android:layout_height="wrap_content">
 
             <View
-                android:visibility="invisible"
-                android:id="@+id/tvSeperator"
+                android:visibility="gone"
                 android:layout_alignRight="@+id/tvTabIcon"
                 android:layout_alignLeft="@+id/tvTabIcon"
                 android:layout_below="@+id/tvTabIcon"
@@ -27,7 +26,6 @@
                 app:srcCompat="@drawable/ic_tab_newsfeed_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tint="@drawable/bottom_nav_colors"
                 />
         </RelativeLayout>
 

@@ -34,4 +34,6 @@
         <item>Gallery</item>
     </string-array>
 
+    <string name="notification_message"><b>%1$s</b> %2$s</string>
+
 </resources>

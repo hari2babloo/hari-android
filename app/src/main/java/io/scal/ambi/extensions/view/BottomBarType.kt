@@ -1,7 +1,6 @@
 package io.scal.ambi.extensions.view
 
 import android.content.Context
-import android.databinding.DataBindingUtil
 import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
@@ -58,8 +57,10 @@ open class BottomBarType: TabLayout {
                     tvTabName.visibility = View.VISIBLE
                     tvTabName.text = tabs.get(i).label
                     if(i==0){
-                        var tvSeperator = view.findViewById<View>(R.id.tvSeperator) as View
-                        tvSeperator.visibility = View.VISIBLE
+                        if(view.findViewById<View>(R.id.tvSeperator)!=null){
+                            var tvSeperator = view.findViewById<View>(R.id.tvSeperator) as View
+                            tvSeperator.visibility = View.VISIBLE
+                        }
                         tvTabName.isSelected = true
                     }
                     val fontResource = R.font.nicolas_desle_pantra_bold
@@ -75,8 +76,10 @@ open class BottomBarType: TabLayout {
                     tvTabIcon.setImageResource(tabs.get(i).drawableId)
                     isImageTabBar = true
                     if(i==0){
-                        var tvSeperator = view.findViewById<View>(R.id.tvSeperator) as View
-                        tvSeperator.visibility = View.VISIBLE
+                        if(view.findViewById<View>(R.id.tvSeperator)!=null){
+                            var tvSeperator = view.findViewById<View>(R.id.tvSeperator) as View
+                            tvSeperator.visibility = View.VISIBLE
+                        }
                         tvTabIcon.isSelected = true
                     }
                 }
@@ -103,9 +106,10 @@ open class BottomBarType: TabLayout {
                     var tvTabName =tab.customView!!.findViewById<View>(R.id.tvTabName) as TextView
                     tvTabName!!.isSelected = true
                 }
-
-                var tvSeperator = tab.customView!!.findViewById<View>(R.id.tvSeperator) as View
-                tvSeperator.visibility = View.VISIBLE
+                if(tab.customView!!.findViewById<View>(R.id.tvSeperator)!=null){
+                    var tvSeperator = tab.customView!!.findViewById<View>(R.id.tvSeperator) as View
+                    tvSeperator.visibility = View.VISIBLE
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -116,9 +120,10 @@ open class BottomBarType: TabLayout {
                     var tvTabName =tab.customView!!.findViewById<View>(R.id.tvTabName) as TextView
                     tvTabName!!.isSelected = false
                 }
-
-                var tvSeperator = tab.customView!!.findViewById<View>(R.id.tvSeperator) as View
-                tvSeperator.visibility = View.INVISIBLE
+                if(tab.customView!!.findViewById<View>(R.id.tvSeperator)!=null){
+                    var tvSeperator = tab.customView!!.findViewById<View>(R.id.tvSeperator) as View
+                    tvSeperator.visibility = View.INVISIBLE
+                }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {

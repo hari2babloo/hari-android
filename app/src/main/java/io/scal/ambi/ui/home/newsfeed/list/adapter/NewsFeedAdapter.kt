@@ -64,6 +64,7 @@ class NewsFeedAdapter(viewModel: INewsFeedViewModel) : RecyclerViewAdapterDelega
         notifyDataSetChanged()
     }
 
+
     fun showPageProgress(show: Boolean) {
         newsFeedList.updateFooterVisibility(show, this)
     }

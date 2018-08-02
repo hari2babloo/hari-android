@@ -7,6 +7,7 @@ import io.reactivex.Single
  */
 interface INotificationsInteractor {
 
-    fun loadNotifications(page: Int): Single<List<NotificationData>>
+    //fun loadNotifications(page: Int, category: String): Single<List<NotificationData>>
+    fun loadNotifications(): Single<List<NotificationData>>
 
 }

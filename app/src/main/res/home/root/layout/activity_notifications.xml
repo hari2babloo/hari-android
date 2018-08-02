@@ -74,9 +74,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/top_bar"
+                app:onSwipeToRefresh="@{() -> viewModel.refresh()}"
                 >
-                <!--app:onSwipeToRefresh="@{() -> viewModel.refresh()}"-->
-
 
                 <io.scal.ambi.ui.global.view.AutoScrollRecyclerView
                     android:id="@+id/rv_chats"

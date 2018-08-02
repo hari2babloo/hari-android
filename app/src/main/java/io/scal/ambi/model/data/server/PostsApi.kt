@@ -51,8 +51,11 @@ interface PostsApi {
     @PUT("v1/poll-posts/{postId}")
     fun updatePollPost(@Path("postId") postId: String, @Header("Content-Type") contentType: String, @Body body: String): Completable
 
+    //@GET("v1/notifications")
+    //fun loadNotification(@Query("pageNum") page: Int,@Query("category") category: String): Single<NotificationResponse>
+
     @GET("v1/notifications")
-    fun loadNotification(@Query("pageNum") page: Int): Single<NotificationResponse>
+    fun loadNotification(): Single<NotificationResponse>
 }
 
 class StatusCreationRequest(val poster: String,

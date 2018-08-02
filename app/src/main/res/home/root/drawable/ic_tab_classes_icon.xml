@@ -3,7 +3,7 @@
     <!-- NOTE: order is important (the first matching state(s) is what is rendered) -->
     <item
         android:state_selected="true"
-        android:drawable="@drawable/ic_tab_active_more" />
+        android:drawable="@drawable/ic_tab_active_classes" />
     <item
-        android:drawable="@drawable/ic_tab_inactive_more" />
+        android:drawable="@drawable/ic_tab_inactive_classes" />
 </selector>

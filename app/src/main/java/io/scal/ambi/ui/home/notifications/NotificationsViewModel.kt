@@ -2,6 +2,7 @@ package io.scal.ambi.ui.home.notifications
 
 import android.content.Context
 import android.databinding.ObservableField
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList
@@ -18,6 +19,8 @@ class NotificationsViewModel @Inject internal constructor(private val context: C
     internal val progressState = ObservableField<NotificationState>(NotificationState.TotalProgress)
     internal val errorState = ObservableField<NotificationErrorState>()
     val dataState = ObservableField<NotificationDataState>()
+    var notificationCategory:String? = NotificationData.Category.individual.notificationCategory;
+
 
     private val paginator = createPaginator(
             { page -> executeLoadNextPage(page) },
@@ -52,11 +55,12 @@ class NotificationsViewModel @Inject internal constructor(private val context: C
 
     private fun executeLoadNextPage(page: Int): Single<List<NotificationData>> {
         return interactor
-                .loadNotifications(page)
+                .loadNotifications()
                 .subscribeOn(rxSchedulersAbs.ioScheduler)
                 .observeOn(rxSchedulersAbs.computationScheduler)
                 .flatMap {
                     Observable.fromIterable(it)
+                            .filter { it -> it.category == notificationCategory }
                             .map<NotificationData> {it}
                             .toList()
                 }

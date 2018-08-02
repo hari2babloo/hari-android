@@ -3,6 +3,8 @@ package io.scal.ambi.extensions.binding.models
 import android.databinding.BindingAdapter
 import android.graphics.Typeface
 import android.support.v4.content.res.ResourcesCompat
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -21,10 +23,10 @@ object TextViewDataBinder {
 
     private val fontNameTypefaceCache: MutableMap<String, Typeface> = HashMap()
     private val fontNameWithResource = mapOf(
-        Pair("pantraRegular", R.font.nicolas_desle_pantra_regular),
-        Pair("pantraBold", R.font.nicolas_desle_pantra_bold),
-        Pair("pantraLight", R.font.nicolas_desle_pantra_light),
-        Pair("pantraMedium", R.font.nicolas_desle_pantra_medium)
+            Pair("pantraRegular", R.font.nicolas_desle_pantra_regular),
+            Pair("pantraBold", R.font.nicolas_desle_pantra_bold),
+            Pair("pantraLight", R.font.nicolas_desle_pantra_light),
+            Pair("pantraMedium", R.font.nicolas_desle_pantra_medium)
     )
 
     @JvmStatic
@@ -75,6 +77,34 @@ object TextViewDataBinder {
         }
     }
 
+
+    @JvmStatic
+    @BindingAdapter("otherText","textToBold", requireAll = true)
+    fun partlyBold(textView: TextView, actualText: String, textToBold: String) {
+        val builder = SpannableStringBuilder()
+
+        if (textToBold.length > 0 && textToBold.trim { it <= ' ' } != "") {
+            //for counting start/end indexes
+            val testText = actualText.toLowerCase(Locale.US)
+            val testTextToBold = textToBold.toLowerCase(Locale.US)
+            val startingIndex = testText.indexOf(testTextToBold)
+            val endingIndex = startingIndex + testTextToBold.length
+            //for counting start/end indexes
+
+            if (startingIndex < 0 || endingIndex < 0) {
+                textView.text = builder.append(actualText)
+            } else if (startingIndex >= 0 && endingIndex >= 0) {
+                builder.append(actualText)
+                builder.setSpan(StyleSpan(Typeface.BOLD), startingIndex, endingIndex, 0)
+                textView.text = builder
+            }
+        } else {
+            textView.text = builder.append(actualText)
+        }
+    }
+
+
+
     @JvmStatic
     @BindingAdapter("datePassedSmall")
     fun bindDateTimePassedSmall(textView: TextView, dateTime: DateTime?) {
@@ -105,22 +135,22 @@ object TextViewDataBinder {
         } else {
             val context = textView.context
             val formatter = PeriodFormatterBuilder()
-                .appendDays()
-                .appendSuffix("d")
-                .appendHours()
-                .appendSuffix("h")
-                .appendMinutes()
-                .appendSuffix("m")
-                .toFormatter()
+                    .appendDays()
+                    .appendSuffix("d")
+                    .appendHours()
+                    .appendSuffix("h")
+                    .appendMinutes()
+                    .appendSuffix("m")
+                    .toFormatter()
 
             val text =
-                when (pollEndsTime) {
-                    is PollEndsTime.OneDay       -> context.getString(R.string.creation_poll_ends_duration_1_day)
-                    is PollEndsTime.OneWeek      -> context.getString(R.string.creation_poll_ends_duration_1_week)
-                    is PollEndsTime.UserCustom   -> context.getString(R.string.creation_poll_ends_duration_custom_title)
-                    PollEndsTime.Never           -> context.getString(R.string.creation_poll_ends_duration_never)
-                    is PollEndsTime.TimeDuration -> throw IllegalStateException("todo implement custom text")
-                }
+                    when (pollEndsTime) {
+                        is PollEndsTime.OneDay       -> context.getString(R.string.creation_poll_ends_duration_1_day)
+                        is PollEndsTime.OneWeek      -> context.getString(R.string.creation_poll_ends_duration_1_week)
+                        is PollEndsTime.UserCustom   -> context.getString(R.string.creation_poll_ends_duration_custom_title)
+                        PollEndsTime.Never           -> context.getString(R.string.creation_poll_ends_duration_never)
+                        is PollEndsTime.TimeDuration -> throw IllegalStateException("todo implement custom text")
+                    }
             textView.text = text
         }
     }
@@ -133,13 +163,13 @@ object TextViewDataBinder {
         } else {
             val context = textView.context
             val formatter = PeriodFormatterBuilder()
-                .appendDays()
-                .appendSuffix("d ")
-                .appendHours()
-                .appendSuffix("h ")
-                .appendMinutes()
-                .appendSuffix("m")
-                .toFormatter()
+                    .appendDays()
+                    .appendSuffix("d ")
+                    .appendHours()
+                    .appendSuffix("h ")
+                    .appendMinutes()
+                    .appendSuffix("m")
+                    .toFormatter()
 
             val pollDurationLeft = Duration(DateTime.now(), pollEndsTime)
             if (pollDurationLeft.millis < 0) {
@@ -202,9 +232,9 @@ object TextViewDataBinder {
         } else {
             val listener = TextView.OnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH
-                    || actionId == EditorInfo.IME_ACTION_DONE
-                    || event.action == KeyEvent.ACTION_DOWN
-                    && event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || event.action == KeyEvent.ACTION_DOWN
+                        && event.keyCode == KeyEvent.KEYCODE_ENTER) {
                     imeDoneClickListener.onDoneActionClicked()
                     true
                 } else {

@@ -12,7 +12,7 @@
         />
 
     <tab
-        icon="@drawable/ic_tab_chat_icon"
+        icon="@drawable/ic_tab_classes_icon"
         id="@+id/tab_chat"
         />
 
@@ -24,7 +24,7 @@
     -->
 
     <tab
-        icon="@drawable/ic_tab_resources_icon"
+        icon="@drawable/ic_tab_groups_icon"
         id="@+id/tab_resources"
         />
 

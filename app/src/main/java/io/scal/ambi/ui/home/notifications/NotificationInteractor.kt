@@ -10,8 +10,12 @@ import javax.inject.Inject
 
 class NotificationInteractor @Inject constructor(private val postsRepository: IPostsRepository,
                                                  private val localUserDataRepository: ILocalUserDataRepository) : INotificationsInteractor {
-    override fun loadNotifications(page: Int): Single<List<NotificationData>> {
-        return postsRepository.loadNotification(page)
+    override fun loadNotifications(): Single<List<NotificationData>> {
+        return postsRepository.loadNotification()
     }
+
+    /*override fun loadNotifications(page: Int, category: String): Single<List<NotificationData>> {
+        return postsRepository.loadNotification(page,category)
+    }*/
 
 }

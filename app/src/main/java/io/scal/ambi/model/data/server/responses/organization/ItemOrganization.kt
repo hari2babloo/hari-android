@@ -9,6 +9,7 @@ import io.scal.ambi.entity.organization.OrganizationType
 import io.scal.ambi.extensions.notNullOrThrow
 import io.scal.ambi.extensions.view.ColorIconImage
 import io.scal.ambi.model.data.server.responses.ItemPicture
+import org.joda.time.DateTime
 
 class ItemOrganization {
 
@@ -39,6 +40,8 @@ class ItemOrganization {
     @SerializedName("twilioSids")
     @Expose
     internal var chatUids: List<String>? = null
+
+
 
     fun parse(organizationType: OrganizationType): Organization {
         val parsedId = id.notNullOrThrow("id")

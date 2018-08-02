@@ -11,5 +11,9 @@
         <attr name="bb_tabItemLayout" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="PartlyBoldTextView">
+        <attr name="textToBold" format="string" />
+        <attr name="otherText" format="string" />
+    </declare-styleable>
 
 </resources>

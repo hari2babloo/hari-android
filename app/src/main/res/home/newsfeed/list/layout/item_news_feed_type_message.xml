@@ -79,7 +79,6 @@
                 app:iconImage="@{element.icon}"
                 app:layout_constraintEnd_toEndOf="@+id/guideline_padding_end"
                 app:layout_constraintStart_toStartOf="@+id/guideline_padding_start"
-
                 />
 
             <TextView

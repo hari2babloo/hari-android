@@ -23,5 +23,6 @@
 
     <color name="blueHref">#00a6ef</color>
     <color name="grayBBB">#bbbbbb</color>
+    <color name="notification_unread">#FFF2FAFD</color>
 
 </resources>
