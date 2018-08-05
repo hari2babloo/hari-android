@@ -16,17 +16,22 @@ data class ClassesData(val title: String?,
                        val numberOfCredits: String?,
                        val description: String?,
                        val startDate: DateTime,
-                       val admins: List<String>?, val meetingDayAndTimes: String?): Serializable{
+                       val admins: List<String>?,
+                       val meetingDayAndTimes: String?,
+                       val members: List<String>?): Serializable{
 
     var courseCodeProferssorNames = courseCode + " - " + professorNames
     var startend = SystemUtils.toMMMddyyyy(startDate) + " - " + SystemUtils.toMMMddyyyy(endDate)
-    var adminIds = getUserIds()
+    var adminIds = getUserIds(admins!!,0)
+    var membersIds = getUserIds(members!!,adminIds!!.size+1)
 
-    private fun getUserIds(): Map<String,String>{
+    private fun getUserIds(admin: List<String>, index: Int): Map<String,String>{
+        var myIndex = index
         val fields = HashMap<String,String>()
-        for (i in 0 until admins!!.size) {
-            val user = admins!!.get(i)
-            fields.put("userIds[$i]", user)
+        for (i in 0 until admin!!.size) {
+            val user = admin!!.get(i)
+            myIndex = myIndex+1
+            fields.put("userIds[$myIndex]", user)
         }
         return fields
     }

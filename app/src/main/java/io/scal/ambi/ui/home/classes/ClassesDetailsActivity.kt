@@ -12,6 +12,7 @@ import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.ui.global.base.FragmentSwitcher
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.home.classes.about.AboutFragment
+import io.scal.ambi.ui.home.classes.members.MembersFragment
 import kotlin.reflect.KClass
 
 /**
@@ -59,7 +60,7 @@ class ClassesDetailsActivity : BaseToolbarActivity<ClassesDetailsViewModel, Acti
                         Pair(R.id.tab_about, AboutFragment::class),
                         Pair(R.id.tab_discussion, Fragment::class),
                         Pair(R.id.tab_events, Fragment::class),
-                        Pair(R.id.tab_members, Fragment::class),
+                        Pair(R.id.tab_members, MembersFragment::class),
                         Pair(R.id.tab_class_documents, Fragment::class),
                         Pair(R.id.tab_assignments, Fragment::class)
                 )

@@ -79,7 +79,7 @@
                     android:ellipsize="end"
                     android:lineSpacingExtra="4sp"
                     android:singleLine="true"
-                    android:text="Category"
+                    android:text="@{element.kind}"
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:layout_gravity="center_vertical"

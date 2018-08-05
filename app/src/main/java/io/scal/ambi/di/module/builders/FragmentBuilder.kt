@@ -10,6 +10,8 @@ import io.scal.ambi.ui.home.classes.ClassesFragment
 import io.scal.ambi.ui.home.classes.ClassesModule
 import io.scal.ambi.ui.home.classes.about.AboutFragment
 import io.scal.ambi.ui.home.classes.about.AboutModule
+import io.scal.ambi.ui.home.classes.members.MembersFragment
+import io.scal.ambi.ui.home.classes.members.MembersModule
 import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationFragment
 import io.scal.ambi.ui.home.newsfeed.creation.announcement.AnnouncementCreationModule
 import io.scal.ambi.ui.home.newsfeed.creation.base.CreationBottomModule
@@ -61,4 +63,7 @@ abstract class FragmentBuilder {
 
     @ContributesAndroidInjector(modules = [MoreModule::class])
     abstract fun bindMoreFragment(): MoreFragment
+
+    @ContributesAndroidInjector(modules = [MembersModule::class])
+    abstract fun bindMembersFragment(): MembersFragment
 }

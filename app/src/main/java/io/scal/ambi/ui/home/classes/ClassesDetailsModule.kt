@@ -32,7 +32,7 @@ internal abstract class ClassesDetailsModule {
         @Named("classesDetails")
         fun provideClassesDetails(activity: ClassesDetailsActivity): ClassesData {
             val allChatDescriptions = activity.intent.getSerializableExtra(ClassesDetailsActivity.EXTRA_CLASS_ITEM) as? ClassesData ?:
-                    ClassesData("Unknown", "", "", DateTime.now(),"","","",DateTime.now(), emptyList(),"")
+                    ClassesData("Unknown", "", "", DateTime.now(),"","","",DateTime.now(), emptyList(),"", emptyList())
             return allChatDescriptions
         }
 

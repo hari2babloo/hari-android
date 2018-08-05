@@ -14,7 +14,7 @@ import javax.inject.Named
 /**
  * Created by chandra on 03-08-2018.
  */
-class AboutViewModel @Inject internal constructor(private val context: Context, router: BetterRouter, private val interactor: IAboutInteractor,
+open class AboutViewModel @Inject internal constructor(private val context: Context, router: BetterRouter, private val interactor: IAboutInteractor,
                                                   private val rxSchedulersAbs: RxSchedulersAbs,@Named("aboutData") val aboutData: ClassesData): BaseViewModel(router),IAboutViewModel, IMembersViewModel {
 
 

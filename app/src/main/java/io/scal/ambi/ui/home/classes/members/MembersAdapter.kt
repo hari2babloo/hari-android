@@ -28,6 +28,9 @@ class MembersAdapter(viewModel: IMembersViewModel) : RecyclerViewAdapterDelegate
 
     init {
         addDelegate(MembersDelegate(viewModel))
+        addDelegate(HeaderDelegate(viewModel))
+        addDelegate(HeaderSecondaryDelegate(viewModel))
+        addDelegate(MemberCountViewDelegate(viewModel))
         setHasStableIds(true)
         NotificationList.updateHeaderVisibility(true, this)
         NotificationList.updateFooterVisibility(false, this)
@@ -38,7 +41,7 @@ class MembersAdapter(viewModel: IMembersViewModel) : RecyclerViewAdapterDelegate
         return item.hashCode().toLong();
     }
 
-    fun updateData(data: List<MembersData>) {
+    fun updateData(data: List<Any>) {
         releaseData()
         NotificationList = NotificationList.copy(data = data)
         //dataObserver = MembersAdapterDataObserver(data, this, hasHeader)

@@ -76,6 +76,11 @@ internal class ItemClasses : Parceble<ClassesData?> {
     @Expose
     internal var admins: List<String>? = null
 
+    @SerializedName("members")
+    @Expose
+    internal var members: List<String>? = null
+
+
     override fun parse(): ClassesData? {
         return parseAsClass()
     }
@@ -89,7 +94,7 @@ internal class ItemClasses : Parceble<ClassesData?> {
                 "" + numberOfCredits,
                 description,
                 startDate.toDateTime("startDate"),
-                admins,getMeetingDayandTime(meetingDayAndTimes!!))
+                admins,getMeetingDayandTime(meetingDayAndTimes!!),members)
     }
 
     private fun String?.toDateTime(fieldName: String): DateTime {

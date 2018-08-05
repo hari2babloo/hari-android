@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <data>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.classes.about.MemberCount"/>
+
+    </data>
+
+    <LinearLayout
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="@{element.count>1? @string/members(String.valueOf(element.count)): @string/member(String.valueOf(element.count))}"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            app:customFontName="@{@string/font_pantra_bold}"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grayLight"/>
+
+    </LinearLayout>
+</layout>

@@ -30,7 +30,7 @@ sealed class AboutDataState(open val profileInfo: MembersData?) {
 
     data class AboutEmpty(override val profileInfo: MembersData?) : AboutDataState(profileInfo)
 
-    data class AboutFeed(override val profileInfo: MembersData?, val newsFeed: List<MembersData>) : AboutDataState(profileInfo)
+    data class AboutFeed(override val profileInfo: MembersData?, val newsFeed: List<Any>) : AboutDataState(profileInfo)
 
     fun copyAboutInfo(uiProfile: MembersData): AboutDataState =
             when (this) {

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <data>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.classes.about.HeaderSecondary"/>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:text="@{element._name}"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:paddingLeft="16dp"
+            app:customFontName="@{@string/font_pantra_bold}"
+            android:layout_width="wrap_content"
+            android:textColor="#9B9B9B"
+            />
+
+        <TextView
+            android:layout_marginStart="8dp"
+            app:visibility="@{element.count>2}"
+            android:background="@drawable/bg_circle_grey"
+            android:text="@{String.valueOf(element.count)}"
+            app:customFontName="@{@string/font_pantra_bold}"
+            android:padding="8dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+    </LinearLayout>
+</layout>
