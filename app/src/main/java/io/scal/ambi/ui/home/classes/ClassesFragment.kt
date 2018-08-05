@@ -115,7 +115,6 @@ class ClassesFragment : BaseNavigationFragment<ClassesViewModel, FragmentClasses
                 .subscribe {
                     when (it) {
                         is ClassesDataState.ClassesFeed -> {
-                            it.newsFeed.reverse()
                             adapter.updateData(it.newsFeed)
                         }
                         is ClassesDataState.ClassesEmpty -> adapter.releaseData()

@@ -50,7 +50,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     companion object {
 
-        fun createScreen(context: Context) =
+        fun createScreen(context: Context?) =
             Intent(context, LoginActivity::class.java)
     }
 }

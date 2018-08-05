@@ -241,7 +241,6 @@ class ProfileDetailsViewModel @Inject internal constructor(private val context: 
                 val currentDataState = dataState.get()
                 if (currentDataState is ProfileDetailsDataState.DataNewsFeed) {
                     val element = currentDataState.newsFeed.firstOrNull { item -> item.uid == it.first.uid }
-
                     if (null != element) {
                         val newLikes = element.likes.setupLike(currentUser.get(), it.second == DynamicUserChoicer.Action.LIKE)
                         currentDataState.newsFeed.replaceElement(element, element.changeLikes(newLikes))

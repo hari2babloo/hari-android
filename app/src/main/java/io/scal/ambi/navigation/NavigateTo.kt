@@ -29,6 +29,13 @@ object NavigateTo {
     const val CHAT = "CHAT";
     const val NOTIFICATIONS = "NOTIFICATIONS";
     const val CLASSES_DETAILS="CLASSES_DETAILS"
+    const val MORE = "MORE"
+    const val NOTEBOOKS = "NOTEBOOKS"
+    const val CAMPUS = "CAMPUS"
+    const val SETTING = "SETTING"
+    const val SUPPORT = "SUPPORT"
+    const val FAQ = "FAQ"
+    const val LOGOUT="LOGOUT"
 }
 
 class NavigateToParamChatChannelSelection(val selectedChatDescription: ChatChannelDescription,

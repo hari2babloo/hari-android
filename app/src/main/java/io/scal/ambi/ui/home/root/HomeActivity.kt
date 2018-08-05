@@ -17,6 +17,7 @@ import io.scal.ambi.ui.global.search.SearchToolbarContent
 import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
 import io.scal.ambi.ui.home.classes.ClassesFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
+import io.scal.ambi.ui.more.MoreFragment
 import io.scal.ambi.ui.webview.ResourceWebViewFragment
 import ru.terrakok.cicerone.Navigator
 import javax.inject.Inject
@@ -68,7 +69,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
                         Pair(R.id.tab_calendar, CalendarListFragment::class),
                         Pair(R.id.tab_chat, ClassesFragment::class),
                         Pair(R.id.tab_resources, ResourceWebViewFragment::class),
-                        Pair(R.id.tab_more, Fragment::class)
+                        Pair(R.id.tab_more, MoreFragment::class)
                 ))
         bottomBarFragmentSwitcher.showTab(R.id.tab_newsfeed)
     }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.more.adapter.IMoreItemViewModel" />
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.more.data.MoreData" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@{element.topTwo ? @color/white : @android:color/transparent}"
+        android:layout_height="?listPreferredItemHeightSmall"
+        android:onClick="@{(view) -> viewModel.optionSelected(element)}">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="24dp"
+            android:src="@{element.drawableId}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="16dp"
+            android:drawablePadding="20dp"
+            android:gravity="center_vertical"
+            android:text="@{element.name}"
+            android:textColor="@color/gray"
+            app:customFontName="@{@string/font_pantra_bold}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

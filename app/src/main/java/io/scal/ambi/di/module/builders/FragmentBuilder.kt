@@ -19,6 +19,8 @@ import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateFragment
 import io.scal.ambi.ui.home.newsfeed.creation.status.StatusUpdateModule
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedModule
+import io.scal.ambi.ui.more.MoreFragment
+import io.scal.ambi.ui.more.MoreModule
 import io.scal.ambi.ui.webview.*
 
 @Module
@@ -56,4 +58,7 @@ abstract class FragmentBuilder {
 
     @ContributesAndroidInjector(modules = [AboutModule::class])
     abstract fun bindAboutFragment(): AboutFragment
+
+    @ContributesAndroidInjector(modules = [MoreModule::class])
+    abstract fun bindMoreFragment(): MoreFragment
 }

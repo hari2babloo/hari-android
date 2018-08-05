@@ -62,7 +62,7 @@
                 android:text="@{element.name}"
                 android:textColor="@color/dark"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                app:customFontName="@{@string/font_pantra_bold}"
                 tools:text="Author name"
                 />
 

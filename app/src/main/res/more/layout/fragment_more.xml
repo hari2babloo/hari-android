@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="io.scal.ambi.ui.more.IMoreViewModel" />
+
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.more.MoreViewModel" />
+
+    </data>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/root_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="8dp"
+            >
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/imageView1"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:actualImageScaleType="centerCrop"
+                app:roundedCornerRadius="14dp"
+                app:roundingBorderColor="@color/grayBBB"
+                app:roundingBorderWidth="0.5dp"
+                app:iconImage="@{viewModel.dataState.profileInfo.banner}"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="15dp">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    app:actualImageScaleType="centerCrop"
+                    app:backgroundImage="@color/white"
+                    app:iconImage="@{viewModel.dataState.profileInfo.avatar}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:roundedCornerRadius="10dp"
+                    app:roundAsCircle="true"
+                    app:roundingBorderColor="@color/white"
+                    app:roundingBorderWidth="1dp"
+                    />
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_toRightOf="@+id/iv_profile"
+                    android:onClick="@{(view)->listener.onViewProfileClick()}"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:drawableRight="@drawable/ic_navigate_next_white_24dp"
+                        android:hint="name"
+                        android:textSize="18sp"
+                        android:text="@{viewModel.dataState.profileInfo.name}"
+                        android:textColor="@color/white"
+                        app:customFontName="@{@string/font_pantra_bold}" />
+
+                    <TextView
+                        android:id="@+id/tv_viewProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/iv_profile"
+                        android:text="@string/action_view_profile"
+                        android:textColor="@color/grayActions"
+                        app:customFontName="@{@string/font_pantra_bold}" />
+
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+            </RelativeLayout>
+
+
+        </FrameLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_more_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</layout>
