@@ -9,6 +9,7 @@
     <declare-styleable name="BottomBarType">
         <attr name="bb_tabXmlResource" format="reference" />
         <attr name="bb_tabItemLayout" format="reference" />
+        <attr name="bb_tabScrollable" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="PartlyBoldTextView">

@@ -15,6 +15,7 @@ import io.scal.ambi.ui.global.base.activity.BaseNavigator
 import io.scal.ambi.ui.global.base.activity.BaseToolbarActivity
 import io.scal.ambi.ui.global.search.SearchToolbarContent
 import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
+import io.scal.ambi.ui.home.classes.ClassesFragment
 import io.scal.ambi.ui.home.newsfeed.list.NewsFeedFragment
 import io.scal.ambi.ui.webview.ResourceWebViewFragment
 import ru.terrakok.cicerone.Navigator
@@ -65,7 +66,7 @@ class HomeActivity : BaseToolbarActivity<HomeViewModel, ActivityHomeBinding>() {
                         Pair(R.id.tab_newsfeed, NewsFeedFragment::class),
                         //Pair(R.id.tab_calendar, SchedulerWebViewFragment::class),
                         Pair(R.id.tab_calendar, CalendarListFragment::class),
-                        Pair(R.id.tab_chat, Fragment::class),
+                        Pair(R.id.tab_chat, ClassesFragment::class),
                         Pair(R.id.tab_resources, ResourceWebViewFragment::class),
                         Pair(R.id.tab_more, Fragment::class)
                 ))

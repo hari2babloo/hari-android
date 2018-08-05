@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.classes.members.IMembersViewModel"/>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.classes.about.MembersData"/>
+
+    </data>
+
+    <LinearLayout
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="match_parent"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:elevation="1dp"
+        android:background="@drawable/bg_grey_border_white_fill_round_cornered_12dp"
+        android:layout_height="wrap_content"
+        >
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:actualImageScaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:iconImage="@{element.icon}"
+            app:roundAsCircle="true"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <TextView
+                android:id="@+id/tv_actor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="0sp"
+                android:singleLine="true"
+                android:text="@{element.name}"
+                android:textColor="@color/dark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Author name"
+                />
+
+            <LinearLayout
+                android:paddingTop="4dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_actor_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="4sp"
+                    android:singleLine="true"
+                    android:text="Category"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_gravity="center_vertical"
+                    tools:text="Category"
+                    android:background="@drawable/news_feed_actor_category_bg"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    tools:background="@drawable/news_feed_actor_category_bg"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_audience_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</layout>

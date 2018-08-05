@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ambi.work">
+    package="com.ambi.work">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -91,6 +91,10 @@
 
         <activity
             android:name="io.scal.ambi.ui.home.notifications.NotificationsActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
+
+
+        <activity android:name="io.scal.ambi.ui.home.classes.ClassesDetailsActivity"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
 
         <!-- For camera picker -->

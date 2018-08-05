@@ -2,7 +2,6 @@ package io.scal.ambi.ui.home.notifications
 
 import android.content.Context
 import android.databinding.ObservableField
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.scal.ambi.extensions.binding.observable.OptimizedObservableArrayList

@@ -13,6 +13,10 @@
             name="toolbarType"
             type="io.scal.ambi.extensions.view.ToolbarType"/>
 
+        <variable
+            name="backgroundTransparent"
+            type="Boolean"/>
+
     </data>
 
     <RelativeLayout
@@ -22,8 +26,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/tb"
             android:layout_width="match_parent"
+            android:background="@{backgroundTransparent? @android:color/transparent: @color/white}"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
             app:layout_collapseMode="@{toolbarType.collapsingFlags}"
             app:layout_scrollFlags="@{toolbarType.scrollFlags}"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"

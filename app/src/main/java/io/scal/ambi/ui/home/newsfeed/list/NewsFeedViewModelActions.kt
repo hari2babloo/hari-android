@@ -22,20 +22,20 @@ class NewsFeedViewModelActions(private val router: BetterRouter,
                                private val rxSchedulersAbs: RxSchedulersAbs) {
 
     private val userLikeChoicer = DynamicUserChoicer<UIModelFeed>(rxSchedulersAbs,
-                                                                  { uiModelFeed, action ->
-                                                                      likeAction.invoke(uiModelFeed, action)
-                                                                          .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
-                                                                  },
-                                                                  { uiModelFeed -> uiModelFeed.uid })
+            { uiModelFeed, action ->
+                likeAction.invoke(uiModelFeed, action)
+                        .compose(rxSchedulersAbs.ioToMainTransformerCompletable)
+            },
+            { uiModelFeed -> uiModelFeed.uid })
 
 
     fun openAuthorOf(element: UIModelFeed) {
         val userId =
-            when (element) {
-                is UIModelFeed.Message -> element.author.uid
-                is UIModelFeed.Poll    -> element.author.uid
-                is UIModelFeed.Link    -> element.actor.uid
-            }
+                when (element) {
+                    is UIModelFeed.Message -> element.author.uid
+                    is UIModelFeed.Poll    -> element.author.uid
+                    is UIModelFeed.Link    -> element.actor.uid
+                }
         router.navigateTo(NavigateTo.PROFILE_DETAILS, userId)
     }
 
@@ -46,13 +46,13 @@ class NewsFeedViewModelActions(private val router: BetterRouter,
     fun changeUserLikeOf(newsFeed: ObservableList<UIModelFeed>, element: UIModelFeed, currentUser: User) {
         if (newsFeed.contains(element)) {
             val newLikes =
-                if (element.likes.currentUserLiked) {
-                    userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.NONE, DynamicUserChoicer.Action.LIKE)
-                    element.likes.setupLike(currentUser, false)
-                } else {
-                    userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.LIKE, DynamicUserChoicer.Action.NONE)
-                    element.likes.setupLike(currentUser, true)
-                }
+                    if (element.likes.currentUserLiked) {
+                        userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.NONE, DynamicUserChoicer.Action.LIKE)
+                        element.likes.setupLike(currentUser, false)
+                    } else {
+                        userLikeChoicer.changeUserChoice(element, DynamicUserChoicer.Action.LIKE, DynamicUserChoicer.Action.NONE)
+                        element.likes.setupLike(currentUser, true)
+                    }
 
             newsFeed.replaceElement(element, element.changeLikes(newLikes))
         }
@@ -64,25 +64,25 @@ class NewsFeedViewModelActions(private val router: BetterRouter,
             element.userCommentText.enabled.set(false)
 
             commentAction.invoke(element, userCommentText)
-                .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
-                .subscribe({
-                               val newsFeed = getNewsFeed.invoke()
-                               if (null != newsFeed) {
-                                   val listElement = newsFeed.firstOrNull { item -> item.uid == element.uid }
+                    .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                    .subscribe({
+                        val newsFeed = getNewsFeed.invoke()
+                        if (null != newsFeed) {
+                            val listElement = newsFeed.firstOrNull { item -> item.uid == element.uid }
 
-                                   if (null != listElement) {
-                                       val newComments = listElement.comments.comments.toMutableList()
-                                       newComments.add(0, it)
-                                       val updatedElement = listElement.updateComments(UIComments(newComments))
+                            if (null != listElement) {
+                                val newComments = listElement.comments.comments.toMutableList()
+                                newComments.add(0, it)
+                                val updatedElement = listElement.updateComments(UIComments(newComments))
 
-                                       newsFeed.replaceElement(listElement, updatedElement)
+                                newsFeed.replaceElement(listElement, updatedElement)
 
-                                       listElement.userCommentText.enabled.set(true)
-                                       listElement.userCommentText.data.set("")
-                                   }
-                               }
-                           },
-                           { element.userCommentText.enabled.set(true) })
+                                listElement.userCommentText.enabled.set(true)
+                                listElement.userCommentText.data.set("")
+                            }
+                        }
+                    },
+                            { element.userCommentText.enabled.set(true) })
         }
     }
 
@@ -92,38 +92,38 @@ class NewsFeedViewModelActions(private val router: BetterRouter,
                          currentUser: User) {
         if (newsFeed.contains(element)) {
             val newPollChoices = element
-                .choices
-                .map { it.pollChoice }
-                .map { if (it.uid == choice.pollChoice.uid) choice.pollChoice.copy(voters = choice.pollChoice.voters.plus(currentUser.uid)) else it }
+                    .choices
+                    .map { it.pollChoice }
+                    .map { if (it.uid == choice.pollChoice.uid) choice.pollChoice.copy(voters = choice.pollChoice.voters.plus(currentUser.uid)) else it }
 
             newsFeed
-                .replaceElement(element, element.copy(choices = newPollChoices.toPollVotedResult(), userChoice = choice.pollChoice))
+                    .replaceElement(element, element.copy(choices = newPollChoices.toPollVotedResult(), userChoice = choice.pollChoice))
 
             pollChoiceAction.invoke(element, choice)
-                .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
-                .subscribe({ updatedElement ->
-                               val upToDateNewsFeed = getNewsFeed.invoke()
-                               if (null != upToDateNewsFeed) {
-                                   val listElement = upToDateNewsFeed.firstOrNull { item -> item.uid == element.uid }
+                    .compose(rxSchedulersAbs.getIOToMainTransformerSingle())
+                    .subscribe({ updatedElement ->
+                        val upToDateNewsFeed = getNewsFeed.invoke()
+                        if (null != upToDateNewsFeed) {
+                            val listElement = upToDateNewsFeed.firstOrNull { item -> item.uid == element.uid }
 
-                                   if (null != listElement) {
-                                       upToDateNewsFeed.replaceElement(listElement, updatedElement.toNewsFeedElement(currentUser))
-                                   }
-                               }
-                           },
-                           { t ->
-                               val upToDateNewsFeed = getNewsFeed.invoke()
-                               if (null != upToDateNewsFeed) {
-                                   val listElement = upToDateNewsFeed.firstOrNull { item -> item.uid == element.uid } as? UIModelFeed.Poll
+                            if (null != listElement) {
+                                upToDateNewsFeed.replaceElement(listElement, updatedElement.toNewsFeedElement(currentUser))
+                            }
+                        }
+                    },
+                            { t ->
+                                val upToDateNewsFeed = getNewsFeed.invoke()
+                                if (null != upToDateNewsFeed) {
+                                    val listElement = upToDateNewsFeed.firstOrNull { item -> item.uid == element.uid } as? UIModelFeed.Poll
 
-                                   if (null != listElement) {
-                                       val oldPollChoices = element.choices.map { it.pollChoice }.toPollVotedResult()
+                                    if (null != listElement) {
+                                        val oldPollChoices = element.choices.map { it.pollChoice }.toPollVotedResult()
 
-                                       upToDateNewsFeed.replaceElement(listElement,
-                                                                       listElement.copy(choices = oldPollChoices, userChoice = null))
-                                   }
-                               }
-                           })
+                                        upToDateNewsFeed.replaceElement(listElement,
+                                                listElement.copy(choices = oldPollChoices, userChoice = null))
+                                    }
+                                }
+                            })
         }
     }
 

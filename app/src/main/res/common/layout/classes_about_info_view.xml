@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+        <variable
+            name="aboutData"
+            type="io.scal.ambi.ui.home.classes.ClassesData"/>
+
+    </data>
+
+    <LinearLayout
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:elevation="1dp"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_grey_border_white_fill_round_cornered_12dp">
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            >
+
+            <TextView
+                android:textSize="12sp"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:text="course"
+                android:textColor="#9B9B9B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="2dp"
+                android:text="@{aboutData.courseCode}"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                app:visibility="@{aboutData.term!=null}"
+                android:textSize="12sp"
+                android:paddingTop="16dp"
+                android:text="term"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:textColor="#9B9B9B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="2dp"
+                app:visibility="@{aboutData.term!=null}"
+                android:text="@{aboutData.term}"
+                android:textColor="@color/black"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textSize="12sp"
+                android:paddingTop="16dp"
+                android:text="dates"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:textColor="#9B9B9B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="2dp"
+                android:text="@{aboutData.startend}"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textSize="12sp"
+                android:paddingTop="16dp"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:text="schedule"
+                android:textColor="#9B9B9B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="2dp"
+                android:textColor="@color/black"
+                android:text="@{aboutData.meetingDayAndTimes}"
+                android:textSize="14sp"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textSize="12sp"
+                android:paddingTop="16dp"
+                android:text="credits"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:textColor="#9B9B9B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="2dp"
+                android:text="@{aboutData.numberOfCredits}"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:customFontName="@{@string/font_pantra_regular}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

@@ -28,6 +28,7 @@ object NavigateTo {
     const val PROFILE_RESUME = "PROFILE_RESUME"
     const val CHAT = "CHAT";
     const val NOTIFICATIONS = "NOTIFICATIONS";
+    const val CLASSES_DETAILS="CLASSES_DETAILS"
 }
 
 class NavigateToParamChatChannelSelection(val selectedChatDescription: ChatChannelDescription,

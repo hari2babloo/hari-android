@@ -21,6 +21,7 @@ open class BottomBarType: TabLayout {
     private var tabXmlResource: Int = 0
     private var tabLayoutId: Int = 0
     private var isImageTabBar: Boolean = false;
+    private var tabScrollable: Boolean=false;
 
     constructor(context: Context) : super(context) {}
 
@@ -38,13 +39,18 @@ open class BottomBarType: TabLayout {
         {
             tabXmlResource = ta.getResourceId(R.styleable.BottomBarType_bb_tabXmlResource, 0)
             tabLayoutId = ta.getResourceId(R.styleable.BottomBarType_bb_tabItemLayout, 0)
+            tabScrollable = ta.getBoolean(R.styleable.BottomBarType_bb_tabScrollable, false)
         }
         finally
         {
             ta.recycle()
         }
-        if (tabXmlResource != 0) {
 
+        if(tabScrollable){
+            this.tabMode = TabLayout.MODE_SCROLLABLE
+        }
+
+        if (tabXmlResource != 0) {
             val parser = ResourceParser(getContext(), tabXmlResource)
             val tabs: MutableList<TabResourceItem>? = parser.parseTabs()
 

@@ -46,6 +46,7 @@
 
                 <include
                     layout="@layout/toolbar"
+                    bind:backgroundTransparent="@{true}"
                     bind:toolbarType="@{toolbarType}"/>
 
             </android.support.design.widget.AppBarLayout>

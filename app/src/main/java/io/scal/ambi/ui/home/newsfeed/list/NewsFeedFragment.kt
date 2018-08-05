@@ -87,6 +87,7 @@ class NewsFeedFragment : BaseNavigationFragment<NewsFeedViewModel, FragmentNewsF
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.loadNextPage() }
             .addTo(destroyViewDisposables)
+
     }
 
     private fun observeStates() {

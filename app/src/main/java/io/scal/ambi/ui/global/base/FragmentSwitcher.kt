@@ -1,5 +1,6 @@
 package io.scal.ambi.ui.global.base
 
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import com.ambi.work.R
@@ -21,6 +22,7 @@ open class FragmentSwitcher(private val fragmentManager: FragmentManager,
             .filter { it != tabId }
             .forEach { getTabFragment(it)?.run { transaction.detach(this) } }
         var activeTab = getTabFragment(tabId)
+
         if (null == activeTab) {
             activeTab = bottomFragmentClasses[tabId]!!.java.newInstance()!!
             transaction.add(R.id.container, activeTab, getTabFragmentTag(tabId))
@@ -31,6 +33,26 @@ open class FragmentSwitcher(private val fragmentManager: FragmentManager,
 
         activeTab.activity?.run { KeyboardUtils.hideSoftKeyboard(this) }
     }
+
+    fun showTab(tabId: Int, arguments: Bundle) {
+        val transaction = fragmentManager.beginTransaction()
+        bottomFragmentClasses.keys
+                .filter { it != tabId }
+                .forEach { getTabFragment(it)?.run { transaction.detach(this) } }
+        var activeTab = getTabFragment(tabId)
+        if (null == activeTab) {
+            activeTab = bottomFragmentClasses[tabId]!!.java.newInstance()!!
+            activeTab.arguments = arguments
+            transaction.add(R.id.container, activeTab, getTabFragmentTag(tabId))
+        } else {
+            activeTab.arguments = arguments
+            transaction.attach(activeTab)
+        }
+        transaction.commitAllowingStateLoss()
+
+        activeTab.activity?.run { KeyboardUtils.hideSoftKeyboard(this) }
+    }
+
 
     fun getCurrentTabFragment(): BaseFragment<*, *>? {
         return fragmentManager.findFragmentById(R.id.container) as? BaseFragment<*, *>

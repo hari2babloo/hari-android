@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_discussion"
+        title="discussion" />
+    <tab
+        id="@+id/tab_about"
+        title="about" />
+    <tab
+        id="@+id/tab_events"
+        title="events" />
+
+    <tab
+        id="@+id/tab_members"
+        title="members" />
+
+    <tab
+        id="@+id/tab_class_documents"
+        title="class documents" />
+
+    <tab
+        id="@+id/tab_assignments"
+        title="assignments" />
+</tabs>
+

@@ -7,6 +7,7 @@ import io.scal.ambi.model.data.server.*
 import io.scal.ambi.model.data.server.intercepters.AuthInterceptor
 import io.scal.ambi.model.data.server.intercepters.Http2FixInterceptor
 import io.scal.ambi.model.repository.local.ILocalUserDataRepository
+import io.scal.ambi.ui.home.classes.ClassesApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -88,4 +89,9 @@ class ApiModule {
     @Singleton
     internal fun provideFilesApi(@Named("mainServer") retrofit: Retrofit): FilesApi =
         retrofit.create(FilesApi::class.java)
+
+    @Provides
+    @Singleton
+    internal fun provideClassesApi(@Named("mainServer") retrofit: Retrofit): ClassesApi =
+            retrofit.create(ClassesApi::class.java)
 }

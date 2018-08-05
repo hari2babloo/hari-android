@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_current"
+        title="current" />
+    <tab
+        id="@+id/tab_past"
+        title="past" />
+    <tab
+        id="@+id/tab_find_classes"
+        title="find classes" />
+</tabs>
+

@@ -14,6 +14,8 @@ import io.scal.ambi.ui.home.chat.details.ChatDetailsActivity
 import io.scal.ambi.ui.home.chat.details.ChatDetailsModule
 import io.scal.ambi.ui.home.chat.newmessage.ChatNewMessageActivity
 import io.scal.ambi.ui.home.chat.newmessage.ChatNewMessageModule
+import io.scal.ambi.ui.home.classes.ClassesDetailsActivity
+import io.scal.ambi.ui.home.classes.ClassesDetailsModule
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity
 import io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionModule
 import io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity
@@ -67,4 +69,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [NotificationsModule::class])
     abstract fun bindNotificationsActivity(): NotificationsActivity
+
+    @ContributesAndroidInjector(modules = [ClassesDetailsModule::class])
+    abstract fun bindClassesDetailsActivity(): ClassesDetailsActivity
 }

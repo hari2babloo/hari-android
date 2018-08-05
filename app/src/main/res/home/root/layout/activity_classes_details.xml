@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="toolbarType"
+            type="android.databinding.ObservableField&lt;io.scal.ambi.extensions.view.ToolbarType&gt;"/>
+
+        <variable
+            name="viewModel"
+            type="io.scal.ambi.ui.home.classes.ClassesDetailsViewModel"/>
+
+        <variable
+            name="element"
+            type="io.scal.ambi.ui.home.classes.ClassesData"/>
+
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            app:elevation="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:theme="@style/AppBarLayout"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    app:elevation="0dp"
+                    layout="@layout/toolbar"
+                    bind:backgroundTransparent="@{true}"
+                    bind:toolbarType="@{toolbarType}"
+                    />
+
+                <LinearLayout
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_creation_action_selector"
+                    >
+
+                    <TextView
+                        android:paddingLeft="10dp"
+                        android:layout_weight="1"
+                        android:text="Joined"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"
+                        app:customFontName="@{@string/font_pantra_bold}"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:paddingRight="8dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        app:srcCompat="@drawable/ic_arrow_down"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textSize="14sp"
+                        android:id="@+id/tvProfessorNames"
+                        android:textColor="@color/white"
+                        android:text="@{viewModel.classesDetails.courseCodeProferssorNames}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:text="@{viewModel.classesDetails.title}"
+                        android:textSize="20sp"
+                        app:customFontName="@{@string/font_pantra_bold}"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:src="@drawable/ic_star_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.constraint.ConstraintLayout
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:id="@+id/root_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/top_bar"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <io.scal.ambi.extensions.view.BottomBarType
+                    android:id="@+id/tab_layout"
+                    app:bb_tabXmlResource="@xml/classes_details_menu"
+                    app:bb_tabItemLayout="@layout/tab_item"
+                    app:bb_tabScrollable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"/>
+
+                <View
+                    android:background="@color/grayLight"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_bar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</layout>
