@@ -1,6 +1,7 @@
 package io.scal.ambi.ui.home.classes.members
 
 import android.content.Context
+import android.databinding.ObservableField
 import com.ambi.work.R
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.extensions.rx.general.RxSchedulersAbs
@@ -15,8 +16,14 @@ import javax.inject.Named
  * Created by chandra on 03-08-2018.
  */
 class MembersViewModel @Inject internal constructor(private val context: Context, router: BetterRouter, private val interactor: IAboutInteractor,
-                                                   private val rxSchedulersAbs: RxSchedulersAbs,@Named("aboutData") val memberdata: ClassesData) : AboutViewModel(context, router, interactor, rxSchedulersAbs, memberdata) {
+                                                    private val rxSchedulersAbs: RxSchedulersAbs,@Named("aboutData") val memberdata: ClassesData) : AboutViewModel(context, router, interactor, rxSchedulersAbs, memberdata), IMembersViewModel {
 
+
+    val openAction = ObservableField<MembersData>()
+
+    override fun openActionSheet(element: MembersData) {
+        openAction.set(element)
+    }
 
     init {
 

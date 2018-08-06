@@ -79,7 +79,7 @@
                     android:ellipsize="end"
                     android:lineSpacingExtra="4sp"
                     android:singleLine="true"
-                    android:text="@{element.kind}"
+                    android:text="@{element.userType}"
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:layout_gravity="center_vertical"
@@ -93,6 +93,7 @@
         </LinearLayout>
 
         <ImageView
+            android:onClick="@{(view) -> viewModel.openActionSheet(element)}"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_audience_groups"
             android:layout_width="wrap_content"

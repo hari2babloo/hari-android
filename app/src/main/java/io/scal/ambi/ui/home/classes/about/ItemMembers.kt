@@ -23,12 +23,16 @@ internal class ItemMembers : Parceble<MembersData?> {
     @Expose
     internal var firstName: String? = null
 
+    @SerializedName("lastName")
+    @Expose
+    internal var lastName: String? = null
+
     @SerializedName("kind")
     @Expose
     var kind: String? = null
 
     override fun parse(): MembersData? {
-        return MembersData(id, firstName, IconImageUser(R.drawable.ic_profile.toFrescoImagePath()), kind!!)
+        return MembersData(id, firstName + " " + lastName, IconImageUser(R.drawable.ic_profile.toFrescoImagePath()), kind!!)
     }
 
 }

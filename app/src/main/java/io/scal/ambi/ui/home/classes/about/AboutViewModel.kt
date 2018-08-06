@@ -17,6 +17,10 @@ import javax.inject.Named
 open class AboutViewModel @Inject internal constructor(private val context: Context, router: BetterRouter, private val interactor: IAboutInteractor,
                                                   private val rxSchedulersAbs: RxSchedulersAbs,@Named("aboutData") val aboutData: ClassesData): BaseViewModel(router),IAboutViewModel, IMembersViewModel {
 
+    override fun openActionSheet(element: MembersData) {
+        //todo
+    }
+
 
     val stateModel = ObservableField<AboutDataState>()
 

@@ -46,6 +46,7 @@ class NewsFeedViewModel @Inject constructor(private val context: Context,
             selectedAudience.set(audience)
         }
     }
+
     private val newsFeedItemCreationListener = ResultListener { paginator.forceRefresh() }
 
     private val paginator = createPaginator(
