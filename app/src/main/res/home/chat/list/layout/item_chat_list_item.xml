@@ -19,41 +19,23 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:onClick="@{(view) -> viewModel.openChatDetails(element)}"
-        android:paddingBottom="6dp"
+        android:paddingBottom="20dp"
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
-        android:paddingTop="6dp">
+        android:paddingTop="20dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_icon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
             app:actualImageScaleType="centerInside"
             app:iconImage="@{element.icon}"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:roundAsCircle="true"/>
-
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="76dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="end"
-            android:lineSpacingExtra="0sp"
-            android:singleLine="true"
-            android:textColor="#9f9f9f"
-            android:textSize="13sp"
-            app:boldTextStyle="@{element.hasNewMessages}"
-            app:datePassedSmall="@{element.lastMessageDateTime}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="23 hours ago"
-            />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -61,7 +43,7 @@
             android:layout_marginStart="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_date"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_icon"
             app:layout_constraintTop_toTopOf="parent"
             >
@@ -69,7 +51,7 @@
             <TextView
                 android:id="@+id/tv_actor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:ellipsize="end"
                 android:lineSpacingExtra="0sp"
                 android:singleLine="true"
@@ -80,16 +62,31 @@
                 tools:text="Author name"
                 />
 
+
             <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="76dp"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="0sp"
+                android:singleLine="true"
+                android:textColor="#9f9f9f"
+                android:textSize="12sp"
+                app:boldTextStyle="@{element.hasNewMessages}"
+                app:datePassedSmall="@{element.lastMessageDateTime}"
+                tools:text="23 hours ago"
+                />
+
+            <TextView
+                android:layout_marginTop="10dp"
                 android:id="@+id/tv_message"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="18dp"
                 android:ellipsize="end"
                 android:lineSpacingExtra="4sp"
                 android:singleLine="true"
                 android:text="@{element.lastMessage}"
-                android:textColor="#9f9f9f"
-                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:textSize="14sp"
                 app:boldTextStyle="@{element.hasNewMessages}"
                 tools:text="I am sending you in next friday"
                 />

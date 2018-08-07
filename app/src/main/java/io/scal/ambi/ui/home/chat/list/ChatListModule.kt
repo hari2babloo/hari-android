@@ -27,8 +27,8 @@ abstract class ChatListModule {
 
         @JvmStatic
         @Provides
-        fun provideAppendingData(activity: ChatListFragment): String {
-            return activity.intent.getSerializableExtra(ChatListFragment.EXTRA_PROFILE_UID) as? String ?: ""
+        fun provideAppendingData(activity: ChatListActivity): String {
+            return activity.intent.getSerializableExtra(ChatListActivity.EXTRA_PROFILE_UID) as? String ?: ""
         }
 
         @JvmStatic

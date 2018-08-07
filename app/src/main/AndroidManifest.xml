@@ -1,19 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ambi.work">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <!--for data picker-->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- for data picker -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!--for push notifications-->
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!-- for push notifications -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <permission
         android:name="com.ambi.work.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
+        android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission android:name="com.ambi.work.permission.C2D_MESSAGE"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.ambi.work.permission.C2D_MESSAGE" />
 
     <application
         android:name="io.scal.ambi.App"
@@ -22,80 +24,60 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="ef966a9445248a23aa0135ba55d561740e2ddd21"
-            />
+            android:value="ef966a9445248a23aa0135ba55d561740e2ddd21" />
 
-        <!--twilio push notifications-->
+        <!-- twilio push notifications -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher"/>
+            android:resource="@mipmap/ic_launcher" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/blueDark"/>
+            android:resource="@color/blueDark" />
 
         <activity
             android:name="io.scal.ambi.ui.launcher.LauncherActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"></activity>
         <activity
             android:name="io.scal.ambi.ui.auth.login.LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="io.scal.ambi.ui.auth.recover.RecoveryActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="io.scal.ambi.ui.home.root.HomeActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="io.scal.ambi.ui.home.newsfeed.audience.AudienceSelectionActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
-
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name="io.scal.ambi.ui.home.newsfeed.creation.FeedItemCreationActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"/>
-
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name="io.scal.ambi.ui.home.chat.details.ChatDetailsActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="io.scal.ambi.ui.home.chat.newmessage.ChatNewMessageActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"/>
-
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name="io.scal.ambi.ui.home.chat.channel.ChatChannelSelectionActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name="io.scal.ambi.ui.profile.details.ProfileDetailsActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name="io.scal.ambi.ui.profile.resume.ProfileResumeActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
-            android:name="io.scal.ambi.ui.home.chat.list.ChatListFragment"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
-
+            android:name="io.scal.ambi.ui.home.chat.list.ChatListActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name="io.scal.ambi.ui.home.notifications.NotificationsActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
-
-
-        <activity android:name="io.scal.ambi.ui.home.classes.ClassesDetailsActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
+            android:name="io.scal.ambi.ui.home.classes.ClassesDetailsActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
         <!-- For camera picker -->
         <provider
@@ -105,34 +87,44 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/image_path"/>
+                android:resource="@xml/image_path" />
         </provider>
 
-        <!--for push notifications-->
-        <service
-            android:name="io.scal.ambi.model.repository.data.chat.push.FCMListenerService">
+        <!-- for push notifications -->
+        <service android:name="io.scal.ambi.model.repository.data.chat.push.FCMListenerService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name="io.scal.ambi.model.repository.data.chat.push.FCMInstanceIDService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name="io.scal.ambi.model.repository.data.chat.push.RegistrationIntentService"
-            android:exported="false">
-        </service>
+            android:exported="false" />
 
         <!-- for s3 storage -->
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
-            android:enabled="true"/>
+            android:enabled="true" />
 
+        <activity
+            android:name="io.scal.ambi.notebooks.notebookdashpage"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+
+        </activity>
+        <activity android:name="io.scal.ambi.notebooks.Newnotebook">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>

@@ -9,7 +9,7 @@ import com.crashlytics.android.Crashlytics
 import io.scal.ambi.navigation.NavigateTo
 import io.scal.ambi.ui.auth.login.LoginActivity
 import io.scal.ambi.ui.global.base.fragment.BaseNavigationFragment
-import io.scal.ambi.ui.home.chat.list.ChatListFragment
+import io.scal.ambi.ui.home.chat.list.ChatListActivity
 import io.scal.ambi.ui.home.notifications.NotificationsActivity
 import io.scal.ambi.ui.profile.details.ProfileDetailsActivity
 import ru.terrakok.cicerone.android.SupportAppNavigator
@@ -37,7 +37,7 @@ open class BaseNavigator(private val activity: FragmentActivity) : SupportAppNav
             NavigateTo.PROFILE_DETAILS ->
                 if (data is String) ProfileDetailsActivity.createScreen(activity, data)
                 else ProfileDetailsActivity.createScreen(activity)
-            NavigateTo.CHAT            -> ChatListFragment.createScreen(activity)
+            NavigateTo.CHAT            -> ChatListActivity.createScreen(activity)
             NavigateTo.NOTIFICATIONS   -> NotificationsActivity.createScreen(activity)
             else                       -> null
         }

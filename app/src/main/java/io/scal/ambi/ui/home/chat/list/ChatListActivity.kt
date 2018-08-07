@@ -13,6 +13,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.scal.ambi.extensions.binding.toObservable
 import io.scal.ambi.extensions.view.IconImage
+import io.scal.ambi.extensions.view.SimpleDividerItemDecoration
 import io.scal.ambi.extensions.view.ToolbarType
 import io.scal.ambi.extensions.view.listenForEndScroll
 import io.scal.ambi.ui.global.base.ErrorState
@@ -23,7 +24,7 @@ import io.scal.ambi.ui.global.base.asProgressStateSrl
 import io.scal.ambi.ui.home.chat.list.adapter.ChatListAdapter
 import kotlin.reflect.KClass
 
-class ChatListFragment : BaseToolbarActivity<ChatListViewModel, FragmentChatListBinding>() {
+class ChatListActivity : BaseToolbarActivity<ChatListViewModel, FragmentChatListBinding>() {
 
     override val layoutId: Int = R.layout.fragment_chat_list
     override val viewModelClass: KClass<ChatListViewModel> = ChatListViewModel::class
@@ -45,8 +46,8 @@ class ChatListFragment : BaseToolbarActivity<ChatListViewModel, FragmentChatList
                 Runnable { router.exit() },
                 ToolbarType.TitleContent(getString(R.string.title_chat)),
                 IconImage(R.drawable.ic_chat_add_user),
-                Runnable { /*viewModel.openChat()*/ },
-                IconImage(R.drawable.ic_zoom_out),
+                Runnable { viewModel.createNewMessage() },
+                IconImage(R.drawable.ic_new_video_call),
                 Runnable { /*viewModel.openChat()*/ })
 
         defaultToolbarType!!.makeScrolling()
@@ -57,7 +58,7 @@ class ChatListFragment : BaseToolbarActivity<ChatListViewModel, FragmentChatList
     private fun initRecyclerView() {
         binding.rvChats.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.rvChats.adapter = adapter
-
+        binding.rvChats.addItemDecoration(SimpleDividerItemDecoration(this));
         binding.rvChats.listenForEndScroll(1)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -123,7 +124,7 @@ class ChatListFragment : BaseToolbarActivity<ChatListViewModel, FragmentChatList
         internal val EXTRA_PROFILE_UID = "EXTRA_PROFILE_UID"
 
         fun createScreen(context: Context) =
-                Intent(context, ChatListFragment::class.java)
+                Intent(context, ChatListActivity::class.java)
 
     }
 

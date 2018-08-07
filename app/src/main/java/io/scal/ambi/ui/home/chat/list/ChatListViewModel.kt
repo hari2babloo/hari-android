@@ -67,6 +67,7 @@ class ChatListViewModel @Inject internal constructor(private val context: Contex
         paginator.refresh()
 
         observeRuntimeDataChanges()
+        initChatTypeFilters()
     }
 
     fun createNewMessage() = router.navigateTo(NavigateTo.CHAT_NEW_MESSAGE)

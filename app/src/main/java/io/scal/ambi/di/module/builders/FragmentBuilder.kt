@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.scal.ambi.ui.home.calendar.list.CalendarListFragment
 import io.scal.ambi.ui.home.calendar.list.CalendarListModule
-import io.scal.ambi.ui.home.chat.list.ChatListFragment
+import io.scal.ambi.ui.home.chat.list.ChatListActivity
 import io.scal.ambi.ui.home.chat.list.ChatListModule
 import io.scal.ambi.ui.home.classes.ClassesFragment
 import io.scal.ambi.ui.home.classes.ClassesModule
@@ -41,7 +41,7 @@ abstract class FragmentBuilder {
     abstract fun bindAnnouncementCreationFragment(): AnnouncementCreationFragment
 
     @ContributesAndroidInjector(modules = [ChatListModule::class])
-    abstract fun bindChatListFragment(): ChatListFragment
+    abstract fun bindChatListFragment(): ChatListActivity
 
     @ContributesAndroidInjector(modules = [CalendarListModule::class])
     abstract fun bindCalendarListFragment(): CalendarListFragment

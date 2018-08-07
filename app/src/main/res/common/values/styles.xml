@@ -7,5 +7,56 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style
+        name="NoNotesOrFilesYe"
+        parent="@android:style/TextAppearance.Widget.TextView">
+
+        <item name="android:fontFamily">Circular</item>
+
+        <item name="android:textColor">#FF707689</item>
+
+        <item name="android:textSize">16pt</item>
+    </style>
+
+    <style
+        name="CreateANotebookTo"
+        parent="@android:style/TextAppearance.Widget.TextView">
+
+        <item name="android:fontFamily">Circular</item>
+
+        <item name="android:textColor">#FF8A8FA2</item>
+
+        <item name="android:textSize">16pt</item>
+    </style>
+
+    <style name="Label">
+
+
+		<item name="android:fontFamily">Circular</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+            <item name="android:textSize">15pt</item>
+            <item name="android:textStyle">bold</item>
+    </style>
+
+
+        <style
+            name="KeepThisPrivateO"
+            parent="@android:style/TextAppearance.Widget.TextView">
+            <item name="android:fontFamily">Circular</item>
+            <item name="android:textColor">#FF707689</item>
+            <item name="android:textSize">14pt</item>
+        </style>
+
+
+
+
+        <style
+            name="PermissionsPrivac"
+            parent="@android:style/TextAppearance.Widget.TextView">
+            <item name="android:fontFamily">Circular</item>
+            <item name="android:textColor">#FF1D2129</item>
+            <item name="android:textSize">16pt</item>
+        </style>
+
 
 </resources>
